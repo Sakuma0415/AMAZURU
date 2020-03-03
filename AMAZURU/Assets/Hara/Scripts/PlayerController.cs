@@ -2,35 +2,71 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
 
     [SerializeField, Header("移動速度")] private float playerSpeed = 1.0f;
+
+    private bool moveFlag = false;
 
     /// <summary>
     /// 移動を管理する
     /// </summary>
     private void PlayerMove()
     {
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+
+        if((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) && (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)))
         {
-            // 前進
+            transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, 45, transform.rotation.z));
+            moveFlag = true;
+        }
+        else if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) && (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)))
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, 135, transform.rotation.z));
+            moveFlag = true;
+        }
+        else if ((Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) && (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)))
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, -135, transform.rotation.z));
+            moveFlag = true;
+        }
+        else if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)))
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, -45, transform.rotation.z));
+            moveFlag = true;
+        }
+        else if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, 0, transform.rotation.z));
+            moveFlag = true;
+        }
+        else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, 180, transform.rotation.z));
+            moveFlag = true;
+        }
+        else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, -90, transform.rotation.z));
+            moveFlag = true;
+        }
+        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, 90, transform.rotation.z));
+            moveFlag = true;
+        }
+        else
+        {
+            moveFlag = false;
         }
 
-        if(Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        // キーが入力されていたらその方向に前進
+        if (moveFlag)
         {
-            // 後退
+            transform.position += transform.forward * playerSpeed * Time.deltaTime;
         }
-
-        if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-        {
-            // 左
-        }
-
-        if(Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-        {
-            // 右
-        }
+        
     }
     
     // Start is called before the first frame update
