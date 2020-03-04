@@ -8,7 +8,7 @@ using UnityEditor;
 public class StageEditor : MonoBehaviour
 {
     [Tooltip("グリッドの数　X * Y * Z")]
-    public int cells;
+    public Vector3Int cells;
 
     public Vector3Int cellNum;
     private Vector3Int tempCnum = Vector3Int.zero;
@@ -65,13 +65,13 @@ public class StageEditor : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Z))
         {
             cellNum.z++;
-            if(cellNum.z == cells) { cellNum.z = 0; }
+            if(cellNum.z == cells.z) { cellNum.z = 0; }
             ChangeSelectObj(cellNum);
         }
         else if (Input.GetKeyDown(KeyCode.X))
         {
             cellNum.z--;
-            if (cellNum.z == -1) { cellNum.z = cells - 1; }
+            if (cellNum.z == -1) { cellNum.z = cells.z - 1; }
             ChangeSelectObj(cellNum);
         }
     }
@@ -84,13 +84,13 @@ public class StageEditor : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
             cellNum.x++;
-            if (cellNum.x == cells) { cellNum.x = 0; }
+            if (cellNum.x == cells.x) { cellNum.x = 0; }
             ChangeSelectObj(cellNum);
         }
         else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             cellNum.x--;
-            if (cellNum.x == -1) { cellNum.x = cells - 1; }
+            if (cellNum.x == -1) { cellNum.x = cells.x - 1; }
             ChangeSelectObj(cellNum);
         }
     }
@@ -103,13 +103,13 @@ public class StageEditor : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             cellNum.y++;
-            if (cellNum.y == cells) { cellNum.y = 0; }
+            if (cellNum.y == cells.y) { cellNum.y = 0; }
             ChangeSelectObj(cellNum);
         }
         else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             cellNum.y--;
-            if (cellNum.y == -1) { cellNum.y = cells - 1; }
+            if (cellNum.y == -1) { cellNum.y = cells.y - 1; }
             ChangeSelectObj(cellNum);
         }
     }
@@ -123,14 +123,14 @@ public class StageEditor : MonoBehaviour
 
         gridRoot = new GameObject();
         gridRoot.name = "GridRootObj";
-        gridPos = new GameObject[cells, cells, cells];
+        gridPos = new GameObject[cells.x, cells.y, cells.z];
         float s = gridObj.transform.localScale.x;
 
-        for (int i = 0; i < cells; i++)
+        for (int i = 0; i < cells.x; i++)
         {
-            for (int j = 0; j < cells; j++)
+            for (int j = 0; j < cells.y; j++)
             {
-                for (int k = 0; k < cells; k++)
+                for (int k = 0; k < cells.z; k++)
                 {
                     GameObject obj = Instantiate(gridObj);
                     obj.transform.localPosition = new Vector3((i - 1) * s, j * s, k * s);
@@ -145,11 +145,13 @@ public class StageEditor : MonoBehaviour
     /// <summary>
     /// Gridの選択
     /// </summary>
-    public void ChangeSelectObj(Vector3Int cNum)
+    public void ChangeSelectObj(Vector3Int cNum, bool isCtrlKeyDown = false)
     {
+        if (isCtrlKeyDown) { gridPos[cNum.x, cNum.y, cNum.z].GetComponent<HighlightObject>().IsSelect = true; goto Compleat; }
         if(tempCnum != null) { gridPos[tempCnum.x, tempCnum.y, tempCnum.z].GetComponent<HighlightObject>().IsSelect = false; }
         gridPos[cNum.x, cNum.y, cNum.z].GetComponent<HighlightObject>().IsSelect = true;
         tempCnum = cNum;
+        Compleat:
         IsInputAnyKey = true;
     }
 }
