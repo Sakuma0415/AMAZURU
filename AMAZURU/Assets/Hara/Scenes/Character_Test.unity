@@ -587,7 +587,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c548672b7961db44dbbcecc31e43bdb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 4
+  rb: {fileID: 1783403565}
+  playerSpeed: 5
 --- !u!136 &1783403567
 CapsuleCollider:
   m_ObjectHideFlags: 0
