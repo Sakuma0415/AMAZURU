@@ -21,7 +21,8 @@ public class StageEditor : MonoBehaviour
 
     [Tooltip("シーン内のオブジェクトを削除するためのルートオブジェクト")]
     private GameObject gridRoot;
-
+    private bool IsInputAnyKey { get; set; } = false;
+    private float horizontal, vertical = 0;
     void Start()
     {
         CreateGrid();
@@ -29,9 +30,72 @@ public class StageEditor : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        horizontal = Input.GetAxis("Horizontal");
+        vertical = Input.GetAxis("Vertical");
+        EditorInput();
+    }
+
+    /// <summary>
+    /// ステージエディット時のキー入力処理
+    /// </summary>
+    private void EditorInput()
+    {
+        if (Input.GetKey(KeyCode.LeftShift)) { InputDepth();}
+        //InputHorizontal();
+        //InputVertical();
+    }
+
+    private void InputDepth()
+    {
+        if (vertical > 0)
         {
-            ChangeSelectObj();
+            cellNum.z++;
+            if(cellNum.z == cells) { cellNum.z = 0; }
+            ChangeSelectObj(cellNum);
+        }
+        else if (vertical < 0)
+        {
+            cellNum.z--;
+            if (cellNum.z == -1) { cellNum.z = cells - 1; }
+            ChangeSelectObj(cellNum);
+        }
+    }
+
+    /// <summary>
+    /// 横方向の入力が行われた時の処理
+    /// </summary>
+    private void InputHorizontal()
+    {
+        if (horizontal > 0)
+        {
+            cellNum.x++;
+            if (cellNum.x == cells) { cellNum.x = 0; }
+            ChangeSelectObj(cellNum);
+        }
+        else if (horizontal < 0)
+        {
+            cellNum.x--;
+            if (cellNum.x == -1) { cellNum.x = cells - 1; }
+            ChangeSelectObj(cellNum);
+        }
+    }
+
+    /// <summary>
+    /// 縦方向の入力が行われた時の処理
+    /// </summary>
+    private void InputVertical()
+    {
+        if (vertical > 0)
+        {
+            cellNum.y++;
+            if (cellNum.y == cells) { cellNum.y = 0; }
+            ChangeSelectObj(cellNum);
+        }
+        else if (vertical < 0)
+        {
+            cellNum.y--;
+            if (cellNum.y == -1) { cellNum.y = cells - 1; }
+            ChangeSelectObj(cellNum);
         }
     }
 
@@ -65,11 +129,8 @@ public class StageEditor : MonoBehaviour
     /// <summary>
     /// Gridの選択
     /// </summary>
-    public void ChangeSelectObj()
+    public void ChangeSelectObj(Vector3Int cNum)
     {
-        Vector3Int cNum = new Vector3Int(cellNum.x - 1, cellNum.y - 1, cellNum.z - 1);
-        if (cellNum.x <= 0 || cellNum.y <= 0 || cellNum.z <= 0) { return; }
-
         if(tempCnum != null) { gridPos[tempCnum.x, tempCnum.y, tempCnum.z].GetComponent<HighlightObject>().IsSelect = false; }
         gridPos[cNum.x, cNum.y, cNum.z].GetComponent<HighlightObject>().IsSelect = true;
         tempCnum = cNum;
