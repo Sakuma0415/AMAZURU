@@ -7,6 +7,11 @@ using UnityEditor;
 
 public class StageEditor : MonoBehaviour
 {
+    //[HideInInspector]
+    public bool loadStage;
+    [HideInInspector]
+    public PrefabStageData data;
+
     [Tooltip("グリッドの数　X * Y * Z")]
     public Vector3Int cells;
     private float posAdjust = 0.5f;
@@ -17,8 +22,8 @@ public class StageEditor : MonoBehaviour
     [SerializeField,Tooltip("参照するGridObject")]
     private GameObject gridObj;
 
-    [Tooltip("Gridオブジェクトの参照管理")]
-    private GameObject[,,] gridPos;
+    [HideInInspector,Tooltip("Gridオブジェクトの参照管理")]
+    public GameObject[,,] gridPos;
 
     [Tooltip("シーン内のオブジェクトを削除するためのルートオブジェクト")]
     private GameObject gridRoot;
@@ -26,10 +31,10 @@ public class StageEditor : MonoBehaviour
     [SerializeField,Tooltip("ステージに使う参照オブジェクト")]
     private GameObject[] referenceObject;
     private int refObjIndex = 0;
-    [SerializeField]
-    private string stageName;
-    [Tooltip("保存するステージのルートオブジェクト")]
-    private GameObject stageRoot;
+    
+    public string stageName;
+    [HideInInspector,Tooltip("保存するステージのルートオブジェクト")]
+    public GameObject stageRoot;
     private GameObject stageObj;
     [SerializeField]
     private GameObject guideObj;
@@ -40,12 +45,6 @@ public class StageEditor : MonoBehaviour
     private float horizontal, vertical = 0;
     void Start()
     {
-        CreateGrid();
-        stageObj = referenceObject[0];
-        GameObject o = Instantiate(stageObj);
-        o.transform.parent = guideObj.transform;
-        o.GetComponent<Renderer>().material.color = Color.yellow;
-        guideObj.transform.localPosition = new Vector3(posAdjust, posAdjust, posAdjust);
     }
 
     void Update()
@@ -65,7 +64,15 @@ public class StageEditor : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.S))
             {
-                PrefabUtility.SaveAsPrefabAsset(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab");
+                if (loadStage)
+                {
+                    data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
+                    return;
+                }
+                AssetDatabase.CreateAsset(data, "Assets/Shimojima/PrefabStageData.asset");
+                data.gridCells = cells;
+                data.stageName = stageName;
+                data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
                 AssetDatabase.SaveAssets();
             }
             return;
@@ -74,7 +81,7 @@ public class StageEditor : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            SetStageObject(cellNum, stageObj);
+            SetStageObject(stageObj);
         }
         if (Input.GetKeyDown(KeyCode.Tab))
         {
@@ -167,14 +174,21 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     public void CreateGrid()
     {
+        if (loadStage) { goto CreateGrid; }
         if (gridRoot != null) { Destroy(gridRoot); }
+        data = (PrefabStageData)ScriptableObject.CreateInstance("PrefabStageData");
+        data.gridCells = cells;
+
+    CreateGrid:
 
         stageRoot = new GameObject();
         stageRoot.transform.position = Vector3.zero;
         stageRoot.name = "Stage";
         gridRoot = new GameObject();
         gridRoot.name = "GridRootObj";
-        gridPos = new GameObject[cells.x, cells.y, cells.z];
+
+        if (!loadStage) { gridPos = new GameObject[cells.x, cells.y, cells.z]; }
+
         float s = gridObj.transform.localScale.x;
 
         for (int i = 0; i < cells.x; i++)
@@ -191,6 +205,12 @@ public class StageEditor : MonoBehaviour
             }
         }
         gridPos[0, 0, 0].GetComponent<HighlightObject>().IsSelect = true;
+
+        stageObj = referenceObject[0];
+        GameObject o = Instantiate(stageObj);
+        o.transform.parent = guideObj.transform;
+        o.GetComponent<Renderer>().material.color = Color.yellow;
+        guideObj.transform.localPosition = new Vector3(posAdjust, posAdjust, posAdjust);
     }
 
     /// <summary>
@@ -229,7 +249,7 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     /// <param name="cNum">グリッドのセル番号</param>
     /// <param name="obj">設置するゲームオブジェクト</param>
-    private void SetStageObject(Vector3Int cNum , GameObject obj)
+    private void SetStageObject(GameObject obj)
     {
         GameObject o = Instantiate(obj);
         o.name = obj.name;
@@ -239,14 +259,50 @@ public class StageEditor : MonoBehaviour
     }
 }
 
-//#if UNITY_EDITOR
-//[CustomEditor(typeof(StageEditor))]
-//public class StageEditorCustom : Editor
-//{
-//    public override void OnInspectorGUI()
-//    {
-//        StageEditor stageEditor = target as StageEditor;
-//        base.OnInspectorGUI();
-//    }
-//}
-//#endif
+#if UNITY_EDITOR
+[CustomEditor(typeof(StageEditor))]
+public class StageEditorCustom : Editor
+{
+    PrefabStageData pre;
+    public override void OnInspectorGUI()
+    {
+        StageEditor stageEditor = target as StageEditor;
+        base.OnInspectorGUI();
+        pre = (PrefabStageData)EditorGUILayout.ObjectField("読み込むステージ",pre,typeof(ScriptableObject),false);
+        if (GUILayout.Button("NewStage"))
+        {
+            if (!EditorApplication.isPlaying) { return; }
+            stageEditor.CreateGrid();
+        }
+
+        if (GUILayout.Button("LoadStage"))
+        {
+            if (!EditorApplication.isPlaying) { return; }
+            LoadStage(stageEditor);
+        }
+    }
+
+    /// <summary>
+    /// ステージの読み込み
+    /// </summary>
+    /// <param name="stageEditor">ベースクラス</param>
+    private void LoadStage(StageEditor stageEditor)
+    {
+        stageEditor.loadStage = true;
+        stageEditor.stageName = pre.stageName;
+        GameObject o = Instantiate(pre.stage);
+        stageEditor.gridPos = new GameObject[pre.gridCells.x, pre.gridCells.y, pre.gridCells.z];
+        stageEditor.data = pre;
+        stageEditor.CreateGrid();
+
+    ReStart:
+        foreach (Transform child in o.transform)
+        {
+            child.gameObject.transform.parent = stageEditor.stageRoot.transform;
+        }
+
+        if (o.transform.childCount != 0) { goto ReStart; }
+        Destroy(o);
+    }
+}
+#endif
