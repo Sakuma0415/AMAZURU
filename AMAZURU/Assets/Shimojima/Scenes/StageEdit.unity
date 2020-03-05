@@ -240,8 +240,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef9a57a2fc08c6f4a8738cd86f3f72fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cells: 3
-  cellNum: {x: 1, y: 1, z: 1}
+  cells: {x: 5, y: 5, z: 5}
+  cellNum: {x: 0, y: 0, z: 0}
   gridObj: {fileID: 5999110429068370210, guid: 0be17e78958f64648b65ad877da141c4, type: 3}
 --- !u!4 &226080315
 Transform:
