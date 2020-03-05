@@ -9,6 +9,7 @@ public class StageEditor : MonoBehaviour
 {
     [Tooltip("グリッドの数　X * Y * Z")]
     public Vector3Int cells;
+    private float posAdjust = 0.5f;
 
     public Vector3Int cellNum;
     private Vector3Int tempCnum = Vector3Int.zero;
@@ -21,11 +22,30 @@ public class StageEditor : MonoBehaviour
 
     [Tooltip("シーン内のオブジェクトを削除するためのルートオブジェクト")]
     private GameObject gridRoot;
+
+    [SerializeField,Tooltip("ステージに使う参照オブジェクト")]
+    private GameObject[] referenceObject;
+    private int refObjIndex = 0;
+    [SerializeField]
+    private string stageName;
+    [Tooltip("保存するステージのルートオブジェクト")]
+    private GameObject stageRoot;
+    private GameObject stageObj;
+    [SerializeField]
+    private GameObject guideObj;
+    [SerializeField]
+    private Vector3 objAngle;
+
     private bool IsInputAnyKey { get; set; } = false;
     private float horizontal, vertical = 0;
     void Start()
     {
         CreateGrid();
+        stageObj = referenceObject[0];
+        GameObject o = Instantiate(stageObj);
+        o.transform.parent = guideObj.transform;
+        o.GetComponent<Renderer>().material.color = Color.yellow;
+        guideObj.transform.localPosition = new Vector3(posAdjust, posAdjust, posAdjust);
     }
 
     void Update()
@@ -39,11 +59,38 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     private void EditorInput()
     {
+
+#if UNITY_EDITOR
+        if (Input.GetKey(KeyCode.LeftShift)) 
+        {
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                PrefabUtility.SaveAsPrefabAsset(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab");
+                AssetDatabase.SaveAssets();
+            }
+            return;
+        }
+#endif
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            SetStageObject(cellNum, stageObj);
+        }
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            ChangeStageObject();
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            objAngle.y += -90;
+            guideObj.transform.localEulerAngles = objAngle;
+        }
         if (IsInputAnyKey) { return; }
         InputHorizontal();
         InputVertical();
         InputDepth();
     }
+    #region 入力関連の関数
 
     /// <summary>
     /// 移動に関するキー入力が行われているか
@@ -66,13 +113,13 @@ public class StageEditor : MonoBehaviour
         {
             cellNum.z++;
             if(cellNum.z == cells.z) { cellNum.z = 0; }
-            ChangeSelectObj(cellNum);
+            SelectGridObject(cellNum);
         }
         else if (Input.GetKeyDown(KeyCode.X))
         {
             cellNum.z--;
             if (cellNum.z == -1) { cellNum.z = cells.z - 1; }
-            ChangeSelectObj(cellNum);
+            SelectGridObject(cellNum);
         }
     }
 
@@ -85,13 +132,13 @@ public class StageEditor : MonoBehaviour
         {
             cellNum.x++;
             if (cellNum.x == cells.x) { cellNum.x = 0; }
-            ChangeSelectObj(cellNum);
+            SelectGridObject(cellNum);
         }
         else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             cellNum.x--;
             if (cellNum.x == -1) { cellNum.x = cells.x - 1; }
-            ChangeSelectObj(cellNum);
+            SelectGridObject(cellNum);
         }
     }
 
@@ -104,15 +151,16 @@ public class StageEditor : MonoBehaviour
         {
             cellNum.y++;
             if (cellNum.y == cells.y) { cellNum.y = 0; }
-            ChangeSelectObj(cellNum);
+            SelectGridObject(cellNum);
         }
         else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             cellNum.y--;
             if (cellNum.y == -1) { cellNum.y = cells.y - 1; }
-            ChangeSelectObj(cellNum);
+            SelectGridObject(cellNum);
         }
     }
+    #endregion
 
     /// <summary>
     /// Gridの作成
@@ -121,6 +169,9 @@ public class StageEditor : MonoBehaviour
     {
         if (gridRoot != null) { Destroy(gridRoot); }
 
+        stageRoot = new GameObject();
+        stageRoot.transform.position = Vector3.zero;
+        stageRoot.name = "Stage";
         gridRoot = new GameObject();
         gridRoot.name = "GridRootObj";
         gridPos = new GameObject[cells.x, cells.y, cells.z];
@@ -133,7 +184,7 @@ public class StageEditor : MonoBehaviour
                 for (int k = 0; k < cells.z; k++)
                 {
                     GameObject obj = Instantiate(gridObj);
-                    obj.transform.localPosition = new Vector3((i - 1) * s, j * s, k * s);
+                    obj.transform.localPosition = new Vector3((i + posAdjust) * s, (j + posAdjust) * s, (k + posAdjust) * s);
                     gridPos[i, j, k] = obj;
                     obj.transform.parent = gridRoot.transform;
                 }
@@ -145,14 +196,46 @@ public class StageEditor : MonoBehaviour
     /// <summary>
     /// Gridの選択
     /// </summary>
-    public void ChangeSelectObj(Vector3Int cNum, bool isCtrlKeyDown = false)
+    public void SelectGridObject(Vector3Int cNum, bool isCtrlKeyDown = false)
     {
         if (isCtrlKeyDown) { gridPos[cNum.x, cNum.y, cNum.z].GetComponent<HighlightObject>().IsSelect = true; goto Compleat; }
         if(tempCnum != null) { gridPos[tempCnum.x, tempCnum.y, tempCnum.z].GetComponent<HighlightObject>().IsSelect = false; }
         gridPos[cNum.x, cNum.y, cNum.z].GetComponent<HighlightObject>().IsSelect = true;
+        guideObj.transform.position = gridPos[cNum.x, cNum.y, cNum.z].transform.position;
         tempCnum = cNum;
         Compleat:
         IsInputAnyKey = true;
+    }
+
+    /// <summary>
+    /// 設置するステージオブジェクトの変更
+    /// </summary>
+    private void ChangeStageObject()
+    {
+        refObjIndex++;
+        if(refObjIndex == referenceObject.Length) { refObjIndex = 0; }
+
+        stageObj = referenceObject[refObjIndex];
+        Destroy(guideObj.transform.GetChild(0).gameObject);
+        GameObject o = Instantiate(stageObj);
+        o.transform.parent = guideObj.transform;
+        o.GetComponent<Renderer>().material.color = Color.yellow;
+        o.transform.localPosition = Vector3.zero;
+        o.transform.localRotation = referenceObject[refObjIndex].transform.localRotation;
+    }
+
+    /// <summary>
+    /// ステージオブジェクトの設置
+    /// </summary>
+    /// <param name="cNum">グリッドのセル番号</param>
+    /// <param name="obj">設置するゲームオブジェクト</param>
+    private void SetStageObject(Vector3Int cNum , GameObject obj)
+    {
+        GameObject o = Instantiate(obj);
+        o.name = obj.name;
+        o.transform.localPosition = guideObj.transform.localPosition;
+        o.transform.localEulerAngles += objAngle;
+        o.transform.parent = stageRoot.transform;
     }
 }
 
