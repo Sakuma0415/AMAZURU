@@ -8,6 +8,7 @@
 		_ReflectionTex ("ReflectionTexture", 2D) = "white" {}
 		_X("_X", float) = 1
 		_Y("_Y", float) = 1
+		_Intensity ("Intensity", Range(0, 1)) = 1
 	}
 	SubShader
 	{
@@ -67,6 +68,7 @@
 			float _X;
 			float _Y;
 
+			float _Intensity;
 			v2f vert (appdata v)
 			{
 				v2f o;
@@ -152,7 +154,7 @@
 				float3 R = normalize( - i.lightDir + 2.0 * normal * NdotL );
 				float3 spec2 = pow(max(0, dot(R, i.viewDir)), 40.0);
 				half4 c;
-				c.rgb = color * _LightColor0.rgb * NdotL + spec2 +  fixed4(0.1f, 0.1f, 0.1f, 1);
+				c.rgb = color * _LightColor0.rgb * NdotL + (_Intensity*spec2) +  fixed4(0.1f, 0.1f, 0.1f, 1);
 				c.a=_Color.a;
 				//c.rgb=(_Color*9+c.rgb)/10;
 				return c;//color;
