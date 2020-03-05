@@ -11,12 +11,7 @@ public class HighlightObject : MonoBehaviour
 
     public void OnDrawGizmos()
     {
-        if (IsSelect)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawCube(myTransform.localPosition, myTransform.localScale);
-        }
-        else
+        if (!IsSelect)
         {
             Gizmos.color = Color.white;
             Gizmos.DrawWireCube(myTransform.localPosition, myTransform.localScale);
