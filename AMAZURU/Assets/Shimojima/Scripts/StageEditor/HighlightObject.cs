@@ -13,7 +13,7 @@ public class HighlightObject : MonoBehaviour
     {
         if (!IsSelect)
         {
-            Gizmos.color = Color.white;
+            Gizmos.color = new Color(1,1,1,0.05f);
             Gizmos.DrawWireCube(myTransform.localPosition, myTransform.localScale);
         }
     }
