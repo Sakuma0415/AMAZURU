@@ -209,6 +209,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CameraDis: 12
   lookPos: {x: 4, y: 4, z: 4}
+  PlayerTransform: {fileID: 0}
+  XZangle: 0
   Yangle: 15
 --- !u!1 &1355312271
 GameObject:
@@ -241,6 +243,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LoadStageData: {fileID: 11400000, guid: 17931803c56290a4988d7092e920c258, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
+  playerObj: {fileID: 1413536329964495675, guid: 54a2eb7ea5747c8428d576475053472c,
+    type: 3}
+  cameraPos: {fileID: 721732558}
 --- !u!4 &1355312273
 Transform:
   m_ObjectHideFlags: 0

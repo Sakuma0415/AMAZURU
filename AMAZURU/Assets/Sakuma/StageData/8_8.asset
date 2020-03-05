@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: 8_8
   m_EditorClassIdentifier: 
   stageName: "8\xD78"
-  stageLength: 8
-  stageWidth: 8
+  stageSize: {x: 8, y: 8, z: 8}
+  startPos: {x: 1, y: 1, z: 1}
   waterHeight: 2
   stagePrefab: {fileID: 2614204100411058394, guid: 494a222df2690d644b0ee76ee5fb6c0b,
     type: 3}
