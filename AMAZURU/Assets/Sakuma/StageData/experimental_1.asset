@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07438997e6cedce47a9cb49ea6fc8554, type: 3}
+  m_Name: experimental_1
+  m_EditorClassIdentifier: 
+  stageName: 
+  stageSize: {x: 10, y: 10, z: 10}
+  startPos: {x: 10, y: 1, z: 1}
+  waterHeight: 8
+  stagePrefab: {fileID: 4061141928721198647, guid: 354f50b8d4b12014799035edabdd9461,
+    type: 3}

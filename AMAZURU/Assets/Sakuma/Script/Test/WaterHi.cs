@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WaterHi : MonoBehaviour
 {
-    public float max;
+    public float max=0;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,9 +14,11 @@ public class WaterHi : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (max >= transform.localScale.y)
-        {
-            transform.localScale += new Vector3(0, 0.01f, 0);
-        }
+
+        if (Input.GetKey(KeyCode.U)) { max += Time.deltaTime; }
+        if (Input.GetKey(KeyCode.I)) { max -= Time.deltaTime; }
+
+            transform.localScale = new Vector3(transform.localScale.x, max, transform.localScale.z);
+        
     }
 }
