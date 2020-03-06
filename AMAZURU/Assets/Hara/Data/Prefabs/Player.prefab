@@ -111,6 +111,7 @@ MonoBehaviour:
   localGravity: {x: 0, y: -10, z: 0}
   playerSpeed: 5
   playerCamera: {fileID: 0}
+  faceObject: {fileID: 1413536330557469983}
 --- !u!54 &1413536329964495674
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -140,7 +141,7 @@ GameObject:
   - component: {fileID: 1413536330557469980}
   - component: {fileID: 1413536330557469981}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: FaceObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

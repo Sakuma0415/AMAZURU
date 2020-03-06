@@ -9,13 +9,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Header("重力の設定")] private Vector3 localGravity;
     [SerializeField, Header("移動速度")] private float playerSpeed = 1.0f;
     [SerializeField, Header("移動時の起点カメラ")] private Camera playerCamera = null;
+    [SerializeField, Header("顔のオブジェクト")] private GameObject faceObject = null;
     public Camera PlayerCamera { set { playerCamera = value; } }
 
     private Vector3 playerVec = Vector3.zero;
     private float inputX = 0;
     private float inputZ = 0;
 
+    // 目の前に床が存在するか
     private bool findGroundForward = false;
+    // 目の前に壁が存在するか
+    private bool findWallForward = false;
 
     /// <summary>
     /// 初期化
@@ -23,6 +27,7 @@ public class PlayerController : MonoBehaviour
     private void PlayerInit()
     {
         if(playerCamera == null) { playerCamera = Camera.main; }
+        if(faceObject == null) { Debug.Log("FaceObjectが割り当てられていません"); }
     }
 
     /// <summary>
@@ -35,9 +40,15 @@ public class PlayerController : MonoBehaviour
         inputZ = Input.GetAxis("Vertical");
 
         // 床が存在するかをRayでチェック
-        Ray rayForward = new Ray(transform.position, transform.forward - transform.up);
-        float rayLength = 10.0f;    // Rayの長さ
-        findGroundForward = Physics.Raycast(rayForward, out _, rayLength);
+        RaycastHit hit;
+        findGroundForward = Physics.SphereCast(new Ray(faceObject.transform.position + faceObject.transform.forward, -faceObject.transform.up), 0.1f, out hit, 3.25f);
+        if (findGroundForward)
+        {
+            Debug.Log(hit.transform.gameObject);
+        }
+
+        // 壁が存在するかRayでチェック
+        findWallForward = Physics.BoxCast(transform.position, new Vector3(0.5f, 0.5f, 0.5f) * 0.5f, transform.forward, transform.rotation, 0.5f);
     }
 
     /// <summary>
@@ -69,7 +80,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // 移動処理
-        if((Mathf.Abs(inputX) > 0.1f || Mathf.Abs(inputZ) > 0.1f) && findGroundForward)
+        if((Mathf.Abs(inputX) > 0.1f || Mathf.Abs(inputZ) > 0.1f) && findGroundForward && findWallForward == false)
         {
             float moveVec = Mathf.Abs(inputX) >= Mathf.Abs(inputZ) ? inputZ / inputX : inputX / inputZ;
             moveVec = 1.0f / Mathf.Sqrt(1.0f + moveVec * moveVec);
