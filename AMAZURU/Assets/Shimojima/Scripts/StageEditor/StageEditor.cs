@@ -7,10 +7,23 @@ using UnityEditor;
 
 public class StageEditor : MonoBehaviour
 {
-    //[HideInInspector]
-    public bool loadStage;
+    [System.Serializable]
+    public struct ChangeFrequentlyLiterals
+    {
+        /// <summary>
+        /// 作成したステージのデータ
+        /// </summary>
+        public PrefabStageData Data { get; set; }
+
+        [Tooltip("ステージ名")]
+        public string stageName;
+    }
+
+    [Tooltip("頻繁に内容を変更する変数群(不可視変数有)")]
+    public ChangeFrequentlyLiterals changeFrequentlyLiterals;
+
     [HideInInspector]
-    public PrefabStageData data;
+    public bool loadStage;
 
     [Tooltip("グリッドの数　X * Y * Z")]
     public Vector3Int cells;
@@ -22,7 +35,7 @@ public class StageEditor : MonoBehaviour
     [SerializeField,Tooltip("参照するGridObject")]
     private GameObject gridObj;
 
-    [HideInInspector,Tooltip("Gridオブジェクトの参照管理")]
+    [Tooltip("Gridオブジェクトの参照管理")]
     public GameObject[,,] gridPos;
 
     [Tooltip("シーン内のオブジェクトを削除するためのルートオブジェクト")]
@@ -31,8 +44,7 @@ public class StageEditor : MonoBehaviour
     [SerializeField,Tooltip("ステージに使う参照オブジェクト")]
     private GameObject[] referenceObject;
     private int refObjIndex = 0;
-    
-    public string stageName;
+
     [HideInInspector,Tooltip("保存するステージのルートオブジェクト")]
     public GameObject stageRoot;
     private GameObject stageObj;
@@ -43,9 +55,6 @@ public class StageEditor : MonoBehaviour
 
     private bool IsInputAnyKey { get; set; } = false;
     private float horizontal, vertical = 0;
-    void Start()
-    {
-    }
 
     void Update()
     {
@@ -66,13 +75,13 @@ public class StageEditor : MonoBehaviour
             {
                 if (loadStage)
                 {
-                    data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
+                    changeFrequentlyLiterals.Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + changeFrequentlyLiterals.stageName + ".prefab", InteractionMode.UserAction);
                     return;
                 }
-                AssetDatabase.CreateAsset(data, "Assets/Shimojima/PrefabStageData.asset");
-                data.gridCells = cells;
-                data.stageName = stageName;
-                data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
+                AssetDatabase.CreateAsset(changeFrequentlyLiterals.Data, "Assets/Shimojima/PrefabStageData.asset");
+                changeFrequentlyLiterals.Data.gridCells = cells;
+                changeFrequentlyLiterals.Data.cfl.stageName = changeFrequentlyLiterals.stageName;
+                changeFrequentlyLiterals.Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + changeFrequentlyLiterals.stageName + ".prefab", InteractionMode.UserAction);
                 AssetDatabase.SaveAssets();
             }
             return;
@@ -176,8 +185,8 @@ public class StageEditor : MonoBehaviour
     {
         if (loadStage) { goto CreateGrid; }
         if (gridRoot != null) { Destroy(gridRoot); }
-        data = (PrefabStageData)ScriptableObject.CreateInstance("PrefabStageData");
-        data.gridCells = cells;
+        changeFrequentlyLiterals.Data = (PrefabStageData)ScriptableObject.CreateInstance("PrefabStageData");
+        changeFrequentlyLiterals.Data.gridCells = cells;
 
     CreateGrid:
 
@@ -207,9 +216,8 @@ public class StageEditor : MonoBehaviour
         gridPos[0, 0, 0].GetComponent<HighlightObject>().IsSelect = true;
 
         stageObj = referenceObject[0];
-        GameObject o = Instantiate(stageObj);
-        o.transform.parent = guideObj.transform;
-        o.GetComponent<Renderer>().material.color = Color.yellow;
+        //GuidObjectの生成と初期化
+        Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, referenceObject[0]);
         guideObj.transform.localPosition = new Vector3(posAdjust, posAdjust, posAdjust);
     }
 
@@ -237,11 +245,7 @@ public class StageEditor : MonoBehaviour
 
         stageObj = referenceObject[refObjIndex];
         Destroy(guideObj.transform.GetChild(0).gameObject);
-        GameObject o = Instantiate(stageObj);
-        o.transform.parent = guideObj.transform;
-        o.GetComponent<Renderer>().material.color = Color.yellow;
-        o.transform.localPosition = Vector3.zero;
-        o.transform.localRotation = referenceObject[refObjIndex].transform.localRotation;
+        Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, referenceObject[refObjIndex]);
     }
 
     /// <summary>
@@ -268,7 +272,7 @@ public class StageEditorCustom : Editor
     {
         StageEditor stageEditor = target as StageEditor;
         base.OnInspectorGUI();
-        pre = (PrefabStageData)EditorGUILayout.ObjectField("読み込むステージ",pre,typeof(ScriptableObject),false);
+        pre = (PrefabStageData)EditorGUILayout.ObjectField("読み込むステージ", pre, typeof(ScriptableObject), false);
         if (GUILayout.Button("NewStage"))
         {
             if (!EditorApplication.isPlaying) { return; }
@@ -289,10 +293,9 @@ public class StageEditorCustom : Editor
     private void LoadStage(StageEditor stageEditor)
     {
         stageEditor.loadStage = true;
-        stageEditor.stageName = pre.stageName;
+        stageEditor.changeFrequentlyLiterals = pre.cfl;
         GameObject o = Instantiate(pre.stage);
         stageEditor.gridPos = new GameObject[pre.gridCells.x, pre.gridCells.y, pre.gridCells.z];
-        stageEditor.data = pre;
         stageEditor.CreateGrid();
 
     ReStart:
