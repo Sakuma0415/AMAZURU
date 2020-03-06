@@ -12,9 +12,10 @@ public class PlayerController : MonoBehaviour
     public Camera PlayerCamera { set { playerCamera = value; } }
 
     private Vector3 playerVec = Vector3.zero;
+    private float inputX = 0;
+    private float inputZ = 0;
 
-    private bool inputX = false;
-    private bool inputZ = false;
+    private bool findGroundForward = false;
 
     /// <summary>
     /// 初期化
@@ -30,44 +31,13 @@ public class PlayerController : MonoBehaviour
     private void PlayerMoveControl()
     {
         // 入力値を取得
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
-
-        inputX = Mathf.Abs(moveX) > 0.1f;
-        inputZ = Mathf.Abs(moveZ) > 0.1f;
-
-        // カメラの向いている方向を取得
-        Vector3 cameraForward = Vector3.Scale(playerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+        inputX = Input.GetAxis("Horizontal");
+        inputZ = Input.GetAxis("Vertical");
 
         // 床が存在するかをRayでチェック
-        Ray rayForward = new Ray(transform.position, cameraForward - transform.up);
-        Ray rayBack = new Ray(transform.position, -cameraForward - transform.up);
-        Ray rayRight = new Ray(transform.position, playerCamera.transform.right - transform.up);
-        Ray rayLeft = new Ray(transform.position, -playerCamera.transform.right - transform.up);
+        Ray rayForward = new Ray(transform.position, transform.forward - transform.up);
         float rayLength = 10.0f;    // Rayの長さ
-        bool findGroundForward = Physics.Raycast(rayForward, out _, rayLength);
-        bool findGroundBack = Physics.Raycast(rayBack, out _, rayLength);
-        bool findGroundRight = Physics.Raycast(rayRight, out _, rayLength);
-        bool findGroundLeft = Physics.Raycast(rayLeft, out _, rayLength);
-        
-        // プレイヤーカメラ起点の入力方向
-        Vector3 direction = cameraForward * moveZ + playerCamera.transform.right * moveX;
-        
-        // 入力方向を向く処理
-        if(direction != Vector3.zero)
-        {
-            Quaternion rot = Quaternion.LookRotation(direction, Vector3.up);
-            rot = Quaternion.Slerp(transform.rotation, rot, 10.0f * Time.deltaTime);
-            transform.rotation = rot;
-        }
-
-        // 斜め移動時の移動速度の補正
-        Vector2 moveDirection = new Vector2(moveX * Mathf.Sqrt(1 - (moveZ * moveZ) / 2.0f), moveZ * Mathf.Sqrt(1 - (moveX * moveX) / 2.0f));
-        float moveVec = Mathf.Sqrt((moveDirection.x * moveDirection.x) + (moveDirection.y * moveDirection.y));
-
-        // 移動処理
-        playerVec = moveVec * transform.forward;
-        playerVec = new Vector3((moveX > 0 && findGroundRight == false) || (moveX < 0 && findGroundLeft == false) ? 0 : playerVec.x, 0, (moveZ > 0 && findGroundForward == false) || (moveZ < 0 && findGroundBack == false) ? 0 : playerVec.z);
+        findGroundForward = Physics.Raycast(rayForward, out _, rayLength);
     }
 
     /// <summary>
@@ -84,14 +54,27 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void PlayerMove()
     {
-        if (inputX)
+        // カメラの向いている方向を取得
+        Vector3 cameraForward = Vector3.Scale(playerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+
+        // プレイヤーカメラ起点の入力方向
+        Vector3 direction = cameraForward * inputZ + playerCamera.transform.right * inputX;
+
+        // 入力方向を向く処理
+        if (direction != Vector3.zero)
         {
-            rb.position += new Vector3(playerVec.x, 0, 0) * playerSpeed * Time.fixedDeltaTime;
+            Quaternion rot = Quaternion.LookRotation(direction, Vector3.up);
+            rot = Quaternion.Slerp(transform.rotation, rot, 10.0f * Time.fixedDeltaTime);
+            transform.rotation = rot;
         }
 
-        if (inputZ)
+        // 移動処理
+        if((Mathf.Abs(inputX) > 0.1f || Mathf.Abs(inputZ) > 0.1f) && findGroundForward)
         {
-            rb.position += new Vector3(0, 0, playerVec.z) * playerSpeed * Time.fixedDeltaTime;
+            float moveVec = Mathf.Abs(inputX) >= Mathf.Abs(inputZ) ? inputZ / inputX : inputX / inputZ;
+            moveVec = 1.0f / Mathf.Sqrt(1.0f + moveVec * moveVec);
+            playerVec = direction * moveVec;
+            rb.position += playerVec * playerSpeed * Time.fixedDeltaTime;
         }
     }
     
