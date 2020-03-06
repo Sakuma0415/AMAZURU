@@ -123,6 +123,7 @@ GameObject:
   - component: {fileID: 721732557}
   - component: {fileID: 721732556}
   - component: {fileID: 721732555}
+  - component: {fileID: 721732558}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -187,13 +188,30 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 721732554}
-  m_LocalRotation: {x: 0.23902673, y: 0.22171846, z: -0.056158856, w: 0.9436914}
-  m_LocalPosition: {x: 0, y: 7.08, z: -4.92}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 5.086166, y: 1.2059102, z: 2.6322289}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 28.427002, y: 26.443, z: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &721732558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721732554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae7647307894bd548b27312d65bf7981, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CameraDis: 12
+  lookPos: {x: 4, y: 4, z: 4}
+  PlayerTransform: {fileID: 0}
+  XZangle: 0
+  Yangle: 15
 --- !u!1 &1355312271
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,8 +241,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2911a5758a6359a4095e00ddd31c7630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LoadStageData: {fileID: 11400000, guid: 3af8d467b6578b643aefb1dd03065d62, type: 2}
+  LoadStageData: {fileID: 11400000, guid: 17931803c56290a4988d7092e920c258, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
+  playerObj: {fileID: 1413536329964495675, guid: 54a2eb7ea5747c8428d576475053472c,
+    type: 3}
+  cameraPos: {fileID: 721732558}
 --- !u!4 &1355312273
 Transform:
   m_ObjectHideFlags: 0
@@ -233,11 +254,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1355312271}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.086166, y: 1.2059102, z: 2.6322289}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1807879417
 GameObject:
@@ -306,5 +327,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}

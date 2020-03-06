@@ -5,8 +5,8 @@ using UnityEngine;
 public class StageData : ScriptableObject
 {
     public string stageName;
-    public float stageLength;
-    public float stageWidth;
+    public Vector3 stageSize;
+    public Vector3 startPos;
     public float waterHeight;
     public GameObject stagePrefab;
 }

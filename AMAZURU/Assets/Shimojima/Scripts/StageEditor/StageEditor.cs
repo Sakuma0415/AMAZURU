@@ -79,7 +79,7 @@ public class StageEditor : MonoBehaviour
         }
 #endif
 
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             SetStageObject(stageObj);
         }
