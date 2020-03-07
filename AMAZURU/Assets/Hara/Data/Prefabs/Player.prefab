@@ -110,6 +110,9 @@ MonoBehaviour:
   rb: {fileID: 1413536329964495674}
   playerSpeed: 4
   playerCamera: {fileID: 0}
+  playerVec: {x: 0, y: 0, z: 0}
+  hideWallObject: {fileID: 5375641698428466803, guid: 53b6c7e73c3521549a57ea016e8fcdee,
+    type: 3}
 --- !u!54 &1413536329964495674
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -213,7 +216,7 @@ BoxCollider:
   m_GameObject: {fileID: 1413536330557469983}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}

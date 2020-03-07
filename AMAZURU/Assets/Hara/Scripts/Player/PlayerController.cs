@@ -10,12 +10,23 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Header("移動時の起点カメラ")] private Camera playerCamera = null;
     public Camera PlayerCamera { set { playerCamera = value; } }
 
-    private Vector3 playerVec = Vector3.zero;
+    [SerializeField] private Vector3 playerVec = Vector3.zero;
     private float inputX = 0;
     private float inputZ = 0;
 
-    // 目の前に床が存在するか
-    private bool findGroundForward = false;
+    // 自分の四方に床が存在するか
+    int layerMask = 0;
+    private bool forwardGround = false;
+    private bool backGround = false;
+    private bool rightGround = false;
+    private bool leftGround = false;
+
+    [SerializeField, Tooltip("透明な壁オブジェクト")] private GameObject hideWallObject = null;
+    private BoxCollider wallForward = null;
+    private BoxCollider wallBack = null;
+    private BoxCollider wallRight = null;
+    private BoxCollider wallLeft = null;
+
     // 目の前に壁が存在するか
     private bool findWallForward = false;
 
@@ -25,6 +36,12 @@ public class PlayerController : MonoBehaviour
     private void PlayerInit()
     {
         if(playerCamera == null) { playerCamera = Camera.main; }
+        layerMask = ~(1 << LayerMask.NameToLayer("Mirror"));
+
+        wallForward = Instantiate(hideWallObject, transform.position, Quaternion.identity).GetComponent<BoxCollider>();
+        wallBack = Instantiate(hideWallObject, transform.position, Quaternion.identity).GetComponent<BoxCollider>();
+        wallRight = Instantiate(hideWallObject, transform.position, Quaternion.identity).GetComponent<BoxCollider>();
+        wallLeft = Instantiate(hideWallObject, transform.position, Quaternion.identity).GetComponent<BoxCollider>();
     }
 
     /// <summary>
@@ -35,24 +52,6 @@ public class PlayerController : MonoBehaviour
         // 入力値を取得
         inputX = Input.GetAxis("Horizontal");
         inputZ = Input.GetAxis("Vertical");
-
-        // 床が存在するかをRayでチェック
-        RaycastHit hit;
-        if (Physics.SphereCast(new Ray(transform.position, -transform.up), 0.1f, out hit))
-        {
-            findGroundForward = Physics.SphereCast(new Ray(transform.position + transform.forward, -transform.up), 0.1f, out _, hit.distance * 2);
-        }
-        // 壁が存在するかRayでチェック
-        findWallForward = Physics.BoxCast(transform.position, new Vector3(0.5f * transform.localScale.x, 0.5f * transform.localScale.y, 0.5f * transform.localScale.z) * 0.5f, transform.forward, transform.rotation, 0.5f);
-
-        if (findGroundForward)
-        {
-            Debug.Log("FindGround");
-        }
-        if (findWallForward)
-        {
-            Debug.Log("FindWall");
-        }
     }
 
     /// <summary>
@@ -74,8 +73,111 @@ public class PlayerController : MonoBehaviour
             transform.rotation = rot;
         }
 
+        // 床が存在するかをRayでチェック
+        RaycastHit hit;
+        if (Physics.SphereCast(new Ray(transform.position, -transform.up), 0.1f, out hit))
+        {
+            float radius = 0.1f;
+            forwardGround = false;
+            backGround = false;
+            rightGround = false;
+            leftGround = false;
+
+            //forwardGround = Physics.SphereCast(new Ray(transform.position + Vector3.forward + transform.up * hit.distance, -transform.up), radius, hit.distance * 2.5f, layerMask);
+            //backGround = Physics.SphereCast(new Ray(transform.position + Vector3.back + transform.up * hit.distance, -transform.up), radius, hit.distance * 2.5f, layerMask);
+            //rightGround = Physics.SphereCast(new Ray(transform.position + Vector3.right + transform.up * hit.distance, -transform.up), radius, hit.distance * 2.5f, layerMask);
+            //leftGround = Physics.SphereCast(new Ray(transform.position + Vector3.left + transform.up * hit.distance, -transform.up), radius, hit.distance * 2.5f, layerMask);
+
+            foreach(RaycastHit raycast in Physics.SphereCastAll(new Ray(transform.position + Vector3.forward + transform.up * hit.distance, -transform.up), radius, hit.distance * 3.5f, layerMask))
+            {
+                if(raycast.transform.gameObject != wallForward.gameObject)
+                {
+                    forwardGround = true;
+                    break;
+                }
+            }
+
+            foreach (RaycastHit raycast in Physics.SphereCastAll(new Ray(transform.position + Vector3.back + transform.up * hit.distance, -transform.up), radius, hit.distance * 3.5f, layerMask))
+            {
+                if (raycast.transform.gameObject != wallBack.gameObject)
+                {
+                    backGround = true;
+                    break;
+                }
+            }
+
+            foreach (RaycastHit raycast in Physics.SphereCastAll(new Ray(transform.position + Vector3.right + transform.up * hit.distance, -transform.up), radius, hit.distance * 3.5f, layerMask))
+            {
+                if (raycast.transform.gameObject != wallRight.gameObject)
+                {
+                    rightGround = true;
+                    break;
+                }
+            }
+
+            foreach (RaycastHit raycast in Physics.SphereCastAll(new Ray(transform.position + Vector3.left + transform.up * hit.distance, -transform.up), radius, hit.distance * 3.5f, layerMask))
+            {
+                if (raycast.transform.gameObject != wallLeft.gameObject)
+                {
+                    leftGround = true;
+                    break;
+                }
+            }
+
+            if (forwardGround == false)
+            {
+                wallForward.transform.position = new Vector3(transform.position.x, transform.position.y, wallForward.transform.position.z);
+                wallForward.size = transform.localScale;
+                wallForward.gameObject.SetActive(true);
+            }
+            else
+            {
+                wallForward.transform.position = transform.position + Vector3.forward * 1.2f;
+                wallForward.gameObject.SetActive(false);
+            }
+
+            if (backGround == false)
+            {
+                wallBack.transform.position = new Vector3(transform.position.x, transform.position.y, wallBack.transform.position.z);
+                wallBack.size = transform.localScale;
+                wallBack.gameObject.SetActive(true);
+            }
+            else
+            {
+                wallBack.transform.position = transform.position + Vector3.back * 1.2f;
+                wallBack.gameObject.SetActive(false);
+            }
+
+            if (rightGround == false)
+            {
+                wallRight.transform.position = new Vector3(wallRight.transform.position.x, transform.position.y, transform.position.z);
+                wallRight.size = transform.localScale;
+                wallRight.gameObject.SetActive(true);
+            }
+            else
+            {
+                wallRight.transform.position = transform.position + Vector3.right * 1.2f;
+                wallRight.gameObject.SetActive(false);
+            }
+
+            if (leftGround == false)
+            {
+                wallLeft.transform.position = new Vector3(wallLeft.transform.position.x, transform.position.y, transform.position.z);
+                wallLeft.size = transform.localScale;
+                wallLeft.gameObject.SetActive(true);
+            }
+            else
+            {
+                wallLeft.transform.position = transform.position + Vector3.left * 1.2f;
+                wallLeft.gameObject.SetActive(false);
+            }
+
+            // 壁が存在するかRayでチェック
+            findWallForward = Physics.BoxCast(transform.position, new Vector3(0.5f * transform.localScale.x, 0.5f * transform.localScale.y, 0.5f * transform.localScale.z) * 0.5f, transform.forward, transform.rotation, hit.distance * 0.5f);
+        }
+
         // 移動処理
-        if((Mathf.Abs(inputX) > 0.1f || Mathf.Abs(inputZ) > 0.1f) && findGroundForward && findWallForward == false)
+        if ((Mathf.Abs(inputX) > 0.1f || Mathf.Abs(inputZ) > 0.1f) && findWallForward == false)
         {
             float moveVec = Mathf.Abs(inputX) >= Mathf.Abs(inputZ) ? inputZ / inputX : inputX / inputZ;
             moveVec = 1.0f / Mathf.Sqrt(1.0f + moveVec * moveVec);
