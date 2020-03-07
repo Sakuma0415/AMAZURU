@@ -4,7 +4,15 @@ using UnityEngine;
 
 public class HighlightObject : MonoBehaviour
 {
+    /// <summary>
+    /// 選択されているか
+    /// </summary>
     public bool IsSelect { get; set; } = false;
+
+    /// <summary>
+    /// ステージオブジェクトが設置されているか
+    /// </summary>
+    public bool IsAlreadyInstalled { get; set; } = false;
 
     [SerializeField]
     private Transform myTransform;
