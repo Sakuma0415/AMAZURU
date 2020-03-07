@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class CameraPos : MonoBehaviour
 {
-    public  float CameraDis;
+    public  float CameraDisS;
+    public float CameraDisP;
+
+    float CameraDis;
+
     public Vector3 lookPos;
     public Rigidbody PlayerTransform;
 
@@ -21,16 +25,30 @@ public class CameraPos : MonoBehaviour
 
     bool lookMode = false;
     float lookAnimeTime = 0;
+
+    Vector3 animePos;
+    Vector3 animeRef;
+
     // Start is called before the first frame update
     void Start()
     {
         XZangle = 270;
         targetAngle = 270;
+        CameraDis = CameraDisS;
     }
 
     private void LateUpdate()
     {
-        transform.position = (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad), Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * CameraDis) + lookObj;
+        if (lookAnimeTime > 0)
+        {
+            transform.position = Vector3.Lerp(transform.position, (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad), Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * CameraDis) + lookObj,1- lookAnimeTime);
+            //lookObj = new Vector3(0, 0, 0);
+        }
+        else
+        {
+            transform.position = (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad), Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * CameraDis) + lookObj;
+        }
+        
         transform.localEulerAngles = new Vector3(Yangle, -XZangle - 90, 0);
     }
     // Update is called once per frame
@@ -54,6 +72,8 @@ public class CameraPos : MonoBehaviour
         {
             lookMode = !lookMode;
             lookAnimeTime = 1;
+            animePos = transform.position;
+
         }
 
         if(lookAnimeTime > 0)
@@ -63,24 +83,14 @@ public class CameraPos : MonoBehaviour
             {
                 lookAnimeTime = 0;
             }
+            CameraDis = Mathf.Lerp(lookMode ? CameraDisS : CameraDisP, lookMode ? CameraDisP : CameraDisS, 1 - lookAnimeTime);
+
         }
 
-        if (lookAnimeTime > 0)
-        {
-            lookObj = new Vector3(0, 0, 0);
-        }
-        else
-        {
-            if (!lookMode)
-            {
-                lookObj = lookPos;
-            }
-            else
-            {
-                lookObj = PlayerTransform.position;
-            }
-        }
-            
+            lookObj = lookMode?PlayerTransform.position:lookPos;
+
+
+
 
     }
 }
