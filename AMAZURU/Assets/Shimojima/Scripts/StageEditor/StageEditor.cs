@@ -22,7 +22,7 @@ public class StageEditor : MonoBehaviour
     [Tooltip("頻繁に内容を変更する変数群(不可視変数有)")]
     public ChangeFrequentlyLiterals changeFrequentlyLiterals;
 
-    [HideInInspector]
+    //[HideInInspector]
     public bool loadStage;
 
     [Tooltip("グリッドの数　X * Y * Z")]
@@ -32,25 +32,29 @@ public class StageEditor : MonoBehaviour
     public Vector3Int cellNum;
     private Vector3Int tempCnum = Vector3Int.zero;
 
-    [SerializeField,Tooltip("参照するGridObject")]
-    private GameObject gridObj;
-
     [Tooltip("Gridオブジェクトの参照管理")]
     public GameObject[,,] gridPos;
+    private GameObject[,,] _StageObjects;
+    private Vector3Int _tempIndex;
 
+    [Header("-以下変更禁止-")]
+
+    [SerializeField, Tooltip("参照するGridObject")]
+    private GameObject gridObj;
+    [SerializeField,Tooltip("配置場所を視認し易くするためのオブジェクト")]
+    private GameObject guideObj;
     [Tooltip("シーン内のオブジェクトを削除するためのルートオブジェクト")]
     private GameObject gridRoot;
 
+    [HideInInspector, Tooltip("保存するステージのルートオブジェクト")]
+    public GameObject stageRoot;
+    
     [SerializeField,Tooltip("ステージに使う参照オブジェクト")]
     private GameObject[] referenceObject;
     private int refObjIndex = 0;
-
-    [HideInInspector,Tooltip("保存するステージのルートオブジェクト")]
-    public GameObject stageRoot;
+    [Tooltip("配置するオブジェクト")]
     private GameObject stageObj;
-    [SerializeField]
-    private GameObject guideObj;
-    [SerializeField]
+    
     private Vector3 objAngle;
 
     private bool IsInputAnyKey { get; set; } = false;
@@ -58,6 +62,10 @@ public class StageEditor : MonoBehaviour
 
     void Update()
     {
+        if(changeFrequentlyLiterals.Data != null && changeFrequentlyLiterals.Data.cfl.stageName != changeFrequentlyLiterals.stageName)
+        {
+            StageDataIncetance();
+        }
         CheakKeyDownForMoveKey();
         EditorInput();
     }
@@ -73,25 +81,51 @@ public class StageEditor : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.S))
             {
-                if (loadStage)
-                {
-                    changeFrequentlyLiterals.Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + changeFrequentlyLiterals.stageName + ".prefab", InteractionMode.UserAction);
-                    return;
-                }
-                AssetDatabase.CreateAsset(changeFrequentlyLiterals.Data, "Assets/Shimojima/PrefabStageData.asset");
-                changeFrequentlyLiterals.Data.gridCells = cells;
+                if (loadStage) { goto CreatePrefab; }
+                _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
                 changeFrequentlyLiterals.Data.cfl.stageName = changeFrequentlyLiterals.stageName;
+                try
+                {
+                    AssetDatabase.CreateAsset(changeFrequentlyLiterals.Data, "Assets/Shimojima/StageData_" + changeFrequentlyLiterals.stageName + ".asset");
+                }
+                catch
+                {
+                    Debug.Log("同名ファイルが存在するため、上書きされました");
+                }
+
+                GameObject[,,] _objects = new GameObject[_StageObjects.GetLength(0), _StageObjects.GetLength(1), _StageObjects.GetLength(2)];
+                GameObject _obj = new GameObject();
+                _obj.name = "Stage";
+                for (int i = 0; i < cells.x; i++)
+                {
+                    for (int j = 0; j < cells.y; j++)
+                    {
+                        for (int k = 0; k < cells.z; k++)
+                        {
+                            if(_StageObjects[i, j, k] == null) { continue; }
+                            GameObject obj = Instantiate(_StageObjects[i, j, k]);
+                            obj.transform.parent = _obj.transform;
+                            _StageObjects[i, j, k] = obj;
+                        }
+                    }
+                }
+            
+                changeFrequentlyLiterals.Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + changeFrequentlyLiterals.stageName + ".prefab", InteractionMode.UserAction);
+                AssetDatabase.SaveAssets();
+
+                Destroy(stageRoot);
+                stageRoot = _obj;
+                return;
+
+            CreatePrefab:
                 changeFrequentlyLiterals.Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + changeFrequentlyLiterals.stageName + ".prefab", InteractionMode.UserAction);
                 AssetDatabase.SaveAssets();
             }
             return;
         }
 #endif
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            SetStageObject(stageObj);
-        }
+        SetOrDeleteStageObject();
+        
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             ChangeStageObject();
@@ -121,7 +155,22 @@ public class StageEditor : MonoBehaviour
     }
 
     /// <summary>
-    /// 奥行んお入力が行われた時の処理
+    /// ステージオブジェクトの設置削除の入力が行われた時の処理
+    /// </summary>
+    private void SetOrDeleteStageObject()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SetStageObject(stageObj);
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            DeleteStageObject();
+        }
+    }
+
+    /// <summary>
+    /// 奥行の入力が行われた時の処理
     /// </summary>
     private void InputDepth()
     {
@@ -185,8 +234,7 @@ public class StageEditor : MonoBehaviour
     {
         if (loadStage) { goto CreateGrid; }
         if (gridRoot != null) { Destroy(gridRoot); }
-        changeFrequentlyLiterals.Data = (PrefabStageData)ScriptableObject.CreateInstance("PrefabStageData");
-        changeFrequentlyLiterals.Data.gridCells = cells;
+        StageDataIncetance();
 
     CreateGrid:
 
@@ -196,7 +244,9 @@ public class StageEditor : MonoBehaviour
         gridRoot = new GameObject();
         gridRoot.name = "GridRootObj";
 
-        if (!loadStage) { gridPos = new GameObject[cells.x, cells.y, cells.z]; }
+        if (!loadStage) { gridPos = new GameObject[cells.x, cells.y, cells.z];
+                          _StageObjects = new GameObject[cells.x, cells.y, cells.z];
+                        }
 
         float s = gridObj.transform.localScale.x;
 
@@ -217,7 +267,7 @@ public class StageEditor : MonoBehaviour
 
         stageObj = referenceObject[0];
         //GuidObjectの生成と初期化
-        Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, referenceObject[0]);
+        Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, referenceObject[0], gridPos[cellNum.x,cellNum.y,cellNum.z]);
         guideObj.transform.localPosition = new Vector3(posAdjust, posAdjust, posAdjust);
     }
 
@@ -228,8 +278,15 @@ public class StageEditor : MonoBehaviour
     {
         if (isCtrlKeyDown) { gridPos[cNum.x, cNum.y, cNum.z].GetComponent<HighlightObject>().IsSelect = true; goto Compleat; }
         if(tempCnum != null) { gridPos[tempCnum.x, tempCnum.y, tempCnum.z].GetComponent<HighlightObject>().IsSelect = false; }
-        gridPos[cNum.x, cNum.y, cNum.z].GetComponent<HighlightObject>().IsSelect = true;
+
+        //GuideObjectの設定
+        GameObject hObject = gridPos[cNum.x, cNum.y, cNum.z];
+        hObject.GetComponent<HighlightObject>().IsSelect = true;
+        if (hObject.GetComponent<HighlightObject>().IsAlreadyInstalled) { guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.red; }
+        else { guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.yellow; }
         guideObj.transform.position = gridPos[cNum.x, cNum.y, cNum.z].transform.position;
+        MakeObjectSkeleton();
+
         tempCnum = cNum;
         Compleat:
         IsInputAnyKey = true;
@@ -245,7 +302,7 @@ public class StageEditor : MonoBehaviour
 
         stageObj = referenceObject[refObjIndex];
         Destroy(guideObj.transform.GetChild(0).gameObject);
-        Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, referenceObject[refObjIndex]);
+        Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, referenceObject[refObjIndex], gridPos[cellNum.x, cellNum.y, cellNum.z]);
     }
 
     /// <summary>
@@ -255,11 +312,51 @@ public class StageEditor : MonoBehaviour
     /// <param name="obj">設置するゲームオブジェクト</param>
     private void SetStageObject(GameObject obj)
     {
+        if (_StageObjects[cellNum.x, cellNum.y, cellNum.z] != null) { Debug.Log("既にオブジェクトが設置されています"); return; }
         GameObject o = Instantiate(obj);
         o.name = obj.name;
         o.transform.localPosition = guideObj.transform.localPosition;
         o.transform.localEulerAngles += objAngle;
         o.transform.parent = stageRoot.transform;
+        _StageObjects[cellNum.x, cellNum.y, cellNum.z] = o;
+        gridPos[cellNum.x, cellNum.y, cellNum.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
+        guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.red;
+        MakeObjectSkeleton();
+    }
+
+    /// <summary>
+    /// ステージオブジェクトの削除
+    /// </summary>
+    private void DeleteStageObject()
+    {
+        if (_StageObjects[cellNum.x, cellNum.y, cellNum.z] == null) { Debug.Log("削除できるオブジェクトがありません"); return; }
+        Debug.Log(_StageObjects[cellNum.x, cellNum.y, cellNum.z].name + "を削除しました");
+        Destroy(_StageObjects[cellNum.x, cellNum.y, cellNum.z]);
+        gridPos[cellNum.x, cellNum.y, cellNum.z].GetComponent<HighlightObject>().IsAlreadyInstalled = false;
+        guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.yellow;
+    }
+
+    /// <summary>
+    /// <para>ステージオブジェクトを非表示にする</para>
+    /// <para>または表示する</para>
+    /// </summary>
+    private void MakeObjectSkeleton()
+    {
+        Debug.Log(_StageObjects[cellNum.x, cellNum.y, cellNum.z]);
+        if (_tempIndex != cellNum && _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z] != null) 
+        { _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true); }
+
+        if(_StageObjects[cellNum.x, cellNum.y, cellNum.z] != null) 
+        {
+            _StageObjects[cellNum.x, cellNum.y, cellNum.z].SetActive(false);
+            _tempIndex = cellNum;
+        }
+    }
+
+    private void StageDataIncetance()
+    {
+        changeFrequentlyLiterals.Data = (PrefabStageData)ScriptableObject.CreateInstance("PrefabStageData");
+        changeFrequentlyLiterals.Data.gridCells = cells;
     }
 }
 
@@ -272,6 +369,7 @@ public class StageEditorCustom : Editor
     {
         StageEditor stageEditor = target as StageEditor;
         base.OnInspectorGUI();
+        GUILayout.Label("-以下変更可-");
         pre = (PrefabStageData)EditorGUILayout.ObjectField("読み込むステージ", pre, typeof(ScriptableObject), false);
         if (GUILayout.Button("NewStage"))
         {

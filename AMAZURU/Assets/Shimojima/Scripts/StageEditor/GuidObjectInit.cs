@@ -9,11 +9,20 @@ public class GuidObjectInit : MonoBehaviour
     /// </summary>
     /// <param name="parent">親オブジェクト</param>
     /// <param name="refObj">インスタンス元のプレファブ</param>
-    public void InitGuidObject(GameObject parent, GameObject refObj)
+    public void InitGuidObject(GameObject parent, GameObject refObj, GameObject gridObj = null)
     {
         transform.parent = parent.transform;
+        if(gridObj.GetComponent<HighlightObject>().IsAlreadyInstalled) 
+        {
+            GetComponent<Renderer>().material.color = Color.red; 
+            goto PosSetting; 
+        }
+
         GetComponent<Renderer>().material.color = Color.yellow;
+
+    PosSetting:
         transform.localPosition = Vector3.zero;
+        //transform.localScale = new Vector3(1.1f,1.1f,1.1f);
         transform.localRotation = refObj.transform.localRotation;
     }
 }
