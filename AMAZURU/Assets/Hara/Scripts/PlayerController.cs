@@ -6,10 +6,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField, Tooltip("PlayerのRigidbody")] private Rigidbody rb = null;
-    [SerializeField, Header("重力の設定")] private Vector3 localGravity;
-    [SerializeField, Header("移動速度")] private float playerSpeed = 1.0f;
+    [SerializeField, Header("移動速度"), Range(1, 10)] private float playerSpeed = 1.0f;
     [SerializeField, Header("移動時の起点カメラ")] private Camera playerCamera = null;
-    [SerializeField, Header("顔のオブジェクト")] private GameObject faceObject = null;
     public Camera PlayerCamera { set { playerCamera = value; } }
 
     private Vector3 playerVec = Vector3.zero;
@@ -27,7 +25,6 @@ public class PlayerController : MonoBehaviour
     private void PlayerInit()
     {
         if(playerCamera == null) { playerCamera = Camera.main; }
-        if(faceObject == null) { Debug.Log("FaceObjectが割り当てられていません"); }
     }
 
     /// <summary>
@@ -41,23 +38,21 @@ public class PlayerController : MonoBehaviour
 
         // 床が存在するかをRayでチェック
         RaycastHit hit;
-        findGroundForward = Physics.SphereCast(new Ray(faceObject.transform.position + faceObject.transform.forward, -faceObject.transform.up), 0.1f, out hit, 3.25f);
+        if (Physics.SphereCast(new Ray(transform.position, -transform.up), 0.1f, out hit))
+        {
+            findGroundForward = Physics.SphereCast(new Ray(transform.position + transform.forward, -transform.up), 0.1f, out _, hit.distance * 2);
+        }
+        // 壁が存在するかRayでチェック
+        findWallForward = Physics.BoxCast(transform.position, new Vector3(0.5f * transform.localScale.x, 0.5f * transform.localScale.y, 0.5f * transform.localScale.z) * 0.5f, transform.forward, transform.rotation, 0.5f);
+
         if (findGroundForward)
         {
-            Debug.Log(hit.transform.gameObject);
+            Debug.Log("FindGround");
         }
-
-        // 壁が存在するかRayでチェック
-        findWallForward = Physics.BoxCast(transform.position, new Vector3(0.5f, 0.5f, 0.5f) * 0.5f, transform.forward, transform.rotation, 0.5f);
-    }
-
-    /// <summary>
-    /// ローカルな重力を設定
-    /// </summary>
-    private void SetLocalGravity()
-    {
-        if (rb.useGravity) { return; }
-        rb.AddForce(localGravity, ForceMode.Acceleration);
+        if (findWallForward)
+        {
+            Debug.Log("FindWall");
+        }
     }
 
     /// <summary>
@@ -106,7 +101,6 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void FixedUpdate()
     {
-        SetLocalGravity();
         PlayerMove();
     }
 
@@ -117,7 +111,6 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-        rb.useGravity = false;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
     }

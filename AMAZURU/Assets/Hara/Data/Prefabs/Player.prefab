@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1413536329964495654}
   - component: {fileID: 1413536329964495655}
   - component: {fileID: 1413536329964495672}
-  - component: {fileID: 1413536329964495673}
+  - component: {fileID: 4727899574652894474}
   - component: {fileID: 1413536329964495674}
   m_Layer: 0
   m_Name: Player
@@ -95,7 +95,7 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1413536329964495673
+--- !u!114 &4727899574652894474
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -108,10 +108,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 1413536329964495674}
-  localGravity: {x: 0, y: -10, z: 0}
-  playerSpeed: 5
+  playerSpeed: 4
   playerCamera: {fileID: 0}
-  faceObject: {fileID: 1413536330557469983}
 --- !u!54 &1413536329964495674
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -127,7 +125,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 112
-  m_CollisionDetection: 3
+  m_CollisionDetection: 2
 --- !u!1 &1413536330557469983
 GameObject:
   m_ObjectHideFlags: 0
