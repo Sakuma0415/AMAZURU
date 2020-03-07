@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 07438997e6cedce47a9cb49ea6fc8554, type: 3}
-  m_Name: TestStage
+  m_Name: experimental_1
   m_EditorClassIdentifier: 
-  stageName: "\u4EEE\u30B9\u30C6\u30FC\u30B81"
-  stageSize: {x: 10, y: 5, z: 5}
-  waterHeight: 3
-  stagePrefab: {fileID: 9218594554274337094, guid: 603a28500085c314591a092440fc3fb7,
+  stageName: 
+  stageSize: {x: 10, y: 10, z: 10}
+  startPos: {x: 10, y: 1, z: 1}
+  waterHeight: 8
+  stagePrefab: {fileID: 8108640385143907318, guid: 06c5c87bb74950c4d85cbcf9e5413e50,
     type: 3}
