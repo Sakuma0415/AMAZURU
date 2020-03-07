@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Assets\Hara\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Sakuma\Script\Action\CameraPos.cs" />
+    <Compile Include="Assets\Sakuma\Script\Action\Scaffold.cs" />
     <Compile Include="Assets\Sakuma\Script\Action\StageMake.cs" />
     <Compile Include="Assets\Sakuma\Script\StageData\StageData.cs" />
     <Compile Include="Assets\Sakuma\Script\Test\WaterHi.cs" />

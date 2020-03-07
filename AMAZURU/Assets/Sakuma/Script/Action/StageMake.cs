@@ -16,7 +16,7 @@ public class StageMake : MonoBehaviour
     {
         Instantiate(LoadStageData.stagePrefab);
         GameObject waterObj= Instantiate(water);
-        waterObj.transform.localScale = new Vector3(LoadStageData.stageSize.x,0, LoadStageData.stageSize.y) -new Vector3 (0.01f,0,0.01f);
+        waterObj.transform.localScale = new Vector3(LoadStageData.stageSize.x,0.25f, LoadStageData.stageSize.y) -new Vector3 (0.01f,0,0.01f);
         waterObj.transform.position += new Vector3(0.005f, 0, 0.005f);
 
         GameObject player = Instantiate(playerObj,LoadStageData.startPos-new Vector3 (0.5f,0,0.5f),Quaternion.identity);

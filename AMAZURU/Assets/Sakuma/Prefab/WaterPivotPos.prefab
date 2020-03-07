@@ -552,6 +552,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5736810820323302905}
   - component: {fileID: 7474606881602621882}
+  - component: {fileID: 7580068451283461541}
   m_Layer: 8
   m_Name: WaterPivotPos
   m_TagString: Untagged
@@ -586,4 +587,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8171e0a1c9b6ed44daf6691cb4bed112, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  max: 0
+  max: 0.25
+--- !u!65 &7580068451283461541
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7083060860459132360}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0.5, y: 0.5, z: 0.5}
