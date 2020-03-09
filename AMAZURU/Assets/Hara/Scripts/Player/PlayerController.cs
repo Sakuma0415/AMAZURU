@@ -15,9 +15,11 @@ public class PlayerController : MonoBehaviour
 
     public Camera PlayerCamera { set { playerCamera = value; } }
 
-    // コントローラーの入力値
-    private float inputX = 0;
-    private float inputZ = 0;
+    // コントローラーの入力
+    private bool forward = false;
+    private bool back = false;
+    private bool right = false;
+    private bool left = false;
 
     // Y軸方向
     private float Yangle = 90;
@@ -35,9 +37,15 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void GetInputController()
     {
-        // 入力値を取得
-        inputX = Input.GetAxis("Horizontal");
-        inputZ = Input.GetAxis("Vertical");
+        // キー入力取得
+        forward = Input.GetAxis("Vertical") > inputMin;
+        back = Input.GetAxis("Vertical") < -inputMin;
+        right = Input.GetAxis("Horizontal") > inputMin;
+        left = Input.GetAxis("Horizontal") < -inputMin;
+
+        // 反対方向の入力を検知したら入力を打ち消す
+        if (forward && back) { forward = false; back = false; }
+        if (right && left) { right = false; left = false; }
     }
 
     /// <summary>
@@ -50,18 +58,26 @@ public class PlayerController : MonoBehaviour
         // プレイヤーカメラの向いているY軸方向
         float playerCameraAngle = -playerCamera.transform.eulerAngles.y;
 
+        // 入力方向
+        Vector3 inputDirection = Vector3.zero;
+
         // 入力を検知したら実行
-        if(Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin)
+        if(forward || back || right || left)
         {
+            if (forward) { inputDirection += Vector3.forward; }
+            if (back) { inputDirection += Vector3.back; }
+            if (right) { inputDirection += Vector3.right; }
+            if (left) { inputDirection += Vector3.left; }
+
             // 向きをプレイヤーカメラから見た入力方向へ修正
             float refAngle = 0;
-            Yangle = Mathf.SmoothDampAngle(Yangle, Mathf.Atan2(inputZ, inputX) * Mathf.Rad2Deg + playerCameraAngle, ref refAngle, 0.05f);
+            Yangle = Mathf.SmoothDampAngle(Yangle, Mathf.Atan2(inputDirection.z, inputDirection.x) * Mathf.Rad2Deg + playerCameraAngle, ref refAngle, 0.05f);
 
             // カメラの向いている方向を取得
             Vector3 cameraForward = Vector3.Scale(playerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
 
             // プレイヤーカメラ起点の入力方向
-            Vector3 direction = cameraForward * inputZ + playerCamera.transform.right * inputX;
+            Vector3 direction = cameraForward * inputDirection.z + playerCamera.transform.right * inputDirection.x;
 
             // 入力方向を向く処理
             Quaternion rot = Quaternion.LookRotation(direction, Vector3.up);
