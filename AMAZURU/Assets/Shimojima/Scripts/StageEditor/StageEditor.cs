@@ -243,7 +243,7 @@ public class StageEditor : MonoBehaviour
         GameObject hObject = gridPos[cNum.x, cNum.y, cNum.z];
         hObject.GetComponent<HighlightObject>().IsSelect = true;
         if (hObject.GetComponent<HighlightObject>().IsAlreadyInstalled) { guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.red; }
-        else { guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.yellow; }
+        else { guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color; }
         guideObj.transform.position = gridPos[cNum.x, cNum.y, cNum.z].transform.position;
         MakeObjectSkeleton();
 
@@ -294,7 +294,7 @@ public class StageEditor : MonoBehaviour
         Debug.Log(_StageObjects[cellNum.x, cellNum.y, cellNum.z].name + "を削除しました");
         Destroy(_StageObjects[cellNum.x, cellNum.y, cellNum.z]);
         gridPos[cellNum.x, cellNum.y, cellNum.z].GetComponent<HighlightObject>().IsAlreadyInstalled = false;
-        guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.yellow;
+        guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color;
     }
 
     /// <summary>
