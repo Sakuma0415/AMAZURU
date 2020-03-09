@@ -24,6 +24,7 @@ public class StageEditor : MonoBehaviour
 
     //[HideInInspector]
     public bool loadStage;
+    public bool isSave;
 
     [Tooltip("グリッドの数　X * Y * Z")]
     public Vector3Int cells;
@@ -34,7 +35,7 @@ public class StageEditor : MonoBehaviour
 
     [Tooltip("Gridオブジェクトの参照管理")]
     public GameObject[,,] gridPos;
-    private GameObject[,,] _StageObjects;
+    public GameObject[,,] _StageObjects;
     private Vector3Int _tempIndex;
 
     [Header("-以下変更禁止-")]
@@ -84,15 +85,14 @@ public class StageEditor : MonoBehaviour
                 if (loadStage) { goto CreatePrefab; }
                 _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
                 changeFrequentlyLiterals.Data.cfl.stageName = changeFrequentlyLiterals.stageName;
-                try
+                if (isSave)
                 {
-                    AssetDatabase.CreateAsset(changeFrequentlyLiterals.Data, "Assets/Shimojima/StageData_" + changeFrequentlyLiterals.stageName + ".asset");
-                }
-                catch
-                {
-                    Debug.Log("同名ファイルが存在するため、上書きされました");
+                    AssetDatabase.DeleteAsset("Assets/Shimojima/StageData_" + changeFrequentlyLiterals.stageName + ".asset");
                 }
 
+                changeFrequentlyLiterals.Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + changeFrequentlyLiterals.stageName + ".prefab", InteractionMode.UserAction);
+
+                AssetDatabase.CreateAsset(changeFrequentlyLiterals.Data, "Assets/Shimojima/StageData_" + changeFrequentlyLiterals.stageName + ".asset");
                 GameObject[,,] _objects = new GameObject[_StageObjects.GetLength(0), _StageObjects.GetLength(1), _StageObjects.GetLength(2)];
                 GameObject _obj = new GameObject();
                 _obj.name = "Stage";
@@ -109,15 +109,17 @@ public class StageEditor : MonoBehaviour
                         }
                     }
                 }
-            
-                changeFrequentlyLiterals.Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + changeFrequentlyLiterals.stageName + ".prefab", InteractionMode.UserAction);
+
                 AssetDatabase.SaveAssets();
+                StageDataIncetance();
 
                 Destroy(stageRoot);
                 stageRoot = _obj;
+                isSave = true;
                 return;
 
             CreatePrefab:
+                _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
                 changeFrequentlyLiterals.Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + changeFrequentlyLiterals.stageName + ".prefab", InteractionMode.UserAction);
                 AssetDatabase.SaveAssets();
             }
@@ -318,6 +320,7 @@ public class StageEditor : MonoBehaviour
         o.transform.localPosition = guideObj.transform.localPosition;
         o.transform.localEulerAngles += objAngle;
         o.transform.parent = stageRoot.transform;
+        o.AddComponent<MyCellIndex>().cellIndex = cellNum;
         _StageObjects[cellNum.x, cellNum.y, cellNum.z] = o;
         gridPos[cellNum.x, cellNum.y, cellNum.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
         guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.red;
@@ -342,7 +345,6 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     private void MakeObjectSkeleton()
     {
-        Debug.Log(_StageObjects[cellNum.x, cellNum.y, cellNum.z]);
         if (_tempIndex != cellNum && _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z] != null) 
         { _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true); }
 
@@ -391,15 +393,20 @@ public class StageEditorCustom : Editor
     private void LoadStage(StageEditor stageEditor)
     {
         stageEditor.loadStage = true;
-        stageEditor.changeFrequentlyLiterals = pre.cfl;
+        stageEditor.changeFrequentlyLiterals.Data = pre;
+        stageEditor.changeFrequentlyLiterals.stageName = stageEditor.changeFrequentlyLiterals.Data.cfl.stageName;
         GameObject o = Instantiate(pre.stage);
         stageEditor.gridPos = new GameObject[pre.gridCells.x, pre.gridCells.y, pre.gridCells.z];
+        stageEditor._StageObjects = new GameObject[pre.gridCells.x, pre.gridCells.y, pre.gridCells.z];
         stageEditor.CreateGrid();
 
     ReStart:
         foreach (Transform child in o.transform)
         {
             child.gameObject.transform.parent = stageEditor.stageRoot.transform;
+            Vector3Int v = child.GetComponent<MyCellIndex>().cellIndex;
+            stageEditor.gridPos[v.x, v.y, v.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true ;
+            stageEditor._StageObjects[v.x, v.y, v.z] = child.gameObject;
         }
 
         if (o.transform.childCount != 0) { goto ReStart; }
