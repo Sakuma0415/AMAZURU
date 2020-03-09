@@ -115,6 +115,7 @@ MonoBehaviour:
     m_Bits: 1
   rayLength: 2.5
   footHeight: 0
+  inputMin: 0.4
 --- !u!54 &1413536329964495674
 Rigidbody:
   m_ObjectHideFlags: 0
