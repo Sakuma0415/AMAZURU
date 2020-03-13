@@ -9,9 +9,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Header("プレイヤーの移動速度"), Range(0, 5)] private float playerSpeed = 0;
     [SerializeField, Header("移動時の起点カメラ")] private Camera playerCamera = null;
     [SerializeField, Header("RayのLayerMask")] private LayerMask layerMask;
-    [SerializeField, Header("Rayの長さ"), Range(0, 3)] private float rayLength = 0.5f;
-    [SerializeField, Header("足の位置"), Range(0, 1)] private float footHeight = 0;
-    [SerializeField, Header("入力の最低許容値"), Range(0, 0.9f)] private float inputMin = 0;
+    [SerializeField, Header("Rayの長さ"), Range(0, 10)] private float rayLength = 0.5f;
+    [SerializeField, Header("足の位置"), Range(-5, 5)] private float footHeight = 0;
+    [SerializeField, Header("Rayの照射位置")] private float rayRange = 0.5f;
 
     public Camera PlayerCamera { set { playerCamera = value; } }
 
@@ -37,6 +37,8 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void GetInputController()
     {
+        float inputMin = 0.1f;
+
         // キー入力取得
         forward = Input.GetAxis("Vertical") > inputMin;
         back = Input.GetAxis("Vertical") < -inputMin;
@@ -87,20 +89,20 @@ public class PlayerController : MonoBehaviour
             // Rayを飛ばして進めるかをチェック
             float angleLate = 1;
             float forwardAngle = Yangle;
-            Ray playerAround = new Ray(transform.position + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
+            Ray playerAround = new Ray(transform.position + transform.forward * rayRange + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
             if (Physics.Raycast(playerAround, rayLength, layerMask) == false)
             {
                 angleLate = 0;
                 for (float f = 0; f < 90; f += 10)
                 {
                     bool flag = false;
-                    playerAround = new Ray(transform.position + new Vector3(Mathf.Cos((f + Yangle) * Mathf.Deg2Rad), 0, Mathf.Sin((f + Yangle) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
+                    playerAround = new Ray(transform.position + transform.forward * rayRange + new Vector3(Mathf.Cos((f + Yangle) * Mathf.Deg2Rad), 0, Mathf.Sin((f + Yangle) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
                     if (Physics.Raycast(playerAround, rayLength, layerMask))
                     {
                         forwardAngle += f;
                         flag = true;
                     }
-                    playerAround = new Ray(transform.position + new Vector3(Mathf.Cos((Yangle - f) * Mathf.Deg2Rad), 0, Mathf.Sin((Yangle - f) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
+                    playerAround = new Ray(transform.position + transform.forward * rayRange + new Vector3(Mathf.Cos((Yangle - f) * Mathf.Deg2Rad), 0, Mathf.Sin((Yangle - f) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
                     if (Physics.Raycast(playerAround, rayLength, layerMask))
                     {
                         forwardAngle -= f;
@@ -144,7 +146,7 @@ public class PlayerController : MonoBehaviour
 
             // Rayを飛ばしてプレイヤーの移動先座標を決定する
             Vector3 movePosition;
-            Ray playerFoot = new Ray(transform.position + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad), Mathf.Sin(Xangle * Mathf.Deg2Rad), Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad)) * playerSpeed * delta * angleLate, Vector3.down);
+            Ray playerFoot = new Ray(transform.position + transform.forward * rayRange + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad), Mathf.Sin(Xangle * Mathf.Deg2Rad), Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad)) * playerSpeed * delta * angleLate, Vector3.down);
             if (Physics.Raycast(playerFoot, Mathf.Sin(Xangle * Mathf.Deg2Rad) * playerSpeed * delta * angleLate, layerMask))
             {
                 movePosition = new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad));
