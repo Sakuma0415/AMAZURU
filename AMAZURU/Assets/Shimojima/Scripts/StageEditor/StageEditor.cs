@@ -259,13 +259,7 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     public void SelectGridObject(Vector3Int cNum, bool isCtrlKeyDown = false)
     {
-        if (rangeSelectionState == RangeSelectionState.ON) 
-        { 
-            gridPos[cNum.x, cNum.y, cNum.z].GetComponent<HighlightObject>().IsSelect = true;
-            guideObj.transform.position = gridPos[cNum.x, cNum.y, cNum.z].transform.position;
-            goto Compleat; 
-        }
-        else if (rangeSelectionState == RangeSelectionState.Stay)
+        if (rangeSelectionState == RangeSelectionState.Stay)
         {
             rangeSelectionState = RangeSelectionState.OFF;
             foreach(GameObject obj in gridPos)
@@ -276,7 +270,7 @@ public class StageEditor : MonoBehaviour
             gridPos[cellNum.x, cellNum.y, cellNum.z].GetComponent<HighlightObject>().IsSelect = true;
         }
 
-        if(tempCnum != null) { gridPos[tempCnum.x, tempCnum.y, tempCnum.z].GetComponent<HighlightObject>().IsSelect = false; }
+        if(tempCnum != null && rangeSelectionState == RangeSelectionState.OFF) { gridPos[tempCnum.x, tempCnum.y, tempCnum.z].GetComponent<HighlightObject>().IsSelect = false; }
 
         //GuideObjectの設定
         GameObject hObject = gridPos[cNum.x, cNum.y, cNum.z];
@@ -284,10 +278,11 @@ public class StageEditor : MonoBehaviour
         if (hObject.GetComponent<HighlightObject>().IsAlreadyInstalled) { guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.red; }
         else { guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color; }
         guideObj.transform.position = gridPos[cNum.x, cNum.y, cNum.z].transform.position;
-        MakeObjectSkeleton();
 
+        if(rangeSelectionState != RangeSelectionState.OFF) { goto Skip; }
+        MakeObjectSkeleton();
         tempCnum = cNum;
-        Compleat:
+     Skip:
         IsInputAnyKey = true;
     }
 
@@ -321,6 +316,7 @@ public class StageEditor : MonoBehaviour
         _StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] = o;
         gridPos[cellIndex.x, cellIndex.y, cellIndex.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
         guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.red;
+        if(rangeSelectionState == RangeSelectionState.Stay) { return; }
         MakeObjectSkeleton();
     }
 
@@ -342,9 +338,20 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     private void MakeObjectSkeleton()
     {
+        if(rangeSelectionState == RangeSelectionState.ON) { goto Skip; }
+        else if(rangeSelectionState == RangeSelectionState.Stay)
+        {
+            foreach (GameObject obj in _StageObjects)
+            {
+                if(_StageObjects[cellNum.x, cellNum.y, cellNum.z] != null) { obj.SetActive(true); }
+            }
+
+            _StageObjects[cellNum.x, cellNum.y, cellNum.z].SetActive(false);
+        }
         if (_tempIndex != cellNum && _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z] != null) 
         { _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true); }
 
+    Skip:
         if(_StageObjects[cellNum.x, cellNum.y, cellNum.z] != null) 
         {
             _StageObjects[cellNum.x, cellNum.y, cellNum.z].SetActive(false);
