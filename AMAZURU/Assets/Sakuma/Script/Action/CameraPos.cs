@@ -22,7 +22,7 @@ public class CameraPos : MonoBehaviour
 
     float targetAngle;
     float angleSpeed;
-
+    [SerializeField]
     bool lookMode = false;
     float lookAnimeTime = 0;
 
@@ -36,7 +36,8 @@ public class CameraPos : MonoBehaviour
     {
         XZangle = 270;
         targetAngle = 270;
-        CameraDis = CameraDisS;
+        CameraDis =lookMode ? CameraDisP: CameraDisS;
+
     }
 
     private void LateUpdate()
@@ -57,6 +58,14 @@ public class CameraPos : MonoBehaviour
     void Update()
     {
         Cursor.visible = !MouseHack;
+        if (MouseHack)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             MouseHack = !MouseHack;
