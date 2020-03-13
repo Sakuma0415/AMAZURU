@@ -78,37 +78,6 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     private void EditorInput()
     {
-
-#if UNITY_EDITOR
-        if (Input.GetKey(KeyCode.LeftShift)) 
-        {
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                if (loadStage) { goto CreatePrefab; }
-                _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
-                Data.stageName = stageName;
-                if (isSave)
-                {
-                    AssetDatabase.DeleteAsset("Assets/Shimojima/StageData_" + stageName + ".asset");
-                }
-
-                Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
-
-                AssetDatabase.CreateAsset(Data, "Assets/Shimojima/StageData_" + stageName + ".asset");
-
-                Array3DForLoop(cells, 1);
-
-                return;
-
-            CreatePrefab:
-                _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
-                Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
-                AssetDatabase.SaveAssets();
-            }
-            return;
-        }
-#endif
-
         SetOrDeleteStageObject();
         RangeSelection();
 
@@ -161,8 +130,8 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     private void RangeSelection()
     {
-        if (Input.GetKey(KeyCode.LeftControl)) { rangeSelectionState = RangeSelectionState.ON; }
-        if (Input.GetKeyUp(KeyCode.LeftControl)) { rangeSelectionState = RangeSelectionState.Stay; }
+        if (Input.GetKey(KeyCode.LeftShift)) { rangeSelectionState = RangeSelectionState.ON; }
+        if (Input.GetKeyUp(KeyCode.LeftShift)) { rangeSelectionState = RangeSelectionState.Stay; }
     }
 
     /// <summary>
@@ -252,6 +221,35 @@ public class StageEditor : MonoBehaviour
         //GuidObjectの生成と初期化
         Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, referenceObject[0], gridPos[cellNum.x,cellNum.y,cellNum.z]);
         guideObj.transform.localPosition = new Vector3(posAdjust, posAdjust, posAdjust);
+    }
+
+    /// <summary>
+    /// ステージの保存
+    /// </summary>
+    public void StageSave()
+    {
+#if UNITY_EDITOR
+        if (loadStage) { goto CreatePrefab; }
+        _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
+        Data.stageName = stageName;
+        if (isSave)
+        {
+            AssetDatabase.DeleteAsset("Assets/Shimojima/StageData_" + stageName + ".asset");
+        }
+
+        Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
+
+        AssetDatabase.CreateAsset(Data, "Assets/Shimojima/StageData_" + stageName + ".asset");
+
+        Array3DForLoop(cells, 1);
+
+        return;
+
+    CreatePrefab:
+        _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
+        Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
+        AssetDatabase.SaveAssets();
+#endif
     }
 
     /// <summary>
