@@ -14,15 +14,18 @@ public class HighlightObject : MonoBehaviour
     /// </summary>
     public bool IsAlreadyInstalled { get; set; } = false;
 
-    [SerializeField]
-    private Transform myTransform;
-
     public void OnDrawGizmos()
     {
         if (!IsSelect)
         {
             Gizmos.color = new Color(1,1,1,0.05f);
-            Gizmos.DrawWireCube(myTransform.localPosition, myTransform.localScale);
+            Gizmos.DrawWireCube(transform.localPosition, transform.localScale);
+        }
+        else
+        {
+            Gizmos.color = Color.green;
+            Vector3 scale = transform.localScale;
+            Gizmos.DrawCube(transform.localPosition, new Vector3(scale.x - 0.1f, scale.z - 0.1f, scale.y - 0.1f));
         }
     }
 }
