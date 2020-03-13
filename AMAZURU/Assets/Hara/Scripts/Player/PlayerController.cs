@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Header("RayのLayerMask")] private LayerMask layerMask;
     [SerializeField, Header("Rayの長さ"), Range(0, 3)] private float rayLength = 0.5f;
     [SerializeField, Header("足の位置"), Range(0, 1)] private float footHeight = 0;
+    [SerializeField, Header("入力の最低許容値"), Range(0, 0.9f)] private float inputMin = 0;
+
     public Camera PlayerCamera { set { playerCamera = value; } }
 
     // コントローラーの入力値
@@ -44,9 +46,6 @@ public class PlayerController : MonoBehaviour
     private void PlayerMove(bool fixedUpdate)
     {
         float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
-
-        // 入力の最低許容値
-        float inputMin = 0.1f;
 
         // プレイヤーカメラの向いているY軸方向
         float playerCameraAngle = -playerCamera.transform.eulerAngles.y;
