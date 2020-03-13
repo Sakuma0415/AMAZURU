@@ -17,6 +17,6 @@ public class Progress : MonoBehaviour
     {
         SetState();
         progress = this;
-        
+        SoundManager.soundManager.PlayBgm("rain_loop", 0);
     }
 }
