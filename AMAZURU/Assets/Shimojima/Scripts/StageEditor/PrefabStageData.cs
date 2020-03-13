@@ -5,8 +5,7 @@ using UnityEngine;
 //[CreateAssetMenu(menuName = "PRefabStageData", fileName = "s")]
 public class PrefabStageData : ScriptableObject
 {
-    [Tooltip("頻繁に変更する変数群")]
-    public StageEditor.ChangeFrequentlyLiterals cfl;
+    public string stageName;
     [Tooltip("ステージプレファブ")]
     public GameObject stage;
     [Tooltip("生成するグリッドの数")]

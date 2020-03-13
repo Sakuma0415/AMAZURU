@@ -60,12 +60,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Hara\Scripts\Player\PlayerController.cs" />
+    <Compile Include="Assets\Hara\Scripts\SingletonMonoBehaviour.cs" />
+    <Compile Include="Assets\Sakuma\Script\Action\CameraPos.cs" />
+    <Compile Include="Assets\Sakuma\Script\Action\Goal.cs" />
+    <Compile Include="Assets\Sakuma\Script\Action\Key.cs" />
+    <Compile Include="Assets\Sakuma\Script\Action\PlayState.cs" />
+    <Compile Include="Assets\Sakuma\Script\Action\Progress.cs" />
+    <Compile Include="Assets\Sakuma\Script\Action\Rain.cs" />
+    <Compile Include="Assets\Sakuma\Script\Action\Scaffold.cs" />
     <Compile Include="Assets\Sakuma\Script\Action\StageMake.cs" />
     <Compile Include="Assets\Sakuma\Script\StageData\StageData.cs" />
+    <Compile Include="Assets\Sakuma\Script\Test\PlayerController1.cs" />
     <Compile Include="Assets\Sakuma\Script\Test\SakumaPlayer.cs" />
     <Compile Include="Assets\Sakuma\Script\Test\WaterHi.cs" />
     <Compile Include="Assets\Sakuma\Script\Water\PlaneReflection.cs" />
+    <Compile Include="Assets\Sakuma\Sound\SoundManager.cs" />
+    <Compile Include="Assets\Shimojima\Scripts\a.cs" />
+    <Compile Include="Assets\Shimojima\Scripts\SceneManager.cs" />
+    <Compile Include="Assets\Shimojima\Scripts\StageEditor\GuidObjectInit.cs" />
     <Compile Include="Assets\Shimojima\Scripts\StageEditor\HighlightObject.cs" />
+    <Compile Include="Assets\Shimojima\Scripts\StageEditor\MyCellIndex.cs" />
+    <Compile Include="Assets\Shimojima\Scripts\StageEditor\PrefabStageData.cs" />
     <Compile Include="Assets\Shimojima\Scripts\StageEditor\StageEditor.cs" />
     <None Include="Assets\Sakuma\Shader\Water\GrabTest2.shader" />
     <None Include="Assets\Sakuma\Shader\Water\GrabTest.shader" />

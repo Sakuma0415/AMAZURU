@@ -22,19 +22,22 @@ public class CameraPos : MonoBehaviour
 
     float targetAngle;
     float angleSpeed;
-
+    [SerializeField]
     bool lookMode = false;
     float lookAnimeTime = 0;
 
     Vector3 animePos;
     Vector3 animeRef;
+    [SerializeField]
+    bool MouseHack = false;
 
     // Start is called before the first frame update
     void Start()
     {
         XZangle = 270;
         targetAngle = 270;
-        CameraDis = CameraDisS;
+        CameraDis =lookMode ? CameraDisP: CameraDisS;
+
     }
 
     private void LateUpdate()
@@ -54,17 +57,51 @@ public class CameraPos : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        bool right = Input.GetKey(KeyCode.T);
-        bool left = Input.GetKey(KeyCode.Y);
+        Cursor.visible = !MouseHack;
+        if (MouseHack)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            MouseHack = !MouseHack;
+        }
+        if( MouseHack)
+        {
+            float mouse_x_delta = Input.GetAxis("Mouse X");
+            float mouse_y_delta = Input.GetAxis("Mouse Y");
 
-        if (right)
-        {
-            XZangle -= 2;
+            XZangle -= mouse_x_delta* (lookMode ? CameraDisS : CameraDisP)/10;
+            Yangle -= mouse_y_delta* (lookMode ? CameraDisS : CameraDisP)/10;
+            if (Yangle > 90)
+            {
+                Yangle = 90;
+            }
+            if (Yangle < -90)
+            {
+                Yangle = -90;
+            }
         }
-        if (left)
+        else
         {
-            XZangle += 2;
+            bool right = Input.GetKey(KeyCode.T);
+            bool left = Input.GetKey(KeyCode.Y);
+            if (right)
+            {
+                XZangle -= 2;
+            }
+            if (left)
+            {
+                XZangle += 2;
+            }
         }
+
+
+
 
         
 
