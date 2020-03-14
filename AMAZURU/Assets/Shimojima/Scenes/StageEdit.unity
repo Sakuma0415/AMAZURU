@@ -253,13 +253,14 @@ MonoBehaviour:
   stageName: 
   loadStage: 0
   isSave: 0
+  isCreateStage: 0
   cells: {x: 5, y: 5, z: 5}
   cellNum: {x: 0, y: 0, z: 0}
   gridObj: {fileID: 5999110429068370210, guid: 0be17e78958f64648b65ad877da141c4, type: 3}
   guideObj: {fileID: 2088944082}
   stageRoot: {fileID: 0}
   referenceObject:
-  - {fileID: 7507071268393858566, guid: 1612890d239168344892a388b16340cd, type: 3}
+  - {fileID: 3092175833138153174, guid: 44014bb8a26e8f8408e69a36811db990, type: 3}
   - {fileID: 1541268229601907550, guid: 37d439f25f204d8468efc7d89db4559e, type: 3}
   - {fileID: 7585758483878431458, guid: 5c5c799d59815024095e7dcd0be7d7c5, type: 3}
   - {fileID: 225681902388658559, guid: eab84a69410b8874e94da46a44a6b6ed, type: 3}
