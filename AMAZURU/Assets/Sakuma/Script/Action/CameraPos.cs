@@ -31,6 +31,9 @@ public class CameraPos : MonoBehaviour
     [SerializeField]
     bool MouseHack = false;
 
+    [SerializeField]
+    [Range(-10, 10)]
+    float lookHi;
     // Start is called before the first frame update
     void Start()
     {
@@ -44,12 +47,12 @@ public class CameraPos : MonoBehaviour
     {
         if (lookAnimeTime > 0)
         {
-            transform.position = Vector3.Lerp(transform.position, (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad), Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * CameraDis) + lookObj,1- lookAnimeTime);
+            transform.position = Vector3.Lerp(transform.position, (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad)+lookHi, Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * CameraDis) + lookObj,1- lookAnimeTime);
             //lookObj = new Vector3(0, 0, 0);
         }
         else
         {
-            transform.position = (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad), Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * CameraDis) + lookObj;
+            transform.position = (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad) + lookHi, Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * CameraDis) + lookObj;
         }
         
         transform.localEulerAngles = new Vector3(Yangle, -XZangle - 90, 0);
@@ -77,6 +80,7 @@ public class CameraPos : MonoBehaviour
 
             XZangle -= mouse_x_delta* (lookMode ? CameraDisS : CameraDisP)/10;
             Yangle -= mouse_y_delta* (lookMode ? CameraDisS : CameraDisP)/10;
+            
             if (Yangle > 90)
             {
                 Yangle = 90;
