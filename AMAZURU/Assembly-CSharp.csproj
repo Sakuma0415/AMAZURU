@@ -71,12 +71,15 @@
     <Compile Include="Assets\Sakuma\Script\Action\Progress.cs" />
     <Compile Include="Assets\Sakuma\Script\Action\Rain.cs" />
     <Compile Include="Assets\Sakuma\Script\Action\Scaffold.cs" />
+    <Compile Include="Assets\Sakuma\Script\Action\StageData.cs" />
     <Compile Include="Assets\Sakuma\Script\Action\StageMake.cs" />
+    <Compile Include="Assets\Sakuma\Script\StageSelect\StageCard.cs" />
+    <Compile Include="Assets\Sakuma\Script\StageSelect\StageCardData.cs" />
+    <Compile Include="Assets\Sakuma\Script\StageSelect\StageSelect.cs" />
     <Compile Include="Assets\Sakuma\Script\Test\PlayerController1.cs" />
     <Compile Include="Assets\Sakuma\Script\Test\SakumaPlayer.cs" />
     <Compile Include="Assets\Sakuma\Script\Test\WaterHi.cs" />
     <Compile Include="Assets\Sakuma\Script\Water\PlaneReflection.cs" />
-    <Compile Include="Assets\Sakuma\Shader\StageData\StageData.cs" />
     <Compile Include="Assets\Sakuma\Sound\SoundManager.cs" />
     <Compile Include="Assets\Shimojima\Scripts\SceneManager.cs" />
     <Compile Include="Assets\Shimojima\Scripts\StageEditor\GuidObjectInit.cs" />
@@ -88,6 +91,7 @@
     <None Include="Assets\Sakuma\Shader\Water\GrabTest.shader" />
     <None Include="Assets\Sakuma\Shader\Water\GrabTest3.shader" />
     <None Include="Assets\Sakuma\Shader\HideOnlyShader.shader" />
+    <None Include="Assets\Sakuma\Shader\Gradation.shader" />
     <None Include="Assets\Sakuma\Shader\Water\GrabTest2.shader" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Ama/AMAZURU/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
