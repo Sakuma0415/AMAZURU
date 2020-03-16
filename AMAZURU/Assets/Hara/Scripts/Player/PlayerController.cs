@@ -24,6 +24,12 @@ public class PlayerController : MonoBehaviour
     // Y軸方向
     private float Yangle = 90;
 
+    // プレイヤーの位置(高さ)
+    public float PlayerPositionY { private set; get; } = 0;
+
+    // プレイヤーが水に浸かったか
+    public bool InWater { set; private get; } = false;
+
     /// <summary>
     /// 初期化
     /// </summary>
@@ -37,6 +43,16 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void GetInputController()
     {
+        // 水に入ったら操作できなくする
+        if (InWater)
+        {
+            forward = false;
+            back = false;
+            right = false;
+            left = false;
+            return;
+        }
+
         float inputMin = 0.1f;
 
         // キー入力取得
@@ -70,6 +86,9 @@ public class PlayerController : MonoBehaviour
             if (back) { inputDirection += Vector3.back; }
             if (right) { inputDirection += Vector3.right; }
             if (left) { inputDirection += Vector3.left; }
+
+            // プレイヤーの位置情報を更新
+            PlayerPositionY = transform.position.y;
 
             // 向きをプレイヤーカメラから見た入力方向へ修正
             float refAngle = 0;
