@@ -25,7 +25,7 @@ public class HighlightObject : MonoBehaviour
         {
             Gizmos.color = Color.green;
             Vector3 scale = transform.localScale;
-            Gizmos.DrawCube(transform.localPosition, new Vector3(scale.x - 0.1f, scale.z - 0.1f, scale.y - 0.1f));
+            Gizmos.DrawCube(transform.localPosition, new Vector3(scale.x / 2, scale.z / 2, scale.y / 2));
         }
     }
 }
