@@ -277,8 +277,8 @@ public class StageEditor : MonoBehaviour
         //GuideObjectの設定
         GameObject hObject = gridPos[cNum.x, cNum.y, cNum.z];
         hObject.GetComponent<HighlightObject>().IsSelect = true;
-        if (hObject.GetComponent<HighlightObject>().IsAlreadyInstalled) { guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.red; }
-        else { guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color; }
+        if (hObject.GetComponent<HighlightObject>().IsAlreadyInstalled) { guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = Color.red; }
+        else { guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color; }
         guideObj.transform.position = gridPos[cNum.x, cNum.y, cNum.z].transform.position;
 
         if(rangeSelectionState != RangeSelectionState.OFF) { goto Skip; }
@@ -297,7 +297,7 @@ public class StageEditor : MonoBehaviour
         if(refObjIndex == referenceObject.Length) { refObjIndex = 0; }
 
         stageObj = referenceObject[refObjIndex];
-        Destroy(guideObj.transform.GetChild(0).gameObject);
+        Destroy(guideObj.transform.GetChild(1).gameObject);
         Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, referenceObject[refObjIndex], gridPos[cellNum.x, cellNum.y, cellNum.z]);
     }
 
@@ -317,7 +317,7 @@ public class StageEditor : MonoBehaviour
         o.AddComponent<MyCellIndex>().cellIndex = cellIndex;
         _StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] = o;
         gridPos[cellIndex.x, cellIndex.y, cellIndex.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
-        guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.red;
+        guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = Color.red;
         if(rangeSelectionState == RangeSelectionState.Stay) { return; }
         MakeObjectSkeleton();
     }
@@ -331,7 +331,7 @@ public class StageEditor : MonoBehaviour
         Debug.Log(_StageObjects[cellIndex.x, cellIndex.y, cellIndex.z].name + "を削除しました");
         Destroy(_StageObjects[cellIndex.x, cellIndex.y, cellIndex.z]);
         gridPos[cellIndex.x, cellIndex.y, cellIndex.z].GetComponent<HighlightObject>().IsAlreadyInstalled = false;
-        guideObj.transform.GetChild(0).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color;
+        guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color;
     }
 
     /// <summary>
