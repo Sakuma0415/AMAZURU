@@ -49,8 +49,6 @@ public class PlayerInputAction : MonoBehaviour
     {
         float dis = Vector3.Distance(target.position, transform.position);
 
-        Debug.Log(dis);
-
         if (dis <= 10f) { moveSpeed = 5f; }
         else if(dis > 10) { moveSpeed = 20; }
 

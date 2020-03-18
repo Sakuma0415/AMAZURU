@@ -235,15 +235,18 @@ public class StageEditor : MonoBehaviour
 #if UNITY_EDITOR
         if (loadStage) { goto CreatePrefab; }
         _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
+
+        if(stageName == "") { stageName = "stageName"; }
         Data.stageName = stageName;
+
         if (isSave)
         {
-            AssetDatabase.DeleteAsset("Assets/Shimojima/StageData_" + stageName + ".asset");
+            AssetDatabase.DeleteAsset("Assets/Shimojima/EditData_" + stageName + ".asset");
         }
 
         Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
 
-        AssetDatabase.CreateAsset(Data, "Assets/Shimojima/StageData_" + stageName + ".asset");
+        AssetDatabase.CreateAsset(Data, "Assets/Shimojima/EditData_" + stageName + ".asset");
 
         Array3DForLoop(cells, 1);
 
