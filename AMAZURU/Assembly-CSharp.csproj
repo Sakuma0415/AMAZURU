@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Assets\Hara\Scripts\Player\PlayerController.cs" />
     <Compile Include="Assets\Hara\Scripts\SingletonMonoBehaviour.cs" />
+    <Compile Include="Assets\Hara\Scripts\Title\TitleControl.cs" />
     <Compile Include="Assets\Sakuma\Script\Action\CameraPos.cs" />
     <Compile Include="Assets\Sakuma\Script\Action\Goal.cs" />
     <Compile Include="Assets\Sakuma\Script\Action\Key.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Assets\Sakuma\Script\Test\PlayerController1.cs" />
     <Compile Include="Assets\Sakuma\Script\Test\SakumaPlayer.cs" />
     <Compile Include="Assets\Sakuma\Script\Test\WaterHi.cs" />
+    <Compile Include="Assets\Sakuma\Script\Test\sakumaPlayer2.cs" />
     <Compile Include="Assets\Sakuma\Script\Water\PlaneReflection.cs" />
     <Compile Include="Assets\Sakuma\Sound\SoundManager.cs" />
     <Compile Include="Assets\Shimojima\Scripts\SceneManager.cs" />

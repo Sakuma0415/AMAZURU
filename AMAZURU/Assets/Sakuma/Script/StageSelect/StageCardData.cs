@@ -7,4 +7,5 @@ public class StageCardData : ScriptableObject
     public string stageName;
     public Sprite sprite;
     public int rank;
+    public StageData stageData;
 }

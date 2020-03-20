@@ -149,9 +149,12 @@ public class StageSelect : MonoBehaviour
 
 
 
-        if(Input.GetKeyDown (KeyCode.Space))
+        if(Input.GetKeyDown (KeyCode.P))
         {
-
+            //StageMake.LoadStageData = StageList[goP].stageData;
+            //Scenemanager.Instance.sceneName = "Action";
+            //Scenemanager.Instance.SceneLoad();
         }
+
     }
 }
