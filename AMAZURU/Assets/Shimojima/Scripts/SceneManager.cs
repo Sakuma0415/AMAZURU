@@ -13,16 +13,28 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
         StageEdit
     }
 
-    public SceneName sceneName;
+    private SceneName sceneName;
+
+    public enum FadeMode
+    {
+        IN = 0,
+        OUT
+    }
 
     public Canvas fadeCanvas;
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            StartCoroutine("SceneLoad");
-        }
+    }
+
+    /// <summary>
+    /// シーンの非同期読込
+    /// </summary>
+    /// <param name="name">シーンの名前(列挙型)</param>
+    public void LoadScene(SceneName name)
+    {
+        sceneName = name;
+        StartCoroutine("Load");
     }
 
     /// <summary>
@@ -30,10 +42,10 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
     /// </summary>
     /// <param name="sceneName"></param>
     /// <returns></returns>
-    public IEnumerator SceneLoad()
+    private IEnumerator Load()
     {
-        StartCoroutine(Fade(1, 0));
-
+        StartCoroutine(Fade(1, FadeMode.OUT));
+        yield return new WaitForSeconds(1f);
         AsyncOperation async = SceneManager.LoadSceneAsync(sceneName.ToString());
         async.allowSceneActivation = false;
 
@@ -48,11 +60,19 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
             yield return null;
         }
 
-        StartCoroutine(Fade(1, 1));
+        StartCoroutine(Fade(1, FadeMode.IN));
         yield return null;
     }
 
-    private IEnumerator Fade(float sec, int fadeIndex = 0)
+    /// <summary>
+    /// フェードインアウト
+    /// <para>第一引数 = 時間</para>
+    /// <para>第二引数 = フェードモード</para>
+    /// </summary>
+    /// <param name="sec"></param>
+    /// <param name="fadeIndex"></param>
+    /// <returns></returns>
+    private IEnumerator Fade(float sec, FadeMode fadeMode)
     {
         GameObject obj = fadeCanvas.transform.GetChild(0).gameObject;
         Color c = obj.GetComponent<Image>().color;
@@ -62,13 +82,13 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
 
         while (!fadeEnd)
         {
-            if (fadeIndex == 0)
+            if (fadeMode == FadeMode.OUT)
             {
                 obj.GetComponent<Image>().color = new Color(c.r, c.g, c.b, a);
                 a += speed;
                 if(a >= 1) { fadeEnd = true; }
             }
-            else
+            else if(fadeMode == FadeMode.IN)
             {
                 obj.GetComponent<Image>().color = new Color(c.r, c.g, c.b, a);
                 a -= speed;
