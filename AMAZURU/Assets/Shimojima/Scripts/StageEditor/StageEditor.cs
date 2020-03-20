@@ -27,6 +27,8 @@ public class StageEditor : MonoBehaviour
     //[HideInInspector]
     public bool loadStage;
     public bool isSave;
+    [HideInInspector]
+    public bool isCreateStage;
 
     [Tooltip("グリッドの数　X * Y * Z")]
     public Vector3Int cells;
@@ -69,6 +71,8 @@ public class StageEditor : MonoBehaviour
         {
             StageDataIncetance();
         }
+
+        if (!isCreateStage) { return; }
         CheakKeyDownForMoveKey();
         EditorInput();
     }
@@ -474,12 +478,14 @@ public class StageEditorCustom : Editor
         {
             if (!EditorApplication.isPlaying) { return; }
             stageEditor.EditStageInit();
+            stageEditor.isCreateStage = true;
         }
 
         if (GUILayout.Button("LoadStage"))
         {
             if (!EditorApplication.isPlaying) { return; }
             LoadStage(stageEditor);
+            stageEditor.isCreateStage = true;
         }
     }
 
