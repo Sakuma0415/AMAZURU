@@ -78,18 +78,21 @@
     <Compile Include="Assets\Sakuma\Script\StageSelect\StageCardData.cs" />
     <Compile Include="Assets\Sakuma\Script\StageSelect\StageSelect.cs" />
     <Compile Include="Assets\Sakuma\Script\Test\PlayerController1.cs" />
+    <Compile Include="Assets\Sakuma\Script\Test\RainPot.cs" />
     <Compile Include="Assets\Sakuma\Script\Test\SakumaPlayer.cs" />
     <Compile Include="Assets\Sakuma\Script\Test\WaterHi.cs" />
+    <Compile Include="Assets\Sakuma\Script\Test\karikari.cs" />
     <Compile Include="Assets\Sakuma\Script\Test\sakumaPlayer2.cs" />
     <Compile Include="Assets\Sakuma\Script\Water\PlaneReflection.cs" />
     <Compile Include="Assets\Sakuma\Sound\SoundManager.cs" />
+    <Compile Include="Assets\Shimojima\Scripts\BB.cs" />
     <Compile Include="Assets\Shimojima\Scripts\SceneManager.cs" />
     <Compile Include="Assets\Shimojima\Scripts\StageEditor\GuidObjectInit.cs" />
     <Compile Include="Assets\Shimojima\Scripts\StageEditor\HighlightObject.cs" />
     <Compile Include="Assets\Shimojima\Scripts\StageEditor\MyCellIndex.cs" />
+    <Compile Include="Assets\Shimojima\Scripts\StageEditor\PlayerInputAction.cs" />
     <Compile Include="Assets\Shimojima\Scripts\StageEditor\PrefabStageData.cs" />
     <Compile Include="Assets\Shimojima\Scripts\StageEditor\StageEditor.cs" />
-    <Compile Include="Assets\Shimojima\Scripts\a.cs" />
     <None Include="Assets\Sakuma\Shader\Water\GrabTest.shader" />
     <None Include="Assets\Sakuma\Shader\Water\GrabTest3.shader" />
     <None Include="Assets\Sakuma\Shader\HideOnlyShader.shader" />
@@ -104,8 +107,17 @@
     <Reference Include="Unity.VSCode.Editor">
       <HintPath>C:/Ama/AMAZURU/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Formats.Fbx.Editor">
+      <HintPath>C:/Ama/AMAZURU/Library/ScriptAssemblies/Unity.Formats.Fbx.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Recorder.Editor">
+      <HintPath>C:/Ama/AMAZURU/Library/ScriptAssemblies/Unity.Recorder.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Ama/AMAZURU/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Recorder">
+      <HintPath>C:/Ama/AMAZURU/Library/ScriptAssemblies/Unity.Recorder.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>C:/Ama/AMAZURU/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
@@ -131,6 +143,9 @@
     <Reference Include="Unity.2D.Tilemap.Editor">
       <HintPath>C:/Ama/AMAZURU/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Autodesk.Fbx">
+      <HintPath>C:/Ama/AMAZURU/Library/ScriptAssemblies/Autodesk.Fbx.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.SpatialTracking">
       <HintPath>C:/Ama/AMAZURU/Library/ScriptAssemblies/UnityEditor.SpatialTracking.dll</HintPath>
     </Reference>
@@ -145,6 +160,9 @@
     </Reference>
     <Reference Include="UnityEditor.XR.LegacyInputHelpers">
       <HintPath>C:/Ama/AMAZURU/Library/ScriptAssemblies/UnityEditor.XR.LegacyInputHelpers.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Formats.Fbx.Runtime">
+      <HintPath>C:/Ama/AMAZURU/Library/ScriptAssemblies/Unity.Formats.Fbx.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>C:/Ama/AMAZURU/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
