@@ -123,11 +123,11 @@ public class TitleControl : MonoBehaviour
     /// <summary>
     /// スケールの拡大縮小アニメーション
     /// </summary>
-    private bool ScaleAnimation(GameObject animationObject, float time, float duration, Vector3 start, Vector3 end)
+    private bool ScaleAnimation(GameObject animationObject, float nowTime, float duration, Vector3 start, Vector3 end)
     {
-        if (time < duration)
+        if (nowTime < duration)
         {
-            float diff = time / duration;
+            float diff = nowTime / duration;
             animationObject.transform.localScale = Vector3.Lerp(start, end, diff);
             return false;
         }
