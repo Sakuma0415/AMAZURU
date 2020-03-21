@@ -44,13 +44,13 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 1
-  m_Radius: 0.15
+  m_Height: 1.5
+  m_Radius: 0.2
   m_SlopeLimit: 50
   m_StepOffset: 0.5
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0
-  m_Center: {x: 0, y: 0.45, z: 0}
+  m_Center: {x: 0, y: 0.75, z: 0}
 --- !u!114 &8247276551215840622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,7 +65,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character: {fileID: 8247276551215840625}
   playerAnimator: {fileID: 4685367433075655275}
-  playerSpeed: 2
+  playerSpeed: 3
   playerCamera: {fileID: 0}
   layerMask:
     serializedVersion: 2
@@ -73,7 +73,6 @@ MonoBehaviour:
   rayLength: 1.25
   footHeight: 0
   gravity: 3
-  movePosition: {x: 0, y: 0, z: 0}
 --- !u!1001 &8247276550539001020
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -560,6 +559,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8644750347060908957, guid: 3dc0ce8d3247ec440bad74369fc3c3af,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8644750347060908957, guid: 3dc0ce8d3247ec440bad74369fc3c3af,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8644750347060908957, guid: 3dc0ce8d3247ec440bad74369fc3c3af,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 8726375769338189149, guid: 3dc0ce8d3247ec440bad74369fc3c3af,
         type: 3}

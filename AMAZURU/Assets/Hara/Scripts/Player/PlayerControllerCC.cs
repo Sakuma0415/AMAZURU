@@ -15,7 +15,6 @@ public class PlayerControllerCC : MonoBehaviour
     [SerializeField, Header("足の位置"), Range(-5, 5)] private float footHeight = 0;
     [SerializeField, Header("重力値"), Range(0, 10)] private float gravity = 10.0f;
 
-    [SerializeField] private Vector3 movePosition = Vector3.zero;
     public Camera PlayerCamera { set { playerCamera = value; } }
 
     // コントローラーの入力
@@ -100,7 +99,10 @@ public class PlayerControllerCC : MonoBehaviour
         // 入力方向
         Vector3 inputDirection = Vector3.zero;
 
-        if(forward || back || right || left)
+        // 移動方向
+        Vector3 moveDirection = Vector3.zero;
+
+        if (forward || back || right || left)
         {
             if (forward) { inputDirection += Vector3.forward; }
             if (back) { inputDirection += Vector3.back; }
@@ -125,7 +127,7 @@ public class PlayerControllerCC : MonoBehaviour
             // Rayを飛ばして進めるかをチェック
             float angleLate = 1;
             float forwardAngle = Yangle;
-            Ray playerAround = new Ray(transform.position + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
+            Ray playerAround = new Ray(transform.position + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), footHeight, Mathf.Sin(forwardAngle * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
             if (Physics.Raycast(playerAround, rayLength, layerMask) == false)
             {
                 angleLate = 0;
@@ -137,12 +139,14 @@ public class PlayerControllerCC : MonoBehaviour
                     {
                         forwardAngle += f;
                         flag = true;
+                        Debug.Log("検知１");
                     }
                     playerAround = new Ray(transform.position + new Vector3(Mathf.Cos((Yangle - f) * Mathf.Deg2Rad), 0, Mathf.Sin((Yangle - f) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
                     if (Physics.Raycast(playerAround, rayLength, layerMask))
                     {
                         forwardAngle -= f;
                         flag = true;
+                        Debug.Log("検知２");
                     }
                     if (flag)
                     {
@@ -152,28 +156,24 @@ public class PlayerControllerCC : MonoBehaviour
                 }
             }
 
-            movePosition = new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad));
+            moveDirection = new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad));
 
             // 床にRayを飛ばして斜面の角度を取得
-            Ray ground = new Ray(transform.position + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
+            Ray ground = new Ray(transform.position + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), footHeight, Mathf.Sin(forwardAngle * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
             RaycastHit hit;
             if(Physics.Raycast(ground, out hit, rayLength, layerMask))
             {
                 var nomal = hit.normal;
-                Vector3 dir = movePosition - Vector3.Dot(movePosition, nomal) * nomal;
-                movePosition = dir.normalized;
+                Vector3 dir = moveDirection - Vector3.Dot(moveDirection, nomal) * nomal;
+                moveDirection = dir.normalized;
             }
             
-            movePosition *= playerSpeed * delta * angleLate;
-        }
-        else
-        {
-            movePosition = Vector3.zero;
+            moveDirection *= playerSpeed * delta * angleLate;
         }
 
         // プレイヤーを移動させる
-        movePosition.y -= gravity * delta;
-        character.Move(movePosition);
+        moveDirection.y -= gravity * delta;
+        character.Move(moveDirection);
 
         // プレイヤーの位置情報を更新
         PlayerPositionY = transform.position.y;
