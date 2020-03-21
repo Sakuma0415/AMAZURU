@@ -136,6 +136,13 @@ public class CameraPos : MonoBehaviour
             lookObj = lookMode ? PlayerTransform.position : lookPos;
 
         }
+        else
+        {
+            Cursor.visible = true ;
+
+                Cursor.lockState = CursorLockMode.None;
+            
+        }
 
 
     }

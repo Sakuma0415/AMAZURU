@@ -23,34 +23,42 @@ public class RainPot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(PlayState.playState.gameMode == PlayState.GameMode.RainSelect)
+        try
+        {
+            if (PlayState.playState.gameMode == PlayState.GameMode.RainSelect)
+            {
+
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    waterHi.HiChange(1);
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    waterHi.HiChange(2);
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    waterHi.HiChange(3);
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha4))
+                {
+                    waterHi.HiChange(4);
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha5))
+                {
+                    waterHi.HiChange(5);
+                }
+
+
+
+
+            }
+        }
+        catch
         {
 
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                waterHi.HiChange(1);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                waterHi.HiChange(2);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                waterHi.HiChange(3);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha4))
-            {
-                waterHi.HiChange(4);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha5))
-            {
-                waterHi.HiChange(5);
-            }
-
-
-
-
         }
+
 
 
 
