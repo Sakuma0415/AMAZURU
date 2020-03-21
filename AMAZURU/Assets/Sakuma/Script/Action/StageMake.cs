@@ -12,11 +12,11 @@ public class StageMake : MonoBehaviour
     private GameObject playerObj;
     [SerializeField]
     private CameraPos cameraPos;
-
+    GameObject waterObj;
     private void StageLoad()
     {
         Instantiate(StageMake.LoadStageData.stagePrefab);
-        GameObject waterObj= Instantiate(water);
+        waterObj = Instantiate(water);
         waterObj.transform.localScale = new Vector3(StageMake.LoadStageData.stageSize.x,0.25f, StageMake.LoadStageData.stageSize.z) -new Vector3 (0.01f,0,0.01f);
         waterObj.transform.position += new Vector3(0.005f, 0, 0.005f);
 
@@ -43,4 +43,11 @@ public class StageMake : MonoBehaviour
     {
         
     }
+
+
+    public void RainSet(float hi)
+    {
+        waterObj.GetComponent<WaterHi>().HiChange(hi);
+    }
+
 }
