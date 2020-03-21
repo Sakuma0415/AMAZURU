@@ -46,6 +46,11 @@ public class PlayerController1: MonoBehaviour
         // 入力値を取得
         inputX = fsAngle.x;
         inputZ = fsAngle.y;
+        if (PlayState.playState.gameMode != PlayState.GameMode.Play)
+        {
+            inputX = 0;
+            inputZ = 0;
+        }
     }
 
     /// <summary>
@@ -163,7 +168,9 @@ public class PlayerController1: MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GetInputController();
+
+            GetInputController();
+        
     }
 
     /// <summary>

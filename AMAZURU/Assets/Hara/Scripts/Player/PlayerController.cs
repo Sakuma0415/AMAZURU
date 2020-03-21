@@ -6,12 +6,12 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField, Tooltip("PlayerのRigidbody")] private Rigidbody rb = null;
+    [SerializeField, Tooltip("PlayerのAnimator")] private Animator playerAnimator = null;
     [SerializeField, Header("プレイヤーの移動速度"), Range(0, 5)] private float playerSpeed = 0;
     [SerializeField, Header("移動時の起点カメラ")] private Camera playerCamera = null;
     [SerializeField, Header("RayのLayerMask")] private LayerMask layerMask;
     [SerializeField, Header("Rayの長さ"), Range(0, 10)] private float rayLength = 0.5f;
     [SerializeField, Header("足の位置"), Range(-5, 5)] private float footHeight = 0;
-    [SerializeField, Header("Rayの照射位置")] private float rayRange = 0.5f;
 
     public Camera PlayerCamera { set { playerCamera = value; } }
 
@@ -23,6 +23,12 @@ public class PlayerController : MonoBehaviour
 
     // Y軸方向
     private float Yangle = 90;
+
+    // プレイヤーの位置(高さ)
+    public float PlayerPositionY { private set; get; } = 0;
+
+    // プレイヤーが水に浸かったか
+    public bool InWater { set; private get; } = false;
 
     /// <summary>
     /// 初期化
@@ -37,6 +43,16 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void GetInputController()
     {
+        // 水に入ったら操作できなくする
+        if (InWater)
+        {
+            forward = false;
+            back = false;
+            right = false;
+            left = false;
+            return;
+        }
+
         float inputMin = 0.1f;
 
         // キー入力取得
@@ -71,6 +87,9 @@ public class PlayerController : MonoBehaviour
             if (right) { inputDirection += Vector3.right; }
             if (left) { inputDirection += Vector3.left; }
 
+            // プレイヤーの位置情報を更新
+            PlayerPositionY = transform.position.y;
+
             // 向きをプレイヤーカメラから見た入力方向へ修正
             float refAngle = 0;
             Yangle = Mathf.SmoothDampAngle(Yangle, Mathf.Atan2(inputDirection.z, inputDirection.x) * Mathf.Rad2Deg + playerCameraAngle, ref refAngle, 0.05f);
@@ -89,20 +108,20 @@ public class PlayerController : MonoBehaviour
             // Rayを飛ばして進めるかをチェック
             float angleLate = 1;
             float forwardAngle = Yangle;
-            Ray playerAround = new Ray(transform.position + transform.forward * rayRange + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
+            Ray playerAround = new Ray(transform.position + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
             if (Physics.Raycast(playerAround, rayLength, layerMask) == false)
             {
                 angleLate = 0;
                 for (float f = 0; f < 90; f += 10)
                 {
                     bool flag = false;
-                    playerAround = new Ray(transform.position + transform.forward * rayRange + new Vector3(Mathf.Cos((f + Yangle) * Mathf.Deg2Rad), 0, Mathf.Sin((f + Yangle) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
+                    playerAround = new Ray(transform.position + new Vector3(Mathf.Cos((f + Yangle) * Mathf.Deg2Rad), 0, Mathf.Sin((f + Yangle) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
                     if (Physics.Raycast(playerAround, rayLength, layerMask))
                     {
                         forwardAngle += f;
                         flag = true;
                     }
-                    playerAround = new Ray(transform.position + transform.forward * rayRange + new Vector3(Mathf.Cos((Yangle - f) * Mathf.Deg2Rad), 0, Mathf.Sin((Yangle - f) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
+                    playerAround = new Ray(transform.position + new Vector3(Mathf.Cos((Yangle - f) * Mathf.Deg2Rad), 0, Mathf.Sin((Yangle - f) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
                     if (Physics.Raycast(playerAround, rayLength, layerMask))
                     {
                         forwardAngle -= f;
@@ -146,7 +165,7 @@ public class PlayerController : MonoBehaviour
 
             // Rayを飛ばしてプレイヤーの移動先座標を決定する
             Vector3 movePosition;
-            Ray playerFoot = new Ray(transform.position + transform.forward * rayRange + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad), Mathf.Sin(Xangle * Mathf.Deg2Rad), Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad)) * playerSpeed * delta * angleLate, Vector3.down);
+            Ray playerFoot = new Ray(transform.position + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad), Mathf.Sin(Xangle * Mathf.Deg2Rad), Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad)) * playerSpeed * delta * angleLate, Vector3.down);
             if (Physics.Raycast(playerFoot, Mathf.Sin(Xangle * Mathf.Deg2Rad) * playerSpeed * delta * angleLate, layerMask))
             {
                 movePosition = new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad));
@@ -158,6 +177,12 @@ public class PlayerController : MonoBehaviour
 
             // プレイヤーを移動させる
             rb.position += movePosition * playerSpeed * delta * angleLate;
+        }
+
+        // アニメーション実行
+        if(playerAnimator != null)
+        {
+            playerAnimator.SetBool("wate", forward || back || right || left);
         }
     }
     
