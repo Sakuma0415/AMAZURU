@@ -47,7 +47,7 @@ CharacterController:
   m_Height: 1
   m_Radius: 0.15
   m_SlopeLimit: 50
-  m_StepOffset: 0.3
+  m_StepOffset: 0.5
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.45, z: 0}
@@ -72,7 +72,8 @@ MonoBehaviour:
     m_Bits: 1
   rayLength: 1.25
   footHeight: 0
-  gravity: 500
+  gravity: 3
+  move: {x: 0, y: 0, z: 0}
 --- !u!1001 &8247276550539001020
 PrefabInstance:
   m_ObjectHideFlags: 0

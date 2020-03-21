@@ -13,8 +13,9 @@ public class PlayerControllerCC : MonoBehaviour
     [SerializeField, Header("RayのLayerMask")] private LayerMask layerMask;
     [SerializeField, Header("Rayの長さ"), Range(0, 10)] private float rayLength = 0.5f;
     [SerializeField, Header("足の位置"), Range(-5, 5)] private float footHeight = 0;
-    [SerializeField, Header("重力値"), Range(0, 1000)] private float gravity = 10.0f;
+    [SerializeField, Header("重力値"), Range(0, 10)] private float gravity = 10.0f;
 
+    [SerializeField] private Vector3 movePosition = Vector3.zero;
     public Camera PlayerCamera { set { playerCamera = value; } }
 
     // コントローラーの入力
@@ -99,102 +100,107 @@ public class PlayerControllerCC : MonoBehaviour
         // 入力方向
         Vector3 inputDirection = Vector3.zero;
 
-        if (forward) { inputDirection += Vector3.forward; }
-        if (back) { inputDirection += Vector3.back; }
-        if (right) { inputDirection += Vector3.right; }
-        if (left) { inputDirection += Vector3.left; }
-
-        // 向きをプレイヤーカメラから見た入力方向へ修正
-        float refAngle = 0;
-        Yangle = Mathf.SmoothDampAngle(Yangle, Mathf.Atan2(inputDirection.z, inputDirection.x) * Mathf.Rad2Deg + playerCameraAngle, ref refAngle, 0.05f);
-
-        // カメラの向いている方向を取得
-        Vector3 cameraForward = Vector3.Scale(playerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
-
-        // プレイヤーカメラ起点の入力方向
-        Vector3 direction = cameraForward * inputDirection.z + playerCamera.transform.right * inputDirection.x;
-
-        // 入力方向を向く処理
-        if (inputDirection != Vector3.zero)
+        if(forward || back || right || left)
         {
+            if (forward) { inputDirection += Vector3.forward; }
+            if (back) { inputDirection += Vector3.back; }
+            if (right) { inputDirection += Vector3.right; }
+            if (left) { inputDirection += Vector3.left; }
+
+            // 向きをプレイヤーカメラから見た入力方向へ修正
+            float refAngle = 0;
+            Yangle = Mathf.SmoothDampAngle(Yangle, Mathf.Atan2(inputDirection.z, inputDirection.x) * Mathf.Rad2Deg + playerCameraAngle, ref refAngle, 0.05f);
+
+            // カメラの向いている方向を取得
+            Vector3 cameraForward = Vector3.Scale(playerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+
+            // プレイヤーカメラ起点の入力方向
+            Vector3 direction = cameraForward * inputDirection.z + playerCamera.transform.right * inputDirection.x;
+
+            // 入力方向を向く処理
             Quaternion rot = Quaternion.LookRotation(direction, Vector3.up);
             rot = Quaternion.Slerp(transform.rotation, rot, 15 * delta);
             transform.rotation = rot;
-        }
 
-        // Rayを飛ばして進めるかをチェック
-        float angleLate = 1;
-        float forwardAngle = Yangle;
-        Ray playerAround = new Ray(transform.position + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
-        if (Physics.Raycast(playerAround, rayLength, layerMask) == false)
-        {
-            angleLate = 0;
-            for (float f = 0; f < 90; f += 10)
+            // Rayを飛ばして進めるかをチェック
+            float angleLate = 1;
+            float forwardAngle = Yangle;
+            Ray playerAround = new Ray(transform.position + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
+            if (Physics.Raycast(playerAround, rayLength, layerMask) == false)
             {
-                bool flag = false;
-                playerAround = new Ray(transform.position + new Vector3(Mathf.Cos((f + Yangle) * Mathf.Deg2Rad), 0, Mathf.Sin((f + Yangle) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
-                if (Physics.Raycast(playerAround, rayLength, layerMask))
+                angleLate = 0;
+                for (float f = 0; f < 90; f += 10)
                 {
-                    forwardAngle += f;
-                    flag = true;
-                }
-                playerAround = new Ray(transform.position + new Vector3(Mathf.Cos((Yangle - f) * Mathf.Deg2Rad), 0, Mathf.Sin((Yangle - f) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
-                if (Physics.Raycast(playerAround, rayLength, layerMask))
-                {
-                    forwardAngle -= f;
-                    flag = true;
-                }
-                if (flag)
-                {
-                    angleLate = Mathf.Cos(f * Mathf.Deg2Rad);
-                    break;
+                    bool flag = false;
+                    playerAround = new Ray(transform.position + new Vector3(Mathf.Cos((f + Yangle) * Mathf.Deg2Rad), 0, Mathf.Sin((f + Yangle) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
+                    if (Physics.Raycast(playerAround, rayLength, layerMask))
+                    {
+                        forwardAngle += f;
+                        flag = true;
+                    }
+                    playerAround = new Ray(transform.position + new Vector3(Mathf.Cos((Yangle - f) * Mathf.Deg2Rad), 0, Mathf.Sin((Yangle - f) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
+                    if (Physics.Raycast(playerAround, rayLength, layerMask))
+                    {
+                        forwardAngle -= f;
+                        flag = true;
+                    }
+                    if (flag)
+                    {
+                        angleLate = Mathf.Cos(f * Mathf.Deg2Rad);
+                        break;
+                    }
                 }
             }
-        }
 
-        // 坂道にRayを飛ばして進めるかチェック
-        float Xangle = 0;
-        Ray playerForward = new Ray(transform.position + Vector3.down * footHeight, new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad)));
-        if (Physics.Raycast(playerForward, angleLate * playerSpeed * delta, layerMask))
-        {
-            for (float f = 0; f < 90; f += 5)
+            // 坂道にRayを飛ばして進めるかチェック
+            float Xangle = 0;
+            Ray playerForward = new Ray(transform.position + Vector3.down * footHeight, new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad)));
+            if (Physics.Raycast(playerForward, angleLate * playerSpeed * delta, layerMask))
             {
-                playerForward = new Ray(transform.position + Vector3.down * footHeight, new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(f * Mathf.Deg2Rad), Mathf.Sin(f * Mathf.Deg2Rad), Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(f * Mathf.Deg2Rad)));
-                if (Physics.Raycast(playerForward, angleLate * playerSpeed * delta, layerMask) == false)
+                for (float f = 0; f < 90; f += 5)
                 {
-                    Xangle = f;
-                    break;
+                    playerForward = new Ray(transform.position + Vector3.down * footHeight, new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(f * Mathf.Deg2Rad), Mathf.Sin(f * Mathf.Deg2Rad), Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(f * Mathf.Deg2Rad)));
+                    if (Physics.Raycast(playerForward, angleLate * playerSpeed * delta, layerMask) == false)
+                    {
+                        Xangle = f;
+                        break;
+                    }
                 }
             }
+            else
+            {
+                for (float f = 0; f > -90; f -= 5)
+                {
+                    playerForward = new Ray(transform.position + Vector3.down * footHeight, new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(f * Mathf.Deg2Rad), Mathf.Sin(f * Mathf.Deg2Rad), Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(f * Mathf.Deg2Rad)));
+                    if (Physics.Raycast(playerForward, angleLate * playerSpeed * delta, layerMask))
+                    {
+                        Xangle = f + 5;
+                        break;
+                    }
+                }
+            }
+
+            // Rayを飛ばしてプレイヤーの移動先座標を決定する
+            Ray playerFoot = new Ray(transform.position + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad), Mathf.Sin(Xangle * Mathf.Deg2Rad), Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad)) * playerSpeed * delta * angleLate, Vector3.down);
+            if (Physics.Raycast(playerFoot, Mathf.Sin(Xangle * Mathf.Deg2Rad) * playerSpeed * delta * angleLate, layerMask))
+            {
+                movePosition = new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad));
+            }
+            else
+            {
+                movePosition = new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad), Mathf.Sin(Xangle * Mathf.Deg2Rad), Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad));
+            }
+
+            movePosition *= playerSpeed * delta * angleLate;
         }
         else
         {
-            for (float f = 0; f > -90; f -= 5)
-            {
-                playerForward = new Ray(transform.position + Vector3.down * footHeight, new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(f * Mathf.Deg2Rad), Mathf.Sin(f * Mathf.Deg2Rad), Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(f * Mathf.Deg2Rad)));
-                if (Physics.Raycast(playerForward, angleLate * playerSpeed * delta, layerMask))
-                {
-                    Xangle = f + 5;
-                    break;
-                }
-            }
-        }
-
-        // Rayを飛ばしてプレイヤーの移動先座標を決定する
-        Vector3 movePosition;
-        Ray playerFoot = new Ray(transform.position + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad), Mathf.Sin(Xangle * Mathf.Deg2Rad), Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad)) * playerSpeed * delta * angleLate, Vector3.down);
-        if (Physics.Raycast(playerFoot, Mathf.Sin(Xangle * Mathf.Deg2Rad) * playerSpeed * delta * angleLate, layerMask))
-        {
-            movePosition = new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad));
-        }
-        else
-        {
-            movePosition = new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad), Mathf.Sin(Xangle * Mathf.Deg2Rad), Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad));
+            movePosition = Vector3.zero;
         }
 
         // プレイヤーを移動させる
         movePosition.y -= gravity * delta;
-        character.Move(movePosition * playerSpeed * delta * (forward || back || right || left ? 1 : 0));
+        character.Move(movePosition);
 
         // プレイヤーの位置情報を更新
         PlayerPositionY = transform.position.y;
