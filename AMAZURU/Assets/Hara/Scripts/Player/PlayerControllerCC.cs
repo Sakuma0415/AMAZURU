@@ -134,14 +134,14 @@ public class PlayerControllerCC : MonoBehaviour
                 for (float f = 0; f < 90; f += 10)
                 {
                     bool flag = false;
-                    playerAround = new Ray(transform.position + new Vector3(Mathf.Cos((f + Yangle) * Mathf.Deg2Rad), 0, Mathf.Sin((f + Yangle) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
+                    playerAround = new Ray(transform.position + new Vector3(Mathf.Cos((f + Yangle) * Mathf.Deg2Rad), footHeight, Mathf.Sin((f + Yangle) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
                     if (Physics.Raycast(playerAround, rayLength, layerMask))
                     {
                         forwardAngle += f;
                         flag = true;
                         Debug.Log("検知１");
                     }
-                    playerAround = new Ray(transform.position + new Vector3(Mathf.Cos((Yangle - f) * Mathf.Deg2Rad), 0, Mathf.Sin((Yangle - f) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
+                    playerAround = new Ray(transform.position + new Vector3(Mathf.Cos((Yangle - f) * Mathf.Deg2Rad), footHeight, Mathf.Sin((Yangle - f) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
                     if (Physics.Raycast(playerAround, rayLength, layerMask))
                     {
                         forwardAngle -= f;
