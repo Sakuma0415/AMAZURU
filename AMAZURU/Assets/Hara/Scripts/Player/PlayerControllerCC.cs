@@ -63,27 +63,16 @@ public class PlayerControllerCC : MonoBehaviour
     /// </summary>
     private void GetInputController()
     {
-        // 水に入ったら操作できなくする
-        if (InWater)
-        {
-            forward = false;
-            back = false;
-            right = false;
-            left = false;
-            return;
-        }
-
+        // 入力の最低許容値
         float inputMin = 0.1f;
 
         // キー入力取得
-        forward = Input.GetAxis("Vertical") > inputMin;
-        back = Input.GetAxis("Vertical") < -inputMin;
-        right = Input.GetAxis("Horizontal") > inputMin;
-        left = Input.GetAxis("Horizontal") < -inputMin;
-
-        // 反対方向の入力を検知したら入力を打ち消す
-        if (forward && back) { forward = false; back = false; }
-        if (right && left) { right = false; left = false; }
+        float inputX = InWater == false ? Input.GetAxis("Horizontal") : 0;
+        float inputY = InWater == false ? Input.GetAxis("Vertical") : 0;
+        forward = inputY > inputMin;
+        back = inputY < -inputMin;
+        right = inputX > inputMin;
+        left = inputX < -inputMin;
     }
 
     /// <summary>
@@ -177,7 +166,7 @@ public class PlayerControllerCC : MonoBehaviour
         character.Move(moveDirection);
 
         // プレイヤーの位置情報を更新
-        PlayerPositionY = transform.position.y;
+        PlayerPositionY = transform.position.y + character.center.y;
 
         // アニメーション実行
         if (playerAnimator != null)
