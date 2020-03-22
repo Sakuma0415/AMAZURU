@@ -24,7 +24,7 @@ public class StageMake : MonoBehaviour
 
         GameObject player = Instantiate(playerObj, StageMake.LoadStageData.startPos-new Vector3 (0.5f,0,0.5f),Quaternion.identity);
         cameraPos.lookPos = new Vector3(StageMake.LoadStageData.stageSize.x/2, StageMake.LoadStageData.stageSize.y / 2, StageMake.LoadStageData.stageSize.z/2);
-        cameraPos.PlayerTransform = player.GetComponent<Rigidbody >();
+        cameraPos.PlayerTransform = player.GetComponent<Transform >();
 
     }
 
