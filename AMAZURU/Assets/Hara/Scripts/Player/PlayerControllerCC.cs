@@ -166,6 +166,7 @@ public class PlayerControllerCC : MonoBehaviour
                 var nomal = hit.normal;
                 Vector3 dir = moveDirection - Vector3.Dot(moveDirection, nomal) * nomal;
                 moveDirection = dir.normalized;
+                Debug.Log(nomal);
             }
             
             moveDirection *= playerSpeed * delta * angleLate;
