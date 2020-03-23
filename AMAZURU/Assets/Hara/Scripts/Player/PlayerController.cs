@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Header("Rayの長さ"), Range(0, 10)] private float rayLength = 0.5f;
     [SerializeField, Header("足の位置"), Range(-5, 5)] private float footHeight = 0;
 
+    [SerializeField] private Vector3 movePosition = Vector3.zero;
+
     public Camera PlayerCamera { set { playerCamera = value; } }
 
     // コントローラーの入力
@@ -164,7 +166,6 @@ public class PlayerController : MonoBehaviour
             }
 
             // Rayを飛ばしてプレイヤーの移動先座標を決定する
-            Vector3 movePosition;
             Ray playerFoot = new Ray(transform.position + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad), Mathf.Sin(Xangle * Mathf.Deg2Rad), Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad)) * playerSpeed * delta * angleLate, Vector3.down);
             if (Physics.Raycast(playerFoot, Mathf.Sin(Xangle * Mathf.Deg2Rad) * playerSpeed * delta * angleLate, layerMask))
             {
@@ -175,12 +176,19 @@ public class PlayerController : MonoBehaviour
                 movePosition = new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad), Mathf.Sin(Xangle * Mathf.Deg2Rad), Mathf.Sin(forwardAngle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad));
             }
 
-            // プレイヤーを移動させる
-            rb.position += movePosition * playerSpeed * delta * angleLate;
+            movePosition *= playerSpeed * delta * angleLate;
+            
+        }
+        else
+        {
+            movePosition = Vector3.zero;
         }
 
+        // プレイヤーを移動させる
+        rb.position += movePosition;
+
         // アニメーション実行
-        if(playerAnimator != null)
+        if (playerAnimator != null)
         {
             playerAnimator.SetBool("wate", forward || back || right || left);
         }

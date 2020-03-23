@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerControllerCC : MonoBehaviour
+public class PlayerControllerCC1 : MonoBehaviour
 {
     [SerializeField, Tooltip("PlayerのCharacterController")] private CharacterController character = null;
     [SerializeField, Tooltip("PlayerのAnimator")] private Animator playerAnimator = null;
@@ -12,7 +12,9 @@ public class PlayerControllerCC : MonoBehaviour
     [SerializeField, Header("移動時の起点カメラ")] private Camera playerCamera = null;
     [SerializeField, Header("RayのLayerMask")] private LayerMask layerMask;
     [SerializeField, Header("Rayの長さ"), Range(0, 10)] private float rayLength = 0.5f;
+    [SerializeField, Header("足の位置"), Range(-5, 5)] private float footHeight = 0;
     [SerializeField, Header("重力値"), Range(0, 10)] private float gravity = 10.0f;
+
     public Camera PlayerCamera { set { playerCamera = value; } }
 
     // コントローラーの入力
@@ -40,6 +42,7 @@ public class PlayerControllerCC : MonoBehaviour
     void Update()
     {
         GetInputController();
+        //PlayerMove(false);
     }
 
     private void FixedUpdate()
@@ -67,6 +70,8 @@ public class PlayerControllerCC : MonoBehaviour
     {
         // 入力の最低許容値
         float inputMin = 0.1f;
+
+        InWater =!( PlayState.playState.gameMode == PlayState.GameMode.Play);
 
         // キー入力取得
         float inputX = InWater == false ? Input.GetAxis("Horizontal") : 0;
@@ -118,30 +123,27 @@ public class PlayerControllerCC : MonoBehaviour
             // Rayを飛ばして進めるかをチェック
             float angleLate = 1;
             float forwardAngle = Yangle;
-            Vector3 dirToCamera = new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), character.center.y, Mathf.Sin(forwardAngle * Mathf.Deg2Rad));
-            Ray playerAround = new Ray(transform.position + dirToCamera * playerSpeed * delta, Vector3.down);
+            Ray playerAround = new Ray(transform.position + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), footHeight, Mathf.Sin(forwardAngle * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
             if (Physics.Raycast(playerAround, rayLength, layerMask) == false)
             {
                 angleLate = 0;
                 for (float f = 0; f < 90; f += 10)
                 {
                     bool flag = false;
-                    dirToCamera = new Vector3(Mathf.Cos((f + Yangle) * Mathf.Deg2Rad), character.center.y, Mathf.Sin((f + Yangle) * Mathf.Deg2Rad));
-                    playerAround = new Ray(transform.position + dirToCamera * playerSpeed * delta, Vector3.down);
+                    playerAround = new Ray(transform.position + new Vector3(Mathf.Cos((f + Yangle) * Mathf.Deg2Rad), footHeight, Mathf.Sin((f + Yangle) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
                     if (Physics.Raycast(playerAround, rayLength, layerMask))
                     {
                         forwardAngle += f;
                         flag = true;
+                        Debug.Log("検知１");
                     }
-
-                    dirToCamera = new Vector3(Mathf.Cos((Yangle - f) * Mathf.Deg2Rad), character.center.y, Mathf.Sin((Yangle - f) * Mathf.Deg2Rad));
-                    playerAround = new Ray(transform.position + dirToCamera * playerSpeed * delta, Vector3.down);
+                    playerAround = new Ray(transform.position + new Vector3(Mathf.Cos((Yangle - f) * Mathf.Deg2Rad), footHeight, Mathf.Sin((Yangle - f) * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
                     if (Physics.Raycast(playerAround, rayLength, layerMask))
                     {
                         forwardAngle -= f;
                         flag = true;
+                        Debug.Log("検知２");
                     }
-
                     if (flag)
                     {
                         angleLate = Mathf.Cos(f * Mathf.Deg2Rad);
@@ -153,7 +155,7 @@ public class PlayerControllerCC : MonoBehaviour
             moveDirection = new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), 0, Mathf.Sin(forwardAngle * Mathf.Deg2Rad));
 
             // 床にRayを飛ばして斜面の角度を取得
-            Ray ground = new Ray(transform.position + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), character.center.y, Mathf.Sin(forwardAngle * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
+            Ray ground = new Ray(transform.position + new Vector3(Mathf.Cos(forwardAngle * Mathf.Deg2Rad), footHeight, Mathf.Sin(forwardAngle * Mathf.Deg2Rad)) * playerSpeed * delta, Vector3.down);
             RaycastHit hit;
             if(Physics.Raycast(ground, out hit, rayLength, layerMask))
             {

@@ -3403,9 +3403,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SLoadStageData: {fileID: 11400000, guid: ad0796bcb8ce3e34785265ccf43d8fba, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
-  playerObj: {fileID: 1413536329964495675, guid: f5859738a677c3145a5a537d037b0696,
+  playerObj: {fileID: 8247276551215840623, guid: 043b4cd86df4ddf418ecbc901cd5521d,
     type: 3}
   cameraPos: {fileID: 721732558}
+  waterMaterial: {fileID: 2100000, guid: 433e8abaf684fc2498fc6c0db370e826, type: 2}
 --- !u!4 &1355312273
 Transform:
   m_ObjectHideFlags: 0
