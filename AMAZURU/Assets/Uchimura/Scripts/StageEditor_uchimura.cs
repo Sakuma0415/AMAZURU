@@ -1,12 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-public class StageEditor : MonoBehaviour
+public class StageEditor_uchimura : MonoBehaviour
 {
     /// <summary>
     /// 範囲選択モードの状態
@@ -49,8 +48,6 @@ public class StageEditor : MonoBehaviour
     private GameObject gridObj;
     [SerializeField,Tooltip("配置場所を視認し易くするためのオブジェクト")]
     private GameObject guideObj;
-    [SerializeField, Tooltip("FixedRangeSelectに使用するInputField")]
-    private InputField[] cell;
     [Tooltip("シーン内のオブジェクトを削除するためのルートオブジェクト")]
     private GameObject gridRoot;
 
@@ -124,11 +121,11 @@ public class StageEditor : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Array3DForLoop(Vector3Int.zero, cells, 2);
+            Array3DForLoop(cells, 2);
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            Array3DForLoop(Vector3Int.zero, cells, 3);
+            Array3DForLoop(cells, 3);
         }
     }
 
@@ -142,50 +139,17 @@ public class StageEditor : MonoBehaviour
     }
 
     /// <summary>
-    /// 指定範囲選択
-    /// </summary>
-    public void FixedRangeSelection()
-    {
-        for (int i = 0; i < cell.Length; i++)
-        {
-            if (cell[i].text == "") { Debug.Log("必要な数値が入力されていません"); return; }
-            if (i > 2)
-            {
-                if (cell[i].text == "0") { Debug.Log("0以上の数値を入力してください"); return; }
-            }
-        }
-
-        Vector3Int _gridIndex1 = new Vector3Int(int.Parse(cell[0].text),int.Parse(cell[1].text),int.Parse(cell[2].text));
-        Vector3Int _gridIndex2 = new Vector3Int(int.Parse(cell[3].text),int.Parse(cell[4].text),int.Parse(cell[5].text));
-
-        if (_gridIndex1.x > cells.x || _gridIndex2.x > cells.x) { Debug.Log("Xグリッドの範囲外の値です"); return; }
-        if (_gridIndex1.y > cells.y || _gridIndex2.y > cells.y) { Debug.Log("Yグリッドの範囲外の値です"); return; }
-        if (_gridIndex1.z > cells.z || _gridIndex2.z > cells.z) { Debug.Log("Zグリッドの範囲外の値です"); return; }
-
-        rangeSelectionState = RangeSelectionState.Stay;
-        gridPos[tempCnum.x, tempCnum.y, tempCnum.z].GetComponent<HighlightObject>().IsSelect = false;
-        cellNum = new Vector3Int(_gridIndex2.x - 1, _gridIndex2.y - 1, _gridIndex2.z - 1);
-        guideObj.transform.position = gridPos[cellNum.x, cellNum.y, cellNum.z].transform.position;
-        Array3DForLoop(_gridIndex1, _gridIndex2, 4);
-
-        for (int i = 0; i < cell.Length; i++)
-        {
-            cell[i].text = "";
-        }
-    }
-
-    /// <summary>
     /// 奥行の入力が行われた時の処理
     /// </summary>
     private void InputDepth()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetKeyDown(KeyCode.W))
         {
             cellNum.z++;
             if(cellNum.z == cells.z) { cellNum.z = 0; }
             SelectGridObject(cellNum);
         }
-        else if (Input.GetKeyDown(KeyCode.X))
+        else if (Input.GetKeyDown(KeyCode.S))
         {
             cellNum.z--;
             if (cellNum.z == -1) { cellNum.z = cells.z - 1; }
@@ -217,13 +181,13 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     private void InputVertical()
     {
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             cellNum.y++;
             if (cellNum.y == cells.y) { cellNum.y = 0; }
             SelectGridObject(cellNum);
         }
-        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        else if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             cellNum.y--;
             if (cellNum.y == -1) { cellNum.y = cells.y - 1; }
@@ -253,7 +217,7 @@ public class StageEditor : MonoBehaviour
                         }
 
         float s = gridObj.transform.localScale.x;
-        Array3DForLoop(Vector3Int.zero, cells, 0, s);
+        Array3DForLoop(cells, 0, s);
         
         gridPos[0, 0, 0].GetComponent<HighlightObject>().IsSelect = true;
 
@@ -269,42 +233,29 @@ public class StageEditor : MonoBehaviour
     public void StageSave()
     {
 #if UNITY_EDITOR
-        //if (loadStage) { goto CreatePrefab; }
-        if (_StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z] != null)
-        {
-            _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
-        }
+        if (loadStage) { goto CreatePrefab; }
+        _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
 
         if(stageName == "") { stageName = "stageName"; }
         Data.stageName = stageName;
-        if (Data == null)
-        {
-            Debug.Log("null1");
-        }
-        if (isSave || loadStage)
+
+        if (isSave)
         {
             AssetDatabase.DeleteAsset("Assets/Shimojima/EditData_" + stageName + ".asset");
-            AssetDatabase.SaveAssets();
-            if (Data == null)
-            {
-                Debug.Log("null2");
-            }
         }
+
         Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
-        if (Data == null)
-        {
-            Debug.Log("null3");
-        }
+
         AssetDatabase.CreateAsset(Data, "Assets/Shimojima/EditData_" + stageName + ".asset");
 
-        Array3DForLoop(Vector3Int.zero, cells, 1);
+        Array3DForLoop(cells, 1);
 
         return;
 
-    //CreatePrefab:
-    //    _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
-    //    Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
-    //    AssetDatabase.SaveAssets();
+    CreatePrefab:
+        _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
+        Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
+        AssetDatabase.SaveAssets();
 #endif
     }
 
@@ -329,12 +280,8 @@ public class StageEditor : MonoBehaviour
         //GuideObjectの設定
         GameObject hObject = gridPos[cNum.x, cNum.y, cNum.z];
         hObject.GetComponent<HighlightObject>().IsSelect = true;
-
-        if(guideObj.transform.GetChild(1).GetComponent<Renderer>() != null)
-        {
-            if (hObject.GetComponent<HighlightObject>().IsAlreadyInstalled) { guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = Color.red; }
-            else { guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color; }
-        }
+        if (hObject.GetComponent<HighlightObject>().IsAlreadyInstalled) { guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = Color.red; }
+        else { guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color; }
         guideObj.transform.position = gridPos[cNum.x, cNum.y, cNum.z].transform.position;
 
         if(rangeSelectionState != RangeSelectionState.OFF) { goto Skip; }
@@ -373,10 +320,7 @@ public class StageEditor : MonoBehaviour
         o.AddComponent<MyCellIndex>().cellIndex = cellIndex;
         _StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] = o;
         gridPos[cellIndex.x, cellIndex.y, cellIndex.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
-        if (guideObj.transform.GetChild(1).GetComponent<Renderer>() != null)
-        {
-            guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = Color.red;
-        }
+        guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = Color.red;
         if(rangeSelectionState == RangeSelectionState.Stay) { return; }
         MakeObjectSkeleton();
     }
@@ -434,19 +378,19 @@ public class StageEditor : MonoBehaviour
     /// <param name="tArray">ループ処理の回数</param>
     /// <param name="processingIndex">関数の指定</param>
     /// <param name="size">Grid生成時のグリッドの１辺の長さ</param>
-    private void Array3DForLoop(Vector3Int tArray1, Vector3Int tArray2, int processingIndex, float size = 1)
+    private void Array3DForLoop(Vector3Int tArray, int processingIndex, float size = 1)
     {
-        if(processingIndex < 0 || processingIndex > 4) { Debug.Log("0 ～ 4の間で処理を決定してください"); return; }
+        if(processingIndex < 0 || processingIndex > 3) { Debug.Log("0 ～ 3の間で処理を決定してください"); return; }
 
         GameObject _obj = new GameObject();
         _obj.name = "Stage";
         if(processingIndex != 1) { Destroy(_obj); }
 
-        for (int i = tArray1.x; i < tArray2.x; i++)
+        for (int i = 0; i < tArray.x; i++)
         {
-            for (int j = tArray1.y; j < tArray2.y; j++)
+            for (int j = 0; j < tArray.y; j++)
             {
-                for (int k = tArray1.z; k < tArray2.z; k++)
+                for (int k = 0; k < tArray.z; k++)
                 {
                     switch (processingIndex)
                     {
@@ -475,9 +419,6 @@ public class StageEditor : MonoBehaviour
                             if (new Vector3Int(i, j, k) != cellNum) { gridPos[i, j, k].GetComponent<HighlightObject>().IsSelect = false; }
                             else if (new Vector3Int(i, j, k) == cellNum) { tempCnum = new Vector3Int(i, j, k); }
 
-                            break;
-                        case 4:
-                            gridPos[i, j, k].GetComponent<HighlightObject>().IsSelect = true;
                             break;
                     }
                 }
@@ -526,13 +467,13 @@ public class StageEditor : MonoBehaviour
 }
 
 #if UNITY_EDITOR
-[CustomEditor(typeof(StageEditor))]
-public class StageEditorCustom : Editor
+[CustomEditor(typeof(StageEditor_uchimura))]
+public class StageEditor_uchimuraCustom : Editor
 {
     PrefabStageData pre;
     public override void OnInspectorGUI()
     {
-        StageEditor stageEditor = target as StageEditor;
+        StageEditor_uchimura stageEditor = target as StageEditor_uchimura;
         base.OnInspectorGUI();
         GUILayout.Label("-以下変更可-");
         pre = (PrefabStageData)EditorGUILayout.ObjectField("読み込むステージ", pre, typeof(ScriptableObject), false);
@@ -555,13 +496,12 @@ public class StageEditorCustom : Editor
     /// ステージの読み込み
     /// </summary>
     /// <param name="stageEditor">ベースクラス</param>
-    private void LoadStage(StageEditor stageEditor)
+    private void LoadStage(StageEditor_uchimura stageEditor)
     {
         stageEditor.loadStage = true;
-        stageEditor.Data = Instantiate(pre);
+        stageEditor.Data = pre;
         stageEditor.stageName = stageEditor.Data.stageName;
         GameObject o = Instantiate(pre.stage);
-        stageEditor.cells = pre.gridCells;
         stageEditor.gridPos = new GameObject[pre.gridCells.x, pre.gridCells.y, pre.gridCells.z];
         stageEditor._StageObjects = new GameObject[pre.gridCells.x, pre.gridCells.y, pre.gridCells.z];
         stageEditor.EditStageInit();
