@@ -47,7 +47,7 @@ CharacterController:
   m_Height: 1.5
   m_Radius: 0.2
   m_SlopeLimit: 60
-  m_StepOffset: 0.3
+  m_StepOffset: 0.08
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.75, z: 0}
@@ -70,8 +70,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 1
-  rayLength: 1.25
-  footHeight: 0.3
+  rayLength: 0.4
   gravity: 3
 --- !u!1001 &8247276550539001020
 PrefabInstance:
