@@ -47,6 +47,9 @@ public class sakumaPlayer2 : MonoBehaviour
     [SerializeField]
     float Xangle = 0;
 
+
+    [SerializeField]
+    float debug;
     void Start()
     {
         footPos.y = (-((capsuleCollider.height) / 2))+0.01f;
@@ -230,11 +233,12 @@ public class sakumaPlayer2 : MonoBehaviour
 
 
 
-
-
-
-
             
+
+
+
+
+
             physicMaterial.staticFriction = 3;
         }
         else
@@ -245,10 +249,10 @@ public class sakumaPlayer2 : MonoBehaviour
 
 
 
+        debug = Mathf.Sin(fangle * Mathf.Deg2Rad) * Mathf.Cos(Xangle * Mathf.Deg2Rad) * spead * Time.fixedDeltaTime * angleLate;
 
 
-        
-        
+
 
     }
 
