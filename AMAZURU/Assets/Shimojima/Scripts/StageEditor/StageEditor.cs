@@ -269,29 +269,42 @@ public class StageEditor : MonoBehaviour
     public void StageSave()
     {
 #if UNITY_EDITOR
-        if (loadStage) { goto CreatePrefab; }
-        _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
+        //if (loadStage) { goto CreatePrefab; }
+        if (_StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z] != null)
+        {
+            _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
+        }
 
         if(stageName == "") { stageName = "stageName"; }
         Data.stageName = stageName;
-
-        if (isSave)
+        if (Data == null)
+        {
+            Debug.Log("null1");
+        }
+        if (isSave || loadStage)
         {
             AssetDatabase.DeleteAsset("Assets/Shimojima/EditData_" + stageName + ".asset");
+            AssetDatabase.SaveAssets();
+            if (Data == null)
+            {
+                Debug.Log("null2");
+            }
         }
-
         Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
-
+        if (Data == null)
+        {
+            Debug.Log("null3");
+        }
         AssetDatabase.CreateAsset(Data, "Assets/Shimojima/EditData_" + stageName + ".asset");
 
         Array3DForLoop(Vector3Int.zero, cells, 1);
 
         return;
 
-    CreatePrefab:
-        _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
-        Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
-        AssetDatabase.SaveAssets();
+    //CreatePrefab:
+    //    _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
+    //    Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
+    //    AssetDatabase.SaveAssets();
 #endif
     }
 
@@ -545,7 +558,7 @@ public class StageEditorCustom : Editor
     private void LoadStage(StageEditor stageEditor)
     {
         stageEditor.loadStage = true;
-        stageEditor.Data = pre;
+        stageEditor.Data = Instantiate(pre);
         stageEditor.stageName = stageEditor.Data.stageName;
         GameObject o = Instantiate(pre.stage);
         stageEditor.cells = pre.gridCells;
