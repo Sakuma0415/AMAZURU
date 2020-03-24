@@ -9,6 +9,8 @@ public class WaterHi : MonoBehaviour
     float next;
     bool rainAnime = false;
     float animeTime = 0;
+    [SerializeField]
+    Material material;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,7 +45,7 @@ public class WaterHi : MonoBehaviour
 
 
 
-
+        material.SetFloat("_High",max);
         transform.localScale = new Vector3(transform.localScale.x, max, transform.localScale.z);
     }
     // Update is called once per frame

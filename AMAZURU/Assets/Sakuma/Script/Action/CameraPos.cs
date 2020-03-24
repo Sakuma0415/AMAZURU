@@ -10,7 +10,7 @@ public class CameraPos : MonoBehaviour
     float CameraDis;
 
     public Vector3 lookPos;
-    public Rigidbody PlayerTransform;
+    public Transform PlayerTransform;
 
 
     private Vector3 lookObj;
