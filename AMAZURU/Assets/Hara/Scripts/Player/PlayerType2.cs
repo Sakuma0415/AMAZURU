@@ -161,7 +161,7 @@ public class PlayerType2 : MonoBehaviour
         for(int i = 0; i < hiddenWalls.Length; i++)
         {
             hiddenWalls[i] = Instantiate(hiddenWallPrefab);
-            hiddenWalls[i].gameObject.SetActive(false);
+            hiddenWalls[i].enabled = false;
         }
     }
 
@@ -176,11 +176,11 @@ public class PlayerType2 : MonoBehaviour
             Ray findGround = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
             wallFlags[i] = Physics.Raycast(findGround, rayLength, layerMask);
 
-            if (wallFlags[i] == false && hiddenWalls[i].gameObject.activeSelf == false)
+            if (wallFlags[i] == false && hiddenWalls[i].enabled == false)
             {
                 // 透明な壁を設置
-                hiddenWalls[i].transform.position = new Vector3(findGround.origin.x, PlayerPositionY, findGround.origin.z) + rayPosition[i] * (0.5f + 0.1f);
-                hiddenWalls[i].gameObject.SetActive(true);
+                hiddenWalls[i].transform.position = new Vector3(findGround.origin.x, PlayerPositionY, findGround.origin.z) + rayPosition[i] * (0.5f + 0.05f);
+                hiddenWalls[i].enabled = true;
             }
 
             if(wallFlags[i] == false && hiddenWalls[i].gameObject.activeSelf)
@@ -196,7 +196,7 @@ public class PlayerType2 : MonoBehaviour
             }
             else
             {
-                hiddenWalls[i].gameObject.SetActive(false);
+                hiddenWalls[i].enabled = false;
             }
         }
     }
