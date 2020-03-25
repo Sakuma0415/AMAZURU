@@ -67,7 +67,7 @@ Material:
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _Distortion: 0
+    - _Distortion: 0.01
     - _DstBlend: 0
     - _FresnelScale: 0.88
     - _GerstnerIntensity: 1
@@ -85,8 +85,8 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _X: 4
-    - _Y: 3.3333333
+    - _X: 3
+    - _Y: 2.5
     - _ZWrite: 1
     m_Colors:
     - _AnimationDirection: {r: 1, g: 1, b: 1, a: 1}

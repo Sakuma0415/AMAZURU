@@ -600,6 +600,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   max: 0.25
+  material: {fileID: 2100000, guid: 4a889c8a26e1bfb479aa3fa26d3c2a8c, type: 2}
 --- !u!65 &7580068451283461541
 BoxCollider:
   m_ObjectHideFlags: 0
