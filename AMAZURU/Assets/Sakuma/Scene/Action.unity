@@ -2386,7 +2386,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.01
+  m_Radius: 0.25
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &721732560
 MonoBehaviour:
@@ -2402,6 +2402,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maskObj: {fileID: 956267283}
   image: {fileID: 956267285}
+  inMask:
+    serializedVersion: 2
+    m_Bits: 1591
+  outMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  camera: {fileID: 721732556}
 --- !u!1 &823444294
 GameObject:
   m_ObjectHideFlags: 0
@@ -2642,7 +2649,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &956267284
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2675,7 +2682,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.0069419593, g: 0.17467967, b: 0.49056602, a: 0.3}
+  m_Color: {r: 0.007843124, g: 0.3073718, b: 0.49019608, a: 0.5}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -3605,7 +3612,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SLoadStageData: {fileID: 11400000, guid: ad0796bcb8ce3e34785265ccf43d8fba, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
-  playerObj: {fileID: 8247276551215840623, guid: d9f45935ae0a23f4bae7b485cb80ddcd,
+  playerObj: {fileID: 2001958938084469648, guid: 9426656cf71f6984c978b0d5e8c4971f,
     type: 3}
   cameraPos: {fileID: 721732558}
   waterMaterial: {fileID: 2100000, guid: 433e8abaf684fc2498fc6c0db370e826, type: 2}
@@ -4592,7 +4599,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1976595398
 BoxCollider:
   m_ObjectHideFlags: 0
