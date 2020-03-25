@@ -29,9 +29,12 @@
 
             #pragma vertex vert
             #pragma fragment frag
+			#pragma multi_compile_fwdbase nolightmap nodirlightmap nodynlightmap novertexlight
+
 
             #include "UnityCG.cginc"
-
+			#include "Lighting.cginc"
+			#include "AutoLight.cginc"
 
 
 			struct VertexInput
@@ -43,10 +46,12 @@
 
 			struct VertexOutput
 			{
-				float4 vertex : SV_POSITION;
+				float4 pos : SV_POSITION;
 				float2 uv : TEXCOORD0;
-				float3 normalWS : TEXCOORD1; 
 				float4 vertexWS : TEXCOORD2;
+				float3 normalWS : TEXCOORD3;
+				fixed4 diff : COLOR0;
+				SHADOW_COORDS(1)
 			};
 
 
@@ -69,12 +74,19 @@
 			{
 				VertexOutput o = (VertexOutput)0;
 
-				o.vertex = UnityObjectToClipPos(v.vertex);
+				o.pos = UnityObjectToClipPos(v.vertex);
 				o.uv = v.uv;
-				o.normalWS = UnityObjectToWorldNormal(v.normal);
 
 
 				o.vertexWS = mul(unity_ObjectToWorld, v.vertex);
+				o.normalWS = UnityObjectToWorldNormal(v.normal);
+
+				half3 worldNormal = UnityObjectToWorldNormal(v.normal);
+                half NdotL = saturate(dot(worldNormal, _WorldSpaceLightPos0.xyz));
+                o.diff = NdotL * _LightColor0;
+
+
+				TRANSFER_SHADOW(o)
 				return o;
 			}
 
@@ -83,6 +95,9 @@
 				float3 L = normalize(-_WorldSpaceLightPos0.xyz);
 				float3 N = normalize(i.normalWS);
 				fixed4 finalColor = fixed4(0, 0, 0, 1);
+
+				fixed4 shadow = SHADOW_ATTENUATION(i);
+                fixed4 shadowBf= i.diff * shadow;
 
 				float2 mainUv = i.uv * _MainTexture_ST.xy + _MainTexture_ST.zw;
 				finalColor = tex2D(_MainTexture, mainUv) * _MainColor;
@@ -93,7 +108,7 @@
 				float3 V = normalize(i.vertexWS - _WorldSpaceCameraPos);
 				float3 H = normalize(-L + (-V));
 
-
+				finalColor=(finalColor+shadowBf)/2;
 
 				if(_High>i.vertexWS.y){
 
@@ -103,13 +118,51 @@
 					wuv.x-=(int)wuv.x;
 					wuv.y-=(int)wuv.y;
 					fixed4 finalColor2 = tex2D(_LightMap, wuv);
-					finalColor.rbg *= (1+(finalColor2.a/    8         ));
+					finalColor.rbg *= (1+(finalColor2.a/6));
 				}
-
+				
 				return finalColor;
 
 			}
             ENDCG
         }
+		Pass
+		{
+			Tags{ "LightMode"="ShadowCaster" }
+
+			CGPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
+			#pragma multi_compile_shadowcaster
+
+			#include "UnityCG.cginc"
+
+			struct appdata
+			{
+				float4 vertex : POSITION;
+				float3 normal : NORMAL;
+				float2 texcoord : TEXCOORD0;
+			};
+
+			struct v2f
+			{
+				V2F_SHADOW_CASTER;
+			};
+
+			v2f vert (appdata v)
+			{
+				v2f o;
+				TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
+				return o;
+			}
+
+			fixed4 frag (v2f i) : SV_Target
+			{
+				SHADOW_CASTER_FRAGMENT(i)
+			}
+			ENDCG
+		}
     }
 }
+
+	
