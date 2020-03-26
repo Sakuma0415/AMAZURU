@@ -14,6 +14,7 @@ public class PlayerType2 : MonoBehaviour
     [SerializeField, Header("RayのLayerMask")] private LayerMask layerMask;
     [SerializeField, Header("Rayの長さ"), Range(0, 10)] private float rayLength = 0.5f;
     [SerializeField, Header("重力値"), Range(0, 10)] private float gravity = 10.0f;
+    [SerializeField, Header("透明な壁のサイズ"), Range(0.01f, 1.0f)] private float wallSize = 1.0f;
     public Camera PlayerCamera { set { playerCamera = value; } }
 
     // コントローラーの入力
@@ -122,9 +123,9 @@ public class PlayerType2 : MonoBehaviour
             // 移動方向の決定
             float moveX = right ? 1 : left ? -1 : 0;
             float moveZ = forward ? 1 : back ? -1 : 0;
-            Vector3 moveVector = new Vector3(moveX * Mathf.Sqrt(1 - (moveZ * moveZ) * 0.5f), 0, moveZ * Mathf.Sqrt(1 - (moveX * moveX) * 0.5f));
-            float vec = Mathf.Sqrt(moveVector.x * moveVector.x + moveVector.z * moveVector.z);
-            moveDirection = transform.forward * vec;
+            float vec = Mathf.Abs(moveX) >= Mathf.Abs(moveZ) ? moveZ / moveX : moveX / moveZ;
+            vec = 1.0f / Mathf.Sqrt(1.0f + vec * vec);
+            moveDirection = direction * vec;
 
             // 床にRayを飛ばして斜面の角度を取得
             Ray ground = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z), Vector3.down);
@@ -161,6 +162,7 @@ public class PlayerType2 : MonoBehaviour
         for(int i = 0; i < hiddenWalls.Length; i++)
         {
             hiddenWalls[i] = Instantiate(hiddenWallPrefab);
+            hiddenWalls[i].size = Vector3.one * wallSize;
             hiddenWalls[i].enabled = false;
         }
     }
@@ -179,7 +181,7 @@ public class PlayerType2 : MonoBehaviour
             if (wallFlags[i] == false && hiddenWalls[i].enabled == false)
             {
                 // 透明な壁を設置
-                hiddenWalls[i].transform.position = new Vector3(findGround.origin.x, PlayerPositionY, findGround.origin.z) + rayPosition[i] * (0.5f + 0.05f);
+                hiddenWalls[i].transform.position = new Vector3(findGround.origin.x, PlayerPositionY, findGround.origin.z) + rayPosition[i] * (wallSize * 0.5f + 0.05f);
                 hiddenWalls[i].enabled = true;
             }
 
