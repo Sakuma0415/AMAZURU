@@ -27,7 +27,8 @@ public class PlayerType2 : MonoBehaviour
     public float PlayerPositionY { private set; get; } = 0;
 
     // プレイヤーが水に浸かったか
-    public bool InWater { set; private get; } = false;
+    [SerializeField, Header("入水検知")] private bool inWater = false;
+    public bool InWater { set { inWater = value; } }
 
     // 透明な壁関連の変数
     private Vector3[] rayPosition = new Vector3[4] { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
@@ -50,7 +51,6 @@ public class PlayerType2 : MonoBehaviour
     private void FixedUpdate()
     {
         PlayerMove(true);
-        SetHiddenWall();
     }
 
     private void Reset()
@@ -75,8 +75,8 @@ public class PlayerType2 : MonoBehaviour
         float inputMin = 0.1f;
 
         // キー入力取得
-        float inputX = InWater == false ? Input.GetAxis("Horizontal") : 0;
-        float inputY = InWater == false ? Input.GetAxis("Vertical") : 0;
+        float inputX = inWater == false ? Input.GetAxis("Horizontal") : 0;
+        float inputY = inWater == false ? Input.GetAxis("Vertical") : 0;
         forward = inputY > inputMin;
         back = inputY < -inputMin;
         right = inputX > inputMin;
@@ -99,7 +99,7 @@ public class PlayerType2 : MonoBehaviour
         // 移動方向
         Vector3 moveDirection = Vector3.zero;
 
-        // プレイヤーの位置情報を更新
+        // プレイヤーのY座標の位置情報を更新
         PlayerPositionY = transform.position.y + character.center.y;
 
         if (forward || back || right || left)
@@ -138,12 +138,16 @@ public class PlayerType2 : MonoBehaviour
                 Debug.Log(nomal);
             }
 
+            // プレイヤーの移動先の算出
             moveDirection *= playerSpeed * delta;
         }
 
         // プレイヤーを移動させる
         moveDirection.y -= gravity * delta;
         character.Move(moveDirection);
+
+        // 透明な壁の設置処理
+        if(forward || back || right || left) { SetHiddenWall(); }
 
         // アニメーション実行
         if (playerAnimator != null)
@@ -172,22 +176,23 @@ public class PlayerType2 : MonoBehaviour
     /// </summary>
     private void SetHiddenWall()
     {
-        // 床があるかチェック
         for (int i = 0; i < wallFlags.Length; i++)
         {
+            // 床があるかチェック
             Ray findGround = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
             wallFlags[i] = Physics.Raycast(findGround, rayLength, layerMask);
 
+            // 床が無ければ透明な壁を有効化する
             if (wallFlags[i] == false && hiddenWalls[i].enabled == false)
             {
-                // 透明な壁を設置
                 hiddenWalls[i].transform.position = new Vector3(findGround.origin.x, PlayerPositionY, findGround.origin.z) + rayPosition[i] * (wallSize * 0.5f + 0.05f);
                 hiddenWalls[i].enabled = true;
             }
-
-            if(wallFlags[i] == false && hiddenWalls[i].gameObject.activeSelf)
+            
+            if(wallFlags[i] == false && hiddenWalls[i].enabled)
             {
-                if(i % 2 == 0)
+                // 透明な壁をプレイヤーの移動に合わせて移動させる
+                if (i % 2 == 0)
                 {
                     hiddenWalls[i].transform.position = new Vector3(transform.position.x, PlayerPositionY, hiddenWalls[i].transform.position.z);
                 }
@@ -198,6 +203,7 @@ public class PlayerType2 : MonoBehaviour
             }
             else
             {
+                // 透明な壁を無効化する
                 hiddenWalls[i].enabled = false;
             }
         }
