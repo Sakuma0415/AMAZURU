@@ -276,7 +276,6 @@ public class StageEditor : MonoBehaviour
     public void StageSave()
     {
 #if UNITY_EDITOR
-        //if (loadStage) { goto CreatePrefab; }
         if (_StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z] != null)
         {
             _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
@@ -297,7 +296,7 @@ public class StageEditor : MonoBehaviour
                 Debug.Log("null2");
             }
         }
-        Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
+        Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/Stage/" + stageName + ".prefab", InteractionMode.UserAction);
         if (Data == null)
         {
             Debug.Log("null3");
@@ -305,13 +304,6 @@ public class StageEditor : MonoBehaviour
         AssetDatabase.CreateAsset(Data, "Assets/Shimojima/EditData_" + stageName + ".asset");
 
         Array3DForLoop(Vector3Int.zero, cells, 1);
-
-        return;
-
-    //CreatePrefab:
-    //    _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
-    //    Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
-    //    AssetDatabase.SaveAssets();
 #endif
     }
 
