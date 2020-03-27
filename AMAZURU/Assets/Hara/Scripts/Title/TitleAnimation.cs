@@ -2,12 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TitleControl : MonoBehaviour
+public enum AnimationType
+{
+    Scale,
+    Flash
+}
+
+public class TitleAnimation : MonoBehaviour
 {
     [SerializeField, Header("アニメーションの対象オブジェクト")] private GameObject titleObject = null;
     [SerializeField, Header("アニメーション実行間隔"), Range(0, 3)] private float span = 1.0f;
+    [SerializeField, Header("アニメーションの切り替え")] private AnimationType animeType = AnimationType.Scale;
+    public AnimationType AnimeType { set { animeType = value; } }
 
-    private bool inputKey = false;
     private Vector3 startSize = Vector3.zero;
     private Vector3 maxSize = Vector3.zero;
     private Vector3 minSize = Vector3.zero;
@@ -16,26 +23,22 @@ public class TitleControl : MonoBehaviour
     private int step = 0;
     private bool stepEnd = false;
 
-    private bool sceneLoad = false;
-
     // Start is called before the first frame update
     void Start()
     {
-        TitleInit();
+        Init();
     }
 
     // Update is called once per frame
     void Update()
     {
-        InputController();
-
         TitleAnimetion();
     }
 
     /// <summary>
     /// 初期化
     /// </summary>
-    private void TitleInit()
+    private void Init()
     {
         startSize = titleObject.transform.localScale;
         maxSize = startSize * (1 + sizeRange);
@@ -47,9 +50,10 @@ public class TitleControl : MonoBehaviour
     /// </summary>
     private void TitleAnimetion()
     {
-        if(inputKey == false)
+        if(animeType == AnimationType.Scale)
         {
             float duration = span / 4;
+            titleObject.SetActive(true);
 
             switch (step)
             {
@@ -84,18 +88,7 @@ public class TitleControl : MonoBehaviour
         {
             titleObject.transform.localScale = startSize;
 
-            if(sceneLoad == false)
-            {
-                Debug.Log("シーン読み込み開始");
-
-                // シーン遷移処理
-
-                sceneLoad = true;
-                time = 0;
-                step = 0;
-            }
-
-            float duration = span / 10;
+            float duration = span / 12;
 
             switch (step)
             {
@@ -151,17 +144,6 @@ public class TitleControl : MonoBehaviour
         {
             animationObject.SetActive(active);
             return true;
-        }
-    }
-
-    /// <summary>
-    /// キー入力の処理
-    /// </summary>
-    private void InputController()
-    {
-        if (Input.GetKeyDown(KeyCode.Z) && inputKey == false)
-        {
-            inputKey = true;
         }
     }
 }
