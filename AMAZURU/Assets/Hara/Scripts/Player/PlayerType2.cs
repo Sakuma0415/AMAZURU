@@ -23,6 +23,8 @@ public class PlayerType2 : MonoBehaviour
     private bool right = false;
     private bool left = false;
 
+    private PlayState.GameMode mode = PlayState.GameMode.Stop;
+
     // プレイヤーの位置(高さ)
     public float PlayerPositionY { private set; get; } = 0;
 
@@ -74,9 +76,11 @@ public class PlayerType2 : MonoBehaviour
         // 入力の最低許容値
         float inputMin = 0.1f;
 
+        mode = PlayState.playState.gameMode;
+
         // キー入力取得
-        float inputX = inWater == false ? Input.GetAxis("Horizontal") : 0;
-        float inputY = inWater == false ? Input.GetAxis("Vertical") : 0;
+        float inputX = inWater == false && mode == PlayState.GameMode.Play ? Input.GetAxis("Horizontal") : 0;
+        float inputY = inWater == false && mode == PlayState.GameMode.Play ? Input.GetAxis("Vertical") : 0;
         forward = inputY > inputMin;
         back = inputY < -inputMin;
         right = inputX > inputMin;
