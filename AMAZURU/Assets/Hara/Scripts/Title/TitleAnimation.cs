@@ -2,18 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AnimationType
+public class TitleAnimation : MyAnimation
 {
-    Scale,
-    Flash
-}
-
-public class TitleAnimation : MonoBehaviour
-{
-    [SerializeField, Header("アニメーションの対象オブジェクト")] private GameObject titleObject = null;
+    [SerializeField, Header("アニメーションの対象オブジェクト")] private GameObject animationObj = null;
     [SerializeField, Header("アニメーション実行間隔"), Range(0, 3)] private float span = 1.0f;
-    [SerializeField, Header("アニメーションの切り替え")] private AnimationType animeType = AnimationType.Scale;
-    public AnimationType AnimeType { set { animeType = value; } }
+    [SerializeField, Tooltip("アニメーション管理フラグ")] private bool animationFlag = false;
+    public bool AnimationFlag { set { animationFlag = value; } }
 
     private Vector3 startSize = Vector3.zero;
     private Vector3 maxSize = Vector3.zero;
@@ -32,7 +26,7 @@ public class TitleAnimation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        TitleAnimetion();
+        TitleAction();
     }
 
     /// <summary>
@@ -40,7 +34,8 @@ public class TitleAnimation : MonoBehaviour
     /// </summary>
     private void Init()
     {
-        startSize = titleObject.transform.localScale;
+        if(animationObj == null) { return; }
+        startSize = animationObj.transform.localScale;
         maxSize = startSize * (1 + sizeRange);
         minSize = startSize * (1 - sizeRange);
     }
@@ -48,56 +43,24 @@ public class TitleAnimation : MonoBehaviour
     /// <summary>
     /// タイトルの文字のアニメーション処理
     /// </summary>
-    private void TitleAnimetion()
+    private void TitleAction()
     {
-        if(animeType == AnimationType.Scale)
-        {
-            float duration = span / 4;
-            titleObject.SetActive(true);
+        if(animationObj == null) { return; }
 
-            switch (step)
-            {
-                case 0:
-                    stepEnd = ScaleAnimation(titleObject, time, duration, startSize, maxSize);
-                    time += Time.deltaTime;
-                    break;
-                case 1:
-                    stepEnd = ScaleAnimation(titleObject, time, duration, maxSize, startSize);
-                    time += Time.deltaTime;
-                    break;
-                case 2:
-                    stepEnd = ScaleAnimation(titleObject, time, duration, startSize, minSize);
-                    time += Time.deltaTime;
-                    break;
-                case 3:
-                    stepEnd = ScaleAnimation(titleObject, time, duration, minSize, startSize);
-                    time += Time.deltaTime;
-                    break;
-                default:
-                    step = 0;
-                    return;
-            }
-
-            if (stepEnd)
-            {
-                step++;
-                time = 0;
-            }
-        }
-        else
+        if(animationFlag)
         {
-            titleObject.transform.localScale = startSize;
+            animationObj.transform.localScale = startSize;
 
             float duration = span / 12;
 
             switch (step)
             {
                 case 0:
-                    stepEnd = FlashAnimation(titleObject, time, duration, false);
+                    stepEnd = FlashAnimation(animationObj, time, duration, false);
                     time += Time.deltaTime;
                     break;
                 case 1:
-                    stepEnd = FlashAnimation(titleObject, time, duration, true);
+                    stepEnd = FlashAnimation(animationObj, time, duration, true);
                     time += Time.deltaTime;
                     break;
                 default:
@@ -111,39 +74,39 @@ public class TitleAnimation : MonoBehaviour
                 time = 0;
             }
         }
-    }
-
-    /// <summary>
-    /// スケールの拡大縮小アニメーション
-    /// </summary>
-    private bool ScaleAnimation(GameObject animationObject, float nowTime, float duration, Vector3 start, Vector3 end)
-    {
-        if (nowTime < duration)
-        {
-            float diff = nowTime / duration;
-            animationObject.transform.localScale = Vector3.Lerp(start, end, diff);
-            return false;
-        }
         else
         {
-            animationObject.transform.localScale = end;
-            return true;
-        }
-    }
+            float duration = span / 4;
+            animationObj.SetActive(true);
 
-    /// <summary>
-    /// 点滅のアニメーション
-    /// </summary>
-    private bool FlashAnimation(GameObject animationObject, float nowTime, float duration, bool active)
-    {
-        if(nowTime < duration)
-        {
-            return false;
-        }
-        else
-        {
-            animationObject.SetActive(active);
-            return true;
+            switch (step)
+            {
+                case 0:
+                    stepEnd = ScaleAnimation(animationObj, time, duration, startSize, maxSize);
+                    time += Time.deltaTime;
+                    break;
+                case 1:
+                    stepEnd = ScaleAnimation(animationObj, time, duration, maxSize, startSize);
+                    time += Time.deltaTime;
+                    break;
+                case 2:
+                    stepEnd = ScaleAnimation(animationObj, time, duration, startSize, minSize);
+                    time += Time.deltaTime;
+                    break;
+                case 3:
+                    stepEnd = ScaleAnimation(animationObj, time, duration, minSize, startSize);
+                    time += Time.deltaTime;
+                    break;
+                default:
+                    step = 0;
+                    return;
+            }
+
+            if (stepEnd)
+            {
+                step++;
+                time = 0;
+            }
         }
     }
 }
