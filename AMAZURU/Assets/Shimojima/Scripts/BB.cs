@@ -15,7 +15,7 @@ public class BB : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Scenemanager.Instance.LoadScene(Scenemanager.SceneName.StageEdit);
+            Scenemanager.Instance.LoadScene(Scenemanager.SceneName.Action);
         }
 
     }
