@@ -24,7 +24,7 @@ public class PlaneReflection : MonoBehaviour
         refCamera = objRefCamera.AddComponent<Camera>();
         refCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("Mirror"));
         refCamera.clearFlags = CameraClearFlags.SolidColor;
-        refCamera.backgroundColor = new Color(0,0,0,0);
+        refCamera.backgroundColor = new Color(1,1,1,1);
         //refCamera.nearClipPlane = 0;
         trfRefCamera = objRefCamera.transform;
         refCamera.targetTexture = refTexture;

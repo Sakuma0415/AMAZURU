@@ -114,7 +114,7 @@
 
 				//col = tex2D(_GrabTex, grabUV) * depthDiff * _Color;
 
-				fixed4 col3=(col2.r>0.1f)?(col2+col*3)/4:col;
+				fixed4 col3=(col2.r<0.95f)?(col2+col*3)/4:col;
 
 
 
