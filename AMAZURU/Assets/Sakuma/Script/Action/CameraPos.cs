@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraPos : MonoBehaviour
 {
-    public  float CameraDisS;
+    public float CameraDisS;
     public float CameraDisP;
 
     float CameraDis;
@@ -40,13 +40,14 @@ public class CameraPos : MonoBehaviour
     [SerializeField]
     float changeTime;
 
-
+    [SerializeField]
+    float fAngle;
 
     // Start is called before the first frame update
     void Start()
     {
-        XZangle = 270;
-        targetAngle = 270;
+        XZangle = fAngle;
+        targetAngle = fAngle;
         CameraDis =lookMode ? CameraDisP: CameraDisS;
 
     }

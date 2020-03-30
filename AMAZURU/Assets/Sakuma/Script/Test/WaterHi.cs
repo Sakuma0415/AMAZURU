@@ -10,7 +10,9 @@ public class WaterHi : MonoBehaviour
     bool rainAnime = false;
     float animeTime = 0;
     [SerializeField]
-    Material material;
+    Material[] material;
+
+    public DigitalRuby.RainMaker.RainScript[] rainScript;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +23,10 @@ public class WaterHi : MonoBehaviour
     {
         if (rainAnime)
         {
+            for(int i = 0; i < rainScript.Length; i++)
+            {
+                rainScript[i].RainIntensity = 1;
+            }
             animeTime -= Time.fixedDeltaTime;
             if (animeTime < 1.5f && animeTime > 0.5f)
             {
@@ -35,6 +41,10 @@ public class WaterHi : MonoBehaviour
             if (animeTime <= 0)
             {
                 rainAnime = false;
+                for (int i = 0; i < rainScript.Length; i++)
+                {
+                    rainScript[i].RainIntensity = 0.03f;
+                }
             }
         }
 
@@ -44,8 +54,13 @@ public class WaterHi : MonoBehaviour
 
 
 
+        for (int i=0;i<material.Length;i++)
+        {
 
-        material.SetFloat("_High",max);
+            material[i].SetFloat("_High", max);
+        }
+
+
         transform.localScale = new Vector3(transform.localScale.x, max, transform.localScale.z);
     }
     // Update is called once per frame
