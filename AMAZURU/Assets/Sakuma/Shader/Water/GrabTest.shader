@@ -114,7 +114,7 @@
 
 				//col = tex2D(_GrabTex, grabUV) * depthDiff * _Color;
 
-				fixed4 col3=(col2.r>0.1f)?(col2+col*3)/4:col;
+				fixed4 col3=(col2.r<0.95f)?(col2+col*3)/4:col;
 
 
 
@@ -154,7 +154,7 @@
 				float3 R = normalize( - i.lightDir + 2.0 * normal * NdotL );
 				float3 spec2 = pow(max(0, dot(R, i.viewDir)), 40.0);
 				half4 c;
-				c.rgb = color * _LightColor0.rgb * NdotL + (_Intensity*spec2) +  fixed4(0.1f, 0.1f, 0.1f, 1);
+				c.rgb = color * _LightColor0.rgb * NdotL/1.2 + (_Intensity*spec2) +  fixed4(0.1f, 0.1f, 0.1f, 1);
 				c.a=_Color.a;
 				//c.rgb=(_Color*9+c.rgb)/10;
 				return c;//color;

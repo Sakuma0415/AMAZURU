@@ -45,6 +45,8 @@ public class StageEditor : MonoBehaviour
 
     [Header("-以下変更禁止-")]
 
+    [SerializeField]
+    private Camera mainCamera;
     [SerializeField, Tooltip("参照するGridObject")]
     private GameObject gridObj;
     [SerializeField,Tooltip("配置場所を視認し易くするためのオブジェクト")]
@@ -62,7 +64,7 @@ public class StageEditor : MonoBehaviour
     private int refObjIndex = 0;
     [Tooltip("配置するオブジェクト")]
     private GameObject stageObj;
-    
+
     private Vector3 objAngle;
 
     private bool IsInputAnyKey { get; set; } = false;
@@ -87,15 +89,20 @@ public class StageEditor : MonoBehaviour
     {
         SetOrDeleteStageObject();
         RangeSelection();
-
+        
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             ChangeStageObject();
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
+            GameObject obj = guideObj.transform.GetChild(1).gameObject;
+            mainCamera.transform.parent = null;
             objAngle.y += -90;
             guideObj.transform.localEulerAngles = objAngle;
+            obj.transform.parent = null;
+            mainCamera.transform.parent = guideObj.transform;
+            obj.transform.parent = guideObj.transform;
         }
 
         if (IsInputAnyKey) { return; }
@@ -269,7 +276,6 @@ public class StageEditor : MonoBehaviour
     public void StageSave()
     {
 #if UNITY_EDITOR
-        //if (loadStage) { goto CreatePrefab; }
         if (_StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z] != null)
         {
             _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
@@ -290,7 +296,7 @@ public class StageEditor : MonoBehaviour
                 Debug.Log("null2");
             }
         }
-        Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
+        Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/Stage/" + stageName + ".prefab", InteractionMode.UserAction);
         if (Data == null)
         {
             Debug.Log("null3");
@@ -298,13 +304,6 @@ public class StageEditor : MonoBehaviour
         AssetDatabase.CreateAsset(Data, "Assets/Shimojima/EditData_" + stageName + ".asset");
 
         Array3DForLoop(Vector3Int.zero, cells, 1);
-
-        return;
-
-    //CreatePrefab:
-    //    _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
-    //    Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Prefabs/" + stageName + ".prefab", InteractionMode.UserAction);
-    //    AssetDatabase.SaveAssets();
 #endif
     }
 
@@ -333,7 +332,17 @@ public class StageEditor : MonoBehaviour
         if(guideObj.transform.GetChild(1).GetComponent<Renderer>() != null)
         {
             if (hObject.GetComponent<HighlightObject>().IsAlreadyInstalled) { guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = Color.red; }
-            else { guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color; }
+            else 
+            {
+                if (referenceObject[refObjIndex].name == "SandFloor")
+                {
+                    guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.GetColor("_MainColor");
+                }
+                else
+                {
+                    guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color;
+                }
+            }
         }
         guideObj.transform.position = gridPos[cNum.x, cNum.y, cNum.z].transform.position;
 
@@ -390,7 +399,15 @@ public class StageEditor : MonoBehaviour
         Debug.Log(_StageObjects[cellIndex.x, cellIndex.y, cellIndex.z].name + "を削除しました");
         Destroy(_StageObjects[cellIndex.x, cellIndex.y, cellIndex.z]);
         gridPos[cellIndex.x, cellIndex.y, cellIndex.z].GetComponent<HighlightObject>().IsAlreadyInstalled = false;
-        guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color;
+        if(referenceObject[refObjIndex].name == "SandFloor")
+        {
+            guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.GetColor("_MainColor");
+        }
+        else
+        {
+            guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color;
+        }
+        
     }
 
     /// <summary>

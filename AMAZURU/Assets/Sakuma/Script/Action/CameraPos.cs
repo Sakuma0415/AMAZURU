@@ -31,9 +31,17 @@ public class CameraPos : MonoBehaviour
     [SerializeField]
     bool MouseHack = false;
 
+
     [SerializeField]
     [Range(-10, 10)]
     float lookHi;
+
+
+    [SerializeField]
+    float changeTime;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -49,7 +57,8 @@ public class CameraPos : MonoBehaviour
         {
             if (lookAnimeTime > 0)
             {
-                transform.position = Vector3.Lerp(transform.position, (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad) + lookHi, Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * CameraDis) + lookObj, 1 - lookAnimeTime);
+                transform.position = Vector3.Lerp(animePos, (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad) + lookHi, Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * (!lookMode ? CameraDisS : CameraDisP)) + lookObj, 1 - (lookAnimeTime/ changeTime));
+                
                 //lookObj = new Vector3(0, 0, 0);
             }
             else
@@ -117,9 +126,8 @@ public class CameraPos : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Q) && lookAnimeTime == 0)
             {
                 lookMode = !lookMode;
-                lookAnimeTime = 1;
+                lookAnimeTime = changeTime;
                 animePos = transform.position;
-
             }
 
             if (lookAnimeTime > 0)
@@ -129,7 +137,7 @@ public class CameraPos : MonoBehaviour
                 {
                     lookAnimeTime = 0;
                 }
-                CameraDis = Mathf.Lerp(lookMode ? CameraDisS : CameraDisP, lookMode ? CameraDisP : CameraDisS, 1 - lookAnimeTime);
+                CameraDis = Mathf.Lerp(lookMode ? CameraDisS : CameraDisP, lookMode ? CameraDisP : CameraDisS, 1 - (lookAnimeTime/ changeTime));
 
             }
 
