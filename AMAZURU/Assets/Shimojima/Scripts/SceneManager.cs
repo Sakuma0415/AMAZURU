@@ -10,7 +10,7 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
     public enum SceneName
     {
         Title = 0,
-        StageEdit
+        Action
     }
 
     private SceneName sceneName;
@@ -21,10 +21,14 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
         OUT
     }
 
-    public Canvas fadeCanvas;
+    public GameObject fadeMask;
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            LoadScene(SceneName.Action);
+        }
     }
 
     /// <summary>
@@ -44,7 +48,7 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
     /// <returns></returns>
     private IEnumerator Load()
     {
-        StartCoroutine(Fade(1, FadeMode.OUT));
+        StartCoroutine(Fade(1, FadeMode.IN));
         yield return new WaitForSeconds(1f);
         AsyncOperation async = SceneManager.LoadSceneAsync(sceneName.ToString());
         async.allowSceneActivation = false;
@@ -60,7 +64,7 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
             yield return null;
         }
 
-        StartCoroutine(Fade(1, FadeMode.IN));
+        StartCoroutine(Fade(1, FadeMode.OUT));
         yield return null;
     }
 
@@ -74,23 +78,25 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
     /// <returns></returns>
     private IEnumerator Fade(float sec, FadeMode fadeMode)
     {
-        GameObject obj = fadeCanvas.transform.GetChild(0).gameObject;
-        Color c = obj.GetComponent<Image>().color;
+        //GameObject obj = fadeCanvas.transform.GetChild(0).gameObject;
+        //Color c = obj.GetComponent<Image>().color;
         float speed = 1 / (sec * 60);
-        float a = c.a;
+        float a = fadeMask.GetComponent<SpriteMask>().alphaCutoff;
         bool fadeEnd = false;
 
         while (!fadeEnd)
         {
             if (fadeMode == FadeMode.OUT)
             {
-                obj.GetComponent<Image>().color = new Color(c.r, c.g, c.b, a);
+                //obj.GetComponent<Image>().color = new Color(c.r, c.g, c.b, a);
+                fadeMask.GetComponent<SpriteMask>().alphaCutoff = a;
                 a += speed;
                 if(a >= 1) { fadeEnd = true; }
             }
             else if(fadeMode == FadeMode.IN)
             {
-                obj.GetComponent<Image>().color = new Color(c.r, c.g, c.b, a);
+                //obj.GetComponent<Image>().color = new Color(c.r, c.g, c.b, a);
+                fadeMask.GetComponent<SpriteMask>().alphaCutoff = a;
                 a -= speed;
                 if (a <= 0) { fadeEnd = true; }
             }
