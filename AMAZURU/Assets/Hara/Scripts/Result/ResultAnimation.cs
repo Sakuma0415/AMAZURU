@@ -8,7 +8,7 @@ public class ResultAnimation : MyAnimation
     [SerializeField, Header("アニメーションの対象オブジェクト")] private GameObject animationObj = null;
     [SerializeField, Header("アニメーション実行間隔"), Range(0, 3)] private float span = 1.0f;
     [SerializeField, Header("移動量"), Range(0, 5)] private float moveDistance = 0;
-    [SerializeField, Header("メニューボタン")] private GameObject menuButton = null;
+    [SerializeField, Header("メニューボタン")] private Button[] menuButton = null;
     [SerializeField, Tooltip("アニメーション管理フラグ")] private bool animationFlag = false;
     public bool AnimationFlag { set { animationFlag = value; } }
 
@@ -26,6 +26,14 @@ public class ResultAnimation : MyAnimation
     void Update()
     {
         ResultAction();
+    }
+
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    private void ResultInit()
+    {
+        SetButtonAction();
     }
 
     /// <summary>
@@ -56,7 +64,7 @@ public class ResultAnimation : MyAnimation
                     time += Time.deltaTime;
                     break;
                 default:
-                    menuButton.SetActive(true);
+                    ButtonActive(true);
                     return;
             }
 
@@ -72,7 +80,31 @@ public class ResultAnimation : MyAnimation
             time = 0;
             animationObj.transform.localPosition = Vector3.zero;
             animationObj.transform.localScale = Vector3.zero;
-            menuButton.SetActive(false);
+            ButtonActive(false);
+        }
+    }
+
+    /// <summary>
+    /// ボタンの表示と非表示管理
+    /// </summary>
+    /// <param name="active"></param>
+    private void ButtonActive(bool active)
+    {
+        foreach(var button in menuButton)
+        {
+            if(button.gameObject.activeSelf == active) { break; }
+            button.gameObject.SetActive(active);
+        }
+    }
+
+    /// <summary>
+    /// ボタンアクションの設定
+    /// </summary>
+    private void SetButtonAction()
+    {
+        foreach(var button in menuButton)
+        {
+
         }
     }
 }

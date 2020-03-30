@@ -234,7 +234,10 @@ MonoBehaviour:
   animationObj: {fileID: 7207542967805494729}
   span: 2
   moveDistance: 2
-  menuButton: {fileID: 7207542967034714165}
+  menuButton:
+  - {fileID: 7207542967033481794}
+  - {fileID: 7207542967731046686}
+  - {fileID: 7207542966304388318}
   animationFlag: 0
 --- !u!1 &7207542967033481792
 GameObject:
