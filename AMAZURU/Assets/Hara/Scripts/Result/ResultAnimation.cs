@@ -19,7 +19,7 @@ public class ResultAnimation : MyAnimation
     // Start is called before the first frame update
     void Start()
     {
-        
+        ResultInit();
     }
 
     // Update is called once per frame
@@ -102,9 +102,34 @@ public class ResultAnimation : MyAnimation
     /// </summary>
     private void SetButtonAction()
     {
+        int num = 0;
         foreach(var button in menuButton)
         {
-
+            button.onClick.AddListener(() => ButtonAction(num));
+            num++;
         }
+    }
+
+    /// <summary>
+    /// ボタンアクションの中身
+    /// </summary>
+    /// <param name="num"></param>
+    private void ButtonAction(int num)
+    {
+        Scenemanager.SceneName name;
+        switch (num)
+        {
+            case 0:
+                name = Scenemanager.SceneName.Title;
+                break;
+            case 1:
+                name = Scenemanager.SceneName.Action;
+                break;
+            default:
+                name = Scenemanager.SceneName.Title;
+                break;
+        }
+
+        Scenemanager.Instance.LoadScene(name);
     }
 }
