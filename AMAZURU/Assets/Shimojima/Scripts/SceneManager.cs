@@ -21,24 +21,22 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
         OUT
     }
 
-    public GameObject fadeMask;
+    public Image fadeImage;
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            LoadScene(SceneName.Action);
-        }
     }
 
     /// <summary>
     /// シーンの非同期読込
     /// </summary>
     /// <param name="name">シーンの名前(列挙型)</param>
-    public void LoadScene(SceneName name)
+    /// <param name="fm1">最初に行うフェード操作</param>
+    /// <param name="fm2">最後に行うフェード操作</param>
+    public void LoadScene(SceneName name, FadeMode fm1, FadeMode fm2)
     {
         sceneName = name;
-        StartCoroutine("Load");
+        StartCoroutine(Load(fm1, fm2));
     }
 
     /// <summary>
@@ -46,9 +44,9 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
     /// </summary>
     /// <param name="sceneName"></param>
     /// <returns></returns>
-    private IEnumerator Load()
+    private IEnumerator Load(FadeMode fm1, FadeMode fm2)
     {
-        StartCoroutine(Fade(1, FadeMode.IN));
+        StartCoroutine(Fade(1, fm1));
         yield return new WaitForSeconds(1f);
         AsyncOperation async = SceneManager.LoadSceneAsync(sceneName.ToString());
         async.allowSceneActivation = false;
@@ -64,7 +62,7 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
             yield return null;
         }
 
-        StartCoroutine(Fade(1, FadeMode.OUT));
+        StartCoroutine(Fade(1, fm2));
         yield return null;
     }
 
@@ -74,31 +72,27 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
     /// <para>第二引数 = フェードモード</para>
     /// </summary>
     /// <param name="sec"></param>
-    /// <param name="fadeIndex"></param>
+    /// <param name="fadwMode"></param>
     /// <returns></returns>
     private IEnumerator Fade(float sec, FadeMode fadeMode)
     {
-        //GameObject obj = fadeCanvas.transform.GetChild(0).gameObject;
-        //Color c = obj.GetComponent<Image>().color;
         float speed = 1 / (sec * 60);
-        float a = fadeMask.GetComponent<SpriteMask>().alphaCutoff;
+        float a = fadeImage.material.GetFloat("_Alpha");
         bool fadeEnd = false;
 
         while (!fadeEnd)
         {
-            if (fadeMode == FadeMode.OUT)
+            if (fadeMode == FadeMode.IN)
             {
-                //obj.GetComponent<Image>().color = new Color(c.r, c.g, c.b, a);
-                fadeMask.GetComponent<SpriteMask>().alphaCutoff = a;
-                a += speed;
-                if(a >= 1) { fadeEnd = true; }
-            }
-            else if(fadeMode == FadeMode.IN)
-            {
-                //obj.GetComponent<Image>().color = new Color(c.r, c.g, c.b, a);
-                fadeMask.GetComponent<SpriteMask>().alphaCutoff = a;
+                fadeImage.material.SetFloat("_Alpha", a);
                 a -= speed;
-                if (a <= 0) { fadeEnd = true; }
+                if(a <= 0) { fadeEnd = true; }
+            }
+            else if(fadeMode == FadeMode.OUT)
+            {
+                fadeImage.material.SetFloat("_Alpha", a);
+                a += speed;
+                if (a >= 1) { fadeEnd = true; }
             }
 
             yield return null;

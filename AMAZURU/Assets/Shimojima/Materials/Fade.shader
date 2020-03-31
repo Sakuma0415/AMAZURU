@@ -3,8 +3,8 @@
     Properties
     {
         [PerRendererData] _MainTex ("Texture", 2D) = "white" {}
-        _Color("Tint", Color) = (1,1,1,1)
-        _Alpha ("Time", Range(0,1)) = 0
+        _Color("Color", Color) = (1,1,1,1)
+        _Alpha ("AlphaCut", Range(0,1)) = 0
     }
     SubShader
     {
