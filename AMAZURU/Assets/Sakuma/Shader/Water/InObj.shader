@@ -15,6 +15,7 @@
 		[Header(Script Check)]
 		_High("_High", float) = 0
 		_LightMap ("LightMap", 2D) = "white" {}
+		_InColor ("InColor", Color) = (1, 1, 1, 1)
 	}
 
     SubShader
@@ -56,6 +57,7 @@
 
 
 			fixed4 _MainColor;
+			fixed4 _InColor;
 			sampler2D _MainTexture;
 			float4 _MainTexture_ST;
 			float _DiffuseShade;
@@ -108,7 +110,7 @@
 				float3 V = normalize(i.vertexWS - _WorldSpaceCameraPos);
 				float3 H = normalize(-L + (-V));
 
-				finalColor=(finalColor+shadowBf)/2;
+				finalColor=((finalColor*7)+shadowBf)/8;
 
 				if(_High>i.vertexWS.y){
 
@@ -118,7 +120,12 @@
 					wuv.x-=(int)wuv.x;
 					wuv.y-=(int)wuv.y;
 					fixed4 finalColor2 = tex2D(_LightMap, wuv);
-					finalColor.rbg *= (1+(finalColor2.a/6));
+					finalColor.rbg *= (1+(finalColor2.a/5));
+
+					finalColor.rgb-=_InColor.rgb*(hi/50);
+					if(hi<0.2){
+					finalColor.rbg+=(1-(hi*5))*float3(1,1,1)/2;
+					}
 				}
 				
 				return finalColor;

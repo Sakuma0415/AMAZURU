@@ -26,7 +26,7 @@ public class InCamera : MonoBehaviour
     private void FixedUpdate()
     {
         camera.cullingMask = !set ? outMask : inMask;
-        //maskObj.SetActive(set);
+        maskObj.SetActive(set);
         time = (set ? 0.1f : (time - Time.fixedDeltaTime < 0f ? 0 : time - Time.fixedDeltaTime));
         image.color = new Color(image.color.r, image.color.g, image.color.b, (time==0)?0:time *2+0.3f);
     }
