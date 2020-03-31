@@ -9,4 +9,5 @@ public class StageData : ScriptableObject
     public Vector3 startPos;
     public float waterHeight;
     public GameObject stagePrefab;
+    public float startAngle;
 }
