@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: shimojima1
   m_EditorClassIdentifier: 
   stageName: shimojima1
-  stageSize: {x: 20, y: 20, z: 20}
+  stageSize: {x: 20, y: 6, z: 20}
   startPos: {x: 6, y: 2, z: 2}
   waterHeight: 18
   stagePrefab: {fileID: 2074524325707851079, guid: 13227065ba82c3545bc8035871070765,
     type: 3}
+  startAngle: 0
