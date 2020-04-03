@@ -10,7 +10,7 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
     public enum SceneName
     {
         Title = 0,
-        StageEdit
+        Action
     }
 
     private SceneName sceneName;
@@ -21,20 +21,38 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
         OUT
     }
 
-    public Canvas fadeCanvas;
+    private bool IsLoadScene = false;
+    public Image fadeImage;
+    [Tooltip("アルファ値のカット値"),Range(0,1)]
+    public float alphaCut = 0;
+
+
+#if UNITY_EDITOR
+    void OnValidate()
+    {
+        fadeImage.material.SetFloat("_Alpha", alphaCut);
+    }
+#endif
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            LoadScene(SceneName.Action);
+        }
     }
 
     /// <summary>
     /// シーンの非同期読込
     /// </summary>
     /// <param name="name">シーンの名前(列挙型)</param>
+    /// <param name="fm1">最初に行うフェード操作</param>
     public void LoadScene(SceneName name)
     {
+        if (IsLoadScene) { return; }
         sceneName = name;
         StartCoroutine("Load");
+        IsLoadScene = true;
     }
 
     /// <summary>
@@ -44,6 +62,10 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
     /// <returns></returns>
     private IEnumerator Load()
     {
+        //FadeMode fm2;
+        //if(fm == FadeMode.IN) { fm2 = FadeMode.OUT; }
+        //else { fm2 = FadeMode.IN; }
+
         StartCoroutine(Fade(1, FadeMode.OUT));
         yield return new WaitForSeconds(1f);
         AsyncOperation async = SceneManager.LoadSceneAsync(sceneName.ToString());
@@ -60,7 +82,9 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
             yield return null;
         }
 
+        yield return new WaitForSeconds(1f);
         StartCoroutine(Fade(1, FadeMode.IN));
+        IsLoadScene = false;
         yield return null;
     }
 
@@ -70,29 +94,27 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
     /// <para>第二引数 = フェードモード</para>
     /// </summary>
     /// <param name="sec"></param>
-    /// <param name="fadeIndex"></param>
+    /// <param name="fadwMode"></param>
     /// <returns></returns>
     private IEnumerator Fade(float sec, FadeMode fadeMode)
     {
-        GameObject obj = fadeCanvas.transform.GetChild(0).gameObject;
-        Color c = obj.GetComponent<Image>().color;
         float speed = 1 / (sec * 60);
-        float a = c.a;
+        alphaCut = fadeImage.material.GetFloat("_Alpha");
         bool fadeEnd = false;
 
         while (!fadeEnd)
         {
-            if (fadeMode == FadeMode.OUT)
+            if (fadeMode == FadeMode.IN)
             {
-                obj.GetComponent<Image>().color = new Color(c.r, c.g, c.b, a);
-                a += speed;
-                if(a >= 1) { fadeEnd = true; }
+                fadeImage.material.SetFloat("_Alpha", alphaCut);
+                alphaCut -= speed;
+                if(alphaCut <= 0) { fadeEnd = true; }
             }
-            else if(fadeMode == FadeMode.IN)
+            else if(fadeMode == FadeMode.OUT)
             {
-                obj.GetComponent<Image>().color = new Color(c.r, c.g, c.b, a);
-                a -= speed;
-                if (a <= 0) { fadeEnd = true; }
+                fadeImage.material.SetFloat("_Alpha", alphaCut);
+                alphaCut += speed;
+                if (alphaCut >= 1) { fadeEnd = true; }
             }
 
             yield return null;

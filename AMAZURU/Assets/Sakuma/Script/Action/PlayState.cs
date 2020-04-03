@@ -13,12 +13,13 @@ public class PlayState : MonoBehaviour
         Anime,
         Stop,
         Rain,
-        RainSelect
+        RainSelect,
+        Clear
     }
     GameMode backGameMode;
     public GameMode gameMode;
 
-    float rainTime = 0;
+    public float rainTime = 0;
 
 
 
@@ -56,9 +57,11 @@ public class PlayState : MonoBehaviour
         {
             switch (playState.gameMode)
             {
+                case GameMode.Clear:
+                    Progress.progress.ResultSet();
+                    break;
                 case GameMode.Rain:
-                    Debug.Log("s");
-                    playState.rainTime = 2;
+                    //playState.rainTime = 2;
                     break;
             }
 
