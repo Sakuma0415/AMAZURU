@@ -33,7 +33,8 @@ public class ResultAnimation : MyAnimation
     /// </summary>
     private void ResultInit()
     {
-        SetButtonAction();
+        animationFlag = false;
+        //SetButtonAction();
     }
 
     /// <summary>

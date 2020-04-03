@@ -133,6 +133,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SceneManager
       objectReference: {fileID: 0}
+    - target: {fileID: 175424548475057124, guid: 706b8fa8c83fb5b4b9254687b8594fc3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 175424548475057127, guid: 706b8fa8c83fb5b4b9254687b8594fc3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -438,6 +443,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7207542966893783184, guid: 12fc45b7fb2745d43bae80835acf35c3,
+        type: 3}
+      propertyPath: animationFlag
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7207542966893783185, guid: 12fc45b7fb2745d43bae80835acf35c3,
         type: 3}
       propertyPath: m_Name
