@@ -50,7 +50,7 @@ CharacterController:
   m_StepOffset: 0.03
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0
-  m_Center: {x: 0, y: 0.75, z: 0}
+  m_Center: {x: 0, y: 0.8, z: 0}
 --- !u!114 &7510005379315772952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,7 +67,7 @@ MonoBehaviour:
   playerAnimator: {fileID: 2934536632129885332}
   hiddenWallPrefab: {fileID: 8378400810947322284, guid: 20f0eb19eff9d37448a5f53a6970d386,
     type: 3}
-  playerSpeed: 3
+  playerSpeed: 3.6
   playerCamera: {fileID: 0}
   layerMask:
     serializedVersion: 2
@@ -75,6 +75,7 @@ MonoBehaviour:
   rayLength: 1.22
   gravity: 3
   wallSize: 0.1
+  inWater: 0
 --- !u!1001 &2001958939563436611
 PrefabInstance:
   m_ObjectHideFlags: 0
