@@ -427,7 +427,7 @@ public class StageEditor_uchimura : MonoBehaviour
 
         if (processingIndex == 2 || processingIndex == 3) { rangeSelectionState = RangeSelectionState.OFF; }
         if (processingIndex != 1) { return; }
-        AssetDatabase.SaveAssets();
+        //AssetDatabase.SaveAssets();
         StageDataIncetance();
 
         Destroy(stageRoot);

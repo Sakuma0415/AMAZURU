@@ -7,7 +7,6 @@ public class ResultAnimation : MyAnimation
 {
     [SerializeField, Header("アニメーションの対象オブジェクト")] private GameObject animationObj = null;
     [SerializeField, Header("アニメーション実行間隔"), Range(0, 3)] private float span = 1.0f;
-    [SerializeField, Header("移動量"), Range(0, 5)] private float moveDistance = 0;
     [SerializeField, Header("メニューボタン")] private Button[] menuButton = null;
     [SerializeField, Tooltip("アニメーション管理フラグ")] private bool animationFlag = false;
     public bool AnimationFlag { set { animationFlag = value; } }
@@ -57,7 +56,7 @@ public class ResultAnimation : MyAnimation
                     time += Time.deltaTime;
                     break;
                 case 2:
-                    stepEnd = MoveAnimation(animationObj, time, span, animationObj.transform.localPosition, animationObj.transform.localPosition + Vector3.up * moveDistance, true);
+                    stepEnd = MoveAnimation(animationObj, time, span, Vector3.zero, (Vector3.up * Screen.height * 0.5f) * 0.5f, true);
                     time += Time.deltaTime;
                     break;
                 case 3:
