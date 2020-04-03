@@ -19,6 +19,10 @@ public class StageMake : MonoBehaviour
 
     [SerializeField]
     DigitalRuby.RainMaker.RainScript[] rainScript;
+    [SerializeField]
+    AmehurashiManager amehurashiManager;
+
+
 
     private void StageLoad()
     {
@@ -34,10 +38,12 @@ public class StageMake : MonoBehaviour
         cameraPos.lookPos = new Vector3(StageMake.LoadStageData.stageSize.x/2, StageMake.LoadStageData.stageSize.y / 2, StageMake.LoadStageData.stageSize.z/2);
         cameraPos.PlayerTransform = player.GetComponent<Transform >();
 
+        amehurashiManager.waterHi = waterObj.GetComponent<WaterHi>();
+        amehurashiManager.ManagerSet();
+
     }
 
-
-    void Start()
+    private void Start()
     {
         if (LoadStageData == null)
         {

@@ -18,7 +18,7 @@ public class PlayState : MonoBehaviour
     GameMode backGameMode;
     public GameMode gameMode;
 
-    float rainTime = 0;
+    public float rainTime = 0;
 
 
 
@@ -57,8 +57,7 @@ public class PlayState : MonoBehaviour
             switch (playState.gameMode)
             {
                 case GameMode.Rain:
-                    Debug.Log("s");
-                    playState.rainTime = 2;
+                    //playState.rainTime = 2;
                     break;
             }
 
