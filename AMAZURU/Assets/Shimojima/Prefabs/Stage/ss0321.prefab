@@ -8440,6 +8440,10 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 256
+  cameraPos: {fileID: 0}
+  sw: 0
+  meshRenderer: {fileID: 6685085317703729342}
+  shaders: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &1675721855764471913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18837,6 +18841,10 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 256
+  cameraPos: {fileID: 0}
+  sw: 0
+  meshRenderer: {fileID: 6565331478471648213}
+  shaders: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &6048222424025045138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23431,6 +23439,10 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 256
+  cameraPos: {fileID: 0}
+  sw: 0
+  meshRenderer: {fileID: 292331760347818846}
+  shaders: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &1193791325181375654
 MonoBehaviour:
   m_ObjectHideFlags: 0
