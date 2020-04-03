@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class CameraPos : MonoBehaviour
 {
-    public  float CameraDisS;
+    public float CameraDisS;
     public float CameraDisP;
 
+    [SerializeField]
     float CameraDis;
 
     public Vector3 lookPos;
@@ -29,7 +30,7 @@ public class CameraPos : MonoBehaviour
     Vector3 animePos;
     Vector3 animeRef;
     [SerializeField]
-    bool MouseHack = false;
+    bool MouseHack = true;
 
 
     [SerializeField]
@@ -40,20 +41,24 @@ public class CameraPos : MonoBehaviour
     [SerializeField]
     float changeTime;
 
+    [SerializeField]
+    float fAngle;
+
+    bool MouseCheck = true;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        XZangle = 270;
-        targetAngle = 270;
+        XZangle = fAngle;
+        targetAngle = fAngle;
         CameraDis =lookMode ? CameraDisP: CameraDisS;
-
+        MouseCheck = true;
     }
 
     private void LateUpdate()
     {
-        if (PlayState.playState.gameMode == PlayState.GameMode.Play)
+        if (PlayState.playState.gameMode == PlayState.GameMode.Play|| rainPotChange)
         {
             if (lookAnimeTime > 0)
             {
@@ -72,6 +77,9 @@ public class CameraPos : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        Debug.Log(lookObj); 
+
         if (PlayState.playState.gameMode == PlayState.GameMode.Play)
         {
             Cursor.visible = !MouseHack;
@@ -89,34 +97,40 @@ public class CameraPos : MonoBehaviour
             }
             if (MouseHack)
             {
-                float mouse_x_delta = Input.GetAxis("Mouse X");
-                float mouse_y_delta = Input.GetAxis("Mouse Y");
 
-                XZangle -= mouse_x_delta * (lookMode ? CameraDisS : CameraDisP) / 10;
-                Yangle -= mouse_y_delta * (lookMode ? CameraDisS : CameraDisP) / 10;
+                if (MouseCheck)
+                {
+                    float mouse_x_delta = Input.GetAxis("Mouse X");
+                    float mouse_y_delta = Input.GetAxis("Mouse Y");
 
-                if (Yangle > 90)
-                {
-                    Yangle = 90;
+                    XZangle -= mouse_x_delta * (lookMode ? CameraDisS : CameraDisP) / 10;
+                    Yangle -= mouse_y_delta * (lookMode ? CameraDisS : CameraDisP) / 10;
+
+                    if (Yangle > 90)
+                    {
+                        Yangle = 90;
+                    }
+                    if (Yangle < -90)
+                    {
+                        Yangle = -90;
+                    }
                 }
-                if (Yangle < -90)
-                {
-                    Yangle = -90;
-                }
+
+
             }
-            else
-            {
-                bool right = Input.GetKey(KeyCode.T);
-                bool left = Input.GetKey(KeyCode.Y);
-                if (right)
-                {
-                    XZangle -= 2;
-                }
-                if (left)
-                {
-                    XZangle += 2;
-                }
-            }
+            //else
+            //{
+            //    bool right = Input.GetKey(KeyCode.T);
+            //    bool left = Input.GetKey(KeyCode.Y);
+            //    if (right)
+            //    {
+            //        XZangle -= 2;
+            //    }
+            //    if (left)
+            //    {
+            //        XZangle += 2;
+            //    }
+            //}
 
 
 
@@ -132,10 +146,12 @@ public class CameraPos : MonoBehaviour
 
             if (lookAnimeTime > 0)
             {
+                MouseCheck = false;
                 lookAnimeTime -= Time.deltaTime;
                 if (lookAnimeTime <= 0)
                 {
                     lookAnimeTime = 0;
+                    MouseCheck = true;
                 }
                 CameraDis = Mathf.Lerp(lookMode ? CameraDisS : CameraDisP, lookMode ? CameraDisP : CameraDisS, 1 - (lookAnimeTime/ changeTime));
 
@@ -152,6 +168,113 @@ public class CameraPos : MonoBehaviour
             
         }
 
+        if (rainPotChange)
+        {
+            potAnimeTime += Time.deltaTime;
 
+            if (outflg)
+            {
+                if (potAnimeTime < rainPotChangeAnimeTimeSpead)
+                {
+                    XZangle = Mathf.LerpAngle(lotAngle, beforeAngleXZ, potAnimeTime/ rainPotChangeAnimeTimeSpead);
+                    Yangle = Mathf.LerpAngle(35, beforeAngleY, potAnimeTime / rainPotChangeAnimeTimeSpead);
+                    CameraDis = Mathf.Lerp(25, beforeDis, potAnimeTime / rainPotChangeAnimeTimeSpead);
+                    lookObj = Vector3.Lerp(lookPos, beforePos , potAnimeTime / rainPotChangeAnimeTimeSpead);
+                    lookHi = Mathf.Lerp( -0.1f, beforeHi, potAnimeTime / rainPotChangeAnimeTimeSpead);
+                }
+                else
+                {
+                    XZangle = Mathf.LerpAngle(lotAngle, beforeAngleXZ, 1);
+                    Yangle = Mathf.LerpAngle(35, beforeAngleY, 1);
+                    CameraDis = Mathf.Lerp(25, beforeDis, 1);
+                    lookObj = Vector3.Lerp(lookPos, beforePos, 1);
+                    lookHi = Mathf.Lerp(-0.1f, beforeHi, 1);
+                    rainPotChange = false;
+                }
+
+            }
+            else
+            {
+                if (potAnimeTime < rainPotChangeAnimeTimeSpead)
+                {
+                    XZangle = Mathf.LerpAngle(beforeAngleXZ, lotAngle, potAnimeTime / rainPotChangeAnimeTimeSpead);
+                    Yangle = Mathf.LerpAngle(beforeAngleY, 35, potAnimeTime / rainPotChangeAnimeTimeSpead);
+                    CameraDis = Mathf.Lerp(beforeDis, 25, potAnimeTime / rainPotChangeAnimeTimeSpead);
+                    lookObj = Vector3.Lerp(beforePos , lookPos, potAnimeTime / rainPotChangeAnimeTimeSpead);
+                    lookHi = Mathf.Lerp(beforeHi, -0.1f, potAnimeTime / rainPotChangeAnimeTimeSpead);
+                }
+                else
+                {
+                    XZangle = Mathf.LerpAngle(beforeAngleXZ, lotAngle, 1);
+                    Yangle = Mathf.LerpAngle(beforeAngleY, 35, 1);
+                    CameraDis = Mathf.Lerp(beforeDis, 25, 1);
+                    lookObj = Vector3.Lerp(beforePos, lookPos, 1);
+                    lookHi = Mathf.Lerp(beforeHi, -0.1f, 1);
+                }
+            }
+
+        }
     }
+
+
+    //雨降らし選択時のカメラ遷移用
+    [SerializeField]
+    bool rainPotChange = false;
+    float beforeAngleY = 0;
+    float beforeAngleXZ = 0;
+    float beforeDis = 0;
+    float beforeHi = 0;
+    Vector3 beforePos;
+    float rainPotChangeAnimeTime;
+    [SerializeField]
+    float rainPotChangeAnimeTimeSpead;
+    float potAnimeTime;
+    bool outflg = false;
+    float lotAngle = 0;
+
+    public void RainPotChange()
+    {
+
+        beforeHi = lookHi;
+        rainPotChange = true;
+        outflg = false;
+        rainPotChangeAnimeTime = 0;
+        beforePos = lookObj;
+        beforeAngleXZ = XZangle;
+        beforeAngleY = Yangle;
+        beforeDis = lookMode ? CameraDisP : CameraDisS;
+        potAnimeTime = 0;
+
+        float bfAngle = XZangle;
+        while (bfAngle > 360)
+        {
+            bfAngle -= 360;
+        }
+        while (bfAngle < 0)
+        {
+            bfAngle += 360;
+        }
+        if(bfAngle < 90)
+        {
+            lotAngle = 45;
+        }
+        else if(bfAngle < 180)
+        {
+            lotAngle = 135;
+        }
+        else if (bfAngle < 270)
+        {
+            lotAngle = 225;
+        }
+        else
+        {
+            lotAngle = 315;
+        }
+    }
+    public void RainPotChangeOut()
+    {
+        potAnimeTime = 0;
+        outflg = true;
+    }
+
 }

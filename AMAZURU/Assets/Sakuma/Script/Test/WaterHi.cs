@@ -9,8 +9,12 @@ public class WaterHi : MonoBehaviour
     float next;
     bool rainAnime = false;
     float animeTime = 0;
+    float animeTimeTik = 0;
     [SerializeField]
-    Material material;
+    Material[] material;
+    [SerializeField]
+    float anmeSpead = 1;
+    public DigitalRuby.RainMaker.RainScript[] rainScript;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,19 +25,26 @@ public class WaterHi : MonoBehaviour
     {
         if (rainAnime)
         {
-            animeTime -= Time.fixedDeltaTime;
-            if (animeTime < 1.5f && animeTime > 0.5f)
+
+
+            animeTimeTik+= Time.fixedDeltaTime;
+            //animeTime -= Time.fixedDeltaTime;
+            if (animeTimeTik < animeTime-0.5f && animeTimeTik > 0.5f)
             {
-                //transform.localScale = new Vector3(transform.localScale.x, Mathf.Lerp(back, next,1-(animeTime -0.5f)), transform.localScale.z);
-                max = Mathf.Lerp(back, next, 1 - (animeTime - 0.5f));
+                max = Mathf.Lerp(back, next, (animeTimeTik - 0.5f)/ (animeTime-1)* anmeSpead);
+
             }
-            if (animeTime < 0.5f)
+            if (animeTimeTik > animeTime - 1)
             {
-                //transform.localScale = new Vector3(transform.localScale.x, next, transform.localScale.z);
+                for (int i = 0; i < rainScript.Length; i++)
+                {
+                    rainScript[i].RainIntensity = 0.03f;
+                }
                 max = next;
             }
-            if (animeTime <= 0)
+            if (animeTimeTik > animeTime - 0.5f)
             {
+                Camera.main.gameObject.GetComponent<CameraPos>().RainPotChangeOut();
                 rainAnime = false;
             }
         }
@@ -44,33 +55,38 @@ public class WaterHi : MonoBehaviour
 
 
 
+        for (int i=0;i<material.Length;i++)
+        {
 
-        material.SetFloat("_High",max);
+            material[i].SetFloat("_High", max);
+        }
+
+
         transform.localScale = new Vector3(transform.localScale.x, max, transform.localScale.z);
     }
-    // Update is called once per frame
-    void Update()
-    {
 
-        if (Input.GetKeyDown(KeyCode.U)) { HiChange(4); }
-        //if (Input.GetKey(KeyCode.I)) { max -= Time.deltaTime; }
-
-
-
-
-
-        
-    }
 
     public void HiChange(float nextHi)
     {
         if (!rainAnime)
         {
+            for (int i = 0; i < rainScript.Length; i++)
+            {
+                rainScript[i].RainIntensity = 1;
+            }
             PlayState.playState.gameMode = PlayState.GameMode.Rain;
+            //
+            PlayState.playState.rainTime = Mathf.Abs ( (max+0.1f)-nextHi)/ anmeSpead + 1.5f;
             back = transform.localScale.y;
             next = nextHi-0.1f;
             rainAnime = true;
-            animeTime = 2;
+
+            animeTime = Mathf.Abs((max + 0.1f) - nextHi) / anmeSpead + 1.5f;
+            animeTimeTik = 0;
+
+
+
+            
         }
 
 
