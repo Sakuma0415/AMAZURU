@@ -21,10 +21,25 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
         OUT
     }
 
+    private bool IsLoadScene = false;
     public Image fadeImage;
+    [Tooltip("アルファ値のカット値"),Range(0,1)]
+    public float alphaCut = 0;
+
+
+#if UNITY_EDITOR
+    void OnValidate()
+    {
+        fadeImage.material.SetFloat("_Alpha", alphaCut);
+    }
+#endif
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            LoadScene(SceneName.Action);
+        }
     }
 
     /// <summary>
@@ -32,11 +47,12 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
     /// </summary>
     /// <param name="name">シーンの名前(列挙型)</param>
     /// <param name="fm1">最初に行うフェード操作</param>
-    /// <param name="fm2">最後に行うフェード操作</param>
-    public void LoadScene(SceneName name, FadeMode fm1, FadeMode fm2)
+    public void LoadScene(SceneName name)
     {
+        if (IsLoadScene) { return; }
         sceneName = name;
-        StartCoroutine(Load(fm1, fm2));
+        StartCoroutine("Load");
+        IsLoadScene = true;
     }
 
     /// <summary>
@@ -44,9 +60,13 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
     /// </summary>
     /// <param name="sceneName"></param>
     /// <returns></returns>
-    private IEnumerator Load(FadeMode fm1, FadeMode fm2)
+    private IEnumerator Load()
     {
-        StartCoroutine(Fade(1, fm1));
+        //FadeMode fm2;
+        //if(fm == FadeMode.IN) { fm2 = FadeMode.OUT; }
+        //else { fm2 = FadeMode.IN; }
+
+        StartCoroutine(Fade(1, FadeMode.OUT));
         yield return new WaitForSeconds(1f);
         AsyncOperation async = SceneManager.LoadSceneAsync(sceneName.ToString());
         async.allowSceneActivation = false;
@@ -62,7 +82,9 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
             yield return null;
         }
 
-        StartCoroutine(Fade(1, fm2));
+        yield return new WaitForSeconds(1f);
+        StartCoroutine(Fade(1, FadeMode.IN));
+        IsLoadScene = false;
         yield return null;
     }
 
@@ -77,22 +99,22 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
     private IEnumerator Fade(float sec, FadeMode fadeMode)
     {
         float speed = 1 / (sec * 60);
-        float a = fadeImage.material.GetFloat("_Alpha");
+        alphaCut = fadeImage.material.GetFloat("_Alpha");
         bool fadeEnd = false;
 
         while (!fadeEnd)
         {
             if (fadeMode == FadeMode.IN)
             {
-                fadeImage.material.SetFloat("_Alpha", a);
-                a -= speed;
-                if(a <= 0) { fadeEnd = true; }
+                fadeImage.material.SetFloat("_Alpha", alphaCut);
+                alphaCut -= speed;
+                if(alphaCut <= 0) { fadeEnd = true; }
             }
             else if(fadeMode == FadeMode.OUT)
             {
-                fadeImage.material.SetFloat("_Alpha", a);
-                a += speed;
-                if (a >= 1) { fadeEnd = true; }
+                fadeImage.material.SetFloat("_Alpha", alphaCut);
+                alphaCut += speed;
+                if (alphaCut >= 1) { fadeEnd = true; }
             }
 
             yield return null;
