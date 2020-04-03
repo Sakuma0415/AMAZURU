@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WaterHi : MonoBehaviour
 {
-    public float max=0.25f;
+    public float max=0.9f;
     float back;
     float next;
     bool rainAnime = false;
