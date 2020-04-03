@@ -11,7 +11,7 @@ public class Goal : MonoBehaviour
             if(Progress.progress.key)
             {
                 Debug.Log("クリア");
-                PlayState.playState.gameMode = PlayState.GameMode.Stop;
+                PlayState.playState.gameMode = PlayState.GameMode.Clear ;
             }
             else
             {

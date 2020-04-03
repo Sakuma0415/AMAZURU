@@ -79,6 +79,10 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 256
+  cameraPos: {fileID: 0}
+  sw: 0
+  meshRenderer: {fileID: 4108631915852988981}
+  shaders: {fileID: 4800000, guid: 8a79b8120df7bd14d9f380b5c00f38c3, type: 3}
 --- !u!1 &7552653203171770543
 GameObject:
   m_ObjectHideFlags: 0

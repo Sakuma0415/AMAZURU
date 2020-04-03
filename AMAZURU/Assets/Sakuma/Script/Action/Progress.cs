@@ -7,7 +7,8 @@ public class Progress : MonoBehaviour
     static public Progress progress;
 
     public bool key;
-
+    [SerializeField]
+    ResultAnimation resultAnimation;
 
     void SetState()
     {
@@ -17,6 +18,11 @@ public class Progress : MonoBehaviour
     {
         SetState();
         progress = this;
-        SoundManager.soundManager.PlayBgm("rain_loop", 0);
+        //SoundManager.soundManager.PlayBgm("rain_loop", 0);
+    }
+
+    public void ResultSet()
+    {
+        resultAnimation.AnimationFlag = true;
     }
 }

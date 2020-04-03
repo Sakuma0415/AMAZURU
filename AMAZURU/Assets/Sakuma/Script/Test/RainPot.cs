@@ -14,11 +14,18 @@ public class RainPot : MonoBehaviour
     public CameraPos cameraPos;
     public bool sw=false;
 
-
+    [SerializeField]
+    MeshRenderer meshRenderer;
+    Material materials;
+    [SerializeField]
+    Shader shaders;
 
     // Start is called before the first frame update
     void Start()
     {
+        materials= new Material(shaders); 
+        meshRenderer.material = materials;
+
         cameraPos = Camera.main.gameObject.GetComponent<CameraPos>();
         Ray ray = new Ray(transform.position, transform.TransformDirection(Vector3.down));
         RaycastHit hit;
@@ -31,41 +38,14 @@ public class RainPot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //try
-        //{
-        //    if (PlayState.playState.gameMode == PlayState.GameMode.RainSelect)
-        //    {
-
-        //        if (Input.GetKeyDown(KeyCode.Alpha1))
-        //        {
-        //            waterHi.HiChange(1);
-        //        }
-        //        if (Input.GetKeyDown(KeyCode.Alpha2))
-        //        {
-        //            waterHi.HiChange(2);
-        //        }
-        //        if (Input.GetKeyDown(KeyCode.Alpha3))
-        //        {
-        //            waterHi.HiChange(3);
-        //        }
-        //        if (Input.GetKeyDown(KeyCode.Alpha4))
-        //        {
-        //            waterHi.HiChange(4);
-        //        }
-        //        if (Input.GetKeyDown(KeyCode.Alpha5))
-        //        {
-        //            waterHi.HiChange(5);
-        //        }
-
-
-
-
-        //    }
-        //}
-        //catch
-        //{
-
-        //}
+        if (sw)
+        {
+            materials.color = Color.red;
+        }
+        else
+        {
+            materials.color = Color.blue;
+        }
 
 
 
