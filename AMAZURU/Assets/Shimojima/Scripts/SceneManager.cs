@@ -25,6 +25,8 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
     public Image fadeImage;
     [Tooltip("アルファ値のカット値"),Range(0,1)]
     public float alphaCut = 0;
+    [SerializeField]
+    private GameObject anounceText;
 
 
 #if UNITY_EDITOR
@@ -69,14 +71,17 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
         StartCoroutine(Fade(1, FadeMode.OUT));
         yield return new WaitForSeconds(1f);
         AsyncOperation async = SceneManager.LoadSceneAsync(sceneName.ToString());
+        Animator animator = anounceText.GetComponent<Animator>();
         async.allowSceneActivation = false;
 
         while (!async.isDone)
         {
-            if (async.progress >= 0.9f) { Debug.Log("compleated"); }
+            if (async.progress >= 0.9f) { Debug.Log("compleated"); animator.SetTrigger("FadeIn"); }
             if (Input.GetKeyDown(KeyCode.A))
             {
                 async.allowSceneActivation = true;
+                animator.ResetTrigger("FadeIn");
+                animator.SetTrigger("FadeOut");
             }
 
             yield return null;
