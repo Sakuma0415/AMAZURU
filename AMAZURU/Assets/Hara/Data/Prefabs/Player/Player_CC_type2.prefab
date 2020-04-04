@@ -67,15 +67,19 @@ MonoBehaviour:
   playerAnimator: {fileID: 2934536632129885332}
   hiddenWallPrefab: {fileID: 8378400810947322284, guid: 20f0eb19eff9d37448a5f53a6970d386,
     type: 3}
+  inputX: 0
+  inputZ: 0
   playerSpeed: 3.6
   playerCamera: {fileID: 0}
   layerMask:
     serializedVersion: 2
     m_Bits: 1
+  waterLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
   rayLength: 1.22
   gravity: 3
-  wallSize: 0.1
-  inWater: 0
+  wallSize: 1.5
 --- !u!1001 &2001958939563436611
 PrefabInstance:
   m_ObjectHideFlags: 0
