@@ -334,7 +334,7 @@ public class StageEditor : MonoBehaviour
             if (hObject.GetComponent<HighlightObject>().IsAlreadyInstalled) { guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = Color.red; }
             else 
             {
-                if (referenceObject[refObjIndex].name == "SandFloor")
+                if (referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.shader.name == "Custom/InObj")
                 {
                     guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.GetColor("_MainColor");
                 }
