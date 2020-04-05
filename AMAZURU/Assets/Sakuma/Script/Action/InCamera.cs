@@ -20,6 +20,7 @@ public class InCamera : MonoBehaviour
     void Start()
     {
         image.color = new Color(image.color.r, image.color.g, image.color.b, 0);
+
     }
 
     // Update is called once per frame

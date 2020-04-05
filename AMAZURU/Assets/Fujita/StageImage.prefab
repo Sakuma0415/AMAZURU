@@ -4319,6 +4319,10 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 256
+  cameraPos: {fileID: 0}
+  sw: 0
+  meshRenderer: {fileID: 0}
+  shaders: {fileID: 0}
 --- !u!114 &3442087905632431724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20667,20 +20671,6 @@ Transform:
   m_Father: {fileID: 6672128029908292127}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &5678985325563927788
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9058129621623149458}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -5495902117074765545, guid: e6e43df6639a81b4ab25490b7f019d98, type: 3}
 --- !u!54 &5126764839252680432
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -20697,6 +20687,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!64 &5678985325563927788
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9058129621623149458}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5495902117074765545, guid: e6e43df6639a81b4ab25490b7f019d98, type: 3}
 --- !u!54 &331609920381704801
 Rigidbody:
   m_ObjectHideFlags: 0

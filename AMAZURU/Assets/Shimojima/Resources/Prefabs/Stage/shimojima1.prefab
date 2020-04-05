@@ -17804,7 +17804,7 @@ GameObject:
   - component: {fileID: 932025942586043074}
   - component: {fileID: 4558049151166549760}
   - component: {fileID: 6436427070183765379}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30462,6 +30462,7 @@ Transform:
   - {fileID: 5454760344563049098}
   - {fileID: 7352200974317865818}
   - {fileID: 7999415684497033101}
+  - {fileID: 5809228048107646311}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -32546,7 +32547,7 @@ GameObject:
   - component: {fileID: 2128660131912333071}
   - component: {fileID: 2368242966059433544}
   - component: {fileID: 6062402038313888972}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61630,7 +61631,7 @@ GameObject:
   - component: {fileID: 6765134818932227959}
   - component: {fileID: 3005062501199036181}
   - component: {fileID: 1641916175603329254}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -78761,7 +78762,7 @@ GameObject:
   - component: {fileID: 8155671273796970996}
   - component: {fileID: 6213853933012286573}
   - component: {fileID: 5542548597260476405}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92481,6 +92482,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cellIndex: {x: 14, y: 5, z: 5}
+--- !u!1 &6554015053059442417
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5809228048107646311}
+  m_Layer: 0
+  m_Name: souosyoku
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5809228048107646311
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554015053059442417}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 14.54147, y: 2.5174055, z: 10.646135}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5844939877101708681}
+  m_RootOrder: 1167
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6560110623524561685
 GameObject:
   m_ObjectHideFlags: 0
@@ -115658,7 +115689,7 @@ GameObject:
   - component: {fileID: 1372800632291901187}
   - component: {fileID: 5089476956534187548}
   - component: {fileID: 6656868046746916368}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120701,7 +120732,7 @@ GameObject:
   - component: {fileID: 4936274971192157829}
   - component: {fileID: 6034010668177013120}
   - component: {fileID: 7099970746461704284}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
