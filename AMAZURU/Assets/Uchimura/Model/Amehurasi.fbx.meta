@@ -7,8 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: lambert1
+      name: AMFBody_mt
     second: {fileID: 2100000, guid: d0c08a9783f4c8644a37cec161eb3a4d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: AMFDisplay_mt
+    second: {fileID: 2100000, guid: c55d88727ceaf8841a5b96eea07375d4, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
