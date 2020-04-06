@@ -14,11 +14,12 @@ public class WaterHi : MonoBehaviour
     Material[] material;
     [SerializeField]
     float anmeSpead = 1;
-    public DigitalRuby.RainMaker.RainScript[] rainScript;
-    // Start is called before the first frame update
+    //public DigitalRuby.RainMaker.RainScript[] rainScript;
+    float ChangeTime;
+
     void Start()
     {
-        
+        ChangeTime = Camera.main.GetComponent<CameraPos>().rainPotChangeAnimeTimeSpead ;
     }
 
     private void FixedUpdate()
@@ -29,20 +30,20 @@ public class WaterHi : MonoBehaviour
 
             animeTimeTik+= Time.fixedDeltaTime;
             //animeTime -= Time.fixedDeltaTime;
-            if (animeTimeTik < animeTime-0.5f && animeTimeTik > 0.5f)
+            if (animeTimeTik < animeTime-1f && animeTimeTik > 1f)
             {
-                max = Mathf.Lerp(back, next, (animeTimeTik - 0.5f)/ (animeTime-1)* anmeSpead);
+                max = Mathf.Lerp(back, next, (animeTimeTik - 1f)/ (animeTime-2f)* anmeSpead);
 
             }
-            if (animeTimeTik > animeTime - 1)
+            if (animeTimeTik > animeTime - 1f)
             {
-                for (int i = 0; i < rainScript.Length; i++)
-                {
-                    rainScript[i].RainIntensity = 0.03f;
-                }
+                //for (int i = 0; i < rainScript.Length; i++)
+                //{
+                //    rainScript[i].RainIntensity = 0.03f;
+                //}
                 max = next;
             }
-            if (animeTimeTik > animeTime - 0.5f)
+            if (animeTimeTik > animeTime -ChangeTime)
             {
                 Camera.main.gameObject.GetComponent<CameraPos>().RainPotChangeOut();
                 rainAnime = false;
@@ -70,18 +71,18 @@ public class WaterHi : MonoBehaviour
     {
         if (!rainAnime)
         {
-            for (int i = 0; i < rainScript.Length; i++)
-            {
-                rainScript[i].RainIntensity = 1;
-            }
+            //for (int i = 0; i < rainScript.Length; i++)
+            //{
+            //    rainScript[i].RainIntensity = 1;
+            //}
             PlayState.playState.gameMode = PlayState.GameMode.Rain;
             //
-            PlayState.playState.rainTime = Mathf.Abs ( (max+0.1f)-nextHi)/ anmeSpead + 1.5f;
+            PlayState.playState.rainTime = (Mathf.Abs ( (max+0.1f)-nextHi)/ anmeSpead )+ 2f;
             back = transform.localScale.y;
             next = nextHi-0.1f;
             rainAnime = true;
 
-            animeTime = Mathf.Abs((max + 0.1f) - nextHi) / anmeSpead + 1.5f;
+            animeTime = (Mathf.Abs((max + 0.1f) - nextHi) / anmeSpead) + 2f;
             animeTimeTik = 0;
 
 

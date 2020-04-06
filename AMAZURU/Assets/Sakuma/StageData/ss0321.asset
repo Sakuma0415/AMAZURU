@@ -15,7 +15,8 @@ MonoBehaviour:
   stageName: ss0321
   stageSize: {x: 20, y: 6, z: 20}
   startPos: {x: 3.5, y: 2, z: 15.5}
-  waterHeight: 0
+  waterStep: 4
   stagePrefab: {fileID: 3555861119375864035, guid: 3aa653b35f9f7974288142306b0118fc,
     type: 3}
   startAngle: 0
+  AmehurashiQuantity: 3

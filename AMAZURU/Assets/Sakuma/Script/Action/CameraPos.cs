@@ -78,7 +78,7 @@ public class CameraPos : MonoBehaviour
     void Update()
     {
 
-        Debug.Log(lookObj); 
+        //Debug.Log(lookObj); 
 
         if (PlayState.playState.gameMode == PlayState.GameMode.Play)
         {
@@ -226,8 +226,7 @@ public class CameraPos : MonoBehaviour
     float beforeHi = 0;
     Vector3 beforePos;
     float rainPotChangeAnimeTime;
-    [SerializeField]
-    float rainPotChangeAnimeTimeSpead;
+    public float rainPotChangeAnimeTimeSpead;
     float potAnimeTime;
     bool outflg = false;
     float lotAngle = 0;
