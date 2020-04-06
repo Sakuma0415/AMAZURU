@@ -5,33 +5,59 @@ using UnityEngine;
 public class LookForCamera : MonoBehaviour
 {
     [SerializeField]
-    private Camera camera;
-    [SerializeField]
     private GameObject selectUI;
+    [SerializeField]
+    private GameObject[] images;
     private bool lookCamera = false;
-
-    void Start()
+    private bool rainFall;
+    /// <summary>
+    /// アメフラシが起動しているかの確認
+    /// <para>false か true でUIが変更されます</para>
+    /// </summary>
+    public bool RainFall
     {
-        
+        get
+        {
+            return rainFall;
+        }
+
+        set
+        {
+            if (value)
+            {
+                images[1].SetActive(false);
+                images[0].SetActive(true);
+            }
+            else
+            {
+                images[0].SetActive(false);
+                images[1].SetActive(true);
+            }
+
+            rainFall = value;
+        }
     }
 
-    // Update is called once per frame
+    private void Start()
+    {
+        RainFall = false;
+    }
+
     void Update()
     {
         if (!lookCamera) { return; }
         LookCamera();
-        
     }
 
     private void LookCamera()
     {
-        transform.LookAt(camera.transform);
+        Vector3 pos = Camera.main.transform.position - selectUI.transform.position;
+        selectUI.transform.rotation = Quaternion.LookRotation(-pos, Vector3.up);
     }
 
     private void OnTriggerStay(Collider other)
     {
-        Debug.Log(other.gameObject.layer == 9);
-        if(other.gameObject.tag == "Player")
+        if(other.gameObject.layer == 9)
         {
             selectUI.SetActive(true);
             lookCamera = true;
