@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 93298c790b7b5dc438b19415d1869d42
+guid: dd52905b58dc9e54bb823087d7434c5d
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
@@ -7,13 +7,18 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: AMFBody_mt
-    second: {fileID: 2100000, guid: d0c08a9783f4c8644a37cec161eb3a4d, type: 2}
+      name: AMF_EN_mt
+    second: {fileID: 2100000, guid: d1790da10f28b1943bace6815f9a5545, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: AMFDisplay_mt
-    second: {fileID: 2100000, guid: c55d88727ceaf8841a5b96eea07375d4, type: 2}
+      name: eye_mt
+    second: {fileID: 2100000, guid: 9c3fd0c84b9458f489c9180dd047606a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: spike_mt
+    second: {fileID: 2100000, guid: 4f38cc9ed5dfbe8438a61c6e0f589e8c, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
