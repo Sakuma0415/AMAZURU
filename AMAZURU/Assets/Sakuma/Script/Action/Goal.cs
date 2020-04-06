@@ -8,7 +8,7 @@ public class Goal : MonoBehaviour
     {
         if (LayerMask.LayerToName(other.gameObject.layer) == "Player")
         {
-            if(Progress.progress.key)
+            if(AmehurashiManager.amehurashi.amehurashiTrueCont == AmehurashiManager.amehurashi.AmehurashiQuantity)
             {
                 Debug.Log("クリア");
                 PlayState.playState.gameMode = PlayState.GameMode.Clear ;

@@ -11,12 +11,16 @@ public class AmehurashiManager : MonoBehaviour
     {
         amehurashi = this;
     }
-
+    public float waterStep = 1;
     public float hi;
+    public int amehurashiTrueCont = 0;
+    public int AmehurashiQuantity = 0;
     public RainPot rainPot;
     [SerializeField]
     float[] hiList = new float[0];
 
+    //凍結中
+#if false
     public void SwOn()
     {
         if (!rainPot.sw)
@@ -35,7 +39,7 @@ public class AmehurashiManager : MonoBehaviour
                 }
 
             }
-            waterHi.HiChange(max);
+            waterHi.HiChange((hiList.Length* waterStep) +1);
 
         }
         else
@@ -77,7 +81,7 @@ public class AmehurashiManager : MonoBehaviour
                 }
 
             }
-            waterHi.HiChange(max);
+            waterHi.HiChange((hiList.Length * waterStep) + 1);
         }
         else
         {
@@ -90,7 +94,7 @@ public class AmehurashiManager : MonoBehaviour
         Camera.main.gameObject.GetComponent<CameraPos>().RainPotChangeOut();
         PlayState.playState.gameMode = PlayState.GameMode.Play;
     }
-
+#endif
 
 
 

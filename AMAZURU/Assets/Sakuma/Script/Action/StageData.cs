@@ -7,7 +7,8 @@ public class StageData : ScriptableObject
     public string stageName;
     public Vector3 stageSize;
     public Vector3 startPos;
-    public float waterHeight;
+    public float waterStep;
     public GameObject stagePrefab;
-    public float startAngle;
+    public float startAngle;//未設定
+    public int AmehurashiQuantity;
 }

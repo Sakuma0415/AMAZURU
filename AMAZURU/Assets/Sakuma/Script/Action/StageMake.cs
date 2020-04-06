@@ -17,8 +17,8 @@ public class StageMake : MonoBehaviour
     [SerializeField]
     Material waterMaterial;
 
-    [SerializeField]
-    DigitalRuby.RainMaker.RainScript[] rainScript;
+    //[SerializeField]
+    //DigitalRuby.RainMaker.RainScript[] rainScript;
     [SerializeField]
     AmehurashiManager amehurashiManager;
 
@@ -30,7 +30,7 @@ public class StageMake : MonoBehaviour
         waterObj = Instantiate(water);
         waterObj.transform.localScale = new Vector3(StageMake.LoadStageData.stageSize.x,0.25f, StageMake.LoadStageData.stageSize.z) -new Vector3 (0.01f,0,0.01f);
         waterObj.transform.position += new Vector3(0.005f, 0, 0.005f);
-        waterObj.GetComponent<WaterHi>().rainScript = rainScript;
+        //waterObj.GetComponent<WaterHi>().rainScript = rainScript;
         waterMaterial.SetFloat("_X", StageMake.LoadStageData.stageSize.x/5);
         waterMaterial.SetFloat("_Y", StageMake.LoadStageData.stageSize.z/6);
 
@@ -40,7 +40,8 @@ public class StageMake : MonoBehaviour
 
         amehurashiManager.waterHi = waterObj.GetComponent<WaterHi>();
         amehurashiManager.ManagerSet();
-
+        amehurashiManager.waterStep = SLoadStageData.waterStep;
+        amehurashiManager.AmehurashiQuantity  = SLoadStageData.AmehurashiQuantity;
     }
 
     private void Start()

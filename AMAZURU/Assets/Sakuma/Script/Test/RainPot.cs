@@ -26,6 +26,8 @@ public class RainPot : MonoBehaviour
         materials= new Material(shaders); 
         meshRenderer.material = materials;
 
+
+
         cameraPos = Camera.main.gameObject.GetComponent<CameraPos>();
         Ray ray = new Ray(transform.position, transform.TransformDirection(Vector3.down));
         RaycastHit hit;
@@ -58,10 +60,13 @@ public class RainPot : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space) && PlayState.playState.gameMode == PlayState.GameMode.Play)
             {
-                PlayState.playState.gameMode = PlayState.GameMode.RainSelect;
+                sw = !sw;
+                AmehurashiManager.amehurashi.amehurashiTrueCont += sw ? 1 : -1;
+                waterHi.HiChange((AmehurashiManager.amehurashi.waterStep * AmehurashiManager.amehurashi.amehurashiTrueCont)+1);
                 Camera.main.gameObject.GetComponent<CameraPos>().RainPotChange();
-                AmehurashiManager.amehurashi.rainPot = this;
-                AmehurashiManager.amehurashi.hi = transform.position.y - 0.5f;
+                //UI選択時の奴
+                //AmehurashiManager.amehurashi.rainPot = this;
+                //AmehurashiManager.amehurashi.hi = transform.position.y - 0.5f;
             }
         }
     }
