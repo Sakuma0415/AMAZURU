@@ -99,7 +99,7 @@ public class DropTrail : MonoBehaviour
 	bool CheckExistence()
 	{
 		if (!_trail) {
-			Transform oldTrail = transform.FindChild (_name);
+			Transform oldTrail = transform.Find (_name);
 			if (oldTrail)
 			{
 				_trail = oldTrail.gameObject;
