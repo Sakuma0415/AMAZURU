@@ -31,6 +31,8 @@ public class StageEditor : MonoBehaviour
     [HideInInspector]
     public bool isCreateStage;
 
+    [SerializeField]
+    private string objName;
     [Tooltip("グリッドの数　X * Y * Z")]
     public Vector3Int cells;
     private float posAdjust = 0.5f;
@@ -72,6 +74,11 @@ public class StageEditor : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            SelectObjectAllChange();
+        }
+
         if(Data != null && Data.stageName != stageName)
         {
             StageDataIncetance();
@@ -406,8 +413,25 @@ public class StageEditor : MonoBehaviour
         else
         {
             guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color;
+        }   
+    }
+
+    public void SelectObjectAllChange()
+    {
+        foreach (GameObject obj in _StageObjects)
+        {
+            if(obj == null) { continue; }
+            if (obj.name == objName)
+            {
+                GameObject o = Instantiate(referenceObject[refObjIndex]);
+                o.transform.localPosition = obj.transform.localPosition;
+                o.transform.localEulerAngles += objAngle;
+                o.AddComponent<MyCellIndex>().cellIndex = obj.GetComponent<MyCellIndex>().cellIndex;
+                Vector3Int cellIndex = o.GetComponent<MyCellIndex>().cellIndex;
+                _StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] = o;
+                Destroy(obj);
+            }
         }
-        
     }
 
     /// <summary>
