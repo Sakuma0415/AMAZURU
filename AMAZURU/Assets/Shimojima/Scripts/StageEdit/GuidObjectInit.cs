@@ -19,7 +19,7 @@ public class GuidObjectInit : MonoBehaviour
         }
 
     PosSetting:
-        transform.localPosition = Vector3.zero;
+        transform.localPosition = refObj.transform.localPosition;
         transform.localRotation = refObj.transform.localRotation;
     }
 }
