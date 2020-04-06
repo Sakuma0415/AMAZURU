@@ -21,6 +21,9 @@ public class RainPot : MonoBehaviour
     Shader shaders;
     [SerializeField]
     LookForCamera forCamera;
+
+    [SerializeField]
+    GameObject Obj;
     // Start is called before the first frame update
     void Start()
     {
@@ -41,7 +44,7 @@ public class RainPot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        Obj.SetActive(sw);
     }
 
     private void OnTriggerStay(Collider other)
@@ -50,7 +53,7 @@ public class RainPot : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space) && PlayState.playState.gameMode == PlayState.GameMode.Play)
             {
-                forCamera.RainFall = sw;
+                //forCamera.RainFall = sw;
                 sw = !sw;
                 AmehurashiManager.amehurashi.amehurashiTrueCont += sw ? 1 : -1;
                 waterHi.HiChange((AmehurashiManager.amehurashi.waterStep * AmehurashiManager.amehurashi.amehurashiTrueCont)+1);
