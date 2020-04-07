@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1023837328889041607}
   - component: {fileID: 1023837328889041604}
   - component: {fileID: 1023837328889041605}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,9 +104,9 @@ GameObject:
   - component: {fileID: 1023837329241061402}
   - component: {fileID: 1023837329241061403}
   - component: {fileID: 1023837329241061400}
-  - component: {fileID: 1023837329241061401}
+  - component: {fileID: 5138938301351096660}
   - component: {fileID: 1023837329241061405}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -175,23 +175,18 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!143 &1023837329241061401
-CharacterController:
+--- !u!135 &5138938301351096660
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1023837329241063398}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: d9d93f02f789e294686ffc1710b7ab4f, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 1
   m_Radius: 0.5
-  m_SlopeLimit: 0
-  m_StepOffset: 0
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1023837329241061405
 MonoBehaviour:
@@ -205,14 +200,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f124011ae1e04db429be9b646083fc7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 1023837329241061401}
+  enemy: {fileID: 5138938301351096660}
   playerLayer:
     serializedVersion: 2
     m_Bits: 512
-  rayLength: 0.5
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  rayLength: 1
   movePlan: []
   type: 0
   lateTime: 0.5
   enemySpeed: 2.5
-  gravity: 3
   rotatePower: 5

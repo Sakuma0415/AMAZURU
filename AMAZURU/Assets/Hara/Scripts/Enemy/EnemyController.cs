@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class EnemyController : MyAnimation
 {
-    [SerializeField, Tooltip("敵のCharacterController")] private CharacterController enemy = null;
+    [SerializeField, Tooltip("敵のCharacterController")] private SphereCollider enemy = null;
     [SerializeField, Tooltip("プレイヤーのレイヤー")] private LayerMask playerLayer;
+    [SerializeField, Tooltip("地面のレイヤー")] private LayerMask groundLayer;
     [SerializeField, Tooltip("Rayの長さ"), Range(0, 5)] private float rayLength = 1.0f;
     private enum moveType
     {
@@ -17,7 +18,6 @@ public class EnemyController : MyAnimation
     [SerializeField, Header("行動パターン")] private moveType type = moveType.Lap;
     [SerializeField, Header("行動遅延時間"), Range(0, 3)] private float lateTime = 1.0f; 
     [SerializeField, Header("敵の移動速度"), Range(0, 5)] private float enemySpeed = 1.0f;
-    [SerializeField, Header("重力値"), Range(0, 10)] private float gravity = 1.0f;
     [SerializeField, Header("回転力"), Range(0, 20)] private float rotatePower = 1.0f;
     private int location = 0;
     private float time = 0;
@@ -27,12 +27,13 @@ public class EnemyController : MyAnimation
     private PlayState.GameMode mode = PlayState.GameMode.Stop;
     private float enemyPosY = 0;
     private bool finishOneLoop = false;
+    private bool standby = false;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        EnemyInit();
+        
     }
 
     // Update is called once per frame
@@ -48,7 +49,15 @@ public class EnemyController : MyAnimation
 
     private void Reset()
     {
-        enemy = GetComponent<CharacterController>();
+        enemy = GetComponent<SphereCollider>();
+    }
+
+    /// <summary>
+    /// Activeがtrueになったら実行
+    /// </summary>
+    private void OnEnable()
+    {
+        EnemyInit();
     }
 
     /// <summary>
@@ -57,6 +66,20 @@ public class EnemyController : MyAnimation
     private void EnemyInit()
     {
         if(movePlan == null || movePlan.Length <= 0) { Debug.LogError(gameObject.name + "のアメフラシさん : 「どこに行ったらいいかわからないよぉ...(泣)」"); }
+
+        // 床の高さを取得
+        Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + enemy.center.y, transform.position.z), Vector3.down);
+        RaycastHit hit;
+        if(Physics.Raycast(ray, out hit, 1.25f, groundLayer))
+        {
+            enemyPosY = hit.point.y + enemy.radius + enemy.center.y;
+            standby = true;
+        }
+        else
+        {
+            Debug.LogError(gameObject.name + "のアメフラシさん : 「地面から離れすぎてて怖いよぉ (>_<) 」");
+            standby = false;
+        }
     }
 
     /// <summary>
@@ -68,9 +91,8 @@ public class EnemyController : MyAnimation
         float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
         Vector3 moveDirection = Vector3.zero;
         mode = PlayState.playState.gameMode;
-        enemyPosY = transform.position.y + enemy.center.y;
         
-        actionStop = movePlan == null || movePlan.Length <= 0 || mode != PlayState.GameMode.Play;
+        actionStop = movePlan == null || movePlan.Length <= 0 || mode != PlayState.GameMode.Play || standby == false;
 
         if(actionStop == false)
         {
@@ -86,8 +108,8 @@ public class EnemyController : MyAnimation
             Vector3 nextPos = new Vector3(movePlan[nextLocation].x, enemyPosY, movePlan[nextLocation].y);
             Vector3 forward = (nextPos - new Vector3(transform.position.x, enemyPosY, transform.position.z)).normalized;
 
-            Ray ray = new Ray(new Vector3(transform.position.x, enemyPosY - enemy.height, transform.position.z), Vector3.up);
-            bool playerHit = Physics.SphereCast(ray, (enemy.height * 0.5f) * 1.5f, rayLength, playerLayer);
+            Ray ray = new Ray(new Vector3(transform.position.x, enemyPosY - enemy.radius * 2.0f, transform.position.z), Vector3.up);
+            bool playerHit = Physics.SphereCast(ray, (enemy.radius) * 2.0f, rayLength, playerLayer);
             if (playerHit)
             {
                 Debug.Log(gameObject.name + "のアメフラシさん : 「プレイヤーを見つけたよぉ ('ω')ノ 」");
@@ -96,9 +118,7 @@ public class EnemyController : MyAnimation
             switch (step)
             {
                 case 0:
-                    enemy.enabled = false;
                     transform.position = new Vector3(movePlan[location].x, enemyPosY, movePlan[location].y);
-                    enemy.enabled = true;
                     stepEnd = true;
                     break;
                 case 1:
@@ -126,19 +146,28 @@ public class EnemyController : MyAnimation
                     break;
                 default:
                     step = 0;
-                    _ = finishOneLoop ? location-- : location++;
-                    if (location >= movePlan.Length || location < 0) { location = 0; }
-                    if(type == moveType.Wrap)
+                    if (finishOneLoop)
                     {
-                        if(location >= movePlan.Length - 1 && finishOneLoop == false)
+                        location--;
+                        if(type == moveType.Lap)
                         {
-                            finishOneLoop = true;
-                            break;
+                            if(location < 0) { location = movePlan.Length - 1; }
                         }
-
-                        if(location <= 0 && finishOneLoop)
+                        else
                         {
-                            finishOneLoop = false;
+                            if(location < 1) { finishOneLoop = false; }
+                        }
+                    }
+                    else
+                    {
+                        location++;
+                        if (type == moveType.Lap)
+                        {
+                            if (location >= movePlan.Length) { location = 0; }
+                        }
+                        else
+                        {
+                            if (location >= movePlan.Length - 1) { finishOneLoop = true; }
                         }
                     }
                     break;
@@ -152,31 +181,6 @@ public class EnemyController : MyAnimation
             }
         }
 
-        moveDirection.y -= gravity * delta;
-        enemy.Move(moveDirection);
-    }
-
-    /// <summary>
-    /// プレイヤーと衝突したときに実行
-    /// </summary>
-    /// <param name="other"></param>
-    private void OnTriggerEnter(Collider other)
-    {
-        if (((1 << other.gameObject.layer) & playerLayer) != 0)
-        {
-            //playerHit = true;
-        }
-    }
-
-    /// <summary>
-    /// プレイヤーとの衝突が解消されたときに実行
-    /// </summary>
-    /// <param name="other"></param>
-    private void OnTriggerExit(Collider other)
-    {
-        if (((1 << other.gameObject.layer) & playerLayer) != 0)
-        {
-            //playerHit = false;
-        }
+        transform.position += moveDirection;
     }
 }
