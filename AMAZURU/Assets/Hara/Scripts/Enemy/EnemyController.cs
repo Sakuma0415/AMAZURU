@@ -6,6 +6,7 @@ public class EnemyController : MyAnimation
 {
     [SerializeField, Tooltip("敵のCharacterController")] private CharacterController enemy = null;
     [SerializeField, Tooltip("プレイヤーのレイヤー")] private LayerMask playerLayer;
+    [SerializeField, Tooltip("Rayの長さ"), Range(0, 5)] private float rayLength = 1.0f;
     private enum moveType
     {
         Lap,
@@ -18,14 +19,13 @@ public class EnemyController : MyAnimation
     [SerializeField, Header("敵の移動速度"), Range(0, 5)] private float enemySpeed = 1.0f;
     [SerializeField, Header("重力値"), Range(0, 10)] private float gravity = 1.0f;
     [SerializeField, Header("回転力"), Range(0, 20)] private float rotatePower = 1.0f;
-    [SerializeField]private int location = 0;
+    private int location = 0;
     private float time = 0;
     private int step = 0;
     private bool stepEnd = false;
     private bool actionStop = false;
     private PlayState.GameMode mode = PlayState.GameMode.Stop;
     private float enemyPosY = 0;
-    private bool playerHit = false;
     private bool finishOneLoop = false;
 
 
@@ -86,6 +86,13 @@ public class EnemyController : MyAnimation
             Vector3 nextPos = new Vector3(movePlan[nextLocation].x, enemyPosY, movePlan[nextLocation].y);
             Vector3 forward = (nextPos - new Vector3(transform.position.x, enemyPosY, transform.position.z)).normalized;
 
+            Ray ray = new Ray(new Vector3(transform.position.x, enemyPosY - enemy.height, transform.position.z), Vector3.up);
+            bool playerHit = Physics.SphereCast(ray, (enemy.height * 0.5f) * 1.5f, rayLength, playerLayer);
+            if (playerHit)
+            {
+                Debug.Log(gameObject.name + "のアメフラシさん : 「プレイヤーを見つけたよぉ ('ω')ノ 」");
+            }
+
             switch (step)
             {
                 case 0:
@@ -106,7 +113,7 @@ public class EnemyController : MyAnimation
                     time += delta;
                     break;
                 case 4:
-                    if(playerHit == false)
+                    if (playerHit == false)
                     {
                         float vec = Mathf.Abs(forward.x) >= Mathf.Abs(forward.z) ? forward.z / forward.x : forward.x / forward.z;
                         vec = 1.0f / Mathf.Sqrt(1.0f + vec * vec);
@@ -157,7 +164,7 @@ public class EnemyController : MyAnimation
     {
         if (((1 << other.gameObject.layer) & playerLayer) != 0)
         {
-            playerHit = true;
+            //playerHit = true;
         }
     }
 
@@ -169,7 +176,7 @@ public class EnemyController : MyAnimation
     {
         if (((1 << other.gameObject.layer) & playerLayer) != 0)
         {
-            playerHit = false;
+            //playerHit = false;
         }
     }
 }

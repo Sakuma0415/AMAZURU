@@ -209,6 +209,7 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 512
+  rayLength: 0.5
   movePlan: []
   type: 0
   lateTime: 0.5
