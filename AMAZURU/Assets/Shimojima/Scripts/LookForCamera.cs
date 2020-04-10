@@ -40,7 +40,7 @@ public class LookForCamera : MonoBehaviour
 
     private void Start()
     {
-        RainFall = false;
+        //RainFall = false;
     }
 
     void Update()
