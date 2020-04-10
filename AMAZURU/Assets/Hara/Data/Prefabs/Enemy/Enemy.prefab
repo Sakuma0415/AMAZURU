@@ -206,10 +206,10 @@ MonoBehaviour:
     m_Bits: 512
   groundLayer:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 257
   rayLength: 1
   movePlan: []
-  type: 0
+  type: 1
   lateTime: 0.5
   enemySpeed: 2.5
   rotatePower: 5

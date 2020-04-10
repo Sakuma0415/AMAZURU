@@ -446,7 +446,7 @@ PrefabInstance:
     - target: {fileID: 1023837329241061402, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.79
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1023837329241061402, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
@@ -501,62 +501,12 @@ PrefabInstance:
     - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
       propertyPath: movePlan.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
-        type: 3}
-      propertyPath: movePlan.Array.data[0].x
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
       propertyPath: movePlan.Array.data[0].y
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
-        type: 3}
-      propertyPath: movePlan.Array.data[1].x
-      value: -3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
-        type: 3}
-      propertyPath: movePlan.Array.data[1].y
       value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
-        type: 3}
-      propertyPath: movePlan.Array.data[2].x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
-        type: 3}
-      propertyPath: movePlan.Array.data[2].y
-      value: -2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
-        type: 3}
-      propertyPath: movePlan.Array.data[3].x
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
-        type: 3}
-      propertyPath: movePlan.Array.data[3].y
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
-        type: 3}
-      propertyPath: type
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
-        type: 3}
-      propertyPath: finishOneLoop
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
-        type: 3}
-      propertyPath: location
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1023837329241063398, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
