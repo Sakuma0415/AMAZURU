@@ -75,4 +75,28 @@ public class MyAnimation : MonoBehaviour
             return true;
         }
     }
+
+    /// <summary>
+    /// 回転のアニメーション
+    /// </summary>
+    /// <returns></returns>
+    protected bool RotateAnimation(GameObject obj, Vector3 forward, Vector3 upwards, float time, bool local)
+    {
+        Quaternion rot = Quaternion.LookRotation(forward, upwards);
+        Quaternion rotSlerp = Quaternion.Slerp(_ = local ? obj.transform.localRotation : obj.transform.rotation, rot, time);
+        _ = local ? obj.transform.localRotation = rotSlerp : obj.transform.rotation = rotSlerp;
+
+        Vector3 absRot = new Vector3(Mathf.Abs(rot.x), Mathf.Abs(rot.y), Mathf.Abs(rot.z));
+        Vector3 objAbsRot = local ? new Vector3(Mathf.Abs(obj.transform.localRotation.x), Mathf.Abs(obj.transform.localRotation.y), Mathf.Abs(obj.transform.localRotation.z)) : new Vector3(Mathf.Abs(obj.transform.rotation.x), Mathf.Abs(obj.transform.rotation.y), Mathf.Abs(obj.transform.rotation.z));
+
+        if (objAbsRot == absRot)
+        {
+            _ = local ? obj.transform.localRotation = rot : obj.transform.rotation = rot;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
