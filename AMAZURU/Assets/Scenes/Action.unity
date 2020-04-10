@@ -233,7 +233,7 @@ PrefabInstance:
     - target: {fileID: 11437536, guid: 69b40ef7ee16c834c844b3fa26e0fdda, type: 3}
       propertyPath: RainMistParticleSystem
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1167957940}
     - target: {fileID: 11437536, guid: 69b40ef7ee16c834c844b3fa26e0fdda, type: 3}
       propertyPath: RainSoundHeavy
       value: 
@@ -1595,6 +1595,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1110812185}
   m_CullTransparentMesh: 0
+--- !u!198 &1167957940 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 19836512, guid: 69b40ef7ee16c834c844b3fa26e0fdda,
+    type: 3}
+  m_PrefabInstance: {fileID: 91902326}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1189603438
 GameObject:
   m_ObjectHideFlags: 0
@@ -1975,6 +1981,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: sousyoku(Clone)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3259642043363169691, guid: 9ff1a09c38295574bbe97ffd4a7b92a0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ff1a09c38295574bbe97ffd4a7b92a0, type: 3}
