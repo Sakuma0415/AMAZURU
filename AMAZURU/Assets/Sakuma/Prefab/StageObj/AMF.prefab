@@ -281,6 +281,7 @@ MonoBehaviour:
   shaders: {fileID: 4800000, guid: 8a79b8120df7bd14d9f380b5c00f38c3, type: 3}
   forCamera: {fileID: 5125737057325829060}
   Obj: {fileID: 4782149194410674674}
+  look: {fileID: 5125737057325829060}
 --- !u!114 &5125737057325829060
 MonoBehaviour:
   m_ObjectHideFlags: 0
