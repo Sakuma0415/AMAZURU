@@ -74,7 +74,7 @@ public class EnemyController : MyAnimation
         RaycastHit hit;
         if(Physics.Raycast(ray, out hit, 1.25f, groundLayer))
         {
-            enemyPosY = hit.point.y + enemy.radius + enemy.center.y;
+            enemyPosY = hit.point.y + enemy.radius - enemy.center.y;
             gameStartPos = gameStartPos == Vector3.zero ? new Vector3(transform.position.x, enemyPosY, transform.position.z) : gameStartPos;
             transform.position = gameStartPos;
             SetMoveSchedule(movePlan);
