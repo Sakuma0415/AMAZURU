@@ -45,8 +45,12 @@ public class CameraPos : MonoBehaviour
     float fAngle;
 
     bool MouseCheck = true;
-
-
+    [SerializeField]
+    float endCameraPos;
+    [SerializeField]
+    LayerMask layerMask;
+    [SerializeField]
+    SphereCollider sphereCollider;
     // Start is called before the first frame update
     void Start()
     {
@@ -62,13 +66,41 @@ public class CameraPos : MonoBehaviour
         {
             if (lookAnimeTime > 0)
             {
+
                 transform.position = Vector3.Lerp(animePos, (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad) + lookHi, Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * (!lookMode ? CameraDisS : CameraDisP)) + lookObj, 1 - (lookAnimeTime/ changeTime));
                 
-                //lookObj = new Vector3(0, 0, 0);
             }
             else
             {
-                transform.position = (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad) + lookHi, Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * CameraDis) + lookObj;
+                if (lookMode)
+                {
+
+                    if (Physics.OverlapSphere(transform.position, sphereCollider.radius, layerMask).Length == 0)
+                    {
+                        endCameraPos = CameraDis;
+                    }
+                    else
+                    {
+                        Ray ray = new Ray(PlayerTransform.position, Vector3.Normalize(transform.position - PlayerTransform.position));
+                        RaycastHit hit;
+                        if (Physics.SphereCast (ray, sphereCollider.radius, out hit, CameraDis, layerMask))
+                        {
+                            Debug.Log(hit.collider.gameObject.name);
+                            endCameraPos = Vector3.Distance(hit.point, PlayerTransform.position);
+                        }
+                        else
+                        {
+                            endCameraPos = CameraDis;
+                        }
+                    }
+
+                }
+                else
+                {
+                    endCameraPos = CameraDis;
+                }
+
+                transform.position = (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad) + lookHi, Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * endCameraPos) + lookObj;
             }
 
             transform.localEulerAngles = new Vector3(Yangle, -XZangle - 90, 0);
