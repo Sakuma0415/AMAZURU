@@ -73,6 +73,7 @@ public class Select : MonoBehaviour
 
             obj.transform.localPosition = pos;
             obj.transform.localEulerAngles = new Vector3(0, -20, 0);
+            obj.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             viewStage[i] = obj;
             stageCount++;
             if(stageCount > stages.Count) { stageCount = stages.Count - 1; }
@@ -108,6 +109,7 @@ public class Select : MonoBehaviour
                     Destroy(viewStage[i]);
                     viewStage[i] = Instantiate(stages[stageCount]);
                     viewStage[i].transform.localPosition = pos;
+                    viewStage[i].transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
                     viewStage[i].transform.localEulerAngles = new Vector3(0, -20, 0);
                     viewStage[i].transform.RotateAround(transform.position, Vector3.up, 90);
                     viewStage[i].SetActive(false);
