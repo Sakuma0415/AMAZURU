@@ -89,7 +89,7 @@ public class MyAnimation : MonoBehaviour
         Vector3 absRot = new Vector3(Mathf.Abs(rot.x), Mathf.Abs(rot.y), Mathf.Abs(rot.z));
         Vector3 objAbsRot = local ? new Vector3(Mathf.Abs(obj.transform.localRotation.x), Mathf.Abs(obj.transform.localRotation.y), Mathf.Abs(obj.transform.localRotation.z)) : new Vector3(Mathf.Abs(obj.transform.rotation.x), Mathf.Abs(obj.transform.rotation.y), Mathf.Abs(obj.transform.rotation.z));
 
-        if (objAbsRot == absRot)
+        if (Vector3.Distance(objAbsRot, absRot) < 0.001f)
         {
             _ = local ? obj.transform.localRotation = rot : obj.transform.rotation = rot;
             return true;
