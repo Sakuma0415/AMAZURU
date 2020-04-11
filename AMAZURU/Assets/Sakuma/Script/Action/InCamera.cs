@@ -4,7 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 public class InCamera : MonoBehaviour
 {
+    [SerializeField]
     bool set=false;
+
+
     [SerializeField]
     GameObject maskObj;
     [SerializeField]
@@ -16,11 +19,13 @@ public class InCamera : MonoBehaviour
     LayerMask outMask;
     [SerializeField]
     Camera camera;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         image.color = new Color(image.color.r, image.color.g, image.color.b, 0);
-
     }
 
     // Update is called once per frame
@@ -33,10 +38,11 @@ public class InCamera : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(LayerMask.LayerToName(other.gameObject.layer) == "Mirror")
+        if (LayerMask.LayerToName(other.gameObject.layer) == "Mirror")
         {
             set = true;
         }
+
     }
     private void OnTriggerExit(Collider other)
     {
@@ -44,6 +50,7 @@ public class InCamera : MonoBehaviour
         {
             set = false;
         }
+
     }
 
 }
