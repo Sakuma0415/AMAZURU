@@ -75,7 +75,7 @@ public class CameraPos : MonoBehaviour
                 if (lookMode)
                 {
 
-                    if (Physics.OverlapSphere(transform.position, sphereCollider.radius, layerMask).Length == 0)
+                    if (Physics.OverlapSphere((new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad) + lookHi, Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * CameraDis) + lookObj, sphereCollider.radius, layerMask).Length == 0)
                     {
                         endCameraPos = CameraDis;
                     }
