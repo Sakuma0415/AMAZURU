@@ -35,13 +35,7 @@ public class EnemyController : MyAnimation
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        EnemyInit(true);
     }
 
     private void FixedUpdate()
@@ -55,27 +49,22 @@ public class EnemyController : MyAnimation
     }
 
     /// <summary>
-    /// Activeがtrueになったら実行
-    /// </summary>
-    private void OnEnable()
-    {
-        EnemyInit();
-    }
-
-    /// <summary>
     /// 敵の初期化
     /// </summary>
-    private void EnemyInit()
+    private void EnemyInit(bool first)
     {
         step = 0;
 
         // 床の高さを取得
-        Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + enemy.center.y, transform.position.z), Vector3.down);
+        Ray ray = new Ray(transform.position, Vector3.down);
         RaycastHit hit;
         if(Physics.Raycast(ray, out hit, 1.25f, groundLayer))
         {
             enemyPosY = hit.point.y + enemy.radius - enemy.center.y;
-            gameStartPos = gameStartPos == Vector3.zero ? new Vector3(transform.position.x, enemyPosY, transform.position.z) : gameStartPos;
+            if (first)
+            {
+                gameStartPos = new Vector3(transform.position.x, enemyPosY, transform.position.z);
+            }
             transform.position = gameStartPos;
             SetMoveSchedule(movePlan);
             standby = true;
