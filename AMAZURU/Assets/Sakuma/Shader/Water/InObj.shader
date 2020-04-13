@@ -16,6 +16,7 @@
 		_High("_High", float) = 0
 		_LightMap ("LightMap", 2D) = "white" {}
 		_InColor ("InColor", Color) = (1, 1, 1, 1)
+		_NormalTex("_NormalTex", 2D) = "white" {}
 	}
 
     SubShader
@@ -43,6 +44,7 @@
 				float4 vertex : POSITION;
 				float2 uv : TEXCOORD0;
 				float3 normal :NORMAL; 
+				float3 tangent : TANGENT; 
 			};
 
 			struct VertexOutput
@@ -52,8 +54,24 @@
 				float4 vertexWS : TEXCOORD2;
 				float3 normalWS : TEXCOORD3;
 				fixed4 diff : COLOR0;
+				float4 light     : COLOR1;
 				SHADOW_COORDS(1)
 			};
+
+			float4x4 InvTangentMatrix(
+                float3 tangent,
+                float3 binormal,
+                float3 normal )
+            {
+                //接空間行列
+                float4x4 mat = float4x4(float4(tangent.x,tangent.y,tangent.z , 0.0f),
+                                float4(binormal.x,binormal.y,binormal.z, 0.0f),
+                                float4(normal.x,normal.y,normal.z, 0.0f),
+                                float4(0,0,0,1)
+                                 );
+                return transpose( mat );   // 転置
+            }
+
 
 
 			fixed4 _MainColor;
@@ -66,7 +84,7 @@
 
 
 			//
-
+			sampler2D _NormalTex;
 			float _High;
 			sampler2D _LightMap;
 
@@ -87,6 +105,11 @@
                 half NdotL = saturate(dot(worldNormal, _WorldSpaceLightPos0.xyz));
                 o.diff = NdotL * _LightColor0;
 
+				float3 nor = normalize(v.normal);
+                float3 tan = normalize(v.tangent);
+                float3 binor = cross(nor,tan);
+ 
+                o.light = mul(mul(unity_WorldToObject,_WorldSpaceLightPos0),InvTangentMatrix(tan,binor,nor));
 
 				TRANSFER_SHADOW(o)
 				return o;
@@ -107,10 +130,16 @@
 				fixed3 diffColor = max(0, dot(N, -L) * _DiffuseShade + (1 - _DiffuseShade)) * finalColor.rgb;
 				finalColor.rgb = diffColor;
 
-				float3 V = normalize(i.vertexWS - _WorldSpaceCameraPos);
-				float3 H = normalize(-L + (-V));
+				float3 normal  = float4(UnpackNormal(tex2D(_NormalTex, i.uv)),1);
+                float3 lightvec   = normalize(i.light.xyz);
+                float  diffuse = max(0, dot(normal, lightvec));
 
-				finalColor=((finalColor*7)+shadowBf)/8;
+
+				
+
+
+
+				finalColor=((finalColor*5)+shadowBf)/6;
 
 				if(_High>i.vertexWS.y){
 
@@ -127,6 +156,11 @@
 					finalColor.rbg+=(1-(hi*5))*float3(1,1,1)/2;
 					}
 				}
+
+				if(diffuse<0.25f){
+					diffuse<0.25f;
+				}
+				finalColor*=((diffuse/2)+0.5f);
 				
 				return finalColor;
 
