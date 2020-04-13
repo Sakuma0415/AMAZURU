@@ -9,6 +9,10 @@ public class StageData : ScriptableObject
     public Vector3 startPos;
     public float waterStep;
     public GameObject stagePrefab;
-    public float startAngle;//未設定
     public int AmehurashiQuantity;
+
+
+    public float startAngle;//未設定
+    public float CameraDisS;
+    public float CameraDisP;
 }

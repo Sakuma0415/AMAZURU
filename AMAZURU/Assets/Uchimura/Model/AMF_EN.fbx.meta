@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: dd52905b58dc9e54bb823087d7434c5d
+guid: f26559572eac8fe4294818e7127e13cf
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
@@ -7,18 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: AMF_EN_mt
+      name: lambert2
     second: {fileID: 2100000, guid: d1790da10f28b1943bace6815f9a5545, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: eye_mt
-    second: {fileID: 2100000, guid: 9c3fd0c84b9458f489c9180dd047606a, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: spike_mt
-    second: {fileID: 2100000, guid: 4f38cc9ed5dfbe8438a61c6e0f589e8c, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -49,7 +39,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 1.8
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -95,17 +85,16 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.018
+    globalScale: 1
     rootMotionBoneName: Root_Jt
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: f26559572eac8fe4294818e7127e13cf,
-    type: 3}
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 2
+  avatarSetup: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

@@ -13,12 +13,14 @@ public class EnemyController : MyAnimation
         Lap,
         Wrap
     }
+    private Vector3 gameStartPos = Vector3.zero;
 
     [SerializeField, Header("行動計画")] private Vector2[] movePlan = null;
     [SerializeField, Header("行動パターン")] private moveType type = moveType.Lap;
     [SerializeField, Header("行動遅延時間"), Range(0, 3)] private float lateTime = 1.0f; 
     [SerializeField, Header("敵の移動速度"), Range(0, 5)] private float enemySpeed = 1.0f;
     [SerializeField, Header("回転力"), Range(0, 20)] private float rotatePower = 1.0f;
+    private Vector3[] moveSchedule = null;
     private int location = 0;
     private float time = 0;
     private int step = 0;
@@ -65,7 +67,7 @@ public class EnemyController : MyAnimation
     /// </summary>
     private void EnemyInit()
     {
-        if(movePlan == null || movePlan.Length <= 0) { Debug.LogError(gameObject.name + "のアメフラシさん : 「どこに行ったらいいかわからないよぉ...(泣)」"); }
+        step = 0;
 
         // 床の高さを取得
         Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + enemy.center.y, transform.position.z), Vector3.down);
@@ -73,6 +75,9 @@ public class EnemyController : MyAnimation
         if(Physics.Raycast(ray, out hit, 1.25f, groundLayer))
         {
             enemyPosY = hit.point.y + enemy.radius + enemy.center.y;
+            gameStartPos = gameStartPos == Vector3.zero ? new Vector3(transform.position.x, enemyPosY, transform.position.z) : gameStartPos;
+            transform.position = gameStartPos;
+            SetMoveSchedule(movePlan);
             standby = true;
         }
         else
@@ -89,24 +94,24 @@ public class EnemyController : MyAnimation
     private void EnemyMove(bool fixedUpdate)
     {
         float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
-        Vector3 moveDirection = Vector3.zero;
         mode = PlayState.playState.gameMode;
-        
-        actionStop = movePlan == null || movePlan.Length <= 0 || mode != PlayState.GameMode.Play || standby == false;
+        Vector3 nowPos = new Vector3(transform.position.x, enemyPosY, transform.position.z);
+
+        actionStop = mode != PlayState.GameMode.Play || standby == false;
 
         if(actionStop == false)
         {
             int nextLocation;
             if (finishOneLoop)
             {
-                nextLocation = location - 1 < 0 ? type == moveType.Lap ? movePlan.Length - 1 : location + 1 : location - 1;
+                nextLocation = location - 1 < 0 ? type == moveType.Lap ? moveSchedule.Length - 1 : location + 1 : location - 1;
             }
             else
             {
-                nextLocation = location + 1 >= movePlan.Length ? type == moveType.Lap ? 0 : location - 1 : location + 1;
+                nextLocation = location + 1 >= moveSchedule.Length ? type == moveType.Lap ? 0 : location - 1 : location + 1;
             }
-            Vector3 nextPos = new Vector3(movePlan[nextLocation].x, enemyPosY, movePlan[nextLocation].y);
-            Vector3 forward = (nextPos - new Vector3(transform.position.x, enemyPosY, transform.position.z)).normalized;
+            Vector3 nextPos = moveSchedule[nextLocation];
+            Vector3 forward = (nextPos - nowPos).normalized;
 
             Ray ray = new Ray(new Vector3(transform.position.x, enemyPosY - enemy.radius * 2.0f, transform.position.z), Vector3.up);
             bool playerHit = Physics.SphereCast(ray, (enemy.radius) * 2.0f, rayLength, playerLayer);
@@ -118,7 +123,11 @@ public class EnemyController : MyAnimation
             switch (step)
             {
                 case 0:
-                    transform.position = new Vector3(movePlan[location].x, enemyPosY, movePlan[location].y);
+                    transform.position = moveSchedule[location];
+                    if (Vector3.Distance(transform.position, moveSchedule[nextLocation]) < 0.1f)
+                    {
+                        step = -5;
+                    }
                     stepEnd = true;
                     break;
                 case 1:
@@ -137,8 +146,8 @@ public class EnemyController : MyAnimation
                     {
                         float vec = Mathf.Abs(forward.x) >= Mathf.Abs(forward.z) ? forward.z / forward.x : forward.x / forward.z;
                         vec = 1.0f / Mathf.Sqrt(1.0f + vec * vec);
-                        moveDirection = forward * enemySpeed * delta * vec;
-                        if(Vector3.Distance(new Vector3(transform.position.x, enemyPosY, transform.position.z), nextPos) < 0.1f)
+                        transform.position += forward * enemySpeed * delta * vec;
+                        if (Vector3.Distance(nowPos, nextPos) < 0.1f)
                         {
                             stepEnd = true;
                         }
@@ -151,7 +160,7 @@ public class EnemyController : MyAnimation
                         location--;
                         if(type == moveType.Lap)
                         {
-                            if(location < 0) { location = movePlan.Length - 1; }
+                            if(location < 0) { location = moveSchedule.Length - 1; }
                         }
                         else
                         {
@@ -163,14 +172,14 @@ public class EnemyController : MyAnimation
                         location++;
                         if (type == moveType.Lap)
                         {
-                            if (location >= movePlan.Length) { location = 0; }
+                            if (location >= moveSchedule.Length) { location = 0; }
                         }
                         else
                         {
-                            if (location >= movePlan.Length - 1) { finishOneLoop = true; }
+                            if (location >= moveSchedule.Length - 1) { finishOneLoop = true; }
                         }
                     }
-                    break;
+                    return;
             }
 
             if (stepEnd)
@@ -180,7 +189,26 @@ public class EnemyController : MyAnimation
                 time = 0;
             }
         }
+    }
 
-        transform.position += moveDirection;
+    /// <summary>
+    /// 敵の移動スケジュールを設定
+    /// </summary>
+    private void SetMoveSchedule(Vector2[] plan)
+    {
+        moveSchedule = new Vector3[plan.Length < 2 ? 2 : plan.Length + 1];
+        for(int i = 0; i < moveSchedule.Length; i++)
+        {
+            if(i > 0 && plan.Length > 0)
+            {
+                moveSchedule[i] = moveSchedule[i - 1];
+                moveSchedule[i].x += plan[i - 1].x;
+                moveSchedule[i].z += plan[i - 1].y;
+            }
+            else
+            {
+                moveSchedule[i] = transform.position;
+            }
+        }
     }
 }
