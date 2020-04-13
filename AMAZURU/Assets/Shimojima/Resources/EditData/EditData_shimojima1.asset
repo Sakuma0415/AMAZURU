@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8ca9937970dae448c3f419008262f1, type: 3}
+  m_Name: EditData_shimojima1
+  m_EditorClassIdentifier: 
+  stageName: shimojima1
+  stage: {fileID: 2074524325707851079, guid: 13227065ba82c3545bc8035871070765, type: 3}
+  gridCells: {x: 20, y: 20, z: 20}
