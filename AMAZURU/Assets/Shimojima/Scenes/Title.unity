@@ -674,9 +674,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   senterPivot: {fileID: 1558422919}
-  size: {x: 3, y: 3, z: 3}
+  pivotCubeSize: {x: 3, y: 3, z: 3}
   pos: {x: 40, y: 0, z: 0}
-  defSize: {x: 0.5, y: 0.5, z: 0.5}
+  scaleAdjust: {x: 1, y: 1}
   viewStage:
   - {fileID: 0}
   - {fileID: 0}
