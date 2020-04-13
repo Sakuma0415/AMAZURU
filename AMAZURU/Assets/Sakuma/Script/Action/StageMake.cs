@@ -44,12 +44,24 @@ public class StageMake : MonoBehaviour
         amehurashiManager.AmehurashiQuantity  = SLoadStageData.AmehurashiQuantity;
     }
 
-    private void Start()
+    void FStateSet()
+    {
+        cameraPos.fAngle = StageMake.LoadStageData.startAngle;
+        cameraPos.CameraDisP = StageMake.LoadStageData.CameraDisP;
+        cameraPos.CameraDisS = StageMake.LoadStageData.CameraDisS;
+    }
+
+    private void Awake()
     {
         if (LoadStageData == null)
         {
             StageMake.LoadStageData = SLoadStageData;
         }
+        FStateSet();
+    }
+    private void Start()
+    {
+
         StageLoad();
     }
 

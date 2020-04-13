@@ -1162,9 +1162,9 @@ MonoBehaviour:
   PlayerTransform: {fileID: 0}
   XZangle: 270
   Yangle: 25
-  lookMode: 1
+  lookMode: 0
   MouseHack: 1
-  lookHi: 0.15
+  lookHi: 0
   changeTime: 0.5
   fAngle: 270
   endCameraPos: 0
