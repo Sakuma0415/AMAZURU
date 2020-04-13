@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8059373145101860526}
   - component: {fileID: 3432298308603282551}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Scaffold
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -112,6 +112,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   rb: {fileID: 3432298308603282551}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  maxPos: {x: 0, y: 0, z: 0}
 --- !u!54 &3432298308603282551
 Rigidbody:
   m_ObjectHideFlags: 0
