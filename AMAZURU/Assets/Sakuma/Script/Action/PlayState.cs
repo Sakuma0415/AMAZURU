@@ -8,6 +8,7 @@ public class PlayState : MonoBehaviour
     public bool copyFlg = false; 
     public enum GameMode
     {
+        StartEf,
         Play,
         Menu,
         Anime,
@@ -33,7 +34,7 @@ public class PlayState : MonoBehaviour
     {
 
         playState = new PlayState();
-        playState.gameMode = GameMode.Play;
+        playState.gameMode = GameMode.StartEf;
 
         if (!copyFlg)
         {
