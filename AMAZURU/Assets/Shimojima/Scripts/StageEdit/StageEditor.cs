@@ -31,6 +31,8 @@ public class StageEditor : MonoBehaviour
     [HideInInspector]
     public bool isCreateStage;
 
+    [SerializeField]
+    private string objName;
     [Tooltip("グリッドの数　X * Y * Z")]
     public Vector3Int cells;
     private float posAdjust = 0.5f;
@@ -72,6 +74,11 @@ public class StageEditor : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            SelectObjectAllChange();
+        }
+
         if(Data != null && Data.stageName != stageName)
         {
             StageDataIncetance();
@@ -283,24 +290,12 @@ public class StageEditor : MonoBehaviour
 
         if(stageName == "") { stageName = "stageName"; }
         Data.stageName = stageName;
-        if (Data == null)
-        {
-            Debug.Log("null1");
-        }
         if (isSave || loadStage)
         {
             AssetDatabase.DeleteAsset("Assets/Shimojima/EditData/EditData_" + stageName + ".asset");
             AssetDatabase.SaveAssets();
-            if (Data == null)
-            {
-                Debug.Log("null2");
-            }
         }
         Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Resources/Prefabs/Stage/" + stageName + ".prefab", InteractionMode.UserAction);
-        if (Data == null)
-        {
-            Debug.Log("null3");
-        }
         AssetDatabase.CreateAsset(Data, "Assets/Shimojima/EditData/EditData_" + stageName + ".asset");
 
         Array3DForLoop(Vector3Int.zero, cells, 1);
@@ -399,15 +394,40 @@ public class StageEditor : MonoBehaviour
         Debug.Log(_StageObjects[cellIndex.x, cellIndex.y, cellIndex.z].name + "を削除しました");
         Destroy(_StageObjects[cellIndex.x, cellIndex.y, cellIndex.z]);
         gridPos[cellIndex.x, cellIndex.y, cellIndex.z].GetComponent<HighlightObject>().IsAlreadyInstalled = false;
-        if(referenceObject[refObjIndex].name == "SandFloor")
+
+        if(referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.shader.name == "Custom/InObj")
         {
             guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.GetColor("_MainColor");
+        }
+        else if (referenceObject[refObjIndex].name == "A_hurashi")
+        {
+            guideObj.transform.GetChild(1).transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].transform.GetChild(1).GetComponent<Renderer>().sharedMaterial.color;
         }
         else
         {
             guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color;
+        }   
+    }
+
+    /// <summary>
+    /// 設置されているオブジェクトをすべて、現在選択しているオブジェクトに差し替える
+    /// </summary>
+    public void SelectObjectAllChange()
+    {
+        foreach (GameObject obj in _StageObjects)
+        {
+            if(obj == null) { continue; }
+            if (obj.name == objName)
+            {
+                GameObject o = Instantiate(referenceObject[refObjIndex]);
+                o.transform.localPosition = obj.transform.localPosition;
+                o.transform.localEulerAngles += obj.transform.localEulerAngles;
+                o.AddComponent<MyCellIndex>().cellIndex = obj.GetComponent<MyCellIndex>().cellIndex;
+                Vector3Int cellIndex = o.GetComponent<MyCellIndex>().cellIndex;
+                _StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] = o;
+                Destroy(obj);
+            }
         }
-        
     }
 
     /// <summary>

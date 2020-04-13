@@ -266,7 +266,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5748920770418969847}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0594bb4ee2648934ebc587fb593e848c, type: 3}
   m_Name: 
@@ -279,6 +279,8 @@ MonoBehaviour:
   sw: 0
   meshRenderer: {fileID: 0}
   shaders: {fileID: 4800000, guid: 8a79b8120df7bd14d9f380b5c00f38c3, type: 3}
+  forCamera: {fileID: 0}
+  Obj: {fileID: 0}
 --- !u!114 &2768787036996906384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -321,13 +323,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6357854678644401795}
-  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8760377739097603812}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1385978674762641062
 MeshFilter:
   m_ObjectHideFlags: 0

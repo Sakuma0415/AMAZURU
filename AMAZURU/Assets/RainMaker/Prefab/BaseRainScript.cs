@@ -294,7 +294,7 @@ namespace DigitalRuby.RainMaker
 
         protected virtual float RainFallEmissionRate()
         {
-            return (RainFallParticleSystem.main.maxParticles / RainFallParticleSystem.main.startLifetime.constant) * RainIntensity;
+            return (RainFallParticleSystem.main.maxParticles / RainFallParticleSystem.main.startLifetime.constant) * RainIntensity*5;
         }
 
         protected virtual float MistEmissionRate()

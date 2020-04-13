@@ -36,20 +36,30 @@ public class CameraPos : MonoBehaviour
     [SerializeField]
     [Range(-10, 10)]
     float lookHi;
-
+    float newLookHi;
 
     [SerializeField]
     float changeTime;
 
     [SerializeField]
-    float fAngle;
+    public float fAngle;
 
     bool MouseCheck = true;
+    [SerializeField]
+    float endCameraPos;
+    [SerializeField]
+    LayerMask layerMask;
+    [SerializeField]
+    SphereCollider sphereCollider;
 
-
+    bool startCameraFlg = true;
+    bool startCameraAngleResetFlg = true;
+    float startCameraAngleResetBf = 0;
     // Start is called before the first frame update
     void Start()
     {
+        startCameraFlg = true;
+        
         XZangle = fAngle;
         targetAngle = fAngle;
         CameraDis =lookMode ? CameraDisP: CameraDisS;
@@ -58,17 +68,45 @@ public class CameraPos : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (PlayState.playState.gameMode == PlayState.GameMode.Play|| rainPotChange)
+        if ((PlayState.playState.gameMode == PlayState.GameMode.Play|| PlayState.playState.gameMode == PlayState.GameMode.StartEf ) || rainPotChange)
         {
             if (lookAnimeTime > 0)
             {
-                transform.position = Vector3.Lerp(animePos, (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad) + lookHi, Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * (!lookMode ? CameraDisS : CameraDisP)) + lookObj, 1 - (lookAnimeTime/ changeTime));
+
+                transform.position = Vector3.Lerp(animePos, (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad) + newLookHi, Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * (!lookMode ? CameraDisS : CameraDisP)) + lookObj, 1 - (lookAnimeTime/ changeTime));
                 
-                //lookObj = new Vector3(0, 0, 0);
             }
             else
             {
-                transform.position = (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad) + lookHi, Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * CameraDis) + lookObj;
+                if (lookMode)
+                {
+
+                    if (Physics.OverlapSphere((new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad) + newLookHi, Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * CameraDis) + lookObj, sphereCollider.radius, layerMask).Length == 0)
+                    {
+                        endCameraPos = CameraDis;
+                    }
+                    else
+                    {
+                        Ray ray = new Ray(PlayerTransform.position, Vector3.Normalize(transform.position - PlayerTransform.position));
+                        RaycastHit hit;
+                        if (Physics.SphereCast (ray, sphereCollider.radius, out hit, CameraDis, layerMask))
+                        {
+                            Debug.Log(hit.collider.gameObject.name);
+                            endCameraPos = Vector3.Distance(hit.point, PlayerTransform.position);
+                        }
+                        else
+                        {
+                            endCameraPos = CameraDis;
+                        }
+                    }
+
+                }
+                else
+                {
+                    endCameraPos = CameraDis;
+                }
+
+                transform.position = (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad) + newLookHi, Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * endCameraPos) + lookObj;
             }
 
             transform.localEulerAngles = new Vector3(Yangle, -XZangle - 90, 0);
@@ -77,6 +115,20 @@ public class CameraPos : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (startCameraFlg)
+        {
+            lookObj = lookMode ? PlayerTransform.position : lookPos;
+            XZangle += Time.deltaTime*3;
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                startCameraAngleResetBf = XZangle;
+                startCameraFlg = false;
+                PlayState.playState.gameMode = PlayState.GameMode.Play;
+                lookMode = !lookMode;
+                lookAnimeTime = changeTime;
+                animePos = transform.position;
+            }
+        }
 
         //Debug.Log(lookObj); 
 
@@ -100,20 +152,22 @@ public class CameraPos : MonoBehaviour
 
                 if (MouseCheck)
                 {
-                    float mouse_x_delta = Input.GetAxis("Mouse X");
-                    float mouse_y_delta = Input.GetAxis("Mouse Y");
+                        float mouse_x_delta = Input.GetAxis("Mouse X");
+                        float mouse_y_delta = Input.GetAxis("Mouse Y");
 
-                    XZangle -= mouse_x_delta * (lookMode ? CameraDisS : CameraDisP) / 10;
-                    Yangle -= mouse_y_delta * (lookMode ? CameraDisS : CameraDisP) / 10;
+                        XZangle -= mouse_x_delta * (lookMode ? CameraDisS : CameraDisP) / 10;
+                        Yangle -= mouse_y_delta * (lookMode ? CameraDisS : CameraDisP) / 10;
 
-                    if (Yangle > 90)
-                    {
-                        Yangle = 90;
-                    }
-                    if (Yangle < -90)
-                    {
-                        Yangle = -90;
-                    }
+                        if (Yangle > 90)
+                        {
+                            Yangle = 90;
+                        }
+                        if (Yangle < -90)
+                        {
+                            Yangle = -90;
+                        }
+
+
                 }
 
 
@@ -137,7 +191,7 @@ public class CameraPos : MonoBehaviour
 
 
 
-            if (Input.GetKeyDown(KeyCode.Q) && lookAnimeTime == 0)
+            if (Input.GetKeyDown(KeyCode.Q) && lookAnimeTime == 0&&!startCameraFlg )
             {
                 lookMode = !lookMode;
                 lookAnimeTime = changeTime;
@@ -154,7 +208,18 @@ public class CameraPos : MonoBehaviour
                     MouseCheck = true;
                 }
                 CameraDis = Mathf.Lerp(lookMode ? CameraDisS : CameraDisP, lookMode ? CameraDisP : CameraDisS, 1 - (lookAnimeTime/ changeTime));
-
+                newLookHi = Mathf.Lerp(lookMode ? 0 : lookHi, lookMode ? lookHi  : 0, 1 - (lookAnimeTime / changeTime));
+                if (startCameraAngleResetFlg)
+                {
+                    XZangle = Mathf.Lerp(startCameraAngleResetBf  , fAngle , 1 - (lookAnimeTime / changeTime));
+                }
+            }
+            else
+            {
+                if(startCameraAngleResetFlg)
+                {
+                    startCameraAngleResetFlg = false;
+                }
             }
 
             lookObj = lookMode ? PlayerTransform.position : lookPos;

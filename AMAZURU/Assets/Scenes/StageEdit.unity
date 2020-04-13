@@ -625,6 +625,7 @@ MonoBehaviour:
   loadStage: 0
   isSave: 0
   isCreateStage: 0
+  objName: 
   cells: {x: 5, y: 5, z: 5}
   cellNum: {x: 0, y: 0, z: 0}
   mainCamera: {fileID: 989471370}
@@ -644,7 +645,7 @@ MonoBehaviour:
   - {fileID: 7585758483878431458, guid: 5c5c799d59815024095e7dcd0be7d7c5, type: 3}
   - {fileID: 225681902388658559, guid: eab84a69410b8874e94da46a44a6b6ed, type: 3}
   - {fileID: 3734858541888141026, guid: 62879e11aee5fb04a8aec3189b61fc6a, type: 3}
-  - {fileID: 5748920770418969847, guid: 6e90c4e902e493e4086f9a0589b78a72, type: 3}
+  - {fileID: 7238556061166013206, guid: 174c7492c20317b49b2c5f0f7742e004, type: 3}
 --- !u!4 &226080315
 Transform:
   m_ObjectHideFlags: 0
