@@ -356,7 +356,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 729461916}
   m_LocalRotation: {x: 0.043619405, y: 0, z: 0, w: 0.9990483}
-  m_LocalPosition: {x: 0, y: 3, z: -20}
+  m_LocalPosition: {x: 3, y: 7, z: -30.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -676,12 +676,48 @@ MonoBehaviour:
   senterPivot: {fileID: 1558422919}
   pivotCubeSize: {x: 3, y: 3, z: 3}
   pos: {x: 40, y: 0, z: 0}
-  scaleAdjust: {x: 1, y: 1}
+  scaleAdjust: {x: 8, y: 8}
   viewStage:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - name: 
+    stage: {fileID: 0}
+    isSelect: 0
+    isInvisible: 0
+  - name: 
+    stage: {fileID: 0}
+    isSelect: 0
+    isInvisible: 0
+  - name: 
+    stage: {fileID: 0}
+    isSelect: 0
+    isInvisible: 0
+  - name: 
+    stage: {fileID: 0}
+    isSelect: 0
+    isInvisible: 0
+  - name: 
+    stage: {fileID: 0}
+    isSelect: 0
+    isInvisible: 0
+  - name: 
+    stage: {fileID: 0}
+    isSelect: 0
+    isInvisible: 0
+  - name: 
+    stage: {fileID: 0}
+    isSelect: 0
+    isInvisible: 0
+  - name: 
+    stage: {fileID: 0}
+    isSelect: 0
+    isInvisible: 0
+  - name: 
+    stage: {fileID: 0}
+    isSelect: 0
+    isInvisible: 0
+  - name: 
+    stage: {fileID: 0}
+    isSelect: 0
+    isInvisible: 0
 --- !u!1001 &1993898234701092263
 PrefabInstance:
   m_ObjectHideFlags: 0

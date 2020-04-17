@@ -10,12 +10,26 @@ public class Select2 : MonoBehaviour
     private Vector3 pivotCubeSize;
 
     private List<GameObject> stages = new List<GameObject>();
+    private PrefabStageData[] psd;
     [SerializeField]
     private Vector3 pos;
     [SerializeField]
     private Vector2 scaleAdjust;
-    [SerializeField]
-    private GameObject[] viewStage = new GameObject[4];
+    [SerializeField,Range(1,10)]
+    private float speed = 1;
+    private float angle = 0;
+    private bool isRotation = false;
+
+    [System.Serializable]
+    public struct ViewStage
+    {
+        public string name;
+        public GameObject stage;
+        public bool isSelect;
+        public bool isInvisible;
+    }
+
+    public ViewStage[] viewStage = new ViewStage[10];
 
     void Start()
     {
@@ -24,7 +38,16 @@ public class Select2 : MonoBehaviour
 
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            isRotation = true;
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (!isRotation) { return; }
+        StageRotation(1);
     }
 
     /// <summary>
@@ -32,20 +55,62 @@ public class Select2 : MonoBehaviour
     /// </summary>
     private void StageSelectorInit()
     {
-        PrefabStageData[] psd = Resources.LoadAll<PrefabStageData>("EditData/");
-        float angle = 360 / psd.Length;
-        int i = 0;
-        foreach (PrefabStageData obj in psd)
+        psd = Resources.LoadAll<PrefabStageData>("EditData/");
+        float angle = 360 / 10;
+        int overCount = 1;
+        //int i = 0;
+        for (int i = 0; i < 10; i++)
         {
-            stages.Add(Instantiate(obj.stage));
-            stages[i].transform.position = pos;
+            if(i > (psd.Length - 1) * overCount)
+            {
+                int _i = i - psd.Length;
+                stages.Add(psd[_i].stage);
+                viewStage[i].stage = Instantiate(stages[i]);
+                viewStage[i].name = stages[i].name;
+                if (i < 9)
+                {
+                    viewStage[i].stage.transform.localScale = Vector3.zero;
+                    viewStage[i].isInvisible = true;
+                    goto Skip;
+                }
+                StageReSize(psd[_i], i);
+                
+            }
+            else
+            {
+                stages.Add(psd[i].stage);
+                viewStage[i].stage = Instantiate(stages[i]);
+                viewStage[i].name = stages[i].name;
+                if (i == psd.Length - 1)
+                {
+                    viewStage[i].stage.transform.localScale = Vector3.zero;
+                    viewStage[i].isInvisible = true;
+                    goto Skip;
+                }
+                StageReSize(psd[i], i);
+            }
 
-            StageReSize(obj, i);
+        Skip:
+            viewStage[i].stage.transform.position = pos;
 
-            //stages[i].transform.localScale = defSize;
-            stages[i].transform.RotateAround(senterPivot.transform.position, Vector3.up, angle * (i + 1));
-            i++;
+            
+            viewStage[i].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, angle * (i + 1));
+            if(angle * (i + 1) == 72) { viewStage[i].stage.transform.localScale = Vector3.one * 0.8f; }
+
+            if(i > (psd.Length - 1) * (overCount + 1)) { overCount++; }
         }
+
+        //foreach (PrefabStageData obj in psd)
+        //{
+        //    stages.Add(Instantiate(obj.stage));
+        //    stages[i].transform.position = pos;
+
+        //    StageReSize(obj, i);
+
+        //    //stages[i].transform.localScale = defSize;
+        //    stages[i].transform.RotateAround(senterPivot.transform.position, Vector3.up, angle * (i + 1));
+        //    i++;
+        //}
     }
 
     /// <summary>
@@ -86,7 +151,38 @@ public class Select2 : MonoBehaviour
             else { magni = scaleAdjust.y / z; }
 
             Vector2 reSize = new Vector2((x * magni) / scale.x, (z * magni) / scale.y);
-            stages[i].transform.localScale = new Vector3(reSize.x, 1, reSize.y);
+            viewStage[i].stage.transform.localScale = new Vector3(reSize.x, 1, reSize.y);
+        }
+    }
+
+    private void StageRotation(int i)
+    {
+        for (int j = 0; j < viewStage.Length; j++)
+        {
+            viewStage[j].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, speed);
+        }
+
+        angle += speed;
+
+        if(angle >= 36)
+        {
+            angle = 0;
+            isRotation = false;
+        }
+    }
+
+    private void CheakAngle()
+    {
+        for (int i = 0; i < viewStage.Length; i++)
+        {
+            if(36 + viewStage[i].stage.transform.localEulerAngles.y == 72)
+            {
+                viewStage[i].isSelect = true;
+            }
+            else
+            {
+                viewStage[i].isSelect = false;
+            }
         }
     }
 
