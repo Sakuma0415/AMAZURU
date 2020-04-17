@@ -10,7 +10,8 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
     public enum SceneName
     {
         Title = 0,
-        Action
+        Action,
+        StageSlect
     }
 
     private SceneName sceneName;
@@ -36,13 +37,13 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
     }
 #endif
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            LoadScene(SceneName.Action);
-        }
-    }
+    //void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.Space))
+    //    {
+    //        LoadScene(SceneName.Action);
+    //    }
+    //}
 
     /// <summary>
     /// シーンの非同期読込
