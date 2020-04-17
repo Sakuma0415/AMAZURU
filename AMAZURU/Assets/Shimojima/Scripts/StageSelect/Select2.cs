@@ -19,14 +19,33 @@ public class Select2 : MonoBehaviour
     private float speed = 1;
     private float angle = 0;
     private bool isRotation = false;
+    private int angleIndex = 0;
+    private string selectStage;
 
     [System.Serializable]
     public struct ViewStage
     {
         public string name;
         public GameObject stage;
+        private Vector3 defScale;
+        public Vector3 DefScale
+        {
+            get
+            {
+                return defScale;
+            }
+
+            set
+            {
+                defScale = value;
+            }
+        }
+        public Vector3 reSizeSpeed;
+        public Vector3 zeroScalingSpeed;
         public bool isSelect;
+        public bool isSmall;
         public bool isInvisible;
+        public bool isView;
     }
 
     public ViewStage[] viewStage = new ViewStage[10];
@@ -40,14 +59,31 @@ public class Select2 : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
+            if (isRotation) { return; }
             isRotation = true;
+            angleIndex = 0;
+            CheakAngle(angleIndex);
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            if (isRotation) { return; }
+            isRotation = true;
+            angleIndex = 1;
+            CheakAngle(angleIndex);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            //ココダヨ～ [selectStage ← 選択中のステージ名が格納されてる変数]
+            Scenemanager.Instance.LoadScene(Scenemanager.SceneName.Action);
         }
     }
 
     void FixedUpdate()
     {
         if (!isRotation) { return; }
-        StageRotation(1);
+        StageRotation(angleIndex);
     }
 
     /// <summary>
@@ -65,52 +101,50 @@ public class Select2 : MonoBehaviour
             {
                 int _i = i - psd.Length;
                 stages.Add(psd[_i].stage);
-                viewStage[i].stage = Instantiate(stages[i]);
-                viewStage[i].name = stages[i].name;
-                if (i < 9)
-                {
-                    viewStage[i].stage.transform.localScale = Vector3.zero;
-                    viewStage[i].isInvisible = true;
-                    goto Skip;
-                }
-                StageReSize(psd[_i], i);
-                
+                StageReSize(psd[_i], i);    
             }
             else
             {
                 stages.Add(psd[i].stage);
-                viewStage[i].stage = Instantiate(stages[i]);
-                viewStage[i].name = stages[i].name;
-                if (i == psd.Length - 1)
-                {
-                    viewStage[i].stage.transform.localScale = Vector3.zero;
-                    viewStage[i].isInvisible = true;
-                    goto Skip;
-                }
                 StageReSize(psd[i], i);
             }
 
-        Skip:
-            viewStage[i].stage.transform.position = pos;
+            viewStage[i].stage = Instantiate(stages[i]);
+            viewStage[i].name = "shimojima1";
+            viewStage[i].stage.transform.localScale = viewStage[i].DefScale;
+            if (viewStage[i].stage.transform.localScale == Vector3.one)
+            {
+                Vector2 scale = new Vector2(1.5f - viewStage[i].stage.transform.localScale.x,
+                                            1.5f - viewStage[i].stage.transform.localScale.z);
+                viewStage[i].reSizeSpeed = new Vector3(scale.x / 36, 0 ,scale.y / 36);
+            }
+            else
+            {
+                Vector2 scale = new Vector2(0.8f - viewStage[i].stage.transform.localScale.x,
+                                            0.8f - viewStage[i].stage.transform.localScale.z);
+                viewStage[i].reSizeSpeed = new Vector3(scale.x / 36, 0, scale.y / 36);
+            }
 
+            Vector3 _scale = viewStage[i].stage.transform.localScale;
+            viewStage[i].zeroScalingSpeed = new Vector3(_scale.x / 36, _scale.y / 36, _scale.z / 36);
+
+            if (i > 3 && i < 9)
+            {
+                viewStage[i].stage.transform.localScale = Vector3.zero;
+            }
+
+            viewStage[i].stage.transform.position = pos;
             
             viewStage[i].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, angle * (i + 1));
-            if(angle * (i + 1) == 72) { viewStage[i].stage.transform.localScale = Vector3.one * 0.8f; }
+            if(angle * (i + 1) == 72) 
+            { 
+                viewStage[i].stage.transform.localScale = Vector3.one * 0.8f;
+                viewStage[i].isSelect = true;
+                selectStage = "shimojima1";
+            }
 
             if(i > (psd.Length - 1) * (overCount + 1)) { overCount++; }
         }
-
-        //foreach (PrefabStageData obj in psd)
-        //{
-        //    stages.Add(Instantiate(obj.stage));
-        //    stages[i].transform.position = pos;
-
-        //    StageReSize(obj, i);
-
-        //    //stages[i].transform.localScale = defSize;
-        //    stages[i].transform.RotateAround(senterPivot.transform.position, Vector3.up, angle * (i + 1));
-        //    i++;
-        //}
     }
 
     /// <summary>
@@ -151,15 +185,42 @@ public class Select2 : MonoBehaviour
             else { magni = scaleAdjust.y / z; }
 
             Vector2 reSize = new Vector2((x * magni) / scale.x, (z * magni) / scale.y);
-            viewStage[i].stage.transform.localScale = new Vector3(reSize.x, 1, reSize.y);
+            viewStage[i].DefScale = new Vector3(reSize.x, 1, reSize.y);
+        }
+        else
+        {
+            viewStage[i].DefScale = Vector3.one;
         }
     }
 
+    /// <summary>
+    /// ステージの回転
+    /// </summary>
+    /// <param name="i"></param>
     private void StageRotation(int i)
     {
         for (int j = 0; j < viewStage.Length; j++)
         {
-            viewStage[j].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, speed);
+            if (viewStage[j].isSelect) 
+            {
+                viewStage[j].stage.transform.localScale += viewStage[j].reSizeSpeed;
+            }
+            if(viewStage[j].isSmall)
+            {
+                viewStage[j].stage.transform.localScale -= viewStage[j].reSizeSpeed;
+            }
+            if (viewStage[j].isInvisible)
+            {
+                viewStage[j].stage.transform.localScale -= viewStage[j].zeroScalingSpeed;
+            }
+            else if(viewStage[j].isView)
+            {
+                viewStage[j].stage.transform.localScale += viewStage[j].zeroScalingSpeed;
+            }
+
+            float s = speed;
+            if(i == 1) { s *= -1; }
+            viewStage[j].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, s);
         }
 
         angle += speed;
@@ -168,21 +229,48 @@ public class Select2 : MonoBehaviour
         {
             angle = 0;
             isRotation = false;
+            for (int k = 0; k < viewStage.Length; k++)
+            {
+                if (viewStage[k].isView) { viewStage[k].isView = false; }
+                if (viewStage[k].isInvisible) { viewStage[k].isInvisible = false; }
+                if (viewStage[k].isSmall) { viewStage[k].isSmall = false; }
+            }
         }
     }
 
-    private void CheakAngle()
+    private void CheakAngle(int j)
     {
         for (int i = 0; i < viewStage.Length; i++)
         {
-            if(36 + viewStage[i].stage.transform.localEulerAngles.y == 72)
+            if (viewStage[i].isSelect) { viewStage[i].isSelect = false; 
+                                         viewStage[i].isSmall = true; }
+
+            Quaternion q = viewStage[i].stage.transform.rotation;
+            float adjust = 36;
+
+            if(j == 1){ adjust *= -1; }
+
+            float y = Mathf.Round(adjust + q.eulerAngles.y);
+            if(y > 180) { y = Mathf.Round(180 - y); }
+            Debug.Log(viewStage[i].stage.name + ":" + y);
+            if (y == 72)
             {
                 viewStage[i].isSelect = true;
+                selectStage = viewStage[i].name;
             }
-            else
+            else if (y == 180)
             {
-                viewStage[i].isSelect = false;
+                if (j == 1) { continue; }
+                viewStage[i].isInvisible = true;
             }
+            else if (y == -180)
+            {
+                if(j == 1) { continue; }
+                viewStage[i].isView = true;
+            }
+
+            if(j != 1) { continue; }
+
         }
     }
 
