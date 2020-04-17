@@ -8,13 +8,15 @@ public class PlayerType2 : MonoBehaviour
     [SerializeField, Tooltip("PlayerのCharacterController")] private CharacterController character = null;
     [SerializeField, Tooltip("PlayerのAnimator")] private Animator playerAnimator = null;
     [SerializeField, Tooltip("透明な壁")] private BoxCollider hiddenWallPrefab = null;
+    [SerializeField, Tooltip("移動時の起点カメラ")] private Camera playerCamera = null;
+    [SerializeField, Tooltip("ステージの水オブジェクト")] private WaterHi stageWater = null;
 
     // コントローラーの入力
     [SerializeField, Tooltip("X入力")] private float inputX = 0;
-    [SerializeField, Tooltip("Y入力")] private float inputZ = 0;
+    [SerializeField, Tooltip("Z入力")] private float inputZ = 0;
 
-    [SerializeField, Header("プレイヤーの移動速度"), Range(0, 5)] private float playerSpeed = 0;
-    [SerializeField, Header("移動時の起点カメラ")] private Camera playerCamera = null;
+    [SerializeField, Header("プレイヤーの移動速度"), Range(0, 10)] private float playerSpeed = 0;
+    [SerializeField, Header("プレイヤーの水中移動速度"), Range(0, 10)] private float playerWaterSpeed = 0;
     [SerializeField, Header("地面のLayerMask")] private LayerMask layerMask;
     [SerializeField, Header("水面のLayerMask")] private LayerMask waterLayerMask;
     [SerializeField, Header("Rayの長さ"), Range(0, 10)] private float rayLength = 0.5f;
@@ -31,10 +33,19 @@ public class PlayerType2 : MonoBehaviour
     private Vector3[] rayPosition = new Vector3[4] { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
     private BoxCollider[] hiddenWalls = null;
 
+    // 水が腰の高さになったか
+    private bool inWater = false;
+
+    /// <summary>
+    /// プレイヤーが水没したことを検知するフラグ
+    /// </summary>
+    public bool UnderWater { private set; get; } = false;
+
+    private bool debug = false;
+
     // Start is called before the first frame update
     void Start()
     {
-        PlayerInit();
         CreateHiddenWall();
     }
 
@@ -57,9 +68,21 @@ public class PlayerType2 : MonoBehaviour
     /// <summary>
     /// 初期化
     /// </summary>
-    private void PlayerInit()
+    public void PlayerInit()
     {
         if (playerCamera == null) { playerCamera = Camera.main; }
+
+        if (stageWater == null)
+        {
+            Ray ray = new Ray(transform.position, Vector3.down);
+            RaycastHit hit;
+            if(Physics.Raycast(ray, out hit, 200, waterLayerMask))
+            {
+                stageWater = hit.transform.gameObject.GetComponent<WaterHi>();
+            }
+        }
+
+        debug = true;
     }
 
     /// <summary>
@@ -72,6 +95,11 @@ public class PlayerType2 : MonoBehaviour
         // キー入力取得
         inputX = mode == PlayState.GameMode.Play ? Input.GetAxis("Horizontal") : 0;
         inputZ = mode == PlayState.GameMode.Play ? Input.GetAxis("Vertical") : 0;
+
+        if(Input.GetKeyDown(KeyCode.L) && debug == false)
+        {
+            PlayerInit();
+        }
     }
 
     /// <summary>
@@ -80,6 +108,17 @@ public class PlayerType2 : MonoBehaviour
     private void PlayerMove(bool fixedUpdate)
     {
         float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
+
+        if(stageWater != null)
+        {
+            inWater = PlayerPositionY < stageWater.max;
+            UnderWater = PlayerPositionY + character.height * 0.5f < stageWater.max;
+        }
+        else
+        {
+            inWater = false;
+            UnderWater = false;
+        }
 
         // 移動方向
         Vector3 moveDirection = Vector3.zero;
@@ -120,7 +159,8 @@ public class PlayerType2 : MonoBehaviour
             }
 
             // プレイヤーの移動先の算出
-            moveDirection *= playerSpeed * delta;
+            float speed = inWater ? playerWaterSpeed : playerSpeed;
+            moveDirection *= speed * delta;
         }
 
         // プレイヤーを移動させる
@@ -159,24 +199,8 @@ public class PlayerType2 : MonoBehaviour
         {
             // 床があるかチェック
             Ray findGround = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
-            RaycastHit hit;
-            bool go;
-            if(Physics.Raycast(findGround, out hit, rayLength, layerMask | waterLayerMask))
-            {
-                if(((1 << hit.transform.gameObject.layer) & waterLayerMask) != 0)
-                {
-                    go = false;
-                }
-                else
-                {
-                    go = true;
-                }
-            }
-            else
-            {
-                go = false;
-            }
-
+            bool go = Physics.Raycast(findGround, rayLength, layerMask);
+            
             // 床が無ければ透明な壁を有効化する
             if (go == false && hiddenWalls[i].enabled == false)
             {
