@@ -35,6 +35,7 @@ public class StageMake : MonoBehaviour
         waterMaterial.SetFloat("_Y", StageMake.LoadStageData.stageSize.z/6);
 
         GameObject player = Instantiate(playerObj, StageMake.LoadStageData.startPos-new Vector3 (0.5f,0,0.5f),Quaternion.identity);
+        player.GetComponent<PlayerType2>().PlayerInit();
         cameraPos.lookPos = new Vector3(StageMake.LoadStageData.stageSize.x/2, StageMake.LoadStageData.stageSize.y / 2, StageMake.LoadStageData.stageSize.z/2);
         cameraPos.PlayerTransform = player.GetComponent<Transform >();
 
