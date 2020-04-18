@@ -75,7 +75,7 @@ public class EnemyController : MyAnimation
         }
 
         // 床の高さを取得
-        if (Physics.Raycast(ray, out hit, 1.25f, groundLayer))
+        if (Physics.Raycast(ray, out hit, 200, groundLayer))
         {
             enemyPosY = hit.point.y + enemy.radius - enemy.center.y;
             if (first)
@@ -88,7 +88,7 @@ public class EnemyController : MyAnimation
         }
         else
         {
-            Debug.LogError(gameObject.name + "のアメフラシさん : 「地面から離れすぎてて怖いよぉ (>_<) 」");
+            Debug.LogError(gameObject.name + "のアメフラシさん : 「地面が見当たらないよぉ (>_<) 」");
             standby = false;
         }
     }
