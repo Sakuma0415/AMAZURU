@@ -356,7 +356,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 729461916}
   m_LocalRotation: {x: 0.043619405, y: 0, z: 0, w: 0.9990483}
-  m_LocalPosition: {x: 3, y: 7, z: -35}
+  m_LocalPosition: {x: -3, y: 6, z: -24}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -386,7 +386,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1558422919}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 4, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1716812841}
@@ -530,7 +530,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1716812841}
-  - component: {fileID: 2108203418}
+  - component: {fileID: 1716812840}
   m_Layer: 0
   m_Name: StageSelect
   m_TagString: Untagged
@@ -538,6 +538,67 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1716812840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716812839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d032bf00972652498ae933e3e8b173e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  senterPivot: {fileID: 1558422919}
+  pivotCubeSize: {x: 3, y: 3, z: 3}
+  defPos: {x: -2, y: 0, z: 0}
+  scaleAdjust: {x: 8, y: 8}
+  speed: 1
+  rotateAngle: 36
+  viewStage:
+  - name: 
+    stage: {fileID: 0}
+    defScale: {x: 0, y: 0, z: 0}
+    reSizeSpeed: {x: 0, y: 0, z: 0}
+    zeroScalingSpeed: {x: 0, y: 0, z: 0}
+    index: 0
+    psdIndex: 0
+  - name: 
+    stage: {fileID: 0}
+    defScale: {x: 0, y: 0, z: 0}
+    reSizeSpeed: {x: 0, y: 0, z: 0}
+    zeroScalingSpeed: {x: 0, y: 0, z: 0}
+    index: 0
+    psdIndex: 0
+  - name: 
+    stage: {fileID: 0}
+    defScale: {x: 0, y: 0, z: 0}
+    reSizeSpeed: {x: 0, y: 0, z: 0}
+    zeroScalingSpeed: {x: 0, y: 0, z: 0}
+    index: 0
+    psdIndex: 0
+  - name: 
+    stage: {fileID: 0}
+    defScale: {x: 0, y: 0, z: 0}
+    reSizeSpeed: {x: 0, y: 0, z: 0}
+    zeroScalingSpeed: {x: 0, y: 0, z: 0}
+    index: 0
+    psdIndex: 0
+  - name: 
+    stage: {fileID: 0}
+    defScale: {x: 0, y: 0, z: 0}
+    reSizeSpeed: {x: 0, y: 0, z: 0}
+    zeroScalingSpeed: {x: 0, y: 0, z: 0}
+    index: 0
+    psdIndex: 0
+  - name: 
+    stage: {fileID: 0}
+    defScale: {x: 0, y: 0, z: 0}
+    reSizeSpeed: {x: 0, y: 0, z: 0}
+    zeroScalingSpeed: {x: 0, y: 0, z: 0}
+    index: 0
+    psdIndex: 0
 --- !u!4 &1716812841
 Transform:
   m_ObjectHideFlags: 0
@@ -636,104 +697,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2108203418
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1716812839}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 674615907c332994595c52a0f63e6dbc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  senterPivot: {fileID: 1558422919}
-  pivotCubeSize: {x: 3, y: 3, z: 3}
-  pos: {x: 40, y: 0, z: 0}
-  scaleAdjust: {x: 8, y: 8}
-  speed: 1
-  viewStage:
-  - name: 
-    stage: {fileID: 0}
-    reSizeSpeed: {x: 0, y: 0, z: 0}
-    zeroScalingSpeed: {x: 0, y: 0, z: 0}
-    isSelect: 0
-    isSmall: 0
-    isInvisible: 0
-    isView: 0
-  - name: 
-    stage: {fileID: 0}
-    reSizeSpeed: {x: 0, y: 0, z: 0}
-    zeroScalingSpeed: {x: 0, y: 0, z: 0}
-    isSelect: 0
-    isSmall: 0
-    isInvisible: 0
-    isView: 0
-  - name: 
-    stage: {fileID: 0}
-    reSizeSpeed: {x: 0, y: 0, z: 0}
-    zeroScalingSpeed: {x: 0, y: 0, z: 0}
-    isSelect: 0
-    isSmall: 0
-    isInvisible: 0
-    isView: 0
-  - name: 
-    stage: {fileID: 0}
-    reSizeSpeed: {x: 0, y: 0, z: 0}
-    zeroScalingSpeed: {x: 0, y: 0, z: 0}
-    isSelect: 0
-    isSmall: 0
-    isInvisible: 0
-    isView: 0
-  - name: 
-    stage: {fileID: 0}
-    reSizeSpeed: {x: 0, y: 0, z: 0}
-    zeroScalingSpeed: {x: 0, y: 0, z: 0}
-    isSelect: 0
-    isSmall: 0
-    isInvisible: 0
-    isView: 0
-  - name: 
-    stage: {fileID: 0}
-    reSizeSpeed: {x: 0, y: 0, z: 0}
-    zeroScalingSpeed: {x: 0, y: 0, z: 0}
-    isSelect: 0
-    isSmall: 0
-    isInvisible: 0
-    isView: 0
-  - name: 
-    stage: {fileID: 0}
-    reSizeSpeed: {x: 0, y: 0, z: 0}
-    zeroScalingSpeed: {x: 0, y: 0, z: 0}
-    isSelect: 0
-    isSmall: 0
-    isInvisible: 0
-    isView: 0
-  - name: 
-    stage: {fileID: 0}
-    reSizeSpeed: {x: 0, y: 0, z: 0}
-    zeroScalingSpeed: {x: 0, y: 0, z: 0}
-    isSelect: 0
-    isSmall: 0
-    isInvisible: 0
-    isView: 0
-  - name: 
-    stage: {fileID: 0}
-    reSizeSpeed: {x: 0, y: 0, z: 0}
-    zeroScalingSpeed: {x: 0, y: 0, z: 0}
-    isSelect: 0
-    isSmall: 0
-    isInvisible: 0
-    isView: 0
-  - name: 
-    stage: {fileID: 0}
-    reSizeSpeed: {x: 0, y: 0, z: 0}
-    zeroScalingSpeed: {x: 0, y: 0, z: 0}
-    isSelect: 0
-    isSmall: 0
-    isInvisible: 0
-    isView: 0
 --- !u!1001 &1993898234701092263
 PrefabInstance:
   m_ObjectHideFlags: 0
