@@ -15,7 +15,8 @@ public class PlayState : MonoBehaviour
         Stop,
         Rain,
         RainSelect,
-        Clear
+        Clear,
+        GameOver
     }
     GameMode backGameMode;
     public GameMode gameMode;
@@ -60,6 +61,9 @@ public class PlayState : MonoBehaviour
             {
                 case GameMode.Clear:
                     Progress.progress.ResultSet();
+                    break;
+                case GameMode.GameOver:
+                    Progress.progress.GameOverSet();
                     break;
                 case GameMode.Rain:
                     //playState.rainTime = 2;

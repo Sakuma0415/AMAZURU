@@ -64,12 +64,17 @@ MonoBehaviour:
     m_Bits: 512
   groundLayer:
     serializedVersion: 2
-    m_Bits: 257
+    m_Bits: 1
+  waterLayer:
+    serializedVersion: 2
+    m_Bits: 256
   rayLength: 1
+  stageWater: {fileID: 0}
   movePlan: []
   type: 1
   lateTime: 0.5
   enemySpeed: 1.5
+  enemyWaterSpeed: 3
   rotatePower: 5
 --- !u!1001 &7908843700234598617
 PrefabInstance:
