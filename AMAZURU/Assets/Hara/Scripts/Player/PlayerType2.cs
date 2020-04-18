@@ -22,7 +22,13 @@ public class PlayerType2 : MonoBehaviour
     [SerializeField, Header("Rayの長さ"), Range(0, 10)] private float rayLength = 0.5f;
     [SerializeField, Header("重力値"), Range(0, 10)] private float gravity = 10.0f;
     [SerializeField, Header("透明な壁のサイズ"), Range(0.01f, 5.0f)] private float wallSize = 1.0f;
+
     public Camera PlayerCamera { set { playerCamera = value; } }
+
+    /// <summary>
+    /// Stageの水オブジェクトをセットする
+    /// </summary>
+    public WaterHi StageWater { set { stageWater = value; } }
 
     private PlayState.GameMode mode = PlayState.GameMode.Stop;
 
@@ -81,8 +87,6 @@ public class PlayerType2 : MonoBehaviour
                 stageWater = hit.transform.gameObject.GetComponent<WaterHi>();
             }
         }
-
-        debug = true;
     }
 
     /// <summary>
@@ -99,6 +103,7 @@ public class PlayerType2 : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.L) && debug == false)
         {
             PlayerInit();
+            debug = true;
         }
     }
 
@@ -109,16 +114,8 @@ public class PlayerType2 : MonoBehaviour
     {
         float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
 
-        if(stageWater != null)
-        {
-            inWater = PlayerPositionY < stageWater.max;
-            UnderWater = PlayerPositionY + character.height * 0.5f < stageWater.max;
-        }
-        else
-        {
-            inWater = false;
-            UnderWater = false;
-        }
+        inWater = stageWater != null && PlayerPositionY < stageWater.max;
+        UnderWater = stageWater != null && PlayerPositionY + character.height * 0.5f < stageWater.max;
 
         // 移動方向
         Vector3 moveDirection = Vector3.zero;
@@ -174,6 +171,11 @@ public class PlayerType2 : MonoBehaviour
         if (playerAnimator != null)
         {
             playerAnimator.SetBool("wate", input);
+        }
+
+        if (UnderWater)
+        {
+            Debug.Log("息苦しぃ...");
         }
     }
 

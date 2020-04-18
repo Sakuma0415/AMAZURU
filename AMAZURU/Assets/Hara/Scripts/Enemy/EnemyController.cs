@@ -7,7 +7,9 @@ public class EnemyController : MyAnimation
     [SerializeField, Tooltip("敵のCharacterController")] private SphereCollider enemy = null;
     [SerializeField, Tooltip("プレイヤーのレイヤー")] private LayerMask playerLayer;
     [SerializeField, Tooltip("地面のレイヤー")] private LayerMask groundLayer;
+    [SerializeField, Tooltip("水面のレイヤー")] private LayerMask waterLayer;
     [SerializeField, Tooltip("Rayの長さ"), Range(0, 5)] private float rayLength = 1.0f;
+    [SerializeField, Tooltip("ステージの水オブジェクト")] private WaterHi stageWater = null;
     private enum moveType
     {
         Lap,
@@ -19,6 +21,7 @@ public class EnemyController : MyAnimation
     [SerializeField, Header("行動パターン")] private moveType type = moveType.Lap;
     [SerializeField, Header("行動遅延時間"), Range(0, 3)] private float lateTime = 1.0f; 
     [SerializeField, Header("敵の移動速度"), Range(0, 5)] private float enemySpeed = 1.0f;
+    [SerializeField, Header("敵の水中移動速度"), Range(0, 5)] private float enemyWaterSpeed = 1.0f;
     [SerializeField, Header("回転力"), Range(0, 20)] private float rotatePower = 1.0f;
     private Vector3[] moveSchedule = null;
     private int location = 0;
@@ -30,6 +33,7 @@ public class EnemyController : MyAnimation
     private float enemyPosY = 0;
     private bool finishOneLoop = false;
     private bool standby = false;
+    private bool inWater = false;
 
 
     // Start is called before the first frame update
@@ -54,11 +58,24 @@ public class EnemyController : MyAnimation
     private void EnemyInit(bool first)
     {
         step = 0;
-
-        // 床の高さを取得
         Ray ray = new Ray(transform.position, Vector3.down);
         RaycastHit hit;
-        if(Physics.Raycast(ray, out hit, 1.25f, groundLayer))
+
+        // 水面の取得
+        if(stageWater == null)
+        {
+            if (Physics.Raycast(ray, out hit, 200, waterLayer))
+            {
+                hit.transform.gameObject.GetComponent<WaterHi>();
+            }
+        }
+        else
+        {
+            Debug.LogError(gameObject.name + "のアメフラシさん ： 「水がないと干からびちゃうよぉ　(T_T)」");
+        }
+
+        // 床の高さを取得
+        if (Physics.Raycast(ray, out hit, 1.25f, groundLayer))
         {
             enemyPosY = hit.point.y + enemy.radius - enemy.center.y;
             if (first)
@@ -88,7 +105,9 @@ public class EnemyController : MyAnimation
 
         actionStop = mode != PlayState.GameMode.Play || standby == false;
 
-        if(actionStop == false)
+        inWater = stageWater != null && enemyPosY < stageWater.max;
+
+        if (actionStop == false)
         {
             int nextLocation;
             if (finishOneLoop)
@@ -135,7 +154,8 @@ public class EnemyController : MyAnimation
                     {
                         float vec = Mathf.Abs(forward.x) >= Mathf.Abs(forward.z) ? forward.z / forward.x : forward.x / forward.z;
                         vec = 1.0f / Mathf.Sqrt(1.0f + vec * vec);
-                        transform.position += forward * enemySpeed * delta * vec;
+                        float speed = inWater ? enemyWaterSpeed : enemySpeed;
+                        transform.position += forward * speed * delta * vec;
                         if (Vector3.Distance(nowPos, nextPos) < 0.1f)
                         {
                             stepEnd = true;
