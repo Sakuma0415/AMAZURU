@@ -23,6 +23,10 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
 
     private bool IsLoadScene = false;
     public Image fadeImage;
+    [SerializeField]
+    private Shader shader;
+    [SerializeField]
+    private Color color;
     [SerializeField, Tooltip("アルファ値のカット値"),Range(0,1)]
     private float alphaCut = 0;
     [SerializeField]
@@ -35,6 +39,15 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
         fadeImage.material.SetFloat("_Alpha", alphaCut);
     }
 #endif
+
+    private void Start()
+    {
+
+        fadeImage.material = new Material(shader);
+        fadeImage.material.SetFloat("_Alpha", alphaCut);
+        fadeImage.material.SetColor("_Color", color);
+
+    }
 
     void Update()
     {

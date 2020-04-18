@@ -46,6 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroy: 1
   fadeImage: {fileID: 6714959706124581638}
+  shader: {fileID: 4800000, guid: 8b621fa87789e5843a66d671812a11c0, type: 3}
+  color: {r: 0, g: 0, b: 0, a: 0}
   alphaCut: 0
   anounceText: {fileID: 1993898234850652512}
 --- !u!1 &1218927469858932255
@@ -107,7 +109,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_TargetDisplay: 0
 --- !u!114 &1218927469858932253
 MonoBehaviour:
