@@ -15,8 +15,13 @@ public class O2Controller : MonoBehaviour
     float fatAnimeTime = 0;
     [SerializeField]
     RectTransform rectTransform;
+
+    public PlayerType2 playerType2;
     void Update()
     {
+
+        breath = !playerType2.UnderWater;
+
         if (!breath)
         {
             breathTime = (breathTime + Time.deltaTime  > breathLimitTime) ? breathLimitTime : breathTime + Time.deltaTime;
@@ -41,6 +46,9 @@ public class O2Controller : MonoBehaviour
             fatAnimeTime = fatAnimeTime - Time.deltaTime > 0 ? fatAnimeTime - Time.deltaTime : 0;
             rectTransform.localScale = new Vector3(1 + ((fatAnimeTime / fatAnimeTimeLimit) * 0.1f),  1 + ((fatAnimeTime / fatAnimeTimeLimit) * 0.1f),1);
         }
-
+        if(breathTime>= breathLimitTime)
+        {
+            PlayState.playState.gameMode = PlayState.GameMode.GameOver;
+        }
     }
 }

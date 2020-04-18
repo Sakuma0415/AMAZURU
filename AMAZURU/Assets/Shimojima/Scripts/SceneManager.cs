@@ -10,7 +10,8 @@ public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
     public enum SceneName
     {
         Title = 0,
-        Action
+        Action,
+        StageSlect
     }
 
     private SceneName sceneName;
