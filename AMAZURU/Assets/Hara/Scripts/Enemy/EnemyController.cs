@@ -11,6 +11,8 @@ public class EnemyController : MyAnimation
     [SerializeField, Tooltip("Rayの長さ"), Range(0, 5)] private float rayLength = 1.0f;
     [SerializeField, Tooltip("ステージの水オブジェクト")] private WaterHi stageWater = null;
     [SerializeField, Tooltip("Playerのスクリプト")] private PlayerType2 player = null;
+    [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Stop;
+    [SerializeField, Tooltip("PlayStateと同期させる")] private bool stateSet = true;
     private enum moveType
     {
         Lap,
@@ -30,7 +32,6 @@ public class EnemyController : MyAnimation
     private int step = 0;
     private bool stepEnd = false;
     private bool actionStop = false;
-    private PlayState.GameMode mode = PlayState.GameMode.Stop;
     private float enemyPosY = 0;
     private bool finishOneLoop = false;
     private bool standby = false;
@@ -101,7 +102,8 @@ public class EnemyController : MyAnimation
     private void EnemyMove(bool fixedUpdate)
     {
         float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
-        mode = PlayState.playState.gameMode;
+
+        if (stateSet) { mode = PlayState.playState.gameMode; }
         Vector3 nowPos = new Vector3(transform.position.x, enemyPosY, transform.position.z);
 
         actionStop = mode != PlayState.GameMode.Play || standby == false;
