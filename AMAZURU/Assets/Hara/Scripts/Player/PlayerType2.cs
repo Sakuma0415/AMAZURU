@@ -47,6 +47,11 @@ public class PlayerType2 : MonoBehaviour
     /// </summary>
     public bool UnderWater { private set; get; } = false;
 
+    /// <summary>
+    /// 敵と接触した時のフラグ
+    /// </summary>
+    public bool ContactEnemy { set; get; } = false;
+
     private bool debug = false;
 
     // Start is called before the first frame update
@@ -176,6 +181,11 @@ public class PlayerType2 : MonoBehaviour
         if (UnderWater)
         {
             Debug.Log("息苦しぃ...");
+        }
+
+        if (ContactEnemy)
+        {
+            Debug.Log("痛い...");
         }
     }
 
