@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class Select : MonoBehaviour
 {
+    public StageData[] SLoadStageData;
+    bool ter = true;
+
+
     [SerializeField]
     private GameObject senterPivot;
     [SerializeField]
@@ -47,6 +51,7 @@ public class Select : MonoBehaviour
         public Vector3 zeroScalingSpeed;
         public int index;
         public int psdIndex;
+
         public void Init()
         {
             name = "";
@@ -97,17 +102,20 @@ public class Select : MonoBehaviour
             if (isRotation) { return; }
             selection = Selection.Forwerd;
             isRotation = true;
+            ter = !ter;
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
             if (isRotation) { return; }
             selection = Selection.FallBack;
             isRotation = true;
+            ter = !ter;
         }
 
         //ココダヨ
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            StageMake.LoadStageData = ter? SLoadStageData[0]: SLoadStageData[1];
             SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
         }
     }
