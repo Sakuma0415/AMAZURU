@@ -10,7 +10,7 @@ public class TitleController : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            Scenemanager.Instance.LoadScene(Scenemanager .SceneName .StageSlect );
+            SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName .StageSlect );
         }
     }
 }

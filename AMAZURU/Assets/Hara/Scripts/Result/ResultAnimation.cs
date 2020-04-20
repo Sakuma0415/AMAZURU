@@ -8,7 +8,7 @@ public class ResultAnimation : MyAnimation
     [SerializeField, Header("アニメーションの対象オブジェクト")] private GameObject animationObj = null;
     [SerializeField, Header("アニメーション実行間隔"), Range(0, 3)] private float span = 1.0f;
     [SerializeField, Header("メニューボタン")] private Button[] menuButton = null;
-    private bool animationFlag = false;
+    [SerializeField, Tooltip("アニメーション管理フラグ")] private bool animationFlag = false;
     public bool AnimationFlag { set { animationFlag = value; } }
 
     private float time = 0;
@@ -33,7 +33,7 @@ public class ResultAnimation : MyAnimation
     private void ResultInit()
     {
         animationFlag = false;
-        SetButtonAction();
+        //SetButtonAction();
     }
 
     /// <summary>
@@ -116,20 +116,20 @@ public class ResultAnimation : MyAnimation
     /// <param name="num"></param>
     private void ButtonAction(int num)
     {
-        Scenemanager.SceneName name;
+        SceneLoadManager.SceneName name;
         switch (num)
         {
             case 0:
-                name = Scenemanager.SceneName.Action;
+                name = SceneLoadManager.SceneName.Title;
                 break;
             case 1:
-                name = Scenemanager.SceneName.Title;
+                name = SceneLoadManager.SceneName.Action;
                 break;
             default:
-                name = Scenemanager.SceneName.Title;
+                name = SceneLoadManager.SceneName.Title;
                 break;
         }
-        Scenemanager.Instance.LoadScene(name);
-        animationFlag = false;
+
+        SceneLoadManager.Instance.LoadScene(name);
     }
 }

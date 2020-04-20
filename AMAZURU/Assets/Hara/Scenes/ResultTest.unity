@@ -138,6 +138,16 @@ PrefabInstance:
       propertyPath: fadeImage
       value: 
       objectReference: {fileID: 1020133086}
+    - target: {fileID: 175424548475057126, guid: 706b8fa8c83fb5b4b9254687b8594fc3,
+        type: 3}
+      propertyPath: shader
+      value: 
+      objectReference: {fileID: 4800000, guid: 8b621fa87789e5843a66d671812a11c0, type: 3}
+    - target: {fileID: 175424548475057126, guid: 706b8fa8c83fb5b4b9254687b8594fc3,
+        type: 3}
+      propertyPath: anounceText
+      value: 
+      objectReference: {fileID: 2011803820}
     - target: {fileID: 175424548475057127, guid: 706b8fa8c83fb5b4b9254687b8594fc3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -448,6 +458,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2011803820 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1993898234850652512, guid: 706b8fa8c83fb5b4b9254687b8594fc3,
+    type: 3}
+  m_PrefabInstance: {fileID: 913644259}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2679444670536620184
 PrefabInstance:
   m_ObjectHideFlags: 0

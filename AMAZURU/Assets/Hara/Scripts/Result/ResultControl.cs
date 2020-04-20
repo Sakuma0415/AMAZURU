@@ -49,11 +49,10 @@ public class ResultControl : MyAnimation
     private void ResultInit()
     {
         // ボタンのアクションの設定
-        int num = 0;
-        foreach (var button in menuButton)
+        for(int i = 0; i < menuButton.Length; i++)
         {
-            button.onClick.AddListener(() => ButtonAction(num));
-            num++;
+            int num = i;
+            menuButton[i].onClick.AddListener(() => ButtonAction(num));
         }
     }
 
@@ -66,20 +65,20 @@ public class ResultControl : MyAnimation
         if (clearFlag) { clearFlag = false; }
         if (gameOverFlag) { gameOverFlag = false; }
 
-        Scenemanager.SceneName name;
+        SceneLoadManager.SceneName name;
         switch (num)
         {
             case 0:
-                name = Scenemanager.SceneName.Action;
+                name = SceneLoadManager.SceneName.Action;
                 break;
             case 1:
-                name = Scenemanager.SceneName.StageSlect;
+                name = SceneLoadManager.SceneName.StageSlect;
                 break;
             default:
-                name = Scenemanager.SceneName.Title;
+                name = SceneLoadManager.SceneName.Title;
                 break;
         }
-        Scenemanager.Instance.LoadScene(name);
+        SceneLoadManager.Instance.LoadScene(name);
     }
 
     /// <summary>

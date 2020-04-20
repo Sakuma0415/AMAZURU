@@ -14,6 +14,10 @@
 
 		[Header(Script Check)]
 		_High("_High", float) = 0
+
+		_Xside("_Xside", float) = 0
+		_Zside("_Zside", float) = 0
+
 		_LightMap ("LightMap", 2D) = "white" {}
 		_InColor ("InColor", Color) = (1, 1, 1, 1)
 		_NormalTex("_NormalTex", 2D) = "white" {}
@@ -86,6 +90,8 @@
 			//
 			sampler2D _NormalTex;
 			float _High;
+			float _Xside;
+			float _Zside;
 			sampler2D _LightMap;
 
 
@@ -141,7 +147,7 @@
 
 				finalColor=((finalColor*5)+shadowBf)/6;
 
-				if(_High>i.vertexWS.y){
+				if(_High>i.vertexWS.y&&(_Xside>i.vertexWS.x&&i.vertexWS.x>0)&&(_Zside>i.vertexWS.z&&i.vertexWS.z>0)){
 
 					float hi=_High-i.vertexWS.y;
 					float size=3;

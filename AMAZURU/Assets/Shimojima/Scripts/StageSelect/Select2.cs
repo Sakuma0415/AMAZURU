@@ -76,7 +76,7 @@ public class Select2 : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             //ココダヨ～ [selectStage ← 選択中のステージ名が格納されてる変数]
-            Scenemanager.Instance.LoadScene(Scenemanager.SceneName.Action);
+            SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
         }
     }
 

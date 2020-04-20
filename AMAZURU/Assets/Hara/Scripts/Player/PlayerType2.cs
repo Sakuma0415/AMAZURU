@@ -10,6 +10,8 @@ public class PlayerType2 : MonoBehaviour
     [SerializeField, Tooltip("透明な壁")] private BoxCollider hiddenWallPrefab = null;
     [SerializeField, Tooltip("移動時の起点カメラ")] private Camera playerCamera = null;
     [SerializeField, Tooltip("ステージの水オブジェクト")] private WaterHi stageWater = null;
+    [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Stop;
+    [SerializeField, Tooltip("PlayStateと同期させる")] private bool stateSet = true;
 
     // コントローラーの入力
     [SerializeField, Tooltip("X入力")] private float inputX = 0;
@@ -30,8 +32,6 @@ public class PlayerType2 : MonoBehaviour
     /// </summary>
     public WaterHi StageWater { set { stageWater = value; } }
 
-    private PlayState.GameMode mode = PlayState.GameMode.Stop;
-
     // プレイヤーの位置(高さ)
     public float PlayerPositionY { private set; get; } = 0;
 
@@ -47,12 +47,15 @@ public class PlayerType2 : MonoBehaviour
     /// </summary>
     public bool UnderWater { private set; get; } = false;
 
-    private bool debug = false;
+    /// <summary>
+    /// 敵と接触した時のフラグ
+    /// </summary>
+    public bool ContactEnemy { set; get; } = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        CreateHiddenWall();
+        PlayerInit();
     }
 
     // Update is called once per frame
@@ -87,6 +90,8 @@ public class PlayerType2 : MonoBehaviour
                 stageWater = hit.transform.gameObject.GetComponent<WaterHi>();
             }
         }
+
+        CreateHiddenWall();
     }
 
     /// <summary>
@@ -94,17 +99,11 @@ public class PlayerType2 : MonoBehaviour
     /// </summary>
     private void GetInputController()
     {
-        mode = PlayState.playState.gameMode;
-
+        if (stateSet) { mode = PlayState.playState.gameMode; }
+        
         // キー入力取得
         inputX = mode == PlayState.GameMode.Play ? Input.GetAxis("Horizontal") : 0;
         inputZ = mode == PlayState.GameMode.Play ? Input.GetAxis("Vertical") : 0;
-
-        if(Input.GetKeyDown(KeyCode.L) && debug == false)
-        {
-            PlayerInit();
-            debug = true;
-        }
     }
 
     /// <summary>
@@ -176,6 +175,11 @@ public class PlayerType2 : MonoBehaviour
         if (UnderWater)
         {
             Debug.Log("息苦しぃ...");
+        }
+
+        if (ContactEnemy)
+        {
+            Debug.Log("痛い...");
         }
     }
 

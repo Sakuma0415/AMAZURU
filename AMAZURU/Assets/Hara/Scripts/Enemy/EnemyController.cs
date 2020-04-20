@@ -5,11 +5,15 @@ using UnityEngine;
 public class EnemyController : MyAnimation
 {
     [SerializeField, Tooltip("敵のCharacterController")] private SphereCollider enemy = null;
+    [SerializeField, Tooltip("敵のAnimator")] private Animator enemyAnime = null;
     [SerializeField, Tooltip("プレイヤーのレイヤー")] private LayerMask playerLayer;
     [SerializeField, Tooltip("地面のレイヤー")] private LayerMask groundLayer;
     [SerializeField, Tooltip("水面のレイヤー")] private LayerMask waterLayer;
     [SerializeField, Tooltip("Rayの長さ"), Range(0, 5)] private float rayLength = 1.0f;
     [SerializeField, Tooltip("ステージの水オブジェクト")] private WaterHi stageWater = null;
+    [SerializeField, Tooltip("Playerのスクリプト")] private PlayerType2 player = null;
+    [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Stop;
+    [SerializeField, Tooltip("PlayStateと同期させる")] private bool stateSet = true;
     private enum moveType
     {
         Lap,
@@ -29,7 +33,6 @@ public class EnemyController : MyAnimation
     private int step = 0;
     private bool stepEnd = false;
     private bool actionStop = false;
-    private PlayState.GameMode mode = PlayState.GameMode.Stop;
     private float enemyPosY = 0;
     private bool finishOneLoop = false;
     private bool standby = false;
@@ -58,7 +61,7 @@ public class EnemyController : MyAnimation
     private void EnemyInit(bool first)
     {
         step = 0;
-        Ray ray = new Ray(transform.position, Vector3.down);
+        Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + enemy.radius - enemy.center.y, transform.position.z), Vector3.down);
         RaycastHit hit;
 
         // 水面の取得
@@ -75,7 +78,7 @@ public class EnemyController : MyAnimation
         }
 
         // 床の高さを取得
-        if (Physics.Raycast(ray, out hit, 1.25f, groundLayer))
+        if (Physics.Raycast(ray, out hit, 200, groundLayer))
         {
             enemyPosY = hit.point.y + enemy.radius - enemy.center.y;
             if (first)
@@ -88,7 +91,7 @@ public class EnemyController : MyAnimation
         }
         else
         {
-            Debug.LogError(gameObject.name + "のアメフラシさん : 「地面から離れすぎてて怖いよぉ (>_<) 」");
+            Debug.LogError(gameObject.name + "のアメフラシさん : 「地面が見当たらないよぉ (>_<) 」");
             standby = false;
         }
     }
@@ -100,7 +103,8 @@ public class EnemyController : MyAnimation
     private void EnemyMove(bool fixedUpdate)
     {
         float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
-        mode = PlayState.playState.gameMode;
+
+        if (stateSet) { mode = PlayState.playState.gameMode; }
         Vector3 nowPos = new Vector3(transform.position.x, enemyPosY, transform.position.z);
 
         actionStop = mode != PlayState.GameMode.Play || standby == false;
@@ -121,11 +125,22 @@ public class EnemyController : MyAnimation
             Vector3 nextPos = moveSchedule[nextLocation];
             Vector3 forward = (nextPos - nowPos).normalized;
 
+            // プレイヤーと接触しているかをチェック
             Ray ray = new Ray(new Vector3(transform.position.x, enemyPosY - enemy.radius * 2.0f, transform.position.z), Vector3.up);
-            bool playerHit = Physics.SphereCast(ray, (enemy.radius) * 2.0f, rayLength, playerLayer);
-            if (playerHit)
+            RaycastHit hit;
+            bool playerHit = false;
+            if (Physics.SphereCast(ray, (enemy.radius) * 2.0f, out hit, rayLength, playerLayer))
             {
-                Debug.Log(gameObject.name + "のアメフラシさん : 「プレイヤーを見つけたよぉ ('ω')ノ 」");
+                playerHit = true;
+                if(player == null)
+                {
+                    player = hit.transform.gameObject.GetComponent<PlayerType2>();
+                }
+            }
+
+            if(player != null)
+            {
+                player.ContactEnemy = playerHit;
             }
 
             switch (step)
