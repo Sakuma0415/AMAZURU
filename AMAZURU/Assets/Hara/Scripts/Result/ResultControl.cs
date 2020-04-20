@@ -15,7 +15,7 @@ public class ResultControl : MyAnimation
     private int step = 0;
     private bool stepEnd = false;
 
-    private bool clearFlag = false;
+    [SerializeField]private bool clearFlag = false;
     private bool gameOverFlag = false;
     private bool clearAnimeEnd = false;
     private bool gameOverAnimeEnd = false;
@@ -49,11 +49,10 @@ public class ResultControl : MyAnimation
     private void ResultInit()
     {
         // ボタンのアクションの設定
-        int num = 0;
-        foreach (var button in menuButton)
+        for(int i = 0; i < menuButton.Length; i++)
         {
-            button.onClick.AddListener(() => ButtonAction(num));
-            num++;
+            int num = i;
+            menuButton[i].onClick.AddListener(() => ButtonAction(num));
         }
     }
 
