@@ -8,7 +8,7 @@ public class Progress : MonoBehaviour
 
     public bool key;
     [SerializeField]
-    ResultAnimation resultAnimation;
+    ResultControl resultControl;
 
     void SetState()
     {
@@ -23,6 +23,11 @@ public class Progress : MonoBehaviour
 
     public void ResultSet()
     {
-        resultAnimation.AnimationFlag = true;
+        resultControl.StartResult( true);
+    }
+    public void GameOverSet()
+    {
+        
+        resultControl.StartResult(false );
     }
 }

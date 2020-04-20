@@ -60,6 +60,8 @@ public class WaterHi : MonoBehaviour
         {
 
             material[i].SetFloat("_High", max);
+            material[i].SetFloat("_Xside", transform.localScale.x);
+            material[i].SetFloat("_Zside", transform.localScale.z);
         }
 
 
