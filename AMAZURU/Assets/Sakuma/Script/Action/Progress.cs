@@ -9,7 +9,6 @@ public class Progress : MonoBehaviour
     public bool key;
     [SerializeField]
     ResultControl resultControl;
-
     void SetState()
     {
         key = false;
