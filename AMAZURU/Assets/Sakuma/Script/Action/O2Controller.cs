@@ -24,6 +24,7 @@ public class O2Controller : MonoBehaviour
 
         if (!breath)
         {
+            if(PlayState .playState.gameMode ==PlayState.GameMode.Play )
             breathTime = (breathTime + Time.deltaTime  > breathLimitTime) ? breathLimitTime : breathTime + Time.deltaTime;
         }
         else
@@ -50,5 +51,11 @@ public class O2Controller : MonoBehaviour
         {
             PlayState.playState.gameMode = PlayState.GameMode.GameOver;
         }
+
+        if (playerType2.ContactEnemy)
+        {
+            PlayState.playState.gameMode = PlayState.GameMode.GameOver;
+        }
+
     }
 }

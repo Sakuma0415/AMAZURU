@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1023837329241061402}
   - component: {fileID: 5138938301351096660}
   - component: {fileID: 1023837329241061405}
+  - component: {fileID: 1531546374721261317}
   m_Layer: 13
   m_Name: Enemy
   m_TagString: Untagged
@@ -74,12 +75,28 @@ MonoBehaviour:
   player: {fileID: 0}
   mode: 4
   stateSet: 1
-  movePlan: []
-  type: 1
+  movePlan:
+  - {x: 0, y: 7}
+  - {x: 5, y: 0}
+  - {x: 0, y: -7}
+  type: 0
   lateTime: 0.5
   enemySpeed: 1.5
   enemyWaterSpeed: 3
   rotatePower: 5
+--- !u!114 &1531546374721261317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023837329241063398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93bfa1a841ed3b84d88db825456df715, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cellIndex: {x: 0, y: 0, z: 0}
 --- !u!1001 &7908843700234598617
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -92,6 +109,11 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: c24383e6d566ab741bb8269be41ea822, type: 2}
+    - target: {fileID: -6057140222963153312, guid: f26559572eac8fe4294818e7127e13cf,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: f26559572eac8fe4294818e7127e13cf,
         type: 3}
       propertyPath: m_LocalPosition.x

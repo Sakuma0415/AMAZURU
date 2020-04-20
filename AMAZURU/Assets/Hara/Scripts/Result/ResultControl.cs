@@ -15,7 +15,7 @@ public class ResultControl : MyAnimation
     private int step = 0;
     private bool stepEnd = false;
 
-    [SerializeField]private bool clearFlag = false;
+    private bool clearFlag = false;
     private bool gameOverFlag = false;
     private bool clearAnimeEnd = false;
     private bool gameOverAnimeEnd = false;
