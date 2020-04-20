@@ -132,18 +132,20 @@ public class Select : MonoBehaviour
                 int _i = i - (psd.Length * overCount); ;
                 
                 viewStage[i].stage = Instantiate(psd[_i].viewStage);
+                viewStage[i].name = psd[_i].stageName;
                 StageReSize(psd[_i], i);
                 viewStage[i].psdIndex = _i;
             }
             else
             {
                 viewStage[i].stage = Instantiate(psd[i].viewStage);
+                viewStage[i].name = psd[i].stageName;
                 StageReSize(psd[i], i);
                 viewStage[i].psdIndex = i;
             }
 
             
-            viewStage[i].name = "shimojima1";
+            
             viewStage[i].stage.transform.localScale = viewStage[i].defScale;
             SetScaleChangeSpeed(i);
             viewStage[i].stage.transform.position = defPos;
@@ -410,7 +412,7 @@ public class Select : MonoBehaviour
             if (index > psd.Length - 1) { index = 0; }
 
             viewStage[5].stage = Instantiate(psd[index].viewStage);
-            viewStage[5].name = "shimojima1";
+            viewStage[5].name = psd[index].stageName;
             viewStage[5].index = 5;
             viewStage[5].psdIndex = index;
             StageReSize(psd[index], 5);
@@ -426,7 +428,7 @@ public class Select : MonoBehaviour
             if(index < psd.Length - 1) { index = psd.Length - 1; }
 
             viewStage[4].stage = Instantiate(psd[index].viewStage);
-            viewStage[4].name = "shimojima1";
+            viewStage[4].name = psd[index].stageName;
             viewStage[4].index = 5;
             viewStage[4].psdIndex = index;
             StageReSize(psd[index], 4);
