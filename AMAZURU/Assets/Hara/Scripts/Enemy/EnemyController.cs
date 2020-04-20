@@ -69,12 +69,12 @@ public class EnemyController : MyAnimation
         {
             if (Physics.Raycast(ray, out hit, 200, waterLayer))
             {
-                hit.transform.gameObject.GetComponent<WaterHi>();
+                stageWater = hit.transform.gameObject.GetComponent<WaterHi>();
             }
-        }
-        else
-        {
-            Debug.LogError(gameObject.name + "のアメフラシさん ： 「水がないと干からびちゃうよぉ　(T_T)」");
+            else
+            {
+                Debug.LogError(gameObject.name + "のアメフラシさん ： 「水がないと干からびちゃうよぉ　(T_T)」");
+            }
         }
 
         // 床の高さを取得
