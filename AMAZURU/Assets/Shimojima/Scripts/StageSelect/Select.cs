@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Select : MonoBehaviour
 {
@@ -8,6 +9,9 @@ public class Select : MonoBehaviour
     private GameObject senterPivot;
     [SerializeField]
     private Vector3 pivotCubeSize;
+
+    [SerializeField]
+    private Text stageNameText;
 
     private List<GameObject> stages = new List<GameObject>();
     private PrefabStageData[] psd;
@@ -70,6 +74,12 @@ public class Select : MonoBehaviour
             index++;
             if(index == 6) { index = 0; }
         }
+
+        public void CountDown()
+        {
+            index--;
+            if (index == -1) { index = 0; }
+        }
     }
 
     public ViewStage[] viewStage = new ViewStage[6];
@@ -94,6 +104,12 @@ public class Select : MonoBehaviour
             selection = Selection.FallBack;
             isRotation = true;
         }
+
+        //ココダヨ
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
+        }
     }
 
     private void FixedUpdate()
@@ -113,7 +129,8 @@ public class Select : MonoBehaviour
         {
             if(i > (psd.Length - 1) * overCount)
             {
-                int _i = i - psd.Length;
+                int _i = i - (psd.Length * overCount); ;
+                
                 viewStage[i].stage = Instantiate(psd[_i].stage);
                 StageReSize(psd[_i], i);
                 viewStage[i].psdIndex = _i;
@@ -142,7 +159,11 @@ public class Select : MonoBehaviour
                 {
                     viewStage[i].stage.transform.localScale = new Vector3(1.5f, 1, 1.5f);
                 }
+
+                stageNameText.text = viewStage[i].name;
             }
+
+            if (i > (psd.Length - 1) * (overCount + 1)) { overCount++; }
         }
     }
 
@@ -246,6 +267,24 @@ public class Select : MonoBehaviour
                         break;
                 }
             }
+            else
+            {
+                switch (viewStage[i].index)
+                {
+                    case 0:
+                        viewStage[i].stage.transform.localScale -= viewStage[i].zeroScalingSpeed;
+                        break;
+                    case 2:
+                        viewStage[i].stage.transform.localScale -= viewStage[i].reSizeSpeed;
+                        break;
+                    case 3:
+                        viewStage[i].stage.transform.localScale += viewStage[i].reSizeSpeed;
+                        break;
+                    case 5:
+                        viewStage[i].stage.transform.localScale += viewStage[i].zeroScalingSpeed;
+                        break;
+                }
+            }
             if(viewStage[i].stage == null) { continue; }
             viewStage[i].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, s) ;
         }
@@ -266,6 +305,9 @@ public class Select : MonoBehaviour
     /// <param name="select"></param>
     private void StageDataChange(Selection select)
     {
+        //ステージ名
+        string n = "";
+
         if (select == Selection.Forwerd)
         {
             for (int i = 0; i < viewStage.Length; i++)
@@ -278,8 +320,26 @@ public class Select : MonoBehaviour
                 
                 if(viewStage[i].stage == null) { continue; }
                 viewStage[i].CountUp();
+                if (viewStage[i].index == 2) { n = viewStage[i].name; }
             }
         }
+        else if (select == Selection.FallBack)
+        {
+            for (int i = 0; i < viewStage.Length; i++)
+            {
+                if (viewStage[i].index == 0)
+                {
+                    Destroy(viewStage[i].stage);
+                    viewStage[i].Init();
+                }
+
+                if (viewStage[i].stage == null) { continue; }
+                viewStage[i].CountDown();
+                if (viewStage[i].index == 2) { n = viewStage[i].name; }
+            }
+        }
+
+        stageNameText.text = n;
     }
 
     /// <summary>
@@ -331,6 +391,10 @@ public class Select : MonoBehaviour
 
                 NextStageCreate(select);
             }
+            else
+            {
+                NextStageCreate(select);
+            }
         }
     }
 
@@ -346,7 +410,7 @@ public class Select : MonoBehaviour
             if (index > psd.Length - 1) { index = 0; }
 
             viewStage[5].stage = Instantiate(psd[index].stage);
-            viewStage[5].name = "shiomojima1";
+            viewStage[5].name = "shimojima1";
             viewStage[5].index = 5;
             viewStage[5].psdIndex = index;
             StageReSize(psd[index], 5);
@@ -355,6 +419,22 @@ public class Select : MonoBehaviour
             SetScaleChangeSpeed(5);
             viewStage[5].stage.transform.localScale = Vector3.zero;
             viewStage[5].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, rotateAngle * 7);
+        }
+        else if (select == Selection.FallBack)
+        {
+            int index = viewStage[3].psdIndex - 1;
+            if(index < psd.Length - 1) { index = psd.Length - 1; }
+
+            viewStage[4].stage = Instantiate(psd[index].stage);
+            viewStage[4].name = "shimojima1";
+            viewStage[4].index = 5;
+            viewStage[4].psdIndex = index;
+            StageReSize(psd[index], 4);
+            viewStage[4].stage.transform.localScale = viewStage[4].defScale;
+            viewStage[4].stage.transform.position = defPos;
+            SetScaleChangeSpeed(4);
+            viewStage[4].stage.transform.localScale = Vector3.zero;
+            viewStage[4].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, rotateAngle * 3);
         }
     }
 

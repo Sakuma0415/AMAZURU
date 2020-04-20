@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class Scenemanager : SingletonMonoBehaviour<Scenemanager>
+public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
 {
     [System.Serializable]
     public enum SceneName
