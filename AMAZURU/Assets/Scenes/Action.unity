@@ -390,16 +390,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: SceneManager
       objectReference: {fileID: 0}
-    - target: {fileID: 175424548475057126, guid: 706b8fa8c83fb5b4b9254687b8594fc3,
-        type: 3}
-      propertyPath: alphaCut
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 175424548475057126, guid: 706b8fa8c83fb5b4b9254687b8594fc3,
-        type: 3}
-      propertyPath: shader
-      value: 
-      objectReference: {fileID: 4800000, guid: 8b621fa87789e5843a66d671812a11c0, type: 3}
     - target: {fileID: 175424548475057127, guid: 706b8fa8c83fb5b4b9254687b8594fc3,
         type: 3}
       propertyPath: m_LocalPosition.x
