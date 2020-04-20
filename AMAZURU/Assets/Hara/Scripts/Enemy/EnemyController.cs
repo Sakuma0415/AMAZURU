@@ -105,7 +105,6 @@ public class EnemyController : MyAnimation
         float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
 
         if (stateSet) { mode = PlayState.playState.gameMode; }
-        Vector3 nowPos = new Vector3(transform.position.x, enemyPosY, transform.position.z);
 
         actionStop = mode != PlayState.GameMode.Play || standby == false;
 
@@ -123,7 +122,7 @@ public class EnemyController : MyAnimation
                 nextLocation = location + 1 >= moveSchedule.Length ? type == moveType.Lap ? 0 : location - 1 : location + 1;
             }
             Vector3 nextPos = moveSchedule[nextLocation];
-            Vector3 forward = (nextPos - nowPos).normalized;
+            Vector3 forward = (nextPos - transform.position).normalized;
 
             // プレイヤーと接触しているかをチェック
             Ray ray = new Ray(new Vector3(transform.position.x, enemyPosY - enemy.radius * 2.0f, transform.position.z), Vector3.up);
@@ -171,7 +170,7 @@ public class EnemyController : MyAnimation
                         vec = 1.0f / Mathf.Sqrt(1.0f + vec * vec);
                         float speed = inWater ? enemyWaterSpeed : enemySpeed;
                         transform.position += forward * speed * delta * vec;
-                        if (Vector3.Distance(nowPos, nextPos) < 0.1f)
+                        if (Vector3.Distance(transform.position, nextPos) < 0.1f)
                         {
                             stepEnd = true;
                         }
