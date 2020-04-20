@@ -12,13 +12,6 @@ public class GuidObjectInit : MonoBehaviour
     public void InitGuidObject(GameObject parent, GameObject refObj, GameObject gridObj = null)
     {
         transform.parent = parent.transform;
-        if(gridObj.GetComponent<HighlightObject>().IsAlreadyInstalled) 
-        {
-            GetComponent<Renderer>().material.color = Color.red; 
-            goto PosSetting; 
-        }
-
-    PosSetting:
         transform.localPosition = refObj.transform.localPosition;
         transform.localRotation = refObj.transform.localRotation;
     }

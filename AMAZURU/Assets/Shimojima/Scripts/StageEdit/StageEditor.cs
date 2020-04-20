@@ -322,28 +322,10 @@ public class StageEditor : MonoBehaviour
         //GuideObjectの設定
         GameObject hObject = gridPos[cNum.x, cNum.y, cNum.z];
         hObject.GetComponent<HighlightObject>().IsSelect = true;
-
-        if(guideObj.transform.GetChild(1).GetComponent<Renderer>() != null)
-        {
-            if (hObject.GetComponent<HighlightObject>().IsAlreadyInstalled) { guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = Color.red; }
-            else 
-            {
-                if (referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.shader.name == "Custom/InObj")
-                {
-                    guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.GetColor("_MainColor");
-                }
-                else
-                {
-                    guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color;
-                }
-            }
-        }
         guideObj.transform.position = gridPos[cNum.x, cNum.y, cNum.z].transform.position;
 
-        if(rangeSelectionState != RangeSelectionState.OFF) { goto Skip; }
         MakeObjectSkeleton();
         tempCnum = cNum;
-     Skip:
         IsInputAnyKey = true;
     }
 
@@ -376,10 +358,6 @@ public class StageEditor : MonoBehaviour
         o.AddComponent<MyCellIndex>().cellIndex = cellIndex;
         _StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] = o;
         gridPos[cellIndex.x, cellIndex.y, cellIndex.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
-        if (guideObj.transform.GetChild(1).GetComponent<Renderer>() != null)
-        {
-            guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = Color.red;
-        }
         if(rangeSelectionState == RangeSelectionState.Stay) { return; }
         MakeObjectSkeleton();
     }
@@ -393,19 +371,6 @@ public class StageEditor : MonoBehaviour
         Debug.Log(_StageObjects[cellIndex.x, cellIndex.y, cellIndex.z].name + "を削除しました");
         Destroy(_StageObjects[cellIndex.x, cellIndex.y, cellIndex.z]);
         gridPos[cellIndex.x, cellIndex.y, cellIndex.z].GetComponent<HighlightObject>().IsAlreadyInstalled = false;
-
-        if(referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.shader.name == "Custom/InObj")
-        {
-            guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.GetColor("_MainColor");
-        }
-        else if (referenceObject[refObjIndex].name == "A_hurashi")
-        {
-            guideObj.transform.GetChild(1).transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].transform.GetChild(1).GetComponent<Renderer>().sharedMaterial.color;
-        }
-        else
-        {
-            guideObj.transform.GetChild(1).GetComponent<Renderer>().material.color = referenceObject[refObjIndex].GetComponent<Renderer>().sharedMaterial.color;
-        }   
     }
 
     /// <summary>
@@ -449,6 +414,7 @@ public class StageEditor : MonoBehaviour
         { _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true); }
 
     Skip:
+        Debug.Log(_StageObjects[cellNum.x, cellNum.y, cellNum.z]);
         if(_StageObjects[cellNum.x, cellNum.y, cellNum.z] != null) 
         {
             _StageObjects[cellNum.x, cellNum.y, cellNum.z].SetActive(false);
@@ -522,7 +488,6 @@ public class StageEditor : MonoBehaviour
 
         if (processingIndex == 2 || processingIndex == 3) { rangeSelectionState = RangeSelectionState.OFF; }
         if (processingIndex != 1) { return; }
-        //AssetDatabase.SaveAssets();
         StageDataIncetance();
 
         Destroy(stageRoot);
@@ -606,7 +571,11 @@ public class StageEditorCustom : Editor
         foreach (Transform child in o.transform)
         {
             child.gameObject.transform.parent = stageEditor.stageRoot.transform;
-            Vector3Int v = child.GetComponent<MyCellIndex>().cellIndex;
+            Vector3Int v = Vector3Int.zero;
+            if (child.GetComponent<MyCellIndex>())
+            {
+                v = child.GetComponent<MyCellIndex>().cellIndex;
+            }
             stageEditor.gridPos[v.x, v.y, v.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true ;
             stageEditor._StageObjects[v.x, v.y, v.z] = child.gameObject;
         }
