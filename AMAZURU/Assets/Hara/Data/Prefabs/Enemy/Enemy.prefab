@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1023837329241061402}
   - component: {fileID: 5138938301351096660}
   - component: {fileID: 1023837329241061405}
+  - component: {fileID: 1531546374721261317}
   m_Layer: 13
   m_Name: Enemy
   m_TagString: Untagged
@@ -75,14 +76,27 @@ MonoBehaviour:
   mode: 4
   stateSet: 1
   movePlan:
-  - {x: 0, y: 7.05}
-  - {x: 1.55, y: 7.05}
-  - {x: 1.55, y: 0.97}
-  type: 1
+  - {x: 0, y: 7}
+  - {x: 5, y: 0}
+  - {x: 0, y: -7}
+  type: 0
   lateTime: 0.5
   enemySpeed: 1.5
   enemyWaterSpeed: 3
   rotatePower: 5
+--- !u!114 &1531546374721261317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023837329241063398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93bfa1a841ed3b84d88db825456df715, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cellIndex: {x: 0, y: 0, z: 0}
 --- !u!1001 &7908843700234598617
 PrefabInstance:
   m_ObjectHideFlags: 0

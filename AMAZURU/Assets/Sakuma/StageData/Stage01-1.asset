@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Stage01-1
   m_EditorClassIdentifier: 
   stageName: "\u30B9\u30C6\u30FC\u30B801-1"
-  stageSize: {x: 15, y: 7, z: 5}
-  startPos: {x: 3, y: 2, z: 1}
+  stageSize: {x: 15, y: 5, z: 10}
+  startPos: {x: 1, y: 1, z: 1}
   waterStep: 3
   stagePrefab: {fileID: 3668262230600242285, guid: 189bb80ae474ab74283f0212b6b77874,
     type: 3}
