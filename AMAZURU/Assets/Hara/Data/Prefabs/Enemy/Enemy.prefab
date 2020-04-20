@@ -74,7 +74,10 @@ MonoBehaviour:
   player: {fileID: 0}
   mode: 4
   stateSet: 1
-  movePlan: []
+  movePlan:
+  - {x: 0, y: 7.05}
+  - {x: 1.55, y: 7.05}
+  - {x: 1.55, y: 0.97}
   type: 1
   lateTime: 0.5
   enemySpeed: 1.5
