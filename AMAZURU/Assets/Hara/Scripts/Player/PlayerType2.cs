@@ -52,12 +52,10 @@ public class PlayerType2 : MonoBehaviour
     /// </summary>
     public bool ContactEnemy { set; get; } = false;
 
-    private bool debug = false;
-
     // Start is called before the first frame update
     void Start()
     {
-        CreateHiddenWall();
+        PlayerInit();
     }
 
     // Update is called once per frame
@@ -92,6 +90,8 @@ public class PlayerType2 : MonoBehaviour
                 stageWater = hit.transform.gameObject.GetComponent<WaterHi>();
             }
         }
+
+        CreateHiddenWall();
     }
 
     /// <summary>
@@ -104,12 +104,6 @@ public class PlayerType2 : MonoBehaviour
         // キー入力取得
         inputX = mode == PlayState.GameMode.Play ? Input.GetAxis("Horizontal") : 0;
         inputZ = mode == PlayState.GameMode.Play ? Input.GetAxis("Vertical") : 0;
-
-        if(Input.GetKeyDown(KeyCode.L) && debug == false)
-        {
-            PlayerInit();
-            debug = true;
-        }
     }
 
     /// <summary>

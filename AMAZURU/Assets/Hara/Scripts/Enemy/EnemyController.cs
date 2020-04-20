@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyController : MyAnimation
 {
     [SerializeField, Tooltip("敵のCharacterController")] private SphereCollider enemy = null;
+    [SerializeField, Tooltip("敵のAnimator")] private Animator enemyAnime = null;
     [SerializeField, Tooltip("プレイヤーのレイヤー")] private LayerMask playerLayer;
     [SerializeField, Tooltip("地面のレイヤー")] private LayerMask groundLayer;
     [SerializeField, Tooltip("水面のレイヤー")] private LayerMask waterLayer;
