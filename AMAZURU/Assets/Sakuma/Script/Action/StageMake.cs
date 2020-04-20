@@ -5,6 +5,11 @@ using UnityEngine;
 public class StageMake : MonoBehaviour
 {
     static public StageData LoadStageData;
+
+
+
+
+
     public StageData SLoadStageData;
     [SerializeField]
     private GameObject water;
@@ -45,8 +50,8 @@ public class StageMake : MonoBehaviour
 
         amehurashiManager.waterHi = waterObj.GetComponent<WaterHi>();
         amehurashiManager.ManagerSet();
-        amehurashiManager.waterStep = SLoadStageData.waterStep;
-        amehurashiManager.AmehurashiQuantity  = SLoadStageData.AmehurashiQuantity;
+        amehurashiManager.waterStep = StageMake.LoadStageData.waterStep;
+        amehurashiManager.AmehurashiQuantity  = StageMake.LoadStageData.AmehurashiQuantity;
     }
 
     void FStateSet()
