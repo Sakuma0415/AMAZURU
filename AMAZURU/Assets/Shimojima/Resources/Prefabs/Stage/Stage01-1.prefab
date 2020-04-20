@@ -42244,22 +42244,22 @@ PrefabInstance:
     - target: {fileID: 1023837329241061402, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1023837329241061402, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.63851225
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 1023837329241061402, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1023837329241061402, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.76961166
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 1023837329241061402, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
@@ -42274,12 +42274,42 @@ PrefabInstance:
     - target: {fileID: 1023837329241061402, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -79.36201
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 1023837329241061402, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: movePlan.Array.data[1].y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: movePlan.Array.data[2].x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: movePlan.Array.data[2].y
+      value: -7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: movePlan.Array.data[0].y
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: movePlan.Array.data[1].x
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1023837329241063398, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
