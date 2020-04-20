@@ -51,5 +51,11 @@ public class O2Controller : MonoBehaviour
         {
             PlayState.playState.gameMode = PlayState.GameMode.GameOver;
         }
+
+        if (playerType2.ContactEnemy)
+        {
+            PlayState.playState.gameMode = PlayState.GameMode.GameOver;
+        }
+
     }
 }
