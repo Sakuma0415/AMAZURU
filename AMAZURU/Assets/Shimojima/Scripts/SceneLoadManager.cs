@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -32,12 +33,19 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
     private float alphaCut = 0;
     [SerializeField]
     private GameObject anounceText;
-    private bool isDone;
+    private bool fadeEnd, DoKeyPress;
 
 #if UNITY_EDITOR
     void OnValidate()
     {
-        fadeImage.material.SetFloat("_Alpha", alphaCut);
+        try
+        {
+            fadeImage.material.SetFloat("_Alpha", alphaCut);
+        }
+        catch(NullReferenceException ex)
+        {
+            return;
+        }
     }
 #endif
 
@@ -59,10 +67,11 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
     /// </summary>
     /// <param name="name">シーンの名前(列挙型)</param>
     /// <param name="fm1">最初に行うフェード操作</param>
-    public void LoadScene(SceneName name)
+    public void LoadScene(SceneName name, bool keyPress = true)
     {
         if (IsLoadScene) { return; }
         sceneName = name;
+        DoKeyPress = keyPress;
         StartCoroutine("Load");
         IsLoadScene = true;
     }
@@ -74,19 +83,30 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
     /// <returns></returns>
     private IEnumerator Load()
     {
-        StartCoroutine(Fade(1, FadeMode.OUT));
+        StartCoroutine(Fade(2, FadeMode.OUT));
         AsyncOperation async = SceneManager.LoadSceneAsync(sceneName.ToString());
         Animator animator = anounceText.GetComponent<Animator>();
         async.allowSceneActivation = false;
+        bool DoOnce = false;
 
         while (!async.isDone)
         {
-            if (async.progress >= 0.9f) { Debug.Log("compleated"); animator.SetTrigger("FadeIn"); }
-            if (Input.GetKeyDown(KeyCode.A) && isDone)
+            if (DoKeyPress)
             {
-                async.allowSceneActivation = true;
-                animator.ResetTrigger("FadeIn");
-                animator.SetTrigger("FadeOut");
+                if (async.progress >= 0.9f && !DoOnce && fadeEnd) { DoOnce = true; Debug.Log("compleated"); animator.SetTrigger("FadeIn"); }
+                if (Input.GetKeyDown(KeyCode.A) && fadeEnd)
+                {
+                    async.allowSceneActivation = true;
+                    animator.ResetTrigger("FadeIn");
+                    animator.SetTrigger("FadeOut");
+                }
+            }
+            else
+            {
+                if (async.progress >= 0.9f && fadeEnd)
+                {
+                    async.allowSceneActivation = true;
+                }
             }
             yield return null;
         }
@@ -108,7 +128,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
     {
         float speed = 1 / (sec * 60);
         alphaCut = fadeImage.material.GetFloat("_Alpha");
-        bool fadeEnd = false;
+        fadeEnd = false;
 
         while (!fadeEnd)
         {
@@ -122,7 +142,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
             {
                 fadeImage.material.SetFloat("_Alpha", alphaCut);
                 alphaCut += speed;
-                if (alphaCut >= 1) { fadeEnd = true; isDone = true; }
+                if (alphaCut >= 1) { fadeEnd = true; }
             }
 
             yield return null;
