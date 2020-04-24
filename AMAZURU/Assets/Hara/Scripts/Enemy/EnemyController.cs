@@ -14,19 +14,22 @@ public class EnemyController : MyAnimation
     [SerializeField, Tooltip("Playerのスクリプト")] private PlayerType2 player = null;
     [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Stop;
     [SerializeField, Tooltip("PlayStateと同期させる")] private bool stateSet = true;
-    private enum moveType
+
+    private enum EnemyMoveType
     {
         Lap,
         Wrap
     }
-    private Vector3 gameStartPos = Vector3.zero;
 
+    [SerializeField, Header("ゲーム開始時の座標")] private Vector3 startPos = Vector3.zero;
+    [SerializeField, Header("ゲーム開始時の向き")] private Vector3 startRot = Vector3.zero;
     [SerializeField, Header("行動計画")] private Vector2[] movePlan = null;
-    [SerializeField, Header("行動パターン")] private moveType type = moveType.Lap;
+    [SerializeField, Header("行動パターン")] private EnemyMoveType type = EnemyMoveType.Lap;
     [SerializeField, Header("行動遅延時間"), Range(0, 3)] private float lateTime = 1.0f; 
     [SerializeField, Header("敵の移動速度"), Range(0, 5)] private float enemySpeed = 1.0f;
     [SerializeField, Header("敵の水中移動速度"), Range(0, 5)] private float enemyWaterSpeed = 1.0f;
     [SerializeField, Header("回転力"), Range(0, 20)] private float rotatePower = 1.0f;
+
     private Vector3[] moveSchedule = null;
     private int location = 0;
     private float time = 0;
@@ -38,16 +41,24 @@ public class EnemyController : MyAnimation
     private bool standby = false;
     private bool inWater = false;
 
+    [SerializeField, Header("デバッグ用のデータ更新フラグ")] private bool inspectorUpdate = false;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        EnemyInit(true);
+        EnemyInit();
     }
 
     private void FixedUpdate()
     {
         EnemyMove(true);
+
+        if (inspectorUpdate)
+        {
+            inspectorUpdate = false;
+            EnemyInit();
+        }
     }
 
     private void Reset()
@@ -58,10 +69,14 @@ public class EnemyController : MyAnimation
     /// <summary>
     /// 敵の初期化
     /// </summary>
-    private void EnemyInit(bool first)
+    private void EnemyInit()
     {
         step = 0;
-        Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + enemy.radius - enemy.center.y, transform.position.z), Vector3.down);
+        location = 0;
+        standby = false;
+        finishOneLoop = false;
+
+        Ray ray = new Ray(new Vector3(startPos.x, startPos.y + enemy.radius - enemy.center.y, startPos.z), Vector3.down);
         RaycastHit hit;
 
         // 水面の取得
@@ -71,28 +86,17 @@ public class EnemyController : MyAnimation
             {
                 stageWater = hit.transform.gameObject.GetComponent<WaterHi>();
             }
-            else
-            {
-                Debug.LogError(gameObject.name + "のアメフラシさん ： 「水がないと干からびちゃうよぉ　(T_T)」");
-            }
         }
 
         // 床の高さを取得
         if (Physics.Raycast(ray, out hit, 200, groundLayer))
         {
             enemyPosY = hit.point.y + enemy.radius - enemy.center.y;
-            if (first)
-            {
-                gameStartPos = new Vector3(transform.position.x, enemyPosY, transform.position.z);
-            }
-            transform.position = gameStartPos;
+            transform.position = new Vector3(startPos.x, enemyPosY, startPos.z);
+            transform.rotation = Quaternion.Euler(startRot);
             SetMoveSchedule(movePlan);
+            if(stateSet == false) { stateSet = true; }
             standby = true;
-        }
-        else
-        {
-            Debug.LogError(gameObject.name + "のアメフラシさん : 「地面が見当たらないよぉ (>_<) 」");
-            standby = false;
         }
     }
 
@@ -115,11 +119,11 @@ public class EnemyController : MyAnimation
             int nextLocation;
             if (finishOneLoop)
             {
-                nextLocation = location - 1 < 0 ? type == moveType.Lap ? moveSchedule.Length - 1 : location + 1 : location - 1;
+                nextLocation = location - 1 < 0 ? type == EnemyMoveType.Lap ? moveSchedule.Length - 1 : location + 1 : location - 1;
             }
             else
             {
-                nextLocation = location + 1 >= moveSchedule.Length ? type == moveType.Lap ? 0 : location - 1 : location + 1;
+                nextLocation = location + 1 >= moveSchedule.Length ? type == EnemyMoveType.Lap ? 0 : location - 1 : location + 1;
             }
             Vector3 nextPos = moveSchedule[nextLocation];
             Vector3 forward = (nextPos - transform.position).normalized;
@@ -181,7 +185,7 @@ public class EnemyController : MyAnimation
                     if (finishOneLoop)
                     {
                         location--;
-                        if(type == moveType.Lap)
+                        if(type == EnemyMoveType.Lap)
                         {
                             if(location < 0) { location = moveSchedule.Length - 1; }
                         }
@@ -193,7 +197,7 @@ public class EnemyController : MyAnimation
                     else
                     {
                         location++;
-                        if (type == moveType.Lap)
+                        if (type == EnemyMoveType.Lap)
                         {
                             if (location >= moveSchedule.Length) { location = 0; }
                         }

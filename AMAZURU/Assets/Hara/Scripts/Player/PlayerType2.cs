@@ -91,6 +91,8 @@ public class PlayerType2 : MonoBehaviour
             }
         }
 
+        if(stateSet == false) { stateSet = true; }
+
         CreateHiddenWall();
     }
 
