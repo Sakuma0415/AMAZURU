@@ -79,6 +79,7 @@ public class WaterHi : MonoBehaviour
             //}
             PlayState.playState.gameMode = PlayState.GameMode.Rain;
             //
+            Debug.Log((Mathf.Abs((max + 0.1f) - nextHi) / anmeSpead) + 2f);
             PlayState.playState.rainTime = (Mathf.Abs ( (max+0.1f)-nextHi)/ anmeSpead )+ 2f;
             back = transform.localScale.y;
             next = nextHi-0.1f;
