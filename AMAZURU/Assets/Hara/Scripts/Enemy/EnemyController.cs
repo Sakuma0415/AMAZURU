@@ -29,6 +29,7 @@ public class EnemyController : MyAnimation
     [SerializeField, Header("敵の移動速度"), Range(0, 5)] private float enemySpeed = 1.0f;
     [SerializeField, Header("敵の水中移動速度"), Range(0, 5)] private float enemyWaterSpeed = 1.0f;
     [SerializeField, Header("回転力"), Range(0, 20)] private float rotatePower = 1.0f;
+    [SerializeField, Header("当たり判定の広さ"), Range(1, 5)] private float hitRange = 1.0f;
 
     private Vector3[] moveSchedule = null;
     private int location = 0;
@@ -132,7 +133,7 @@ public class EnemyController : MyAnimation
             Ray ray = new Ray(new Vector3(transform.position.x, enemyPosY - enemy.radius * 2.0f, transform.position.z), Vector3.up);
             RaycastHit hit;
             bool playerHit = false;
-            if (Physics.SphereCast(ray, (enemy.radius) * 2.0f, out hit, rayLength, playerLayer))
+            if (Physics.SphereCast(ray, (enemy.radius) * hitRange, out hit, rayLength, playerLayer))
             {
                 playerHit = true;
                 if(player == null)

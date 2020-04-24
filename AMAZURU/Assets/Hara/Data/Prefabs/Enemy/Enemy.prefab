@@ -75,12 +75,16 @@ MonoBehaviour:
   player: {fileID: 0}
   mode: 4
   stateSet: 1
+  startPos: {x: 0, y: 0, z: 0}
+  startRot: {x: 0, y: 0, z: 0}
   movePlan: []
   type: 1
   lateTime: 0.5
   enemySpeed: 1.5
   enemyWaterSpeed: 3
   rotatePower: 5
+  hitRange: 3
+  inspectorUpdate: 0
 --- !u!114 &1531546374721261317
 MonoBehaviour:
   m_ObjectHideFlags: 0
