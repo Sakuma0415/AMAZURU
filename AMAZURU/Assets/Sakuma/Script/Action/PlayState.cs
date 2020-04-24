@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayState : MonoBehaviour
 {
     static public PlayState playState;
-    public bool copyFlg = false; 
+    static public bool copyFlg = false; 
     public enum GameMode
     {
         StartEf,
@@ -33,20 +33,20 @@ public class PlayState : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
         playState = new PlayState();
         playState.gameMode = GameMode.StartEf;
 
-        if (!copyFlg)
+
+        if (!PlayState.copyFlg)
         {
             DontDestroyOnLoad(gameObject);
-            playState.copyFlg = true;
+            PlayState.copyFlg = true;
         }
         else
         {
             Destroy(gameObject);
         }
-
+        
     }
 
 
