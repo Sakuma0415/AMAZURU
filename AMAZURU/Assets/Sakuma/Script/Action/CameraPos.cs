@@ -22,6 +22,12 @@ public class CameraPos : MonoBehaviour
     //カメラのコライダー
     [SerializeField]
     SphereCollider sphereCollider;
+    //カメラが接触判定をとるかどうかのフラグ
+    [SerializeField]
+    bool CameraColFlg;
+    //プレイヤーの中心をずらす量
+    [SerializeField]
+    float LookHiSet = 0;
 
     [Header("以下変更不可")]
     //ステージ注視時のカメラ、ステージ間の距離
@@ -114,17 +120,19 @@ public class CameraPos : MonoBehaviour
                     }
                     else
                     {
-                        Ray ray = new Ray(PlayerTransform.position, Vector3.Normalize(transform.position - PlayerTransform.position));
+                        Ray ray = new Ray(PlayerTransform.position + new Vector3(0, LookHiSet, 0), Vector3.Normalize(transform.position - (PlayerTransform.position + new Vector3(0, LookHiSet, 0))));
                         RaycastHit hit;
-                        if (Physics.SphereCast (ray, sphereCollider.radius, out hit, CameraDis, layerMask))
+                        if (Physics.SphereCast (ray, sphereCollider.radius, out hit, CameraDis, layerMask)&& CameraColFlg)
                         {
                             Debug.Log(hit.collider.gameObject.name);
-                            endCameraPos = Vector3.Distance(hit.point, PlayerTransform.position);
+                            endCameraPos = Vector3.Distance(hit.point, PlayerTransform.position + new Vector3(0, LookHiSet, 0));
                         }
                         else
                         {
                             endCameraPos = CameraDis;
                         }
+
+
                     }
 
                 }
@@ -148,7 +156,7 @@ public class CameraPos : MonoBehaviour
         //ゲーム開始時の定点カメラの特殊挙動時のステータス更新
         if (startCameraFlg)
         {
-            lookObj = lookMode ? PlayerTransform.position : lookPos;
+            lookObj = lookMode ? PlayerTransform.position+new Vector3 (0,LookHiSet,0)  : lookPos;
             XZangle += Time.deltaTime*3;
 
             //通常のカメラ処理に戻る
@@ -243,7 +251,7 @@ public class CameraPos : MonoBehaviour
             }
 
             //注視点の座標を更新
-            lookObj = lookMode ? PlayerTransform.position : lookPos;
+            lookObj = lookMode ? PlayerTransform.position + new Vector3(0, LookHiSet, 0) : lookPos;
 
         }
         else

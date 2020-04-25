@@ -1103,6 +1103,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   sphereCollider: {fileID: 721732559}
+  CameraColFlg: 1
+  LookHiSet: 0.5
   CameraDisS: 20
   CameraDisP: 8
   lookPos: {x: 4, y: 4, z: 4}
@@ -1120,7 +1122,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.4
+  m_Radius: 0.3
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &721732560
 MonoBehaviour:
@@ -2119,7 +2121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2911a5758a6359a4095e00ddd31c7630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SLoadStageData: {fileID: 11400000, guid: 1726433d319f4744bb6be348c693d4c9, type: 2}
+  SLoadStageData: {fileID: 11400000, guid: 80cf93b53a4783845bcb3b11678a2c90, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
   playerObj: {fileID: 2001958938084469648, guid: 9426656cf71f6984c978b0d5e8c4971f,
     type: 3}
