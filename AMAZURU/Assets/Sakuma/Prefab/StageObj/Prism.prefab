@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3667054378486291305}
   - component: {fileID: 5744614245580431711}
   - component: {fileID: 2054891931748769190}
-  - component: {fileID: 5356510547913180106}
   m_Layer: 0
   m_Name: Prism
   m_TagString: Untagged
@@ -84,19 +83,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &5356510547913180106
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 340205801251645818}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93bfa1a841ed3b84d88db825456df715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cellIndex: {x: 0, y: 0, z: 0}
 --- !u!1 &965824291161801287
 GameObject:
   m_ObjectHideFlags: 0
