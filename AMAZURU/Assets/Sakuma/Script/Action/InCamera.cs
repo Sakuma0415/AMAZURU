@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 public class InCamera : MonoBehaviour
 {
-    [SerializeField]
-    bool set=false;
+    public bool set=false;
 
 
     [SerializeField]

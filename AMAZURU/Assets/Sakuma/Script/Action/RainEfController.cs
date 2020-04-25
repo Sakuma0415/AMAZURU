@@ -9,23 +9,41 @@ public class RainEfController : MonoBehaviour
 
     [SerializeField]
     float rainMax;
-    [SerializeField]
-    float maxSta;
 
     [SerializeField]
     SimpleRainBehaviour simpleRain;
-    [SerializeField]
-    StaticRainBehaviour staticRain;
+    //[SerializeField]
+    //StaticRainBehaviour staticRain;
 
+    [SerializeField]
+    GameObject simpleRainObj;
+    [SerializeField]
+    RainCameraController rainCamera;
+    [SerializeField]
+    InCamera inCamera;
     private void Start()
     {
         AmehurashiCont =-1;
+        simpleRainObj.SetActive(true);
+        rainCamera.Play ();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(AmehurashiCont!= AmehurashiManager.amehurashi.amehurashiTrueCont)
+
+        if (AmehurashiCont == 0|| inCamera.set)
+        {
+            rainCamera.Stop();
+        }
+        else
+        {
+            rainCamera.Play();
+        }
+
+
+
+        if (AmehurashiCont!= AmehurashiManager.amehurashi.amehurashiTrueCont)
         {
             AmehurashiCont = AmehurashiManager.amehurashi.amehurashiTrueCont;
             float def = (float)AmehurashiCont / (float)AmehurashiManager.amehurashi.AmehurashiQuantity;
@@ -34,9 +52,11 @@ public class RainEfController : MonoBehaviour
             {
                 rainScript[i].RainIntensity = def;
             }
-            simpleRain.Variables .EmissionRateMax = (int)(rainMax * def) +1;
-            simpleRain.Variables.EmissionRateMin = (int)(rainMax * (def / 2)) + 1;
-            staticRain.Alpha = def * maxSta;
+            simpleRain.Variables .EmissionRateMax = (int)(rainMax * def) ;
+            simpleRain.Variables.EmissionRateMin = (int)(rainMax * (def / 2)) ;
+
+
+
         }
 
 
