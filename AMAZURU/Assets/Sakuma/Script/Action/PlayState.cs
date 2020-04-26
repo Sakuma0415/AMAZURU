@@ -2,10 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// アクションシーン中のプレイの状態を管理するクラス
+/// </summary>
 public class PlayState : MonoBehaviour
 {
+
+    //Instance
     static public PlayState playState;
+    //アクションシーンの再再生時にオブジェを複製するかどうかのフラグ
     static public bool copyFlg = false; 
+    //ゲームの状態
     public enum GameMode
     {
         StartEf,
@@ -18,25 +25,20 @@ public class PlayState : MonoBehaviour
         Clear,
         GameOver
     }
+    //ゲームモードの変化を検知するシーケンサー用の変数
     GameMode backGameMode;
+    //現在のゲームモード
     public GameMode gameMode;
-
+    //アメフラシ起動演出の状態からプレイモードに遷移するまでの時間
     public float rainTime = 0;
 
-
-
-
-
-
-
-
-    // Start is called before the first frame update
+    
+    // 初期化
     void Start()
     {
         playState = new PlayState();
         playState.gameMode = gameMode;
-
-
+        
         if (!PlayState.copyFlg)
         {
             DontDestroyOnLoad(gameObject);
@@ -46,15 +48,12 @@ public class PlayState : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        
     }
-
-
-
 
     private void Update()
     {
-        Debug.Log(playState.gameMode);
+
+        //ゲームモードが変更されたときに呼び出す処理
         if(playState.backGameMode != playState.gameMode)
         {
             switch (playState.gameMode)
@@ -66,13 +65,12 @@ public class PlayState : MonoBehaviour
                     Progress.progress.GameOverSet();
                     break;
                 case GameMode.Rain:
-                    //playState.rainTime = 2;
                     break;
             }
-
         }
         playState.backGameMode = playState.gameMode;
 
+        //ゲームモードごとに毎フレーム呼び出す処理
         switch (playState.gameMode)
         {
             case GameMode.Rain:
@@ -80,16 +78,11 @@ public class PlayState : MonoBehaviour
                 break;
         }
 
-
-
-
-
     }
 
-
+    //アメフラシ演出中の処理
     void RainUpDate()
     {
-        //Debug.Log(playState.rainTime);
         playState.rainTime -= Time.deltaTime;
         if (playState.rainTime <= 0)
         {
