@@ -34,7 +34,7 @@ public class PlayState : MonoBehaviour
     void Start()
     {
         playState = new PlayState();
-        playState.gameMode = GameMode.StartEf;
+        playState.gameMode = gameMode;
 
 
         if (!PlayState.copyFlg)
