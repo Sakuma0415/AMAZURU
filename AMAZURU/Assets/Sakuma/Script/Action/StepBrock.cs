@@ -75,6 +75,8 @@ public class StepBrock : MonoBehaviour
             );
             PlayerStartAngle= playerTransform.eulerAngles .y;
             PlayerEndAngle = transform.eulerAngles.y;
+            playerTransform.gameObject.GetComponent<PlayerType2>().CliffFlag = true;
+            
         }
 
         //アニメ再生時
@@ -120,6 +122,7 @@ public class StepBrock : MonoBehaviour
                         stepAnimeFlg = false;
                         StepBrock.stepAnime = false;
                         character.enabled = true;
+                        playerTransform.gameObject.GetComponent<PlayerType2>().CliffFlag = false ;
                     }
                     break;
             }
