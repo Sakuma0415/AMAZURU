@@ -28,18 +28,21 @@ public class AmehurashiManager : MonoBehaviour
         amehurashi = this;
     }
 
+    //フレーム処理
     private void Update()
     {
+
+        //アメフラシの起動数変更時BGM更新
         if(amehurashiBackTrueCont != amehurashiTrueCont)
         {
             Debug.Log((float)amehurashiTrueCont / (float)AmehurashiQuantity);
             if((float)amehurashiTrueCont / (float)AmehurashiQuantity > 0.5f)
             {
-                SoundManager.soundManager.PlayBgm("haevy_rain_loop",0.5f);
+                SoundManager.soundManager.PlayBgm("haevy_rain_loop",1f);
             }
             else if((float)amehurashiTrueCont / (float)AmehurashiQuantity > 0)
             {
-                SoundManager.soundManager.PlayBgm("rain_loop", 0.5f);
+                SoundManager.soundManager.PlayBgm("rain_loop", 1f);
             }
             else
             {
