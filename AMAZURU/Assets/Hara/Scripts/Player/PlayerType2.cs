@@ -57,6 +57,10 @@ public class PlayerType2 : MonoBehaviour
     /// </summary>
     public bool CliffFlag { set; private get; } = false;
 
+    // アニメーションの速度を取得する用の変数
+    private float animatorSpeed = 0;
+    private float time = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -97,6 +101,8 @@ public class PlayerType2 : MonoBehaviour
         }
 
         if(stateSet == false) { stateSet = true; }
+
+        if(playerAnimator != null) { animatorSpeed = playerAnimator.GetCurrentAnimatorStateInfo(0).speed; }
 
         CreateHiddenWall();
     }
@@ -164,6 +170,14 @@ public class PlayerType2 : MonoBehaviour
             // プレイヤーの移動先の算出
             float speed = inWater ? playerWaterSpeed : playerSpeed;
             moveDirection *= speed * delta;
+
+            // 足音の再生
+            time += delta;
+            if (time >= animatorSpeed * 0.25f)
+            {
+                time = 0;
+                SoundManager.soundManager.PlaySe3D("FitGround_Dast2_1", transform.position);
+            }
         }
 
         // プレイヤーを移動させる
