@@ -25,8 +25,9 @@ public class StageEditor : MonoBehaviour
     [Tooltip("ステージ名")]
     public string stageName;
 
-    //[HideInInspector]
+    [HideInInspector]
     public bool loadStage;
+    [HideInInspector]
     public bool isSave;
     [HideInInspector]
     public bool isCreateStage;
