@@ -69,13 +69,12 @@ public class StepBrock : MonoBehaviour
             character = playerTransform.gameObject.GetComponent<CharacterController >();
             character.enabled =false ;
             PlayerEndPos = new Vector3(
-                    Mathf.Cos(Mathf.Deg2Rad*(transform.eulerAngles.y + 90)) +transform.parent.transform.position.x,
-                    PlayerStartPos.y-1f,
-                    Mathf.Sin(Mathf.Deg2Rad * (transform.eulerAngles.y+90)) + transform.parent.transform.position.z
-                );
+                Mathf.Cos(Mathf.Deg2Rad*(-transform.eulerAngles.y + 90)) +transform.parent.transform.position.x,
+                PlayerStartPos.y-1f,
+                Mathf.Sin(Mathf.Deg2Rad * (-transform.eulerAngles.y+90)) + transform.parent.transform.position.z
+            );
             PlayerStartAngle= playerTransform.eulerAngles .y;
             PlayerEndAngle = transform.eulerAngles.y;
-
         }
 
         //アニメ再生時
