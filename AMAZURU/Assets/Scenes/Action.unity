@@ -1138,14 +1138,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   set: 0
   maskObj: {fileID: 956267283}
-  image: {fileID: 956267285}
-  inMask:
-    serializedVersion: 2
-    m_Bits: 1591
-  outMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  camera: {fileID: 721732556}
 --- !u!114 &721732561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1309,6 +1301,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2664668360713042714, guid: ef508db51cdf3114f9c8c66b3ed8ea30,
+        type: 3}
+      propertyPath: MaxVolume
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 2664668360713042716, guid: ef508db51cdf3114f9c8c66b3ed8ea30,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1368,6 +1365,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SoundManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 2664668361709833634, guid: ef508db51cdf3114f9c8c66b3ed8ea30,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ef508db51cdf3114f9c8c66b3ed8ea30, type: 3}
@@ -2121,7 +2123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2911a5758a6359a4095e00ddd31c7630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SLoadStageData: {fileID: 11400000, guid: 80cf93b53a4783845bcb3b11678a2c90, type: 2}
+  SLoadStageData: {fileID: 11400000, guid: 1726433d319f4744bb6be348c693d4c9, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
   playerObj: {fileID: 2001958938084469648, guid: 9426656cf71f6984c978b0d5e8c4971f,
     type: 3}
@@ -2933,11 +2935,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b375ca4c1e135646872988f42ac0823, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  breath: 1
-  breathLimitTime: 10
   gage: {fileID: 1509211947}
-  fatAnimeTimeLimit: 0.5
   rectTransform: {fileID: 1956414879}
+  fatAnimeTimeLimit: 0.5
+  breathLimitTime: 10
+  breath: 1
   playerType2: {fileID: 0}
 --- !u!114 &1971748816 stripped
 MonoBehaviour:

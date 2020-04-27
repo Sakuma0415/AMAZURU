@@ -20,12 +20,33 @@ public class AmehurashiManager : MonoBehaviour
     public int AmehurashiQuantity = 0;
     //アメフラシを起動している数
     public int amehurashiTrueCont = 0;
-    
-
+    //アメフラシのシーケンサー
+    private int amehurashiBackTrueCont = 0;
     //+　初期化
     public void ManagerSet()
     {
         amehurashi = this;
+    }
+
+    private void Update()
+    {
+        if(amehurashiBackTrueCont != amehurashiTrueCont)
+        {
+            Debug.Log((float)amehurashiTrueCont / (float)AmehurashiQuantity);
+            if((float)amehurashiTrueCont / (float)AmehurashiQuantity > 0.5f)
+            {
+                SoundManager.soundManager.PlayBgm("haevy_rain_loop",0.5f);
+            }
+            else if((float)amehurashiTrueCont / (float)AmehurashiQuantity > 0)
+            {
+                SoundManager.soundManager.PlayBgm("rain_loop", 0.5f);
+            }
+            else
+            {
+                SoundManager.soundManager.StopBgm(); 
+            }
+        }
+        amehurashiBackTrueCont = amehurashiTrueCont;
     }
 
     //凍結中

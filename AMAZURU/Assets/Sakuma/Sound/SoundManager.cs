@@ -21,6 +21,9 @@ public class SoundManager : MonoBehaviour
     float outTime = 0;
     float fadelate = 0;
 
+    [SerializeField]
+    float MaxVolume = 0;
+
     struct ClipList3D
     {
         public float time;
@@ -36,8 +39,8 @@ public class SoundManager : MonoBehaviour
             audioSource=soundObject.GetComponent<AudioSource>();
             audioSource.spatialBlend = 1;
         }
-
     }
+
     ClipList3D[] clipList3Ds=new ClipList3D[1];
 
     private void Awake()
@@ -53,19 +56,16 @@ public class SoundManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
-    // Start is called before the first frame update
+    
     void Start()
     {
         
     }
+
     bool fas = false;
-    // Update is called once per frame
+
     void Update()
     {
-    
-
-
         if (bgmFade)
         {
             if(outTime > 0)
@@ -78,7 +78,7 @@ public class SoundManager : MonoBehaviour
                     bgmAudioSource.clip = fadeBf;
                     bgmAudioSource.Play();
                 }
-                bgmAudioSource.volume = outTime / fadelate;
+                bgmAudioSource.volume = (outTime / fadelate)* MaxVolume;
             }
             else
             {
@@ -89,11 +89,8 @@ public class SoundManager : MonoBehaviour
                     inTime = 0;
                     bgmFade = false;
                 }
-                bgmAudioSource.volume = 1f - (inTime / fadelate);
+                bgmAudioSource.volume = MaxVolume - ((outTime / fadelate) * MaxVolume);
             }
-            
-
-
         }
 
         for(int i=0;i< clipList3Ds.Length; i++)
@@ -102,6 +99,10 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public void StopBgm()
+    {
+        bgmAudioSource.Stop();
+    }
 
     public void PlayBgm(string bgmName,float fadeTime)
     {
@@ -119,8 +120,6 @@ public class SoundManager : MonoBehaviour
             bgmAudioSource.clip = fadeBf;
             bgmAudioSource.Play();
         }
-
-
     }
 
     public void PlaySe(string seName)
@@ -129,7 +128,6 @@ public class SoundManager : MonoBehaviour
         AudioClip Clip = Resources.Load(ResName) as AudioClip;
 
         seAudioSource.PlayOneShot(Clip);
-
     }
 
     public void PlaySe3D(string seName,Vector3  pos)
@@ -155,12 +153,11 @@ public class SoundManager : MonoBehaviour
             listnum = clipList3Ds.Length;
             Array.Resize(ref clipList3Ds, clipList3Ds.Length +1);
             clipList3Ds[listnum] = new ClipList3D();
-             clipList3Ds[listnum].StateSet(audioParent);
+            clipList3Ds[listnum].StateSet(audioParent);
         }
         
         clipList3Ds[listnum].time = Clip.length;
         clipList3Ds[listnum].soundObject.transform.position = pos;
         clipList3Ds[listnum].audioSource.PlayOneShot(Clip);
-
     }
 }
