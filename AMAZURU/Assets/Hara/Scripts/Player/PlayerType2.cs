@@ -52,6 +52,11 @@ public class PlayerType2 : MonoBehaviour
     /// </summary>
     public bool ContactEnemy { set; get; } = false;
 
+    /// <summary>
+    /// 一方通行の崖を検知する用のフラグ
+    /// </summary>
+    public bool CliffFlag { set; private get; } = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -104,8 +109,8 @@ public class PlayerType2 : MonoBehaviour
         if (stateSet) { mode = PlayState.playState.gameMode; }
         
         // キー入力取得
-        inputX = mode == PlayState.GameMode.Play ? Input.GetAxis("Horizontal") : 0;
-        inputZ = mode == PlayState.GameMode.Play ? Input.GetAxis("Vertical") : 0;
+        inputX = mode == PlayState.GameMode.Play && CliffFlag == false ? Input.GetAxis("Horizontal") : 0;
+        inputZ = mode == PlayState.GameMode.Play && CliffFlag == false ? Input.GetAxis("Vertical") : 0;
     }
 
     /// <summary>
