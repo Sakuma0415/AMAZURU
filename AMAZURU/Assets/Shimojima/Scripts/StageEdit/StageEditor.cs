@@ -414,7 +414,6 @@ public class StageEditor : MonoBehaviour
         { _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true); }
 
     Skip:
-        Debug.Log(_StageObjects[cellNum.x, cellNum.y, cellNum.z]);
         if(_StageObjects[cellNum.x, cellNum.y, cellNum.z] != null) 
         {
             _StageObjects[cellNum.x, cellNum.y, cellNum.z].SetActive(false);
