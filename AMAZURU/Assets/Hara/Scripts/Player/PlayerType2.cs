@@ -176,7 +176,7 @@ public class PlayerType2 : MonoBehaviour
             if (time >= animatorSpeed * 0.25f)
             {
                 time = 0;
-                SoundManager.soundManager.PlaySe3D("FitGround_Dast2_1", transform.position);
+                SoundManager.soundManager.PlaySe3D("FitGround_Dast2_1", transform.position,0.3f);
             }
         }
 

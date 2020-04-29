@@ -21,12 +21,11 @@ public class SoundManager : MonoBehaviour
     //3Dサウンドの再生地点を記憶するオブジェの親
     [SerializeField]
     Transform audioParent;
-    //BGMのボリューム
-    [SerializeField]
-    float MaxVolume = 0;
-
+    
     //private
 
+    //BGMのボリューム
+    float MaxVolume = 0;
     //BGMがフェード中かどうかのフラグ
     bool bgmFade = false;
     //フェード後に再生するBGMの退避先
@@ -37,7 +36,10 @@ public class SoundManager : MonoBehaviour
     float outTime = 0;
     //フェードインアウトの全体時間
     float fadelate = 0;
-
+    //フェードアウト後音量を格納しておく場所
+    float afterVol = 0;
+    //BGM停止時にフェードする場合のフラグ
+    bool stopFade = false;
 
     //3Dサウンドの再生オブジェの状態をまとめた構造体
     struct ClipList3D
@@ -96,26 +98,37 @@ public class SoundManager : MonoBehaviour
 
                 //フェードアウトの処理
                 outTime -= Time.deltaTime;
-                
-                if(outTime <= 0)
+                bgmAudioSource.volume = (outTime / fadelate) * MaxVolume;
+
+                if (outTime <= 0)
                 {
-                    outTime = 0;
-                    bgmAudioSource.clip = fadeBf;
-                    bgmAudioSource.Play();
+                    if (stopFade)
+                    {
+                        bgmFade = false;
+                        stopFade = false;
+                        bgmAudioSource.Stop();
+                        bgmAudioSource.clip = null;
+                    }
+                    else
+                    {
+                        outTime = 0;
+                        bgmAudioSource.clip = fadeBf;
+                        MaxVolume = afterVol;
+                        bgmAudioSource.Play();
+                    }
                 }
-                bgmAudioSource.volume = (outTime / fadelate)* MaxVolume;
             }
             else
             {
                 //フェードインの処理
                 inTime -= Time.deltaTime;
-                
+                bgmAudioSource.volume = MaxVolume - ((inTime / fadelate) * MaxVolume);
+
                 if (inTime <= 0)
                 {
                     inTime = 0;
                     bgmFade = false;
                 }
-                bgmAudioSource.volume = MaxVolume - ((inTime / fadelate) * MaxVolume);
             }
         }
 
@@ -127,13 +140,28 @@ public class SoundManager : MonoBehaviour
     }
 
     //BGM停止
-    public void StopBgm()
+    public void StopBgm(float fadeTime)
     {
-        bgmAudioSource.Stop();
+        if (fadeTime > 0)
+        {
+
+            //フェードする場合
+            bgmFade = true;
+            stopFade = true;
+            outTime = fadeTime;
+            fadelate = fadeTime;
+        }
+        else
+        {
+
+            //フェードしない場合
+            bgmAudioSource.Stop();
+            bgmAudioSource.clip = null;
+        }
     }
 
     //BGM再生
-    public void PlayBgm(string bgmName,float fadeTime)
+    public void PlayBgm(string bgmName,float fadeTime, float volume)
     {
         string ResName = "Sounds/BGM/" + bgmName;
         fadeBf = Resources.Load(ResName) as AudioClip;
@@ -144,9 +172,11 @@ public class SoundManager : MonoBehaviour
             bgmFade = true;
             inTime = fadeTime;
             fadelate = fadeTime;
-            if(bgmAudioSource.clip ==null)
+            afterVol = volume;
+            if (bgmAudioSource.clip ==null)
             {
                 outTime = 0;
+                MaxVolume = afterVol;
                 bgmAudioSource.clip = fadeBf;
                 bgmAudioSource.Play();
             }
@@ -159,21 +189,23 @@ public class SoundManager : MonoBehaviour
         else
         {
             bgmAudioSource.clip = fadeBf;
+            bgmAudioSource.volume = volume;
             bgmAudioSource.Play();
         }
     }
 
     //2DSE再生
-    public void PlaySe(string seName)
+    public void PlaySe(string seName, float volume)
     {
         string ResName = "Sounds/SE/" + seName;
         AudioClip Clip = Resources.Load(ResName) as AudioClip;
 
         seAudioSource.PlayOneShot(Clip);
+        seAudioSource.volume = volume;
     }
 
     //3DSE再生
-    public void PlaySe3D(string seName,Vector3  pos)
+    public void PlaySe3D(string seName,Vector3  pos, float volume)
     {
         string ResName = "Sounds/SE/" + seName;
         AudioClip Clip = Resources.Load(ResName) as AudioClip;
@@ -202,5 +234,6 @@ public class SoundManager : MonoBehaviour
         clipList3Ds[listnum].time = Clip.length;
         clipList3Ds[listnum].soundObject.transform.position = pos;
         clipList3Ds[listnum].audioSource.PlayOneShot(Clip);
+        clipList3Ds[listnum].audioSource.volume= volume;
     }
 }

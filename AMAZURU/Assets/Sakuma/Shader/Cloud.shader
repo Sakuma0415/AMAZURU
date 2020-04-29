@@ -70,11 +70,11 @@
 				wuv.x-=(int)wuv.x;
 				wuv.y-=(int)wuv.y;
 				fixed4 finalColor2 = tex2D(_LightMap, wuv);
-				c.rbg *= (1+(finalColor2.a/5));
+				c.rbg *= (1+(pow( finalColor2.a,2)*1.5f));
 
-				c.rgb-=_InColor.rgb*(hi/30);
+				c.rgb-=_InColor.rgb*(hi/50);
 				if(hi<0.2){
-				c.rbg+=(1-(hi*5))*float3(1,1,1)/4;
+				c.rbg+=(1-(hi*5))*float3(1,1,1)/8;
 				}
 			}
 			

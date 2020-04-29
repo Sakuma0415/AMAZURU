@@ -231,7 +231,7 @@ public class EnemyController : MyAnimation
                 if(animationTime >= animationSpeed)
                 {
                     animationTime = 0;
-                    SoundManager.soundManager.PlaySe3D("EnemyMove", transform.position);
+                    SoundManager.soundManager.PlaySe3D("EnemyMove", transform.position,0.5f);
                 }
             }
         }

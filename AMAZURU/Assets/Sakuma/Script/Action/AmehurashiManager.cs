@@ -38,15 +38,15 @@ public class AmehurashiManager : MonoBehaviour
             Debug.Log((float)amehurashiTrueCont / (float)AmehurashiQuantity);
             if((float)amehurashiTrueCont / (float)AmehurashiQuantity > 0.5f)
             {
-                SoundManager.soundManager.PlayBgm("haevy_rain_loop",1f);
+                SoundManager.soundManager.PlayBgm("haevy_rain_loop",0.5f,0.3f);
             }
             else if((float)amehurashiTrueCont / (float)AmehurashiQuantity > 0)
             {
-                SoundManager.soundManager.PlayBgm("rain_loop", 1f);
+                SoundManager.soundManager.PlayBgm("rain_loop", 0.5f,0.8f);
             }
             else
             {
-                SoundManager.soundManager.StopBgm(); 
+                SoundManager.soundManager.StopBgm(1f); 
             }
         }
         amehurashiBackTrueCont = amehurashiTrueCont;

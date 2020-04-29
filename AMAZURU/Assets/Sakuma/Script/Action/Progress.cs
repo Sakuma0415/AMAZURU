@@ -25,7 +25,7 @@ public class Progress : MonoBehaviour
     {
         SetState();
         progress = this;
-        SoundManager.soundManager.StopBgm();
+        SoundManager.soundManager.StopBgm(1f);
     }
 
     //result画面を呼び出す関数
