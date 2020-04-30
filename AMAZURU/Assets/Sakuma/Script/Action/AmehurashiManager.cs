@@ -22,6 +22,8 @@ public class AmehurashiManager : MonoBehaviour
     public int amehurashiTrueCont = 0;
     //アメフラシのシーケンサー
     private int amehurashiBackTrueCont = 0;
+    //雨のBGMの連続性を検知するための変数
+    private int backRainBGM = -1;
     //+　初期化
     public void ManagerSet()
     {
@@ -38,15 +40,27 @@ public class AmehurashiManager : MonoBehaviour
             Debug.Log((float)amehurashiTrueCont / (float)AmehurashiQuantity);
             if((float)amehurashiTrueCont / (float)AmehurashiQuantity > 0.5f)
             {
-                SoundManager.soundManager.PlayBgm("haevy_rain_loop",0.5f,0.3f);
+                if (backRainBGM != 2)
+                {
+                    backRainBGM = 2;
+                    SoundManager.soundManager.PlayBgm("haevy_rain_loop", 0.5f, 0.3f);
+                }
             }
             else if((float)amehurashiTrueCont / (float)AmehurashiQuantity > 0)
             {
-                SoundManager.soundManager.PlayBgm("rain_loop", 0.5f,0.8f);
+                if (backRainBGM != 1)
+                {
+                    backRainBGM = 1;
+                    SoundManager.soundManager.PlayBgm("rain_loop", 0.5f, 0.8f);
+                }
             }
             else
             {
-                SoundManager.soundManager.StopBgm(1f); 
+                if (backRainBGM != 0)
+                {
+                    backRainBGM = 0;
+                    SoundManager.soundManager.StopBgm(1f);
+                }
             }
         }
         amehurashiBackTrueCont = amehurashiTrueCont;
