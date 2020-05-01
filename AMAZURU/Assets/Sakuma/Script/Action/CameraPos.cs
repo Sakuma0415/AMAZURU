@@ -28,6 +28,9 @@ public class CameraPos : MonoBehaviour
     //プレイヤーの中心をずらす量
     [SerializeField]
     float LookHiSet = 0;
+    //カメラ捜査の速度
+    [SerializeField]
+    float stickSpead = 0;
 
     [Header("以下変更不可")]
     //ステージ注視時のカメラ、ステージ間の距離
@@ -160,7 +163,7 @@ public class CameraPos : MonoBehaviour
             XZangle += Time.deltaTime*3;
 
             //通常のカメラ処理に戻る
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetButtonDown("Circle"))
             {
                 startCameraAngleResetBf = XZangle;
                 startCameraFlg = false;
@@ -177,14 +180,14 @@ public class CameraPos : MonoBehaviour
 
             //マウスカーソルの設定
             Cursor.visible = !MouseHack;
-            if (MouseHack)
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.None;
-            }
+            //if (MouseHack)
+            //{
+            //    Cursor.lockState = CursorLockMode.Locked;
+            //}
+            //else
+            //{
+            //    Cursor.lockState = CursorLockMode.None;
+            //}
 
             //マウスカーソルの切り替え
             if (Input.GetKeyDown(KeyCode.Mouse1))
@@ -198,8 +201,8 @@ public class CameraPos : MonoBehaviour
                 {
 
                     //マウスの移動情報を角度の変更量に変換
-                    float mouse_x_delta = Input.GetAxis("Mouse X");
-                    float mouse_y_delta = Input.GetAxis("Mouse Y");
+                    float mouse_x_delta = Mathf.Abs(Input.GetAxis("Horizontal2"))<0.1f?0: Input.GetAxis("Horizontal2") * stickSpead*Time.deltaTime ;
+                    float mouse_y_delta = Mathf.Abs( Input.GetAxis("Vertical2")) < 0.1f ? 0 : Input.GetAxis("Vertical2") * stickSpead * Time.deltaTime;
 
                     XZangle -= mouse_x_delta * (lookMode ? CameraDisS : CameraDisP) / 10;
                     Yangle -= mouse_y_delta * (lookMode ? CameraDisS : CameraDisP) / 10;
@@ -216,7 +219,7 @@ public class CameraPos : MonoBehaviour
             }
             
             //注視点変更
-            if (Input.GetKeyDown(KeyCode.Q) && lookAnimeTime == 0&&!startCameraFlg )
+            if (Input.GetButtonDown("Triangle") && lookAnimeTime == 0&&!startCameraFlg )
             {
                 lookMode = !lookMode;
                 lookAnimeTime = changeTime;
