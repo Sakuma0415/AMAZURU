@@ -19,6 +19,9 @@ public class StepBrock : MonoBehaviour
     //ジャンプ上昇量
     [SerializeField]
     float jump = 0;
+    //段差のレイヤー
+    [SerializeField]
+    LayerMask  layerMask;
 
     //段差ブロック全体で共有する段差アニメーションのフラグ
     static public bool stepAnime=false;
@@ -48,7 +51,10 @@ public class StepBrock : MonoBehaviour
     float PlayerStartAngle = 0;
     //アニメ終了後のプレイヤーの座標
     float PlayerEndAngle = 0;
-
+    //プレイヤーが降りれるかどうかのフラグ
+    bool StepTrue = false;
+    //プレイヤーが降りれるかどうかのフラグ
+    bool PlayerSet = false;
     void Start()
     {
         
@@ -56,27 +62,53 @@ public class StepBrock : MonoBehaviour
     
     void Update()
     {
-        //段差アニメ開始時の初期化
-        if(Input.GetKeyDown (KeyCode.Space )&&onStep && !StepBrock.stepAnime)
+
+        //接触判定取得
+        if (PlayerSet)
         {
-            onStep = false;
-            stepAnimeFlg = true;
-            StepBrock.stepAnime = true;
-            animeTime = 0;
-            stepAnimeStep = 0;
-            animeMoveTime = stepAnimeSpan - (stepAnimeBlank * 2);
-            PlayerStartPos = playerTransform.position;
-            character = playerTransform.gameObject.GetComponent<CharacterController >();
-            character.enabled =false ;
-            PlayerEndPos = new Vector3(
-                Mathf.Cos(Mathf.Deg2Rad*(-transform.eulerAngles.y + 90)) +transform.parent.transform.position.x,
-                PlayerStartPos.y-1f,
-                Mathf.Sin(Mathf.Deg2Rad * (-transform.eulerAngles.y+90)) + transform.parent.transform.position.z
-            );
-            PlayerStartAngle= playerTransform.eulerAngles .y;
-            PlayerEndAngle = transform.eulerAngles.y;
-            playerTransform.gameObject.GetComponent<PlayerType2>().CliffFlag = true;
-            
+            onStep = Physics.OverlapSphere(playerTransform.position, 0.01f, layerMask).Length > 0;
+        }
+        
+        //角度差が+-90度まで許容
+        //降りれる状態の処理
+        if(onStep && !StepBrock.stepAnime&& Mathf.Abs(Mathf.DeltaAngle(playerTransform.eulerAngles.y, transform.eulerAngles.y)) < 90)
+        {
+            StepTrue = true;
+            StepTrueText.textFlg = true;
+
+            //段差アニメ開始時の初期化
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                onStep = false;
+                stepAnimeFlg = true;
+                StepBrock.stepAnime = true;
+                animeTime = 0;
+                stepAnimeStep = 0;
+                animeMoveTime = stepAnimeSpan - (stepAnimeBlank * 2);
+                PlayerStartPos = playerTransform.position;
+                character = playerTransform.gameObject.GetComponent<CharacterController>();
+                character.enabled = false;
+                PlayerEndPos = new Vector3(
+                    Mathf.Cos(Mathf.Deg2Rad * (-transform.eulerAngles.y + 90)) + transform.parent.transform.position.x,
+                    PlayerStartPos.y - 1f,
+                    Mathf.Sin(Mathf.Deg2Rad * (-transform.eulerAngles.y + 90)) + transform.parent.transform.position.z
+                );
+                PlayerStartAngle = playerTransform.eulerAngles.y;
+                PlayerEndAngle = transform.eulerAngles.y;
+                playerTransform.gameObject.GetComponent<PlayerType2>().CliffFlag = true;
+            }
+
+
+        }
+        else
+        {
+
+            //降りれなくなった瞬間の処理
+            if (StepTrue)
+            {
+                StepTrue = false;
+                StepTrueText.textFlg = false;
+            }
         }
 
         //アニメ再生時
@@ -126,16 +158,7 @@ public class StepBrock : MonoBehaviour
                     }
                     break;
             }
-
-
-
-
         }
-
-
-
-
-        Debug.Log(onStep);
     }
 
 
@@ -147,15 +170,8 @@ public class StepBrock : MonoBehaviour
         //プレイヤー接触時
         if (LayerMask.LayerToName(other.gameObject.layer) == "Player")
         {
-            onStep = true;
+            PlayerSet = true;
             playerTransform = other.gameObject.transform;
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (LayerMask.LayerToName(other.gameObject.layer) == "Player")
-        {
-            onStep = false;
         }
     }
     

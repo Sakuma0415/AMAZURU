@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4067256262697171719}
   - component: {fileID: 4067256262697171718}
   - component: {fileID: 4067256262697171737}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Col
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 4067256262697171739}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 0.8, y: 1, z: 0.8}
+  m_LocalScale: {x: 0.9, y: 1, z: 0.9}
   m_Children: []
   m_Father: {fileID: 4067256263388384000}
   m_RootOrder: 0
@@ -109,6 +109,9 @@ MonoBehaviour:
   stepAnimeSpan: 1
   stepAnimeBlank: 0.2
   jump: 0.75
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 32768
 --- !u!1 &4067256263388384004
 GameObject:
   m_ObjectHideFlags: 0
