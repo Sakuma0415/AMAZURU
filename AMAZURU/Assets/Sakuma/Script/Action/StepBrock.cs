@@ -55,6 +55,7 @@ public class StepBrock : MonoBehaviour
     bool StepTrue = false;
     //プレイヤーが降りれるかどうかのフラグ
     bool PlayerSet = false;
+
     void Start()
     {
         
@@ -96,6 +97,7 @@ public class StepBrock : MonoBehaviour
                 PlayerStartAngle = playerTransform.eulerAngles.y;
                 PlayerEndAngle = transform.eulerAngles.y;
                 playerTransform.gameObject.GetComponent<PlayerType2>().CliffFlag = true;
+                playerTransform.gameObject.GetComponent<PlayerType2>().enabled = false;
             }
 
 
@@ -149,12 +151,12 @@ public class StepBrock : MonoBehaviour
                 case 2:
                     if (animeTime > stepAnimeSpan)
                     {
-
                         //アニメ再生終了時処理
                         stepAnimeFlg = false;
                         StepBrock.stepAnime = false;
                         character.enabled = true;
                         playerTransform.gameObject.GetComponent<PlayerType2>().CliffFlag = false ;
+                        playerTransform.gameObject.GetComponent<PlayerType2>().enabled =true;
                     }
                     break;
             }
