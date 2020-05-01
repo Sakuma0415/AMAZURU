@@ -42,6 +42,10 @@ public class EnemyController : MyAnimation
     private bool standby = false;
     private bool inWater = false;
 
+    // 足音再生用の変数
+    private float animationSpeed = 0;
+    private float animationTime = 0;
+
     [SerializeField, Header("デバッグ用のデータ更新フラグ")] private bool inspectorUpdate = false;
 
 
@@ -81,13 +85,16 @@ public class EnemyController : MyAnimation
         RaycastHit hit;
 
         // 水面の取得
-        if(stageWater == null)
+        if (stageWater == null)
         {
             if (Physics.Raycast(ray, out hit, 200, waterLayer))
             {
                 stageWater = hit.transform.gameObject.GetComponent<WaterHi>();
             }
         }
+
+        // アニメーションの速度を取得
+        if (enemyAnime != null) { animationSpeed = enemyAnime.GetCurrentAnimatorStateInfo(0).speed; }
 
         // 床の高さを取得
         if (Physics.Raycast(ray, out hit, 200, groundLayer))
@@ -215,6 +222,17 @@ public class EnemyController : MyAnimation
                 stepEnd = false;
                 step++;
                 time = 0;
+            }
+
+            // 足音の再生
+            if(enemyAnime != null)
+            {
+                animationTime += delta;
+                if(animationTime >= animationSpeed)
+                {
+                    animationTime = 0;
+                    SoundManager.soundManager.PlaySe3D("EnemyMove", transform.position,0.5f);
+                }
             }
         }
     }

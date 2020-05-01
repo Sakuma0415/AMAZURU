@@ -1,6 +1,4 @@
-﻿// Upgrade NOTE: replaced '_LightMatrix0' with 'unity_WorldToLight'
-
-Shader "Custom/InObj"
+﻿Shader "Custom/Cloud"
 {
     Properties
     {
@@ -17,8 +15,6 @@ Shader "Custom/InObj"
 		_Xside("_Xside", float) = 0
 		_Zside("_Zside", float) = 0
 		_NormalTex("_NormalTex", 2D) = "white" {}
-
-		_LightVec("_LightVec", Vector) = (0,0,0,0)
     }
     SubShader
     {
@@ -31,8 +27,6 @@ Shader "Custom/InObj"
 
         // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.0
-
-		#include "UnityCG.cginc"
 
         sampler2D _MainTex;
 
@@ -52,7 +46,7 @@ Shader "Custom/InObj"
 		sampler2D _LightMap;
 		sampler2D _NormalTex;
 		fixed4 _InColor;
-		float4 _LightVec;
+
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
         // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
         // #pragma instancing_options assumeuniformscaling
@@ -66,7 +60,8 @@ Shader "Custom/InObj"
             // Albedo comes from a texture tinted by color
             fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
 
-			float3 L = normalize(_LightVec.xyz);
+			float3 L = normalize(-_WorldSpaceLightPos0.xyz);
+
 			if(_High>IN.worldPos.y&&(_Xside>IN.worldPos.x&&IN.worldPos.x>0)&&(_Zside>IN.worldPos.z&&IN.worldPos.z>0)){
 
 				float hi=_High-IN.worldPos.y;
@@ -75,16 +70,17 @@ Shader "Custom/InObj"
 				wuv.x-=(int)wuv.x;
 				wuv.y-=(int)wuv.y;
 				fixed4 finalColor2 = tex2D(_LightMap, wuv);
-				c.rbg *= (1+(pow( finalColor2.a,1)/4));
+				c.rbg *= (1+(pow( finalColor2.a,2)*1.5f));
 
 				c.rgb-=_InColor.rgb*(hi/50);
 				if(hi<0.2){
-				c.rbg+=(1-(hi*5))*float3(1,1,1)/2;
+				c.rbg+=(1-(hi*5))*float3(1,1,1)/8;
 				}
 			}
 			
 			o.Normal=UnpackNormal(tex2D(_NormalTex, IN.uv_MainTex));
             o.Albedo = c.rgb;
+            // Metallic and smoothness come from slider variables
             o.Metallic = _Metallic;
             o.Smoothness = _Glossiness;
             o.Alpha = c.a;

@@ -52,6 +52,15 @@ public class PlayerType2 : MonoBehaviour
     /// </summary>
     public bool ContactEnemy { set; get; } = false;
 
+    /// <summary>
+    /// 一方通行の崖を検知する用のフラグ
+    /// </summary>
+    public bool CliffFlag { set; private get; } = false;
+
+    // アニメーションの速度を取得する用の変数
+    private float animatorSpeed = 0;
+    private float time = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -93,6 +102,8 @@ public class PlayerType2 : MonoBehaviour
 
         if(stateSet == false) { stateSet = true; }
 
+        if(playerAnimator != null) { animatorSpeed = playerAnimator.GetCurrentAnimatorStateInfo(0).speed; }
+
         CreateHiddenWall();
     }
 
@@ -104,8 +115,8 @@ public class PlayerType2 : MonoBehaviour
         if (stateSet) { mode = PlayState.playState.gameMode; }
         
         // キー入力取得
-        inputX = mode == PlayState.GameMode.Play ? Input.GetAxis("Horizontal") : 0;
-        inputZ = mode == PlayState.GameMode.Play ? Input.GetAxis("Vertical") : 0;
+        inputX = mode == PlayState.GameMode.Play && CliffFlag == false ? Input.GetAxis("Horizontal") : 0;
+        inputZ = mode == PlayState.GameMode.Play && CliffFlag == false ? Input.GetAxis("Vertical") : 0;
     }
 
     /// <summary>
@@ -159,6 +170,14 @@ public class PlayerType2 : MonoBehaviour
             // プレイヤーの移動先の算出
             float speed = inWater ? playerWaterSpeed : playerSpeed;
             moveDirection *= speed * delta;
+
+            // 足音の再生
+            time += delta;
+            if (time >= animatorSpeed * 0.25f)
+            {
+                time = 0;
+                SoundManager.soundManager.PlaySe3D("FitGround_Dast2_1", transform.position,0.3f);
+            }
         }
 
         // プレイヤーを移動させる
