@@ -127,7 +127,6 @@ public class CameraPos : MonoBehaviour
                         RaycastHit hit;
                         if (Physics.SphereCast (ray, sphereCollider.radius, out hit, CameraDis, layerMask)&& CameraColFlg)
                         {
-                            Debug.Log(hit.collider.gameObject.name);
                             endCameraPos = Vector3.Distance(hit.point, PlayerTransform.position + new Vector3(0, LookHiSet, 0));
                         }
                         else
