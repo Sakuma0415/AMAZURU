@@ -5,12 +5,14 @@ using UnityEngine.UI;
 
 public class ResultControl : MyAnimation
 {
-    [SerializeField, Tooltip("項目ボタン")] private Button[] menuButton = null;
+    [SerializeField, Tooltip("項目ボタン")] private GameObject[] menuButton = null;
     [SerializeField, Tooltip("テキストオブジェクト")] private Text textObject = null;
 
     [SerializeField, Header("アニメーション実行間隔"), Range(0, 3)] private float span = 1.0f;
 
     private float time = 0;
+    private float selectChangeTime = 0;
+    private bool keyDown = false;
     private int step = 0;
     private Coroutine coroutine = null;
     private bool selectMenu = false;
@@ -32,13 +34,6 @@ public class ResultControl : MyAnimation
     /// </summary>
     private void ResultInit()
     {
-        // ボタンのアクションの設定
-        for(int i = 0; i < menuButton.Length; i++)
-        {
-            int num = i;
-            menuButton[i].onClick.AddListener(() => ButtonAction(num));
-        }
-
         // オブジェクトを非表示
         HiddenObject();
     }
@@ -181,26 +176,24 @@ public class ResultControl : MyAnimation
         float span = 1.0f;
         float input = Input.GetAxis("Vertical");
         int key = input > 0.1f ? -1 : input < -0.1f ? 1 : 0;
-        // ボタンを選択状態にする
-        menuButton[selectButtonNum].Select();
 
         // 選択状態のボタンのアニメーションを実行する
         switch (step)
         {
             case 0:
-                end = ScaleAnimation(menuButton[selectButtonNum].gameObject, time, span / 4, Vector3.one, Vector3.one * 1.05f);
+                end = ScaleAnimation(menuButton[selectButtonNum], time, span / 4, Vector3.one, Vector3.one * 1.05f);
                 time += Time.deltaTime;
                 break;
             case 1:
-                end = ScaleAnimation(menuButton[selectButtonNum].gameObject, time, span / 4, Vector3.one * 1.05f, Vector3.one);
+                end = ScaleAnimation(menuButton[selectButtonNum], time, span / 4, Vector3.one * 1.05f, Vector3.one);
                 time += Time.deltaTime;
                 break;
             case 2:
-                end = ScaleAnimation(menuButton[selectButtonNum].gameObject, time, span / 4, Vector3.one, Vector3.one * 0.95f);
+                end = ScaleAnimation(menuButton[selectButtonNum], time, span / 4, Vector3.one, Vector3.one * 0.95f);
                 time += Time.deltaTime;
                 break;
             case 3:
-                end = ScaleAnimation(menuButton[selectButtonNum].gameObject, time, span / 4, Vector3.one * 0.95f, Vector3.one);
+                end = ScaleAnimation(menuButton[selectButtonNum], time, span / 4, Vector3.one * 0.95f, Vector3.one);
                 time += Time.deltaTime;
                 break;
             default:
@@ -214,13 +207,42 @@ public class ResultControl : MyAnimation
             time = 0;
         }
 
-        if (key != 0)
+        // 選択カーソルの移動処理
+        if (key != 0 && keyDown == false)
         {
+            keyDown = true;
             menuButton[selectButtonNum].transform.localScale = Vector3.one;
             selectButtonNum += key;
             selectButtonNum = selectButtonNum >= menuButton.Length ? 0 : selectButtonNum < 0 ? menuButton.Length - 1 : selectButtonNum;
             step = 0;
             time = 0;
+        }
+        else if(key != 0 && keyDown)
+        {
+            if (selectChangeTime > 0.3f)
+            {
+                menuButton[selectButtonNum].transform.localScale = Vector3.one;
+                selectButtonNum += key;
+                selectButtonNum = selectButtonNum >= menuButton.Length ? 0 : selectButtonNum < 0 ? menuButton.Length - 1 : selectButtonNum;
+                step = 0;
+                time = 0;
+                selectChangeTime = 0;
+            }
+            else
+            {
+                selectChangeTime += Time.deltaTime;
+            }
+        }
+        else
+        {
+            selectChangeTime = 0;
+            keyDown = false;
+        }
+
+        // キー入力処理
+        if (Input.GetButtonDown("Circle"))
+        {
+            ButtonAction(selectButtonNum);
         }
     }
 
