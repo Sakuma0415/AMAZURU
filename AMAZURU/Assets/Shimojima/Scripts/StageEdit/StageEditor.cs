@@ -58,14 +58,12 @@ public class StageEditor : MonoBehaviour
     private InputField[] cell;
     [Tooltip("シーン内のオブジェクトを削除するためのルートオブジェクト")]
     private GameObject gridRoot;
-    [SerializeField]
-    private Texture[] floorTexes, floorNormalMap;
 
     [HideInInspector, Tooltip("保存するステージのルートオブジェクト")]
     public GameObject stageRoot;
     
     [SerializeField,Tooltip("ステージに使う参照オブジェクト")]
-    private GameObject[] referenceObject;
+    private GameObject[] referenceObject, floorRefObj;
     private int refObjIndex = 0;
     [Tooltip("配置するオブジェクト")]
     private GameObject stageObj;
@@ -353,18 +351,19 @@ public class StageEditor : MonoBehaviour
     private void SetStageObject(GameObject obj, Vector3Int cellIndex)
     {
         if (_StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] != null) { Debug.Log("既にオブジェクトが設置されています"); return; }
-        GameObject o = Instantiate(obj);
+        GameObject o;
+        if (referenceObject[refObjIndex].name == "SandFloor")
+        {
+            int x = Random.Range(0, 6);
+            o = Instantiate(floorRefObj[x]);
+        }
+        else { o = Instantiate(obj); }
         o.name = obj.name;
         o.transform.localPosition = gridPos[cellIndex.x,cellIndex.y,cellIndex.z].transform.localPosition;
         o.transform.localEulerAngles += objAngle;
         o.transform.parent = stageRoot.transform;
         o.AddComponent<MyCellIndex>().cellIndex = cellIndex;
-        if(o.name == "SandFloor")
-        {
-            int x = Random.Range(0, 6);
-            o.GetComponent<Renderer>().material.SetTexture("_MainTex", floorTexes[x]);
-            o.GetComponent<Renderer>().material.SetTexture("_NormalTex", floorNormalMap[x]);
-        }
+        
         _StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] = o;
         gridPos[cellIndex.x, cellIndex.y, cellIndex.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
         if(rangeSelectionState == RangeSelectionState.Stay) { return; }
@@ -392,9 +391,18 @@ public class StageEditor : MonoBehaviour
             if(obj == null) { continue; }
             if (obj.name == objName)
             {
-                GameObject o = Instantiate(referenceObject[refObjIndex]);
+                GameObject o;
+                if (referenceObject[refObjIndex].name == "SandFloor")
+                {
+                    int x = Random.Range(0, 6);
+                    o = Instantiate(floorRefObj[x]);
+                }
+                else { o = Instantiate(referenceObject[refObjIndex]); }
+                
+                o.name = referenceObject[refObjIndex].name;
                 o.transform.localPosition = obj.transform.localPosition;
                 o.transform.localEulerAngles += obj.transform.localEulerAngles;
+                o.transform.parent = stageRoot.transform;
                 o.AddComponent<MyCellIndex>().cellIndex = obj.GetComponent<MyCellIndex>().cellIndex;
                 Vector3Int cellIndex = o.GetComponent<MyCellIndex>().cellIndex;
                 _StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] = o;

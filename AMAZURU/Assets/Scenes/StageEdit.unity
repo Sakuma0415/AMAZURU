@@ -638,20 +638,6 @@ MonoBehaviour:
   - {fileID: 1728864041}
   - {fileID: 1714851703}
   - {fileID: 1604407854}
-  floorTexes:
-  - {fileID: 2800000, guid: f33cb6187f31a1e4b928ca80906aeb8b, type: 3}
-  - {fileID: 2800000, guid: 06d5f8224a1907d49a9166128699acdf, type: 3}
-  - {fileID: 2800000, guid: d5bd3181c41e25a4db12e5781efea90d, type: 3}
-  - {fileID: 2800000, guid: c9dac24a08d5bdc409ab90547d6468a3, type: 3}
-  - {fileID: 2800000, guid: 1053b9d8f1cb7a9408bd6d92ce4e49b6, type: 3}
-  - {fileID: 2800000, guid: 0542fd9926e17de48b7e8859d780a772, type: 3}
-  floorNormalMap:
-  - {fileID: 2800000, guid: 4333b9a756dee384684ae694f6408c5a, type: 3}
-  - {fileID: 2800000, guid: 37c167c6df67d1d489b483b3aeff107f, type: 3}
-  - {fileID: 2800000, guid: 644cd961f29784c42841365e1f1127fb, type: 3}
-  - {fileID: 2800000, guid: 371c71cec41437a49bf5027a361612a7, type: 3}
-  - {fileID: 2800000, guid: 24584f69062ac0b4f8414224ba71095f, type: 3}
-  - {fileID: 2800000, guid: bf0520ae2047e8842aa3fe99005c647c, type: 3}
   stageRoot: {fileID: 0}
   referenceObject:
   - {fileID: 3092175833138153174, guid: 44014bb8a26e8f8408e69a36811db990, type: 3}
@@ -660,6 +646,13 @@ MonoBehaviour:
   - {fileID: 4067256263388384004, guid: 257e775b62c6f6a4c88eceaf61d5f42b, type: 3}
   - {fileID: 3734858541888141026, guid: 62879e11aee5fb04a8aec3189b61fc6a, type: 3}
   - {fileID: 7238556061166013206, guid: 174c7492c20317b49b2c5f0f7742e004, type: 3}
+  floorRefObj:
+  - {fileID: 3092175833138153174, guid: 44014bb8a26e8f8408e69a36811db990, type: 3}
+  - {fileID: 3092175833138153174, guid: 31688e84e944a744a941e33fc2faf553, type: 3}
+  - {fileID: 3092175833138153174, guid: 2aaf58ddc833680418ea7bac4d0e89b8, type: 3}
+  - {fileID: 3092175833138153174, guid: 61af8cf03057dd54a8d8aa6ab6cf42f9, type: 3}
+  - {fileID: 3092175833138153174, guid: 4771174d63499ea4d8b6b55870353426, type: 3}
+  - {fileID: 3092175833138153174, guid: ba7b99b1465d1b945b11819883e0c143, type: 3}
 --- !u!4 &226080315
 Transform:
   m_ObjectHideFlags: 0

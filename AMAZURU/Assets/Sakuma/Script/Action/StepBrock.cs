@@ -67,7 +67,7 @@ public class StepBrock : MonoBehaviour
         //接触判定取得
         if (PlayerSet)
         {
-            onStep = Physics.OverlapSphere(playerTransform.position, 0.01f, layerMask).Length > 0;
+            onStep = Physics.OverlapBox(transform.position, new Vector3(0.9f, 1, 0.9f), Quaternion.identity, layerMask).Length > 0;
         }
         
         //角度差が+-90度まで許容
@@ -76,10 +76,12 @@ public class StepBrock : MonoBehaviour
         {
             StepTrue = true;
             StepTrueText.textFlg = true;
+            
 
             //段差アニメ開始時の初期化
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetButtonDown("Circle"))
             {
+                Debug.Log(playerTransform.position);
                 onStep = false;
                 stepAnimeFlg = true;
                 StepBrock.stepAnime = true;
@@ -172,6 +174,7 @@ public class StepBrock : MonoBehaviour
         //プレイヤー接触時
         if (LayerMask.LayerToName(other.gameObject.layer) == "Player")
         {
+            //Debug.Log(other.gameObject.name);
             PlayerSet = true;
             playerTransform = other.gameObject.transform;
         }
