@@ -54,7 +54,7 @@ public class RainPot : MonoBehaviour
     {
         if (LayerMask.LayerToName(other.gameObject.layer) == "Player")
         {
-            if (Input.GetKeyDown(KeyCode.Space) && PlayState.playState.gameMode == PlayState.GameMode.Play)
+            if (Input.GetButtonDown("Circle") && PlayState.playState.gameMode == PlayState.GameMode.Play)
             {
                 //forCamera.RainFall = sw;
                 look.RainFall = sw;
