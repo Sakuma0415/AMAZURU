@@ -25,8 +25,9 @@ public class StageEditor : MonoBehaviour
     [Tooltip("ステージ名")]
     public string stageName;
 
-    //[HideInInspector]
+    [HideInInspector]
     public bool loadStage;
+    [HideInInspector]
     public bool isSave;
     [HideInInspector]
     public bool isCreateStage;
@@ -36,7 +37,7 @@ public class StageEditor : MonoBehaviour
     [Tooltip("グリッドの数　X * Y * Z")]
     public Vector3Int cells;
     private float posAdjust = 0.5f;
-
+    [HideInInspector]
     public Vector3Int cellNum;
     private Vector3Int tempCnum = Vector3Int.zero;
 
@@ -57,6 +58,8 @@ public class StageEditor : MonoBehaviour
     private InputField[] cell;
     [Tooltip("シーン内のオブジェクトを削除するためのルートオブジェクト")]
     private GameObject gridRoot;
+    [SerializeField]
+    private Texture[] floorTexes, floorNormalMap;
 
     [HideInInspector, Tooltip("保存するステージのルートオブジェクト")]
     public GameObject stageRoot;
@@ -356,6 +359,12 @@ public class StageEditor : MonoBehaviour
         o.transform.localEulerAngles += objAngle;
         o.transform.parent = stageRoot.transform;
         o.AddComponent<MyCellIndex>().cellIndex = cellIndex;
+        if(o.name == "SandFloor")
+        {
+            int x = Random.Range(0, 6);
+            o.GetComponent<Renderer>().material.SetTexture("_MainTex", floorTexes[x]);
+            o.GetComponent<Renderer>().material.SetTexture("_NormalTex", floorNormalMap[x]);
+        }
         _StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] = o;
         gridPos[cellIndex.x, cellIndex.y, cellIndex.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
         if(rangeSelectionState == RangeSelectionState.Stay) { return; }
@@ -414,7 +423,6 @@ public class StageEditor : MonoBehaviour
         { _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true); }
 
     Skip:
-        Debug.Log(_StageObjects[cellNum.x, cellNum.y, cellNum.z]);
         if(_StageObjects[cellNum.x, cellNum.y, cellNum.z] != null) 
         {
             _StageObjects[cellNum.x, cellNum.y, cellNum.z].SetActive(false);

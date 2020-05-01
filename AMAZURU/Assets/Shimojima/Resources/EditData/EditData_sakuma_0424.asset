@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageName: sakuma_0424
   stage: {fileID: 6911727456603234469, guid: 703badf82e95b5647b2b36fdba9faa16, type: 3}
-  viewStage: {fileID: 0}
+  viewStage: {fileID: 6911727456603234469, guid: b60f97ea745b32448b004597ff9e83bb,
+    type: 3}
+  sData: {fileID: 11400000, guid: 1726433d319f4744bb6be348c693d4c9, type: 2}
   gridCells: {x: 20, y: 20, z: 20}

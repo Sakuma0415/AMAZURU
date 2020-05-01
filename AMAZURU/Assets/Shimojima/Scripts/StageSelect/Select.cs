@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class Select : MonoBehaviour
 {
     public StageData[] SLoadStageData;
-    bool ter = true;
-
+    [SerializeField]
+    private StageData sData;
 
     [SerializeField]
     private GameObject senterPivot;
@@ -102,20 +102,18 @@ public class Select : MonoBehaviour
             if (isRotation) { return; }
             selection = Selection.Forwerd;
             isRotation = true;
-            ter = !ter;
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
             if (isRotation) { return; }
             selection = Selection.FallBack;
             isRotation = true;
-            ter = !ter;
         }
 
         //ココダヨ
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            StageMake.LoadStageData = ter? SLoadStageData[0]: SLoadStageData[1];
+            StageMake.LoadStageData = sData;
             SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
         }
     }
@@ -163,7 +161,7 @@ public class Select : MonoBehaviour
             {
                 if (viewStage[i].defScale != Vector3.one)
                 {
-                    viewStage[i].stage.transform.localScale = new Vector3(0.8f, 1, 0.8f);
+                    viewStage[i].stage.transform.localScale = Vector3.one;
                 }
                 else
                 {
@@ -171,6 +169,7 @@ public class Select : MonoBehaviour
                 }
 
                 stageNameText.text = viewStage[i].name;
+                sData = psd[i].sData;
             }
 
             if (i > (psd.Length - 1) * (overCount + 1)) { overCount++; }
@@ -238,8 +237,8 @@ public class Select : MonoBehaviour
         }
         else
         {
-            Vector2 scale = new Vector2(0.8f - viewStage[i].stage.transform.localScale.x,
-                                        0.8f - viewStage[i].stage.transform.localScale.z);
+            Vector2 scale = new Vector2(1 - viewStage[i].stage.transform.localScale.x,
+                                        1 - viewStage[i].stage.transform.localScale.z);
             viewStage[i].reSizeSpeed = new Vector3(scale.x / rotateAngle, 0, scale.y / rotateAngle);
         }
 
@@ -265,6 +264,7 @@ public class Select : MonoBehaviour
                 {
                     case 1:
                         viewStage[i].stage.transform.localScale += viewStage[i].reSizeSpeed;
+                        sData = psd[viewStage[i].psdIndex].sData;
                         break;
                     case 2:
                         viewStage[i].stage.transform.localScale -= viewStage[i].reSizeSpeed;
@@ -289,6 +289,7 @@ public class Select : MonoBehaviour
                         break;
                     case 3:
                         viewStage[i].stage.transform.localScale += viewStage[i].reSizeSpeed;
+                        sData = psd[viewStage[i].psdIndex].sData;
                         break;
                     case 5:
                         viewStage[i].stage.transform.localScale += viewStage[i].zeroScalingSpeed;
@@ -433,8 +434,7 @@ public class Select : MonoBehaviour
         else if (select == Selection.FallBack)
         {
             int index = viewStage[3].psdIndex - 1;
-            if(index < psd.Length - 1) { index = psd.Length - 1; }
-
+            if(index < 0) { index = psd.Length - 1; }
             viewStage[4].stage = Instantiate(psd[index].viewStage);
             viewStage[4].name = psd[index].stageName;
             viewStage[4].index = 5;
