@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Block_2
+  m_Name: block_1
   m_Shader: {fileID: 4800000, guid: 512879a2fb4b754429b4c8ff3e98498c, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -44,19 +44,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: d4dd4ea9d66d41d4a860df173de6499b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTexture:
-        m_Texture: {fileID: 2800000, guid: 06d5f8224a1907d49a9166128699acdf, type: 3}
+        m_Texture: {fileID: 2800000, guid: d4dd4ea9d66d41d4a860df173de6499b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NormalTex:
-        m_Texture: {fileID: 2800000, guid: 37c167c6df67d1d489b483b3aeff107f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -71,12 +67,16 @@ Material:
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DiffuseShade: 0
+    - _DiffuseShade: 0.2
     - _DstBlend: 0
     - _GlossMapScale: 1
-    - _Glossiness: 0.5
+    - _Glossiness: 0
     - _GlossyReflections: 1
+<<<<<<< HEAD:AMAZURU/Assets/Uchimura/Materials/Stage_mt_f/block_1.mat
     - _High: 2.9
+=======
+    - _High: 0.9
+>>>>>>> dd7378b43a3111fa66788f070283dd20fc16f37c:AMAZURU/Assets/Uchimura/Materials/block_1.mat
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -89,7 +89,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _InColor: {r: 1, g: 1, b: 1, a: 1}
     - _MainColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
