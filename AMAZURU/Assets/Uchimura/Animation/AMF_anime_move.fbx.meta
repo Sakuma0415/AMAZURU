@@ -2,7 +2,10 @@ fileFormatVersion: 2
 guid: dd52905b58dc9e54bb823087d7434c5d
 ModelImporter:
   serializedVersion: 19300
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      74: -6167853277771179036
+    second: AMF_anime_move
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -95,7 +98,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.018
+    globalScale: 1.8
     rootMotionBoneName: Root_Jt
     hasTranslationDoF: 0
     hasExtraRoot: 0
