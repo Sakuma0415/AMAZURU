@@ -23,7 +23,8 @@ public class PlayState : MonoBehaviour
         Rain,
         RainSelect,
         Clear,
-        GameOver
+        GameOver,
+        Pause
     }
     //ゲームモードの変化を検知するシーケンサー用の変数
     GameMode backGameMode;
