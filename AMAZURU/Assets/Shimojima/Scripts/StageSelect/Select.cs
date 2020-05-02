@@ -97,21 +97,21 @@ public class Select : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        float h = Input.GetAxis("Horizontal");
+        if (h < 0)
         {
             if (isRotation) { return; }
             selection = Selection.Forwerd;
             isRotation = true;
         }
-        else if (Input.GetKeyDown(KeyCode.D))
+        else if (h > 0)
         {
             if (isRotation) { return; }
             selection = Selection.FallBack;
             isRotation = true;
         }
 
-        //ココダヨ
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetButtonDown("Circle"))
         {
             StageMake.LoadStageData = sData;
             SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
