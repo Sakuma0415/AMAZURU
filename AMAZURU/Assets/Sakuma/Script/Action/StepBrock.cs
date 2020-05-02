@@ -22,7 +22,9 @@ public class StepBrock : MonoBehaviour
     //段差のレイヤー
     [SerializeField]
     LayerMask  layerMask;
-
+    //ドラえもん
+    [SerializeField]
+    float dora=0.05f;
     //段差ブロック全体で共有する段差アニメーションのフラグ
     static public bool stepAnime=false;
 
@@ -140,7 +142,7 @@ public class StepBrock : MonoBehaviour
 
                     //移動処理
                     Vector3 MovePos= Vector3.Lerp(PlayerStartPos, PlayerEndPos, (animeTime - stepAnimeBlank) / (animeMoveTime));
-                    float jumpLate = (((animeTime - stepAnimeBlank) / (animeMoveTime)) * 2) - 1;
+                    float jumpLate = (((animeTime - stepAnimeBlank) / (animeMoveTime)) * 2) - 1+ dora;
                     Vector3 jumpPos = new Vector3(0,((Mathf.Pow( jumpLate,2)*-1)+1)*jump, 0);
                     playerTransform.position = MovePos + jumpPos;
                     if (animeTime > stepAnimeSpan - stepAnimeBlank)
