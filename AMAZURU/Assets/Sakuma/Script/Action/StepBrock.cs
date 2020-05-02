@@ -79,7 +79,6 @@ public class StepBrock : MonoBehaviour
             StepTrue = true;
             StepTrueText.textFlg = true;
             
-
             //段差アニメ開始時の初期化
             if (Input.GetButtonDown("Circle"))
             {
@@ -101,7 +100,6 @@ public class StepBrock : MonoBehaviour
                 PlayerStartAngle = playerTransform.eulerAngles.y;
                 PlayerEndAngle = transform.eulerAngles.y;
                 playerTransform.gameObject.GetComponent<PlayerType2>().CliffFlag = true;
-                playerTransform.gameObject.GetComponent<PlayerType2>().enabled = false;
             }
 
 
@@ -160,7 +158,6 @@ public class StepBrock : MonoBehaviour
                         StepBrock.stepAnime = false;
                         character.enabled = true;
                         playerTransform.gameObject.GetComponent<PlayerType2>().CliffFlag = false ;
-                        playerTransform.gameObject.GetComponent<PlayerType2>().enabled =true;
                     }
                     break;
             }
