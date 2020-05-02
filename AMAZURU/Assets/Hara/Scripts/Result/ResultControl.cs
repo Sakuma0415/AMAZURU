@@ -5,20 +5,18 @@ using UnityEngine.UI;
 
 public class ResultControl : MyAnimation
 {
-    [SerializeField, Tooltip("項目ボタン")] private Button[] menuButton = null;
-    [SerializeField, Tooltip("STAGECLEARオブジェクト")] private GameObject clearObject = null;
-    [SerializeField, Tooltip("GAMEOVERオブジェクト")] private GameObject gameOverObject = null;
+    [SerializeField, Tooltip("項目ボタン")] private GameObject[] menuButton = null;
+    [SerializeField, Tooltip("テキストオブジェクト")] private Text textObject = null;
 
     [SerializeField, Header("アニメーション実行間隔"), Range(0, 3)] private float span = 1.0f;
 
     private float time = 0;
+    private float selectChangeTime = 0;
+    private bool keyDown = false;
     private int step = 0;
-    private bool stepEnd = false;
-
-    private bool clearFlag = false;
-    private bool gameOverFlag = false;
-    private bool clearAnimeEnd = false;
-    private bool gameOverAnimeEnd = false;
+    private Coroutine coroutine = null;
+    private bool selectMenu = false;
+    private int selectButtonNum = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -26,21 +24,9 @@ public class ResultControl : MyAnimation
         ResultInit();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        ClearAction();
-        GameOverAction();
-        ObjectReset();
-
-        if(clearAnimeEnd || gameOverAnimeEnd)
-        {
-            ButtonActive(true);
-        }
-        else
-        {
-            ButtonActive(false);
-        }
+        MenuButtonAction();
     }
 
     /// <summary>
@@ -48,22 +34,27 @@ public class ResultControl : MyAnimation
     /// </summary>
     private void ResultInit()
     {
-        // ボタンのアクションの設定
-        for(int i = 0; i < menuButton.Length; i++)
-        {
-            int num = i;
-            menuButton[i].onClick.AddListener(() => ButtonAction(num));
-        }
+        // オブジェクトを非表示
+        HiddenObject();
     }
 
     /// <summary>
-    /// ボタンアクション
+    /// オブジェクトを非表示にする
+    /// </summary>
+    private void HiddenObject()
+    {
+        if(textObject != null) { textObject.gameObject.SetActive(false); }
+        ButtonActive(false);
+    }
+
+    /// <summary>
+    /// ボタンを押したときのアクション
     /// </summary>
     /// <param name="num"></param>
     private void ButtonAction(int num)
     {
-        if (clearFlag) { clearFlag = false; }
-        if (gameOverFlag) { gameOverFlag = false; }
+        SoundManager.soundManager.StopBgm(0.5f);
+        HiddenObject();
 
         SceneLoadManager.SceneName name;
         switch (num)
@@ -89,114 +80,185 @@ public class ResultControl : MyAnimation
     {
         foreach (var button in menuButton)
         {
-            if (button.gameObject.activeSelf == active) { break; }
             button.gameObject.SetActive(active);
         }
-    }
 
-    /// <summary>
-    /// StageClear時のアニメーション処理
-    /// </summary>
-    private void ClearAction()
-    {
-        if (clearObject == null) { return; }
-
-        if (clearFlag)
+        if (active)
         {
-            switch (step)
-            {
-                case 0:
-                    stepEnd = ScaleAnimation(clearObject, time, span, Vector3.zero, Vector3.one);
-                    time += Time.deltaTime;
-                    break;
-                case 1:
-                    stepEnd = Wait(time, span * 0.5f);
-                    time += Time.deltaTime;
-                    break;
-                case 2:
-                    stepEnd = MoveAnimation(clearObject, time, span, Vector3.zero, (Vector3.up * Screen.height * 0.5f) * 0.5f, true);
-                    time += Time.deltaTime;
-                    break;
-                case 3:
-                    stepEnd = Wait(time, span * 0.5f);
-                    time += Time.deltaTime;
-                    break;
-                default:
-                    clearAnimeEnd = true;
-                    return;
-            }
-
-            if (stepEnd)
-            {
-                step++;
-                time = 0;
-            }
+            time = 0;
+            selectButtonNum = 0;
+            selectMenu = true;
+        }
+        else
+        {
+            selectMenu = false;
         }
     }
 
     /// <summary>
-    /// GameOver時のアニメーション処理
+    /// リザルトのアニメーションコルーチン
     /// </summary>
-    private void GameOverAction()
+    /// <param name="resultFlag"></param>
+    /// <returns></returns>
+    private IEnumerator ResultAction(bool resultFlag)
     {
-        if (gameOverObject == null) { return; }
+        if (textObject == null) { yield break; }
 
-        if (gameOverFlag)
+        if (resultFlag)
         {
-            switch (step)
-            {
-                case 0:
-                    stepEnd = ScaleAnimation(gameOverObject, time, span, Vector3.zero, Vector3.one);
-                    time += Time.deltaTime;
-                    break;
-                case 1:
-                    stepEnd = Wait(time, span * 0.5f);
-                    time += Time.deltaTime;
-                    break;
-                case 2:
-                    stepEnd = MoveAnimation(gameOverObject, time, span, Vector3.zero, (Vector3.up * Screen.height * 0.5f) * 0.5f, true);
-                    time += Time.deltaTime;
-                    break;
-                case 3:
-                    stepEnd = Wait(time, span * 0.5f);
-                    time += Time.deltaTime;
-                    break;
-                default:
-                    gameOverAnimeEnd = true;
-                    return;
-            }
-
-            if (stepEnd)
-            {
-                step++;
-                time = 0;
-            }
+            textObject.text = "STAGE CLEAR";
+            textObject.color = new Color(255f / 255f, 179f / 255f, 0f / 255f);
         }
+        else
+        {
+            textObject.text = "GAME OVER";
+            textObject.color = Color.red;
+        }
+
+        textObject.transform.localPosition = Vector3.zero;
+        textObject.gameObject.SetActive(true);
+
+        time = 0;
+        while(ScaleAnimation(textObject.gameObject, time, span, Vector3.zero, Vector3.one) == false)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        time = 0;
+        while (Wait(time, span * 0.5f) == false)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        time = 0;
+        while (MoveAnimation(textObject.gameObject, time, span, Vector3.zero, Vector3.up * Screen.height * 0.25f, true) == false)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        time = 0;
+        while (Wait(time, span * 0.5f) == false)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        ButtonActive(true);
+        coroutine = null;
     }
 
     /// <summary>
-    /// フラグがOFFならオブジェクトをリセット
+    /// ポーズ画面のアクション
     /// </summary>
-    private void ObjectReset()
+    private void PauseAction()
     {
-        if (clearFlag == false && gameOverFlag == false)
+        if(textObject == null) { return; }
+
+        textObject.text = "PAUSE";
+        textObject.color = Color.black;
+        textObject.transform.localPosition = Vector3.up * Screen.height * 0.25f;
+
+        textObject.gameObject.SetActive(true);
+        ButtonActive(true);
+    }
+
+    /// <summary>
+    /// メニューボタンの処理
+    /// </summary>
+    private void MenuButtonAction()
+    {
+        if(selectMenu == false) { return; }
+
+        bool end;
+        float span = 1.0f;
+        float input = Input.GetAxis("Vertical");
+        int key = input > 0.1f ? -1 : input < -0.1f ? 1 : 0;
+
+        // 選択状態のボタンのアニメーションを実行する
+        switch (step)
         {
-            step = 0;
+            case 0:
+                end = ScaleAnimation(menuButton[selectButtonNum], time, span / 4, Vector3.one, Vector3.one * 1.05f);
+                time += Time.deltaTime;
+                break;
+            case 1:
+                end = ScaleAnimation(menuButton[selectButtonNum], time, span / 4, Vector3.one * 1.05f, Vector3.one);
+                time += Time.deltaTime;
+                break;
+            case 2:
+                end = ScaleAnimation(menuButton[selectButtonNum], time, span / 4, Vector3.one, Vector3.one * 0.95f);
+                time += Time.deltaTime;
+                break;
+            case 3:
+                end = ScaleAnimation(menuButton[selectButtonNum], time, span / 4, Vector3.one * 0.95f, Vector3.one);
+                time += Time.deltaTime;
+                break;
+            default:
+                step = 0;
+                return;
+        }
+
+        if (end)
+        {
+            step++;
             time = 0;
         }
 
-        if(clearFlag == false)
+        // 選択カーソルの移動処理
+        if (key != 0 && keyDown == false)
         {
-            clearObject.transform.localPosition = Vector3.zero;
-            clearObject.transform.localScale = Vector3.zero;
-            clearAnimeEnd = false;
+            keyDown = true;
+            menuButton[selectButtonNum].transform.localScale = Vector3.one;
+            selectButtonNum += key;
+            selectButtonNum = selectButtonNum >= menuButton.Length ? 0 : selectButtonNum < 0 ? menuButton.Length - 1 : selectButtonNum;
+            step = 0;
+            time = 0;
+        }
+        else if(key != 0 && keyDown)
+        {
+            if (selectChangeTime > 0.3f)
+            {
+                menuButton[selectButtonNum].transform.localScale = Vector3.one;
+                selectButtonNum += key;
+                selectButtonNum = selectButtonNum >= menuButton.Length ? 0 : selectButtonNum < 0 ? menuButton.Length - 1 : selectButtonNum;
+                step = 0;
+                time = 0;
+                selectChangeTime = 0;
+            }
+            else
+            {
+                selectChangeTime += Time.deltaTime;
+            }
+        }
+        else
+        {
+            selectChangeTime = 0;
+            keyDown = false;
         }
 
-        if(gameOverFlag == false)
+        // キー入力処理
+        if (Input.GetButtonDown("Circle"))
         {
-            gameOverObject.transform.localPosition = Vector3.zero;
-            gameOverObject.transform.localScale = Vector3.zero;
-            gameOverAnimeEnd = false;
+            ButtonAction(selectButtonNum);
+        }
+    }
+
+    /// <summary>
+    /// ポーズ画面の表示・非表示
+    /// </summary>
+    /// <param name="active">trueなら表示、falseなら非表示</param>
+    public void GamePause(bool active)
+    {
+        if (active)
+        {
+            PauseAction();
+        }
+        else
+        {
+            HiddenObject();
         }
     }
 
@@ -206,15 +268,16 @@ public class ResultControl : MyAnimation
     /// <param name="clear">CLEARならtrue、GAMEOVERならfalse</param>
     public void StartResult(bool clear)
     {
-        if (clear)
+        if(coroutine == null)
         {
-            if (gameOverFlag) { gameOverFlag = false; }
-            clearFlag = true;
-        }
-        else
-        {
-            if (clearFlag) { clearFlag = false; }
-            gameOverFlag = true;
+            if (clear)
+            {
+                coroutine = StartCoroutine(ResultAction(true));
+            }
+            else
+            {
+                coroutine = StartCoroutine(ResultAction(false));
+            }
         }
     }
 }

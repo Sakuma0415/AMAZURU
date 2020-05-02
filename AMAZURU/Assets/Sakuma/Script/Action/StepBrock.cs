@@ -22,7 +22,9 @@ public class StepBrock : MonoBehaviour
     //段差のレイヤー
     [SerializeField]
     LayerMask  layerMask;
-
+    //ドラえもん
+    [SerializeField]
+    float dora=0.05f;
     //段差ブロック全体で共有する段差アニメーションのフラグ
     static public bool stepAnime=false;
 
@@ -55,6 +57,7 @@ public class StepBrock : MonoBehaviour
     bool StepTrue = false;
     //プレイヤーが降りれるかどうかのフラグ
     bool PlayerSet = false;
+
     void Start()
     {
         
@@ -66,7 +69,7 @@ public class StepBrock : MonoBehaviour
         //接触判定取得
         if (PlayerSet)
         {
-            onStep = Physics.OverlapSphere(playerTransform.position, 0.01f, layerMask).Length > 0;
+            onStep = Physics.OverlapBox(transform.position, new Vector3(0.35f, 1, 0.35f), Quaternion.identity, layerMask).Length > 0;
         }
         
         //角度差が+-90度まで許容
@@ -75,10 +78,11 @@ public class StepBrock : MonoBehaviour
         {
             StepTrue = true;
             StepTrueText.textFlg = true;
-
+            
             //段差アニメ開始時の初期化
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetButtonDown("Circle"))
             {
+                Debug.Log(playerTransform.position);
                 onStep = false;
                 stepAnimeFlg = true;
                 StepBrock.stepAnime = true;
@@ -136,7 +140,7 @@ public class StepBrock : MonoBehaviour
 
                     //移動処理
                     Vector3 MovePos= Vector3.Lerp(PlayerStartPos, PlayerEndPos, (animeTime - stepAnimeBlank) / (animeMoveTime));
-                    float jumpLate = (((animeTime - stepAnimeBlank) / (animeMoveTime)) * 2) - 1;
+                    float jumpLate = (((animeTime - stepAnimeBlank) / (animeMoveTime)) * 2) - 1+ dora;
                     Vector3 jumpPos = new Vector3(0,((Mathf.Pow( jumpLate,2)*-1)+1)*jump, 0);
                     playerTransform.position = MovePos + jumpPos;
                     if (animeTime > stepAnimeSpan - stepAnimeBlank)
@@ -149,7 +153,6 @@ public class StepBrock : MonoBehaviour
                 case 2:
                     if (animeTime > stepAnimeSpan)
                     {
-
                         //アニメ再生終了時処理
                         stepAnimeFlg = false;
                         StepBrock.stepAnime = false;
@@ -170,6 +173,7 @@ public class StepBrock : MonoBehaviour
         //プレイヤー接触時
         if (LayerMask.LayerToName(other.gameObject.layer) == "Player")
         {
+            //Debug.Log(other.gameObject.name);
             PlayerSet = true;
             playerTransform = other.gameObject.transform;
         }
