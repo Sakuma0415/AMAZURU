@@ -115,8 +115,8 @@ public class PlayerType2 : MonoBehaviour
         if (stateSet) { mode = PlayState.playState.gameMode; }
         
         // キー入力取得
-        inputX = mode == PlayState.GameMode.Play && CliffFlag == false ? Input.GetAxis("Horizontal") : 0;
-        inputZ = mode == PlayState.GameMode.Play && CliffFlag == false ? Input.GetAxis("Vertical") : 0;
+        inputX = mode == PlayState.GameMode.Play ? Input.GetAxis("Horizontal") : 0;
+        inputZ = mode == PlayState.GameMode.Play ? Input.GetAxis("Vertical") : 0;
     }
 
     /// <summary>
@@ -124,83 +124,87 @@ public class PlayerType2 : MonoBehaviour
     /// </summary>
     private void PlayerMove(bool fixedUpdate)
     {
-        float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
+        bool input;
 
-        inWater = stageWater != null && PlayerPositionY < stageWater.max;
-        UnderWater = stageWater != null && PlayerPositionY + character.height * 0.5f < stageWater.max;
-
-        // 移動方向
-        Vector3 moveDirection = Vector3.zero;
-
-        // プレイヤーのY座標の位置情報を更新
-        PlayerPositionY = transform.position.y + character.center.y;
-
-        // 入力の最低許容値
-        float inputMin = 0.1f;
-        bool input = Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin;
-
-        if (input)
+        // 一方通行の崖を利用する際に実行
+        if (CliffFlag)
         {
-            // カメラの向いている方向を取得
-            Vector3 cameraForward = Vector3.Scale(playerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
-
-            // プレイヤーカメラ起点の入力方向
-            Vector3 direction = cameraForward * inputZ + playerCamera.transform.right * inputX;
-
-            // 入力方向を向く処理
-            Quaternion rot = Quaternion.LookRotation(direction, Vector3.up);
-            rot = Quaternion.Slerp(transform.rotation, rot, 15 * delta);
-            transform.rotation = rot;
-
-            // 移動方向の決定
-            float vec = Mathf.Abs(inputX) >= Mathf.Abs(inputZ) ? inputZ / inputX : inputX / inputZ;
-            vec = 1.0f / Mathf.Sqrt(1.0f + vec * vec);
-            moveDirection = direction * vec;
-
-            // 床にRayを飛ばして斜面の角度を取得
-            Ray ground = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z), Vector3.down);
-            RaycastHit hit;
-            if (Physics.Raycast(ground, out hit, rayLength, layerMask))
+            foreach(var wall in hiddenWalls)
             {
-                var nomal = hit.normal;
-                Vector3 dir = moveDirection - Vector3.Dot(moveDirection, nomal) * nomal;
-                moveDirection = dir.normalized;
+                wall.enabled = false;
             }
-
-            // プレイヤーの移動先の算出
-            float speed = inWater ? playerWaterSpeed : playerSpeed;
-            moveDirection *= speed * delta;
-
-            // 足音の再生
-            time += delta;
-            if (time >= animatorSpeed * 0.25f)
-            {
-                time = 0;
-                SoundManager.soundManager.PlaySe3D("FitGround_Dast2_1", transform.position,0.3f);
-            }
+            input = false;
         }
+        else
+        {
+            float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
 
-        // プレイヤーを移動させる
-        moveDirection.y -= gravity * delta;
-        character.Move(moveDirection);
+            inWater = stageWater != null && PlayerPositionY < stageWater.max && mode == PlayState.GameMode.Play;
+            UnderWater = stageWater != null && PlayerPositionY + character.height * 0.5f < stageWater.max && mode == PlayState.GameMode.Play;
 
-        // 透明な壁の設置処理
-        if(input) { SetHiddenWall(); }
+            // 移動方向
+            Vector3 moveDirection = Vector3.zero;
+
+            // プレイヤーのY座標の位置情報を更新
+            PlayerPositionY = transform.position.y + character.center.y;
+
+            // 入力の最低許容値
+            float inputMin = 0.1f;
+            input = Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin;
+
+            if (input)
+            {
+                // カメラの向いている方向を取得
+                Vector3 cameraForward = Vector3.Scale(playerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+
+                // プレイヤーカメラ起点の入力方向
+                Vector3 direction = cameraForward * inputZ + playerCamera.transform.right * inputX;
+
+                // 入力方向を向く処理
+                Quaternion rot = Quaternion.LookRotation(direction, Vector3.up);
+                rot = Quaternion.Slerp(transform.rotation, rot, 15 * delta);
+                transform.rotation = rot;
+
+                // 移動方向の決定
+                float vec = Mathf.Abs(inputX) >= Mathf.Abs(inputZ) ? inputZ / inputX : inputX / inputZ;
+                vec = 1.0f / Mathf.Sqrt(1.0f + vec * vec);
+                moveDirection = direction * vec;
+
+                // 床にRayを飛ばして斜面の角度を取得
+                Ray ground = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z), Vector3.down);
+                RaycastHit hit;
+                if (Physics.Raycast(ground, out hit, rayLength, layerMask))
+                {
+                    var nomal = hit.normal;
+                    Vector3 dir = moveDirection - Vector3.Dot(moveDirection, nomal) * nomal;
+                    moveDirection = dir.normalized;
+                }
+
+                // プレイヤーの移動先の算出
+                float speed = inWater ? playerWaterSpeed : playerSpeed;
+                moveDirection *= speed * delta;
+
+                // 足音の再生
+                time += delta;
+                if (time >= animatorSpeed * 0.25f)
+                {
+                    time = 0;
+                    SoundManager.soundManager.PlaySe3D("FitGround_Dast2_1", transform.position, 0.3f);
+                }
+            }
+
+            // プレイヤーを移動させる
+            moveDirection.y -= gravity * delta;
+            character.Move(moveDirection);
+
+            // 透明な壁の設置処理
+            if (input) { SetHiddenWall(); }
+        }
 
         // アニメーション実行
         if (playerAnimator != null)
         {
             playerAnimator.SetBool("wate", input);
-        }
-
-        if (UnderWater)
-        {
-            Debug.Log("息苦しぃ...");
-        }
-
-        if (ContactEnemy)
-        {
-            Debug.Log("痛い...");
         }
     }
 
@@ -224,15 +228,34 @@ public class PlayerType2 : MonoBehaviour
     {
         for (int i = 0; i < hiddenWalls.Length; i++)
         {
+            bool go = true;
+
             // 床があるかチェック
-            Ray findGround = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
-            bool go = Physics.Raycast(findGround, rayLength, layerMask);
+            for(int j = 0; j < 3; j++)
+            {
+                Ray ground;
+                if(i % 2 == 0)
+                {
+                    ground = new Ray(new Vector3(transform.position.x - character.radius / 10.0f + character.radius / 10.0f * j, PlayerPositionY, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
+                }
+                else
+                {
+                    ground = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z - character.radius / 10.0f + character.radius / 10.0f * j) + rayPosition[i] * character.radius, Vector3.down);
+                }
+
+                // Rayを飛ばして地面があるかチェック
+                if(Physics.Raycast(ground, rayLength, layerMask) == false)
+                {
+                    go = false;
+                    break;
+                }
+            }
             
             // 床が無ければ透明な壁を有効化する
             if (go == false && hiddenWalls[i].enabled == false)
             {
                 hiddenWalls[i].size = Vector3.one * wallSize;
-                hiddenWalls[i].transform.position = new Vector3(findGround.origin.x, PlayerPositionY, findGround.origin.z) + rayPosition[i] * (wallSize * 0.5f + 0.05f);
+                hiddenWalls[i].transform.position = (new Vector3(transform.position.x, PlayerPositionY, transform.position.z) + rayPosition[i] * character.radius) + rayPosition[i] * (wallSize * 0.5f + 0.05f);
                 hiddenWalls[i].enabled = true;
             }
             
