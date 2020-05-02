@@ -67,7 +67,7 @@ public class StepBrock : MonoBehaviour
         //接触判定取得
         if (PlayerSet)
         {
-            onStep = Physics.OverlapBox(transform.position, new Vector3(0.9f, 1, 0.9f), Quaternion.identity, layerMask).Length > 0;
+            onStep = Physics.OverlapBox(transform.position, new Vector3(0.35f, 1, 0.35f), Quaternion.identity, layerMask).Length > 0;
         }
         
         //角度差が+-90度まで許容
