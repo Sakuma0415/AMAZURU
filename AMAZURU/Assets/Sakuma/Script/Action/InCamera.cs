@@ -2,55 +2,46 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
+/// <summary>
+/// 水中でカメラにフィルターをかけるためのクラス
+/// </summary>
 public class InCamera : MonoBehaviour
 {
-    [SerializeField]
-    bool set=false;
 
+    [Header("設定項目")]
 
+    //水中かどうかのフラグ
+    public bool set=false;
+    
+    [Header("変更不要")]
+
+    //水中でかけるフィルターのオブジェ
     [SerializeField]
     GameObject maskObj;
-    [SerializeField]
-    Image image;
-    float time = 0;
-    [SerializeField]
-    LayerMask inMask;
-    [SerializeField]
-    LayerMask outMask;
-    [SerializeField]
-    Camera camera;
+    
 
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        image.color = new Color(image.color.r, image.color.g, image.color.b, 0);
-    }
-
-    // Update is called once per frame
     private void FixedUpdate()
     {
-        camera.cullingMask = !set ? outMask : inMask;
+        //マスク設定
         maskObj.SetActive(set);
-        time = (set ? 0.1f : (time - Time.fixedDeltaTime < 0f ? 0 : time - Time.fixedDeltaTime));
-        image.color = new Color(image.color.r, image.color.g, image.color.b, (time==0)?0:time *2+0.3f);
     }
+
+    //水と接触時
     private void OnTriggerEnter(Collider other)
     {
         if (LayerMask.LayerToName(other.gameObject.layer) == "Mirror")
         {
             set = true;
         }
-
     }
+
+    //水との接触が離れた時
     private void OnTriggerExit(Collider other)
     {
         if (LayerMask.LayerToName(other.gameObject.layer) == "Mirror")
         {
             set = false;
         }
-
     }
-
 }

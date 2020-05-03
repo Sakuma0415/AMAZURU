@@ -8,6 +8,10 @@ public class PrefabStageData : ScriptableObject
     public string stageName;
     [Tooltip("ステージプレファブ")]
     public GameObject stage;
+    [Tooltip("ステージセレクト用プレファブ")]
+    public GameObject viewStage;
+    [Tooltip("ステージデータ")]
+    public StageData sData;
     [Tooltip("生成するグリッドの数")]
     public Vector3Int gridCells;
 }

@@ -5,42 +5,65 @@ using UnityEngine;
 public class EnemyController : MyAnimation
 {
     [SerializeField, Tooltip("敵のCharacterController")] private SphereCollider enemy = null;
+    [SerializeField, Tooltip("敵のAnimator")] private Animator enemyAnime = null;
     [SerializeField, Tooltip("プレイヤーのレイヤー")] private LayerMask playerLayer;
     [SerializeField, Tooltip("地面のレイヤー")] private LayerMask groundLayer;
+    [SerializeField, Tooltip("水面のレイヤー")] private LayerMask waterLayer;
     [SerializeField, Tooltip("Rayの長さ"), Range(0, 5)] private float rayLength = 1.0f;
-    private enum moveType
+    [SerializeField, Tooltip("ステージの水オブジェクト")] private WaterHi stageWater = null;
+    [SerializeField, Tooltip("Playerのスクリプト")] private PlayerType2 player = null;
+    [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Stop;
+    [SerializeField, Tooltip("PlayStateと同期させる")] private bool stateSet = true;
+
+    private enum EnemyMoveType
     {
         Lap,
         Wrap
     }
-    private Vector3 gameStartPos = Vector3.zero;
 
+    [SerializeField, Header("ゲーム開始時の座標")] private Vector3 startPos = Vector3.zero;
+    [SerializeField, Header("ゲーム開始時の向き")] private Vector3 startRot = Vector3.zero;
     [SerializeField, Header("行動計画")] private Vector2[] movePlan = null;
-    [SerializeField, Header("行動パターン")] private moveType type = moveType.Lap;
+    [SerializeField, Header("行動パターン")] private EnemyMoveType type = EnemyMoveType.Lap;
     [SerializeField, Header("行動遅延時間"), Range(0, 3)] private float lateTime = 1.0f; 
     [SerializeField, Header("敵の移動速度"), Range(0, 5)] private float enemySpeed = 1.0f;
+    [SerializeField, Header("敵の水中移動速度"), Range(0, 5)] private float enemyWaterSpeed = 1.0f;
     [SerializeField, Header("回転力"), Range(0, 20)] private float rotatePower = 1.0f;
+    [SerializeField, Header("当たり判定の広さ"), Range(1, 5)] private float hitRange = 1.0f;
+
     private Vector3[] moveSchedule = null;
     private int location = 0;
     private float time = 0;
     private int step = 0;
     private bool stepEnd = false;
     private bool actionStop = false;
-    private PlayState.GameMode mode = PlayState.GameMode.Stop;
     private float enemyPosY = 0;
     private bool finishOneLoop = false;
     private bool standby = false;
+    private bool inWater = false;
+
+    // 足音再生用の変数
+    private float animationSpeed = 0;
+    private float animationTime = 0;
+
+    [SerializeField, Header("デバッグ用のデータ更新フラグ")] private bool inspectorUpdate = false;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        EnemyInit(true);
+        EnemyInit();
     }
 
     private void FixedUpdate()
     {
         EnemyMove(true);
+
+        if (inspectorUpdate)
+        {
+            inspectorUpdate = false;
+            EnemyInit();
+        }
     }
 
     private void Reset()
@@ -51,28 +74,37 @@ public class EnemyController : MyAnimation
     /// <summary>
     /// 敵の初期化
     /// </summary>
-    private void EnemyInit(bool first)
+    private void EnemyInit()
     {
         step = 0;
+        location = 0;
+        standby = false;
+        finishOneLoop = false;
+
+        Ray ray = new Ray(new Vector3(startPos.x, startPos.y + enemy.radius - enemy.center.y, startPos.z), Vector3.down);
+        RaycastHit hit;
+
+        // 水面の取得
+        if (stageWater == null)
+        {
+            if (Physics.Raycast(ray, out hit, 200, waterLayer))
+            {
+                stageWater = hit.transform.gameObject.GetComponent<WaterHi>();
+            }
+        }
+
+        // アニメーションの速度を取得
+        if (enemyAnime != null) { animationSpeed = enemyAnime.GetCurrentAnimatorStateInfo(0).speed; }
 
         // 床の高さを取得
-        Ray ray = new Ray(transform.position, Vector3.down);
-        RaycastHit hit;
-        if(Physics.Raycast(ray, out hit, 1.25f, groundLayer))
+        if (Physics.Raycast(ray, out hit, 200, groundLayer))
         {
             enemyPosY = hit.point.y + enemy.radius - enemy.center.y;
-            if (first)
-            {
-                gameStartPos = new Vector3(transform.position.x, enemyPosY, transform.position.z);
-            }
-            transform.position = gameStartPos;
+            transform.position = new Vector3(startPos.x, enemyPosY, startPos.z);
+            transform.rotation = Quaternion.Euler(startRot);
             SetMoveSchedule(movePlan);
+            if(stateSet == false) { stateSet = true; }
             standby = true;
-        }
-        else
-        {
-            Debug.LogError(gameObject.name + "のアメフラシさん : 「地面から離れすぎてて怖いよぉ (>_<) 」");
-            standby = false;
         }
     }
 
@@ -83,30 +115,43 @@ public class EnemyController : MyAnimation
     private void EnemyMove(bool fixedUpdate)
     {
         float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
-        mode = PlayState.playState.gameMode;
-        Vector3 nowPos = new Vector3(transform.position.x, enemyPosY, transform.position.z);
+
+        if (stateSet) { mode = PlayState.playState.gameMode; }
 
         actionStop = mode != PlayState.GameMode.Play || standby == false;
 
-        if(actionStop == false)
+        inWater = stageWater != null && enemyPosY < stageWater.max;
+
+        if (actionStop == false)
         {
             int nextLocation;
             if (finishOneLoop)
             {
-                nextLocation = location - 1 < 0 ? type == moveType.Lap ? moveSchedule.Length - 1 : location + 1 : location - 1;
+                nextLocation = location - 1 < 0 ? type == EnemyMoveType.Lap ? moveSchedule.Length - 1 : location + 1 : location - 1;
             }
             else
             {
-                nextLocation = location + 1 >= moveSchedule.Length ? type == moveType.Lap ? 0 : location - 1 : location + 1;
+                nextLocation = location + 1 >= moveSchedule.Length ? type == EnemyMoveType.Lap ? 0 : location - 1 : location + 1;
             }
             Vector3 nextPos = moveSchedule[nextLocation];
-            Vector3 forward = (nextPos - nowPos).normalized;
+            Vector3 forward = (nextPos - transform.position).normalized;
 
+            // プレイヤーと接触しているかをチェック
             Ray ray = new Ray(new Vector3(transform.position.x, enemyPosY - enemy.radius * 2.0f, transform.position.z), Vector3.up);
-            bool playerHit = Physics.SphereCast(ray, (enemy.radius) * 2.0f, rayLength, playerLayer);
-            if (playerHit)
+            RaycastHit hit;
+            bool playerHit = false;
+            if (Physics.SphereCast(ray, (enemy.radius) * hitRange, out hit, rayLength, playerLayer))
             {
-                Debug.Log(gameObject.name + "のアメフラシさん : 「プレイヤーを見つけたよぉ ('ω')ノ 」");
+                playerHit = true;
+                if(player == null)
+                {
+                    player = hit.transform.gameObject.GetComponent<PlayerType2>();
+                }
+            }
+
+            if(player != null)
+            {
+                player.ContactEnemy = playerHit;
             }
 
             switch (step)
@@ -135,8 +180,9 @@ public class EnemyController : MyAnimation
                     {
                         float vec = Mathf.Abs(forward.x) >= Mathf.Abs(forward.z) ? forward.z / forward.x : forward.x / forward.z;
                         vec = 1.0f / Mathf.Sqrt(1.0f + vec * vec);
-                        transform.position += forward * enemySpeed * delta * vec;
-                        if (Vector3.Distance(nowPos, nextPos) < 0.1f)
+                        float speed = inWater ? enemyWaterSpeed : enemySpeed;
+                        transform.position += forward * speed * delta * vec;
+                        if (Vector3.Distance(transform.position, nextPos) < 0.1f)
                         {
                             stepEnd = true;
                         }
@@ -147,7 +193,7 @@ public class EnemyController : MyAnimation
                     if (finishOneLoop)
                     {
                         location--;
-                        if(type == moveType.Lap)
+                        if(type == EnemyMoveType.Lap)
                         {
                             if(location < 0) { location = moveSchedule.Length - 1; }
                         }
@@ -159,7 +205,7 @@ public class EnemyController : MyAnimation
                     else
                     {
                         location++;
-                        if (type == moveType.Lap)
+                        if (type == EnemyMoveType.Lap)
                         {
                             if (location >= moveSchedule.Length) { location = 0; }
                         }
@@ -176,6 +222,17 @@ public class EnemyController : MyAnimation
                 stepEnd = false;
                 step++;
                 time = 0;
+            }
+
+            // 足音の再生
+            if(enemyAnime != null)
+            {
+                animationTime += delta;
+                if(animationTime >= animationSpeed)
+                {
+                    animationTime = 0;
+                    SoundManager.soundManager.PlaySe3D("EnemyMove", transform.position,0.5f);
+                }
             }
         }
     }

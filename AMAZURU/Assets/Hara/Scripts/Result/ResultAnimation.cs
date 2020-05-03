@@ -116,20 +116,20 @@ public class ResultAnimation : MyAnimation
     /// <param name="num"></param>
     private void ButtonAction(int num)
     {
-        Scenemanager.SceneName name;
+        SceneLoadManager.SceneName name;
         switch (num)
         {
             case 0:
-                name = Scenemanager.SceneName.Title;
+                name = SceneLoadManager.SceneName.Title;
                 break;
             case 1:
-                name = Scenemanager.SceneName.Action;
+                name = SceneLoadManager.SceneName.Action;
                 break;
             default:
-                name = Scenemanager.SceneName.Title;
+                name = SceneLoadManager.SceneName.Title;
                 break;
         }
 
-        Scenemanager.Instance.LoadScene(name);
+        SceneLoadManager.Instance.LoadScene(name);
     }
 }

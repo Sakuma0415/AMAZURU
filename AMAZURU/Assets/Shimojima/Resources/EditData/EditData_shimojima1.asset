@@ -14,4 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageName: shimojima1
   stage: {fileID: 2074524325707851079, guid: 13227065ba82c3545bc8035871070765, type: 3}
+  viewStage: {fileID: 2074524325707851079, guid: 7c74b772b2cce5042a7d8b9e5dd293dc,
+    type: 3}
+  sData: {fileID: 11400000, guid: 57427d125685a5e4c915ab882fee384e, type: 2}
   gridCells: {x: 20, y: 20, z: 20}

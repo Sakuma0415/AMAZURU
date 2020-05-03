@@ -6,12 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Hara/Scenes/Title.unity
+    guid: 4901cbdf21dc248479aff4ec1d2ccc0e
+  - enabled: 1
     path: Assets/Scenes/Action.unity
     guid: cee8f6e80f60f4e4ea1c65b5dc300d15
   - enabled: 1
-    path: Assets/Shimojima/Scenes/Title.unity
+    path: Assets/Shimojima/Scenes/StageSlect.unity
     guid: 3e7da771fc73974449e83ff116d0aafd
-  - enabled: 1
-    path: Assets/Hara/Scenes/ResultTest.unity
-    guid: 06ec0dbd4da9cf344a8d6c17728e8422
   m_configObjects: {}

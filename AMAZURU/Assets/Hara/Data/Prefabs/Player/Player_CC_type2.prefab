@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2001958938084469648}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.8, y: 2.59, z: -12.58}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7795785586947176926}
@@ -47,7 +47,7 @@ CharacterController:
   m_Height: 1.5
   m_Radius: 0.2
   m_SlopeLimit: 60
-  m_StepOffset: 0.03
+  m_StepOffset: 0.05
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.8, z: 0}
@@ -67,10 +67,14 @@ MonoBehaviour:
   playerAnimator: {fileID: 2934536632129885332}
   hiddenWallPrefab: {fileID: 8378400810947322284, guid: 20f0eb19eff9d37448a5f53a6970d386,
     type: 3}
+  playerCamera: {fileID: 0}
+  stageWater: {fileID: 0}
+  mode: 4
+  stateSet: 1
   inputX: 0
   inputZ: 0
   playerSpeed: 4
-  playerCamera: {fileID: 0}
+  playerWaterSpeed: 2
   layerMask:
     serializedVersion: 2
     m_Bits: 1
