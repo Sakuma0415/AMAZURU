@@ -84,6 +84,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
     private IEnumerator Load()
     {
         StartCoroutine(Fade(2, FadeMode.OUT));
+        yield return new WaitForSeconds(2);
         AsyncOperation async = SceneManager.LoadSceneAsync(sceneName.ToString());
         Animator animator = anounceText.GetComponent<Animator>();
         async.allowSceneActivation = false;
