@@ -11,8 +11,9 @@ public class EnemyController : MyAnimation
     [SerializeField, Tooltip("水面のレイヤー")] private LayerMask waterLayer;
     [SerializeField, Tooltip("ステージの水オブジェクト")] private WaterHi stageWater = null;
     [SerializeField, Tooltip("Playerのスクリプト")] private PlayerType2 player = null;
-    [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Stop;
-    [SerializeField, Tooltip("PlayStateと同期させる")] private bool stateSet = true;
+    [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
+    private bool connectPlayState = false;
+    
 
     private enum EnemyMoveType
     {
@@ -81,6 +82,8 @@ public class EnemyController : MyAnimation
         standby = false;
         finishOneLoop = false;
 
+        connectPlayState = GetPlayState();
+
         // 敵のサイズを設定
         transform.localScale = Vector3.one * enemySize;
 
@@ -106,7 +109,6 @@ public class EnemyController : MyAnimation
             transform.position = new Vector3(startPos.x, enemyPosY, startPos.z);
             transform.rotation = Quaternion.Euler(startRot);
             SetMoveSchedule(movePlan);
-            if(stateSet == false) { stateSet = true; }
             standby = true;
         }
     }
@@ -119,7 +121,7 @@ public class EnemyController : MyAnimation
     {
         float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
 
-        if (stateSet) { mode = PlayState.playState.gameMode; }
+        if (connectPlayState) { mode = PlayState.playState.gameMode; }
 
         actionStop = mode != PlayState.GameMode.Play || standby == false;
 
@@ -258,6 +260,23 @@ public class EnemyController : MyAnimation
             {
                 moveSchedule[i] = transform.position;
             }
+        }
+    }
+
+    /// <summary>
+    /// PlayStateを取得できるかチェック
+    /// </summary>
+    /// <returns></returns>
+    private bool GetPlayState()
+    {
+        try
+        {
+            var state = PlayState.playState.gameMode;
+            return true;
+        }
+        catch (System.NullReferenceException)
+        {
+            return false;
         }
     }
 }

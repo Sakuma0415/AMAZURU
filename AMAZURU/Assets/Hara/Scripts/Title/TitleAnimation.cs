@@ -6,13 +6,12 @@ public class TitleAnimation : MyAnimation
 {
     [SerializeField, Header("アニメーションの対象オブジェクト")] private GameObject animationObj = null;
     [SerializeField, Header("アニメーション実行間隔"), Range(0, 3)] private float span = 1.0f;
-    [SerializeField, Tooltip("アニメーション管理フラグ")] private bool animationFlag = false;
-    public bool AnimationFlag { set { animationFlag = value; } }
+    [SerializeField, Header("拡大縮小値"), Range(0, 1)]private float sizeRange = 0.15f;
+    public bool AnimationFlag { set; private get; } = false;
 
     private Vector3 startSize = Vector3.zero;
     private Vector3 maxSize = Vector3.zero;
     private Vector3 minSize = Vector3.zero;
-    private float sizeRange = 0.15f;
     private float time = 0;
     private int step = 0;
     private bool stepEnd = false;
@@ -47,11 +46,11 @@ public class TitleAnimation : MyAnimation
     {
         if(animationObj == null) { return; }
 
-        if(animationFlag)
+        if(AnimationFlag)
         {
             animationObj.transform.localScale = startSize;
 
-            float duration = span / 12;
+            float duration = span / 8;
 
             switch (step)
             {

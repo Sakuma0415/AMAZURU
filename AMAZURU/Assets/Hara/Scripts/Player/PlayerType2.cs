@@ -10,8 +10,8 @@ public class PlayerType2 : MonoBehaviour
     [SerializeField, Tooltip("透明な壁")] private BoxCollider hiddenWallPrefab = null;
     [SerializeField, Tooltip("移動時の起点カメラ")] private Camera playerCamera = null;
     [SerializeField, Tooltip("ステージの水オブジェクト")] private WaterHi stageWater = null;
-    [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Stop;
-    [SerializeField, Tooltip("PlayStateと同期させる")] private bool stateSet = true;
+    [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
+    private bool connectPlayState = false;
 
     // コントローラーの入力
     [SerializeField, Tooltip("X入力")] private float inputX = 0;
@@ -100,7 +100,7 @@ public class PlayerType2 : MonoBehaviour
             }
         }
 
-        if(stateSet == false) { stateSet = true; }
+        connectPlayState = GetPlayState();
 
         if(playerAnimator != null) { animatorSpeed = playerAnimator.GetCurrentAnimatorStateInfo(0).speed; }
 
@@ -112,8 +112,8 @@ public class PlayerType2 : MonoBehaviour
     /// </summary>
     private void GetInputController()
     {
-        if (stateSet) { mode = PlayState.playState.gameMode; }
-        
+        if (connectPlayState) { mode = PlayState.playState.gameMode; }
+
         // キー入力取得
         inputX = mode == PlayState.GameMode.Play ? Input.GetAxis("Horizontal") : 0;
         inputZ = mode == PlayState.GameMode.Play ? Input.GetAxis("Vertical") : 0;
@@ -276,6 +276,22 @@ public class PlayerType2 : MonoBehaviour
                 // 透明な壁を無効化する
                 hiddenWalls[i].enabled = false;
             }
+        }
+    }
+
+    /// <summary>
+    /// PlayStateを取得できるかチェックする
+    /// </summary>
+    private bool GetPlayState()
+    {
+        try
+        {
+            var state = PlayState.playState.gameMode;
+            return true;
+        }
+        catch (System.NullReferenceException)
+        {
+            return false;
         }
     }
 }
