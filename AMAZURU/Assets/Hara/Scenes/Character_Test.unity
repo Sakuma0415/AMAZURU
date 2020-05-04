@@ -281,20 +281,10 @@ PrefabInstance:
       propertyPath: movePlan.Array.data[0].y
       value: 5
       objectReference: {fileID: 0}
-    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
-        type: 3}
-      propertyPath: enemySize
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1023837329241063398, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
       propertyPath: m_Name
       value: Enemy
-      objectReference: {fileID: 0}
-    - target: {fileID: 1023837329241063398, guid: 6c27c4d89783d964aa4cf90227582e86,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6c27c4d89783d964aa4cf90227582e86, type: 3}

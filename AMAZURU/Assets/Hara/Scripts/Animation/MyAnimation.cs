@@ -80,18 +80,15 @@ public class MyAnimation : MonoBehaviour
     /// 回転のアニメーション
     /// </summary>
     /// <returns></returns>
-    protected bool RotateAnimation(GameObject obj, Vector3 forward, Vector3 upwards, float time, bool local)
+    protected bool RotateAnimation(GameObject obj, Vector3 forward, float time, bool local)
     {
-        Quaternion rot = Quaternion.LookRotation(forward, upwards);
-        Quaternion rotSlerp = Quaternion.Slerp(_ = local ? obj.transform.localRotation : obj.transform.rotation, rot, time);
-        _ = local ? obj.transform.localRotation = rotSlerp : obj.transform.rotation = rotSlerp;
+        Quaternion from = local ? obj.transform.localRotation : obj.transform.rotation;
+        Quaternion to = Quaternion.LookRotation(forward);
+        Quaternion rotation = Quaternion.RotateTowards(from, to, time);
+        _ = local ? obj.transform.localRotation = rotation : obj.transform.rotation = rotation;
 
-        Vector3 absRot = new Vector3(Mathf.Abs(rot.x), Mathf.Abs(rot.y), Mathf.Abs(rot.z));
-        Vector3 objAbsRot = local ? new Vector3(Mathf.Abs(obj.transform.localRotation.x), Mathf.Abs(obj.transform.localRotation.y), Mathf.Abs(obj.transform.localRotation.z)) : new Vector3(Mathf.Abs(obj.transform.rotation.x), Mathf.Abs(obj.transform.rotation.y), Mathf.Abs(obj.transform.rotation.z));
-
-        if (Vector3.Distance(objAbsRot, absRot) < 0.001f)
+        if(from == to)
         {
-            _ = local ? obj.transform.localRotation = rot : obj.transform.rotation = rot;
             return true;
         }
         else

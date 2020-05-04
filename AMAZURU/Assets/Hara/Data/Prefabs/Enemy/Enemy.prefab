@@ -81,8 +81,9 @@ MonoBehaviour:
   lateTime: 0.5
   enemySpeed: 1.5
   enemyWaterSpeed: 3
-  rotatePower: 1.8
+  rotatePower: 125
   hitRange: 1.25
+  colliderSize: 0.45
   inspectorUpdate: 0
 --- !u!114 &1531546374721261317
 MonoBehaviour:

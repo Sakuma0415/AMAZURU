@@ -29,8 +29,9 @@ public class EnemyController : MyAnimation
     [SerializeField, Header("行動遅延時間"), Range(0, 3)] private float lateTime = 1.0f; 
     [SerializeField, Header("敵の移動速度"), Range(0, 5)] private float enemySpeed = 1.0f;
     [SerializeField, Header("敵の水中移動速度"), Range(0, 5)] private float enemyWaterSpeed = 1.0f;
-    [SerializeField, Header("回転力"), Range(0, 20)] private float rotatePower = 1.0f;
+    [SerializeField, Header("回転力")] private float rotatePower = 50f;
     [SerializeField, Header("当たり判定の広さ"), Range(1, 5)] private float hitRange = 1.0f;
+    [SerializeField, Header("敵のコライダーの大きさ"), Range(0.1f, 1.0f)] private float colliderSize = 0.5f;
 
     private Vector3[] moveSchedule = null;
     private int location = 0;
@@ -38,7 +39,6 @@ public class EnemyController : MyAnimation
     private int step = 0;
     private bool stepEnd = false;
     private bool actionStop = false;
-    private float enemyPosY = 0;
     private bool finishOneLoop = false;
     private bool standby = false;
     private bool inWater = false;
@@ -84,8 +84,9 @@ public class EnemyController : MyAnimation
 
         connectPlayState = GetPlayState();
 
-        // 敵のサイズを設定
-        transform.localScale = Vector3.one * enemySize;
+        // コライダーの設定
+        enemy.radius = colliderSize;
+        enemy.center = new Vector3(0, colliderSize, 0);
 
         Ray ray = new Ray(new Vector3(startPos.x, startPos.y + enemy.center.y, startPos.z), Vector3.down);
         RaycastHit hit;
@@ -102,13 +103,18 @@ public class EnemyController : MyAnimation
         // アニメーションの速度を取得
         if (enemyAnime != null) { animationSpeed = enemyAnime.GetCurrentAnimatorStateInfo(0).speed; }
 
-        // 床の高さを取得
+        // 床の位置を取得
         if (Physics.Raycast(ray, out hit, 200, groundLayer))
         {
-            enemyPosY = hit.point.y + enemy.radius - enemy.center.y;
-            transform.position = new Vector3(startPos.x, enemyPosY, startPos.z);
+            // 敵の開始時の位置を設定
+            transform.position = new Vector3(startPos.x, hit.point.y, startPos.z);
+            // 敵の開始時の向きを設定
             transform.rotation = Quaternion.Euler(startRot);
+            // 敵の開始時のサイズを設定
+            transform.localScale = Vector3.one * enemySize;
+            // 行動計画を設定
             SetMoveSchedule(movePlan);
+            // 準備完了フラグ
             standby = true;
         }
     }
@@ -125,7 +131,7 @@ public class EnemyController : MyAnimation
 
         actionStop = mode != PlayState.GameMode.Play || standby == false;
 
-        inWater = stageWater != null && enemyPosY < stageWater.max;
+        inWater = stageWater != null && transform.position.y < stageWater.max;
 
         if (actionStop == false)
         {
@@ -142,10 +148,9 @@ public class EnemyController : MyAnimation
             Vector3 forward = (nextPos - transform.position).normalized;
 
             // プレイヤーと接触しているかをチェック
-            Ray ray = new Ray(new Vector3(transform.position.x, enemyPosY - enemy.radius * enemySize * 2.0f, transform.position.z), Vector3.up);
             RaycastHit hit;
             bool playerHit = false;
-            if (Physics.BoxCast(new Vector3(transform.position.x, enemyPosY - enemy.radius * enemySize * 2.0f, transform.position.z), Vector3.one * enemy.radius * hitRange * enemySize, Vector3.up, out hit, Quaternion.Euler(Vector3.zero), enemySize, playerLayer))
+            if (Physics.BoxCast(new Vector3(transform.position.x, transform.position.y - enemy.radius * enemySize, transform.position.z), new Vector3(enemy.radius * enemySize * hitRange, enemy.radius * enemySize, enemy.radius * enemySize * hitRange), Vector3.up, out hit, Quaternion.Euler(Vector3.zero), 1.0f, playerLayer))
             {
                 playerHit = true;
                 if(player == null)
@@ -174,7 +179,7 @@ public class EnemyController : MyAnimation
                     time += delta;
                     break;
                 case 2:
-                    stepEnd = RotateAnimation(transform.gameObject, forward, Vector3.up, rotatePower * delta, false);
+                    stepEnd = RotateAnimation(transform.gameObject, forward, rotatePower * delta, false);
                     break;
                 case 3:
                     stepEnd = Wait(time, lateTime);
