@@ -9,7 +9,6 @@ public class EnemyController : MyAnimation
     [SerializeField, Tooltip("プレイヤーのレイヤー")] private LayerMask playerLayer;
     [SerializeField, Tooltip("地面のレイヤー")] private LayerMask groundLayer;
     [SerializeField, Tooltip("水面のレイヤー")] private LayerMask waterLayer;
-    [SerializeField, Tooltip("Rayの長さ"), Range(0, 5)] private float rayLength = 1.0f;
     [SerializeField, Tooltip("ステージの水オブジェクト")] private WaterHi stageWater = null;
     [SerializeField, Tooltip("Playerのスクリプト")] private PlayerType2 player = null;
     [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Stop;
@@ -23,6 +22,7 @@ public class EnemyController : MyAnimation
 
     [SerializeField, Header("ゲーム開始時の座標")] private Vector3 startPos = Vector3.zero;
     [SerializeField, Header("ゲーム開始時の向き")] private Vector3 startRot = Vector3.zero;
+    [SerializeField, Header("敵のサイズ"), Range(1.0f, 5.0f)] private float enemySize = 1.0f;
     [SerializeField, Header("行動計画")] private Vector2[] movePlan = null;
     [SerializeField, Header("行動パターン")] private EnemyMoveType type = EnemyMoveType.Lap;
     [SerializeField, Header("行動遅延時間"), Range(0, 3)] private float lateTime = 1.0f; 
@@ -81,7 +81,10 @@ public class EnemyController : MyAnimation
         standby = false;
         finishOneLoop = false;
 
-        Ray ray = new Ray(new Vector3(startPos.x, startPos.y + enemy.radius - enemy.center.y, startPos.z), Vector3.down);
+        // 敵のサイズを設定
+        transform.localScale = Vector3.one * enemySize;
+
+        Ray ray = new Ray(new Vector3(startPos.x, startPos.y + enemy.center.y, startPos.z), Vector3.down);
         RaycastHit hit;
 
         // 水面の取得
@@ -137,10 +140,10 @@ public class EnemyController : MyAnimation
             Vector3 forward = (nextPos - transform.position).normalized;
 
             // プレイヤーと接触しているかをチェック
-            Ray ray = new Ray(new Vector3(transform.position.x, enemyPosY - enemy.radius * 2.0f, transform.position.z), Vector3.up);
+            Ray ray = new Ray(new Vector3(transform.position.x, enemyPosY - enemy.radius * enemySize * 2.0f, transform.position.z), Vector3.up);
             RaycastHit hit;
             bool playerHit = false;
-            if (Physics.SphereCast(ray, (enemy.radius) * hitRange, out hit, rayLength, playerLayer))
+            if (Physics.BoxCast(new Vector3(transform.position.x, enemyPosY - enemy.radius * enemySize * 2.0f, transform.position.z), Vector3.one * enemy.radius * hitRange * enemySize, Vector3.up, out hit, Quaternion.Euler(Vector3.zero), enemySize, playerLayer))
             {
                 playerHit = true;
                 if(player == null)

@@ -273,17 +273,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
+      propertyPath: startPos.z
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
       propertyPath: movePlan.Array.data[0].y
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
-      propertyPath: stateSet
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
-        type: 3}
-      propertyPath: mode
+      propertyPath: enemySize
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1023837329241063398, guid: 6c27c4d89783d964aa4cf90227582e86,
@@ -322,7 +322,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb063defb8992e24b8f33185fd5e4df3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  copyFlg: 0
   gameMode: 0
   rainTime: 0
 --- !u!4 &419651049
