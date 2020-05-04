@@ -131,7 +131,7 @@ public class EnemyController : MyAnimation
 
         actionStop = mode != PlayState.GameMode.Play || standby == false;
 
-        inWater = stageWater != null && transform.position.y < stageWater.max;
+        inWater = stageWater != null && transform.position.y + enemy.radius < stageWater.max;
 
         if (actionStop == false)
         {
