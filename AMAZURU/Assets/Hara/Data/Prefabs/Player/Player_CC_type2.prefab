@@ -45,12 +45,12 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.5
-  m_Radius: 0.2
+  m_Radius: 0.25
   m_SlopeLimit: 60
   m_StepOffset: 0.05
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0
-  m_Center: {x: 0, y: 0.8, z: 0}
+  m_Center: {x: 0, y: 0.75, z: 0}
 --- !u!114 &7510005379315772952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,17 +69,15 @@ MonoBehaviour:
     type: 3}
   playerCamera: {fileID: 0}
   stageWater: {fileID: 0}
-  mode: 1
-  inputX: 0
-  inputZ: 0
-  playerSpeed: 4
-  playerWaterSpeed: 2
   layerMask:
     serializedVersion: 2
     m_Bits: 1
-  waterLayerMask:
+  enemyLayerMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 8192
+  mode: 1
+  playerSpeed: 4
+  playerWaterSpeed: 2
   rayLength: 1.22
   gravity: 3
   wallSize: 1.5

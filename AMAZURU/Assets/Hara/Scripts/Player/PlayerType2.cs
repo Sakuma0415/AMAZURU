@@ -8,29 +8,30 @@ public class PlayerType2 : MonoBehaviour
     [SerializeField, Tooltip("PlayerのCharacterController")] private CharacterController character = null;
     [SerializeField, Tooltip("PlayerのAnimator")] private Animator playerAnimator = null;
     [SerializeField, Tooltip("透明な壁")] private BoxCollider hiddenWallPrefab = null;
-    [SerializeField, Tooltip("移動時の起点カメラ")] private Camera playerCamera = null;
-    [SerializeField, Tooltip("ステージの水オブジェクト")] private WaterHi stageWater = null;
+    [SerializeField, Tooltip("地面のLayerMask")] private LayerMask layerMask;
     [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
     private bool connectPlayState = false;
 
     // コントローラーの入力
-    [SerializeField, Tooltip("X入力")] private float inputX = 0;
-    [SerializeField, Tooltip("Z入力")] private float inputZ = 0;
+    private float inputX = 0;
+    private float inputZ = 0;
+    private bool dontInput = false; // 操作入力を無効にするフラグ
 
-    [SerializeField, Header("プレイヤーの移動速度"), Range(0, 10)] private float playerSpeed = 0;
-    [SerializeField, Header("プレイヤーの水中移動速度"), Range(0, 10)] private float playerWaterSpeed = 0;
-    [SerializeField, Header("地面のLayerMask")] private LayerMask layerMask;
-    [SerializeField, Header("水面のLayerMask")] private LayerMask waterLayerMask;
+    [SerializeField, Header("プレイヤーの移動速度"), Range(0, 10)] private float playerSpeed = 5;
+    [SerializeField, Header("プレイヤーの水中移動速度"), Range(0, 10)] private float playerWaterSpeed = 2.5f;
     [SerializeField, Header("Rayの長さ"), Range(0, 10)] private float rayLength = 0.5f;
     [SerializeField, Header("重力値"), Range(0, 10)] private float gravity = 10.0f;
     [SerializeField, Header("透明な壁のサイズ"), Range(0.01f, 5.0f)] private float wallSize = 1.0f;
 
-    public Camera PlayerCamera { set { playerCamera = value; } }
+    /// <summary>
+    /// プレイヤーカメラ
+    /// </summary>
+    public Camera PlayerCamera { set; private get; } = null;
 
     /// <summary>
-    /// Stageの水オブジェクトをセットする
+    /// Stageの水オブジェクト
     /// </summary>
-    public WaterHi StageWater { set { stageWater = value; } }
+    public WaterHi StageWater { set; private get; } = null;
 
     // プレイヤーの位置(高さ)
     public float PlayerPositionY { private set; get; } = 0;
@@ -50,7 +51,7 @@ public class PlayerType2 : MonoBehaviour
     /// <summary>
     /// 敵と接触した時のフラグ
     /// </summary>
-    public bool ContactEnemy { set; get; } = false;
+    public bool ContactEnemy { private set; get; } = false;
 
     /// <summary>
     /// 一方通行の崖を検知する用のフラグ
@@ -88,17 +89,7 @@ public class PlayerType2 : MonoBehaviour
     /// </summary>
     public void PlayerInit()
     {
-        if (playerCamera == null) { playerCamera = Camera.main; }
-
-        if (stageWater == null)
-        {
-            Ray ray = new Ray(transform.position, Vector3.down);
-            RaycastHit hit;
-            if(Physics.Raycast(ray, out hit, 200, waterLayerMask))
-            {
-                stageWater = hit.transform.gameObject.GetComponent<WaterHi>();
-            }
-        }
+        if (PlayerCamera == null) { PlayerCamera = Camera.main; }
 
         connectPlayState = GetPlayState();
 
@@ -139,8 +130,8 @@ public class PlayerType2 : MonoBehaviour
         {
             float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
 
-            inWater = stageWater != null && PlayerPositionY < stageWater.max && mode == PlayState.GameMode.Play;
-            UnderWater = stageWater != null && PlayerPositionY + character.height * 0.5f < stageWater.max && mode == PlayState.GameMode.Play;
+            inWater = StageWater != null && PlayerPositionY < StageWater.max && mode == PlayState.GameMode.Play;
+            UnderWater = StageWater != null && PlayerPositionY + character.height * 0.5f < StageWater.max && mode == PlayState.GameMode.Play;
 
             // 移動方向
             Vector3 moveDirection = Vector3.zero;
@@ -150,15 +141,15 @@ public class PlayerType2 : MonoBehaviour
 
             // 入力の最低許容値
             float inputMin = 0.1f;
-            input = Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin;
+            input = (Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin) && dontInput == false;
 
             if (input)
             {
                 // カメラの向いている方向を取得
-                Vector3 cameraForward = Vector3.Scale(playerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+                Vector3 cameraForward = Vector3.Scale(PlayerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
 
                 // プレイヤーカメラ起点の入力方向
-                Vector3 direction = cameraForward * inputZ + playerCamera.transform.right * inputX;
+                Vector3 direction = cameraForward * inputZ + PlayerCamera.transform.right * inputX;
 
                 // 入力方向を向く処理
                 Quaternion rot = Quaternion.LookRotation(direction, Vector3.up);
@@ -292,6 +283,24 @@ public class PlayerType2 : MonoBehaviour
         catch (System.NullReferenceException)
         {
             return false;
+        }
+    }
+
+    /// <summary>
+    /// 敵と接触しているときに呼び出す処理
+    /// </summary>
+    /// <param name="flag">条件式</param>
+    public void HitEnemy(bool flag)
+    {
+        if (flag)
+        {
+            // ゲームオーバー処理
+            ContactEnemy = true;
+        }
+        else
+        {
+            // 敵と接触中は操作ができないようにする
+            dontInput = true;
         }
     }
 }
