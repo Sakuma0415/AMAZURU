@@ -219,34 +219,15 @@ public class PlayerType2 : MonoBehaviour
     {
         for (int i = 0; i < hiddenWalls.Length; i++)
         {
-            bool go = true;
-
             // 床があるかチェック
-            for(int j = 0; j < 3; j++)
-            {
-                Ray ground;
-                if(i % 2 == 0)
-                {
-                    ground = new Ray(new Vector3(transform.position.x - character.radius / 10.0f + character.radius / 10.0f * j, PlayerPositionY, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
-                }
-                else
-                {
-                    ground = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z - character.radius / 10.0f + character.radius / 10.0f * j) + rayPosition[i] * character.radius, Vector3.down);
-                }
-
-                // Rayを飛ばして地面があるかチェック
-                if(Physics.Raycast(ground, rayLength, layerMask) == false)
-                {
-                    go = false;
-                    break;
-                }
-            }
+            Ray ground = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
+            bool go = Physics.Raycast(ground, rayLength, layerMask);
             
             // 床が無ければ透明な壁を有効化する
             if (go == false && hiddenWalls[i].enabled == false)
             {
                 hiddenWalls[i].size = Vector3.one * wallSize;
-                hiddenWalls[i].transform.position = (new Vector3(transform.position.x, PlayerPositionY, transform.position.z) + rayPosition[i] * character.radius) + rayPosition[i] * (wallSize * 0.5f + 0.05f);
+                hiddenWalls[i].transform.position = ground.origin + rayPosition[i] * wallSize * 0.5001f;
                 hiddenWalls[i].enabled = true;
             }
             
