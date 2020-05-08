@@ -72,8 +72,7 @@ MonoBehaviour:
     m_Bits: 256
   stageWater: {fileID: 0}
   player: {fileID: 0}
-  mode: 4
-  stateSet: 1
+  mode: 1
   startPos: {x: 0, y: 0, z: 0}
   startRot: {x: 0, y: 0, z: 0}
   enemySize: 1
@@ -82,8 +81,9 @@ MonoBehaviour:
   lateTime: 0.5
   enemySpeed: 1.5
   enemyWaterSpeed: 3
-  rotatePower: 5
+  rotatePower: 125
   hitRange: 1.25
+  colliderSize: 0.45
   inspectorUpdate: 0
 --- !u!114 &1531546374721261317
 MonoBehaviour:
