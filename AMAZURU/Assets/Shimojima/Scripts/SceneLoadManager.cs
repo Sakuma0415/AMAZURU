@@ -24,6 +24,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
     }
 
     private bool IsLoadScene = false;
+    public GameObject loadImage;
     public Image fadeImage;
     [SerializeField]
     private Shader shader;
@@ -86,6 +87,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
         StartCoroutine(Fade(2, FadeMode.OUT));
         yield return new WaitForSeconds(2);
         AsyncOperation async = SceneManager.LoadSceneAsync(sceneName.ToString());
+        loadImage.SetActive(true);
         Animator animator = anounceText.GetComponent<Animator>();
         async.allowSceneActivation = false;
         bool DoOnce = false;
@@ -98,6 +100,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
                 if (Input.GetButtonDown("Circle") && fadeEnd)
                 {
                     async.allowSceneActivation = true;
+                    loadImage.SetActive(false);
                     animator.ResetTrigger("FadeIn");
                     animator.SetTrigger("FadeOut");
                 }
@@ -107,6 +110,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
                 if (async.progress >= 0.9f && fadeEnd)
                 {
                     async.allowSceneActivation = true;
+                    loadImage.SetActive(false);
                 }
             }
             yield return null;
