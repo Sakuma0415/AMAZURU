@@ -18,6 +18,9 @@ public class SoundManager : MonoBehaviour
     //2DのBGMを再生させるオーディオ
     [SerializeField]
     AudioSource bgmAudioSource;
+    //2DのBGMを再生させるオーディオ
+    [SerializeField]
+    AudioSource bgmAudioSource2;
     //3Dサウンドの再生地点を記憶するオブジェの親
     [SerializeField]
     Transform audioParent;
@@ -236,4 +239,23 @@ public class SoundManager : MonoBehaviour
         clipList3Ds[listnum].audioSource.PlayOneShot(Clip);
         clipList3Ds[listnum].audioSource.volume= volume;
     }
+
+
+    //裏のBGM停止
+    public void StopBgmBAG()
+    {
+        bgmAudioSource2.Stop();
+        bgmAudioSource2.clip = null;
+        
+    }
+
+    //裏のBGM再生
+    public void PlayBgmBAG(string bgmName,float volume)
+    {
+        string ResName = "Sounds/BGM/" + bgmName;
+        bgmAudioSource2.clip = Resources.Load(ResName) as AudioClip;
+        bgmAudioSource2.volume = volume;
+        bgmAudioSource2.Play();
+    }
+
 }

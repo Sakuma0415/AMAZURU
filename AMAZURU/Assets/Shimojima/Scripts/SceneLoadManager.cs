@@ -84,10 +84,10 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
     /// <returns></returns>
     private IEnumerator Load()
     {
-        StartCoroutine(Fade(2, FadeMode.OUT));
-        yield return new WaitForSeconds(2);
+        StartCoroutine(Fade(1, FadeMode.OUT));
+        yield return new WaitForSeconds(1);
         AsyncOperation async = SceneManager.LoadSceneAsync(sceneName.ToString());
-        loadImage.SetActive(true);
+        loadImage.SetActive(DoKeyPress);
         Animator animator = anounceText.GetComponent<Animator>();
         async.allowSceneActivation = false;
         bool DoOnce = false;
@@ -100,6 +100,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
                 if (Input.GetButtonDown("Circle") && fadeEnd)
                 {
                     async.allowSceneActivation = true;
+                    loadImage.GetComponent<LoadImage>().WaveReSet();
                     loadImage.SetActive(false);
                     animator.ResetTrigger("FadeIn");
                     animator.SetTrigger("FadeOut");
@@ -110,7 +111,6 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
                 if (async.progress >= 0.9f && fadeEnd)
                 {
                     async.allowSceneActivation = true;
-                    loadImage.SetActive(false);
                 }
             }
             yield return null;
@@ -131,7 +131,6 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
     /// <returns></returns>
     private IEnumerator Fade(float sec, FadeMode fadeMode)
     {
-        float speed = 1 / (sec * 60);
         alphaCut = fadeImage.material.GetFloat("_Alpha");
         fadeEnd = false;
 
@@ -139,14 +138,14 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
         {
             if (fadeMode == FadeMode.IN)
             {
+                alphaCut -= Time.deltaTime / sec; ;
                 fadeImage.material.SetFloat("_Alpha", alphaCut);
-                alphaCut -= speed;
                 if(alphaCut <= 0) { fadeEnd = true; }
             }
             else if(fadeMode == FadeMode.OUT)
             {
+                alphaCut += Time.deltaTime / sec; ;
                 fadeImage.material.SetFloat("_Alpha", alphaCut);
-                alphaCut += speed;
                 if (alphaCut >= 1) { fadeEnd = true; }
             }
 

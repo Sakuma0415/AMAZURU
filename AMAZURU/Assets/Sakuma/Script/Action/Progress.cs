@@ -9,7 +9,7 @@ public class Progress : MonoBehaviour
 {
     //Instance
     static public Progress progress;
-    //鍵の取得のフラグ(現在未使用)
+    //水中呼吸アイテム取得のフラグ
     public bool key;
     //Clear時に呼び出すresult
     [SerializeField]
@@ -33,7 +33,6 @@ public class Progress : MonoBehaviour
         //ポーズ画面の開閉
         if (Input.GetButtonDown("Option"))
         {
-            Debug.Log(23);
             if (PlayState.playState.gameMode == PlayState.GameMode.Play)
             {
                 resultControl.GamePause(true);
