@@ -223,7 +223,7 @@ public class ResultControl : MyAnimation
 
         bool end;
         float span = 1.0f;
-        float input = Input.GetAxis("Vertical3");
+        float input = Mathf.Abs(Input.GetAxis("Vertical")) > 0.1f ? Input.GetAxis("Vertical") : Input.GetAxis("Vertical3");
         int key = input > 0.1f ? -1 : input < -0.1f ? 1 : 0;
 
         // 選択状態のボタンのアニメーションを実行する
