@@ -1101,7 +1101,8 @@ MonoBehaviour:
   sphereCollider: {fileID: 721732559}
   CameraColFlg: 1
   LookHiSet: 0.5
-  stickSpead: 45
+  stickSpeadS: 40
+  stickSpeadP: 100
   CameraDisS: 20
   CameraDisP: 8
   lookPos: {x: 4, y: 4, z: 4}
@@ -1135,6 +1136,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   set: 0
   maskObj: {fileID: 956267283}
+  X: 0
+  Y: 0
 --- !u!114 &721732561
 MonoBehaviour:
   m_ObjectHideFlags: 0
