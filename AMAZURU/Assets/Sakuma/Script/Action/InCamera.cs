@@ -19,12 +19,17 @@ public class InCamera : MonoBehaviour
     //水中でかけるフィルターのオブジェ
     [SerializeField]
     GameObject maskObj;
-    
+
+    [SerializeField]
+    float X, Y;
 
     private void FixedUpdate()
     {
         //マスク設定
         maskObj.SetActive(set);
+
+        X = Input.GetAxis("Horizontal3");
+        Y = Input.GetAxis("Vertical3");
     }
 
     //水と接触時

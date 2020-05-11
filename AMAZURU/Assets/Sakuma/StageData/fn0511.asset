@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageName: fn0511
   stageSize: {x: 10, y: 10, z: 10}
-  startPos: {x: 1, y: 10, z: 1}
+  startPos: {x: 1, y: 4, z: 1}
   waterStep: 1
   stagePrefab: {fileID: 3609791574993155963, guid: e489a9a0ca17af546a6cde81a988ffa2,
     type: 3}
   AmehurashiQuantity: 6
   startAngle: 270
   CameraDisS: 18
-  CameraDisP: 8
+  CameraDisP: 5

@@ -98,13 +98,14 @@ public class Select : MonoBehaviour
     void Update()
     {
         float h = Input.GetAxis("Horizontal");
-        if (h < 0)
+        float h2 = Input.GetAxis("Horizontal3");
+        if (h < 0||h2<0)
         {
             if (isRotation) { return; }
             selection = Selection.Forwerd;
             isRotation = true;
         }
-        else if (h > 0)
+        else if (h > 0 || h2 > 0)
         {
             if (isRotation) { return; }
             selection = Selection.FallBack;

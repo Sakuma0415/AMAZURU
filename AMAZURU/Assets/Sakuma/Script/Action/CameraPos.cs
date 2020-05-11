@@ -30,7 +30,10 @@ public class CameraPos : MonoBehaviour
     float LookHiSet = 0;
     //カメラ捜査の速度
     [SerializeField]
-    float stickSpead = 0;
+    float stickSpeadS = 0;
+    //カメラ捜査の速度
+    [SerializeField]
+    float stickSpeadP = 0;
 
     [Header("以下変更不可")]
     //ステージ注視時のカメラ、ステージ間の距離
@@ -87,6 +90,8 @@ public class CameraPos : MonoBehaviour
     bool outflg = false;
     //アメフラシ起動時に移動する角度
     float lotAngle = 0;
+    //開始までの時間
+    float startTime = 0;
 
     void Start()
     {
@@ -95,6 +100,7 @@ public class CameraPos : MonoBehaviour
         XZangle = fAngle;
         CameraDis =lookMode ? CameraDisP: CameraDisS;
         MouseCheck = true;
+        startTime = 0;
     }
 
     private void LateUpdate()
@@ -158,11 +164,12 @@ public class CameraPos : MonoBehaviour
         //ゲーム開始時の定点カメラの特殊挙動時のステータス更新
         if (startCameraFlg)
         {
+            startTime += Time.deltaTime;
             lookObj = lookMode ? PlayerTransform.position+new Vector3 (0,LookHiSet,0)  : lookPos;
             XZangle += Time.deltaTime*3;
 
             //通常のカメラ処理に戻る
-            if (Input.GetButtonDown("Circle"))
+            if (Input.GetButtonDown("Circle")&& startTime>1)
             {
                 startCameraAngleResetBf = XZangle;
                 startCameraFlg = false;
@@ -200,11 +207,11 @@ public class CameraPos : MonoBehaviour
                 {
 
                     //マウスの移動情報を角度の変更量に変換
-                    float mouse_x_delta = Mathf.Abs(Input.GetAxis("Horizontal2"))<0.1f?0: Input.GetAxis("Horizontal2") * stickSpead*Time.deltaTime ;
-                    float mouse_y_delta = Mathf.Abs( Input.GetAxis("Vertical2")) < 0.1f ? 0 : Input.GetAxis("Vertical2") * stickSpead * Time.deltaTime;
+                    float mouse_x_delta = Mathf.Abs(Input.GetAxis("Horizontal2"))<0.1f?0: Input.GetAxis("Horizontal2") * (lookMode?stickSpeadP: stickSpeadS) * Time.deltaTime ;
+                    float mouse_y_delta = Mathf.Abs( Input.GetAxis("Vertical2")) < 0.1f ? 0 : Input.GetAxis("Vertical2") * (lookMode ? stickSpeadP : stickSpeadS) * Time.deltaTime;
 
-                    XZangle -= mouse_x_delta * (lookMode ? CameraDisS : CameraDisP) / 10;
-                    Yangle -= mouse_y_delta * (lookMode ? CameraDisS : CameraDisP) / 10;
+                    XZangle -= mouse_x_delta ;
+                    Yangle -= mouse_y_delta ;
 
                     if (Yangle > 90)
                     {

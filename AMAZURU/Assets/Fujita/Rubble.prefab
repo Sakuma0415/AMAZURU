@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3405917856499528359}
   - component: {fileID: 3494534095831464573}
   m_Layer: 15
-  m_Name: rock01_Red_patturn03
+  m_Name: Rubble
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,8 +29,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000011198625306}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9.902689, y: 2.7705536, z: -2.2187817}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -98,7 +98,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 256
-  rb: {fileID: 0}
+  rb: {fileID: 3494534095831464573}
   groundLayer:
     serializedVersion: 2
     m_Bits: 1
@@ -114,8 +114,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: -0.001, z: 0}
+  m_Size: {x: 2, y: 2, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &3494534095831464573
 Rigidbody:
   m_ObjectHideFlags: 0
