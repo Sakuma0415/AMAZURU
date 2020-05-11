@@ -30,7 +30,10 @@ public class CameraPos : MonoBehaviour
     float LookHiSet = 0;
     //カメラ捜査の速度
     [SerializeField]
-    float stickSpead = 0;
+    float stickSpeadS = 0;
+    //カメラ捜査の速度
+    [SerializeField]
+    float stickSpeadP = 0;
 
     [Header("以下変更不可")]
     //ステージ注視時のカメラ、ステージ間の距離
@@ -204,8 +207,8 @@ public class CameraPos : MonoBehaviour
                 {
 
                     //マウスの移動情報を角度の変更量に変換
-                    float mouse_x_delta = Mathf.Abs(Input.GetAxis("Horizontal2"))<0.1f?0: Input.GetAxis("Horizontal2") * stickSpead*Time.deltaTime ;
-                    float mouse_y_delta = Mathf.Abs( Input.GetAxis("Vertical2")) < 0.1f ? 0 : Input.GetAxis("Vertical2") * stickSpead * Time.deltaTime;
+                    float mouse_x_delta = Mathf.Abs(Input.GetAxis("Horizontal2"))<0.1f?0: Input.GetAxis("Horizontal2") * (lookMode?stickSpeadP: stickSpeadS) * Time.deltaTime ;
+                    float mouse_y_delta = Mathf.Abs( Input.GetAxis("Vertical2")) < 0.1f ? 0 : Input.GetAxis("Vertical2") * (lookMode ? stickSpeadP : stickSpeadS) * Time.deltaTime;
 
                     XZangle -= mouse_x_delta ;
                     Yangle -= mouse_y_delta ;
