@@ -600,10 +600,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8171e0a1c9b6ed44daf6691cb4bed112, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  max: 0.9
   material:
   - {fileID: 2100000, guid: 05d0114af8d00be46ac8fac2c97c5dc7, type: 2}
+  - {fileID: 2100000, guid: daeee010d1562bb4b9997a475c0c5544, type: 2}
+  - {fileID: 2100000, guid: 15d27b21da5aced468085ac7c23b2d83, type: 2}
+  - {fileID: 2100000, guid: 806f0a47d40ed6345a2964996de6e948, type: 2}
+  - {fileID: 2100000, guid: 52d3ee5a47080c5439d30f136e712b1d, type: 2}
+  - {fileID: 2100000, guid: c00ea0e8e57d7644a9037e8dfd4895eb, type: 2}
   anmeSpead: 1.5
+  max: 0.9
 --- !u!65 &7580068451283461541
 BoxCollider:
   m_ObjectHideFlags: 0
