@@ -9076,7 +9076,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 256
-  rb: {fileID: 0}
+  rb: {fileID: 4208203823239189136}
   groundLayer:
     serializedVersion: 2
     m_Bits: 1
@@ -9092,8 +9092,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: -0.001, z: 0}
+  m_Size: {x: 2, y: 2, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &4208203823239189136
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -27220,7 +27220,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 256
-  rb: {fileID: 0}
+  rb: {fileID: 4968770410240502172}
   groundLayer:
     serializedVersion: 2
     m_Bits: 1
@@ -27236,8 +27236,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: -0.001, z: 0}
+  m_Size: {x: 2, y: 2, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &4968770410240502172
 Rigidbody:
   m_ObjectHideFlags: 0

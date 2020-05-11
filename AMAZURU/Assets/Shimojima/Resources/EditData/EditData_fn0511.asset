@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageName: fn0511
   stage: {fileID: 3609791574993155963, guid: e489a9a0ca17af546a6cde81a988ffa2, type: 3}
-  viewStage: {fileID: 0}
-  sData: {fileID: 0}
+  viewStage: {fileID: 3609791574993155963, guid: afcf256485739ba4895dfdf0de34c398,
+    type: 3}
+  sData: {fileID: 11400000, guid: 36cc5f267b25be14e87764b41ff0ae31, type: 2}
   gridCells: {x: 10, y: 10, z: 10}
