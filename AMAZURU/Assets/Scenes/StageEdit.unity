@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -646,6 +646,7 @@ MonoBehaviour:
   - {fileID: 4067256263388384004, guid: 257e775b62c6f6a4c88eceaf61d5f42b, type: 3}
   - {fileID: 3734858541888141026, guid: 62879e11aee5fb04a8aec3189b61fc6a, type: 3}
   - {fileID: 7238556061166013206, guid: 174c7492c20317b49b2c5f0f7742e004, type: 3}
+  - {fileID: 1000011198625306, guid: dd38a076bec4bb94bae903e9b9a8b49c, type: 3}
   floorRefObj:
   - {fileID: 3092175833138153174, guid: 44014bb8a26e8f8408e69a36811db990, type: 3}
   - {fileID: 3092175833138153174, guid: 31688e84e944a744a941e33fc2faf553, type: 3}
