@@ -297,7 +297,10 @@ public class ResultControl : MyAnimation
             }
             else
             {
-                ButtonAction(selectButtonNum);
+                if (!SceneLoadManager.Instance.SceneLoadFlg)
+                {
+                    ButtonAction(selectButtonNum);
+                }
             }
         }
     }

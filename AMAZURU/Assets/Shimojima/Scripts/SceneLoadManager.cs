@@ -75,7 +75,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
         DoKeyPress = keyPress;
         StartCoroutine("Load");
         IsLoadScene = true;
-        Instance.SceneLoadFlg = true;
+        SceneLoadFlg = true;
     }
 
     /// <summary>
@@ -153,7 +153,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
 
             yield return null;
         }
-        if (fadeMode == FadeMode.IN) { Instance.SceneLoadFlg = false; }
+        if (fadeMode == FadeMode.IN) { SceneLoadFlg = false; }
         yield return null;
     }
 }
