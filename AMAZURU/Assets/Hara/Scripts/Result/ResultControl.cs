@@ -3,10 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum CameraSpeed
+{
+    Slow,
+    Nomal,
+    Quick
+}
+
 public class ResultControl : MyAnimation
 {
     [SerializeField, Tooltip("項目ボタン")] private GameObject[] menuButton = null;
+    [SerializeField, Tooltip("カメラ感度設定ボタン")] private GameObject[] cameraOptionButton = null;
     [SerializeField, Tooltip("テキストオブジェクト")] private Text textObject = null;
+    [SerializeField, Tooltip("カメラ感度設定ウィンドウ")] private GameObject cameraOptionWindow = null;
+    [SerializeField, Tooltip("カメラ感度の現在設定")] private Text nowSettingText = null;
 
     [SerializeField, Header("アニメーション実行間隔"), Range(0, 3)] private float span = 1.0f;
 
@@ -17,6 +27,15 @@ public class ResultControl : MyAnimation
     private Coroutine coroutine = null;
     private bool selectMenu = false;
     private int selectButtonNum = 0;
+    private GameObject[] animationObject = null;
+
+    private int minButtonLength = 0;
+    private bool actionFlag = false;
+
+    /// <summary>
+    /// カメラの速さの設定を取得
+    /// </summary>
+    public CameraSpeed SpeedType { set; get; } = CameraSpeed.Nomal;
 
     // Start is called before the first frame update
     void Start()
@@ -35,15 +54,17 @@ public class ResultControl : MyAnimation
     private void ResultInit()
     {
         // オブジェクトを非表示
-        HiddenObject();
+        HiddenObject(false);
+        Option(false);
     }
 
     /// <summary>
     /// オブジェクトを非表示にする
     /// </summary>
-    private void HiddenObject()
+    private void HiddenObject(bool hiddenOnlyButton)
     {
-        if(textObject != null) { textObject.gameObject.SetActive(false); }
+        if(textObject != null && hiddenOnlyButton == false) { textObject.gameObject.SetActive(false); }
+        if(hiddenOnlyButton == false) { StopButtonAnimation(); }
         ButtonActive(false);
     }
 
@@ -54,44 +75,72 @@ public class ResultControl : MyAnimation
     private void ButtonAction(int num)
     {
         SoundManager.soundManager.StopBgm(0.5f);
-        HiddenObject();
+        bool hiddenFlag;
 
-        SceneLoadManager.SceneName name;
         switch (num)
         {
             case 0:
-                name = SceneLoadManager.SceneName.Action;
+                Option(true);
+                hiddenFlag = true;
                 break;
             case 1:
-                name = SceneLoadManager.SceneName.StageSlect;
+                SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
+                hiddenFlag = false;
+                break;
+            case 2:
+                SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.StageSlect);
+                hiddenFlag = false;
                 break;
             default:
-                name = SceneLoadManager.SceneName.Title;
+                SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Title);
+                hiddenFlag = false;
                 break;
         }
-        SceneLoadManager.Instance.LoadScene(name);
+        HiddenObject(hiddenFlag);
     }
 
     /// <summary>
     /// ボタンの表示と非表示管理
     /// </summary>
     /// <param name="active"></param>
-    private void ButtonActive(bool active)
+    private void ButtonActive(bool active, bool optionWindow = false)
     {
-        foreach (var button in menuButton)
+        int index;
+        if (active)
         {
-            button.gameObject.SetActive(active);
+            if (optionWindow)
+            {
+                index = 0;
+            }
+            else
+            {
+                index = 1;
+            }
+        }
+        else
+        {
+            index = 0;
+        }
+
+        for(int i = index; i < menuButton.Length; i++)
+        {
+            if (active)
+            {
+                if (optionWindow)
+                {
+                    menuButton[i].transform.localPosition = new Vector3(0, 180 + (-120 * i), 0);
+                }
+                else
+                {
+                    menuButton[i].transform.localPosition = new Vector3(0, 140 + (-140 * (i - 1)), 0);
+                }
+            }
+            menuButton[i].SetActive(active);
         }
 
         if (active)
         {
-            time = 0;
-            selectButtonNum = 0;
-            selectMenu = true;
-        }
-        else
-        {
-            selectMenu = false;
+            StartButtonAnimation(menuButton, index);
         }
     }
 
@@ -162,7 +211,7 @@ public class ResultControl : MyAnimation
         textObject.transform.localPosition = Vector3.up * Screen.height * 0.25f;
 
         textObject.gameObject.SetActive(true);
-        ButtonActive(true);
+        ButtonActive(true, true);
     }
 
     /// <summary>
@@ -174,26 +223,26 @@ public class ResultControl : MyAnimation
 
         bool end;
         float span = 1.0f;
-        float input = Input.GetAxis("Vertical");
+        float input = Mathf.Abs(Input.GetAxis("Vertical")) > 0.1f ? Input.GetAxis("Vertical") : Input.GetAxis("Vertical3");
         int key = input > 0.1f ? -1 : input < -0.1f ? 1 : 0;
 
         // 選択状態のボタンのアニメーションを実行する
         switch (step)
         {
             case 0:
-                end = ScaleAnimation(menuButton[selectButtonNum], time, span / 4, Vector3.one, Vector3.one * 1.05f);
+                end = ScaleAnimation(animationObject[selectButtonNum], time, span / 4, Vector3.one, Vector3.one * 1.05f);
                 time += Time.deltaTime;
                 break;
             case 1:
-                end = ScaleAnimation(menuButton[selectButtonNum], time, span / 4, Vector3.one * 1.05f, Vector3.one);
+                end = ScaleAnimation(animationObject[selectButtonNum], time, span / 4, Vector3.one * 1.05f, Vector3.one);
                 time += Time.deltaTime;
                 break;
             case 2:
-                end = ScaleAnimation(menuButton[selectButtonNum], time, span / 4, Vector3.one, Vector3.one * 0.95f);
+                end = ScaleAnimation(animationObject[selectButtonNum], time, span / 4, Vector3.one, Vector3.one * 0.95f);
                 time += Time.deltaTime;
                 break;
             case 3:
-                end = ScaleAnimation(menuButton[selectButtonNum], time, span / 4, Vector3.one * 0.95f, Vector3.one);
+                end = ScaleAnimation(animationObject[selectButtonNum], time, span / 4, Vector3.one * 0.95f, Vector3.one);
                 time += Time.deltaTime;
                 break;
             default:
@@ -211,9 +260,9 @@ public class ResultControl : MyAnimation
         if (key != 0 && keyDown == false)
         {
             keyDown = true;
-            menuButton[selectButtonNum].transform.localScale = Vector3.one;
+            animationObject[selectButtonNum].transform.localScale = Vector3.one;
             selectButtonNum += key;
-            selectButtonNum = selectButtonNum >= menuButton.Length ? 0 : selectButtonNum < 0 ? menuButton.Length - 1 : selectButtonNum;
+            selectButtonNum = selectButtonNum >= animationObject.Length ? minButtonLength : selectButtonNum < minButtonLength ? animationObject.Length - 1 : selectButtonNum;
             step = 0;
             time = 0;
         }
@@ -221,9 +270,9 @@ public class ResultControl : MyAnimation
         {
             if (selectChangeTime > 0.3f)
             {
-                menuButton[selectButtonNum].transform.localScale = Vector3.one;
+                animationObject[selectButtonNum].transform.localScale = Vector3.one;
                 selectButtonNum += key;
-                selectButtonNum = selectButtonNum >= menuButton.Length ? 0 : selectButtonNum < 0 ? menuButton.Length - 1 : selectButtonNum;
+                selectButtonNum = selectButtonNum >= animationObject.Length ? minButtonLength : selectButtonNum < minButtonLength ? animationObject.Length - 1 : selectButtonNum;
                 step = 0;
                 time = 0;
                 selectChangeTime = 0;
@@ -242,7 +291,14 @@ public class ResultControl : MyAnimation
         // キー入力処理
         if (Input.GetButtonDown("Circle"))
         {
-            ButtonAction(selectButtonNum);
+            if (actionFlag)
+            {
+                CameraOptionAction(selectButtonNum);
+            }
+            else
+            {
+                ButtonAction(selectButtonNum);
+            }
         }
     }
 
@@ -258,7 +314,8 @@ public class ResultControl : MyAnimation
         }
         else
         {
-            HiddenObject();
+            HiddenObject(false);
+            Option(false);
         }
     }
 
@@ -279,5 +336,78 @@ public class ResultControl : MyAnimation
                 coroutine = StartCoroutine(ResultAction(false));
             }
         }
+    }
+
+    /// <summary>
+    /// ゲーム設定画面を表示・非表示
+    /// </summary>
+    private void Option(bool open)
+    {
+        if (open)
+        {
+            if (SpeedType == CameraSpeed.Quick)
+            {
+                nowSettingText.text = "はやい";
+            }
+            else if (SpeedType == CameraSpeed.Slow)
+            {
+                nowSettingText.text = "ゆっくり";
+            }
+            else
+            {
+                nowSettingText.text = "ふつう";
+            }
+            StartButtonAnimation(cameraOptionButton, 0, true);
+        }
+        cameraOptionWindow.SetActive(open);
+    }
+
+    /// <summary>
+    /// カメラオプションのボタンアクション
+    /// </summary>
+    /// <param name="num"></param>
+    private void CameraOptionAction(int num)
+    {
+        switch (num)
+        {
+            case 0:
+                nowSettingText.text = "はやい";
+                SpeedType = CameraSpeed.Quick;
+                break;
+            case 1:
+                nowSettingText.text = "ふつう";
+                SpeedType = CameraSpeed.Nomal;
+                break;
+            default:
+                nowSettingText.text = "ゆっくり";
+                SpeedType = CameraSpeed.Slow;
+                break;
+        }
+    }
+
+    /// <summary>
+    /// ボタンアニメーションの開始
+    /// </summary>
+    private void StartButtonAnimation(GameObject[] objects, int selectedObjectNum, bool cameraOption = false)
+    {
+        step = 0;
+        time = 0;
+        selectButtonNum = selectedObjectNum;
+        minButtonLength = selectedObjectNum;
+        foreach(var obj in objects)
+        {
+            obj.transform.localScale = Vector3.one;
+        }
+        animationObject = objects;
+        actionFlag = cameraOption;
+        selectMenu = true;
+    }
+
+    /// <summary>
+    /// ボタンアニメーションの停止
+    /// </summary>
+    private void StopButtonAnimation()
+    {
+        selectMenu = false;
     }
 }
