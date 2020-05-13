@@ -35,7 +35,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
     [SerializeField]
     private GameObject anounceText;
     private bool fadeEnd, DoKeyPress;
-
+    public bool SceneLoadFlg = false;
 #if UNITY_EDITOR
     void OnValidate()
     {
@@ -75,6 +75,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
         DoKeyPress = keyPress;
         StartCoroutine("Load");
         IsLoadScene = true;
+        Instance.SceneLoadFlg = true;
     }
 
     /// <summary>
@@ -152,6 +153,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
 
             yield return null;
         }
+        if (fadeMode == FadeMode.IN) { Instance.SceneLoadFlg = false; }
         yield return null;
     }
 }

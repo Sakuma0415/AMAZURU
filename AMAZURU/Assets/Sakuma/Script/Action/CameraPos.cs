@@ -90,8 +90,6 @@ public class CameraPos : MonoBehaviour
     bool outflg = false;
     //アメフラシ起動時に移動する角度
     float lotAngle = 0;
-    //開始までの時間
-    float startTime = 0;
 
     void Start()
     {
@@ -100,7 +98,6 @@ public class CameraPos : MonoBehaviour
         XZangle = fAngle;
         CameraDis =lookMode ? CameraDisP: CameraDisS;
         MouseCheck = true;
-        startTime = 0;
     }
 
     private void LateUpdate()
@@ -164,12 +161,11 @@ public class CameraPos : MonoBehaviour
         //ゲーム開始時の定点カメラの特殊挙動時のステータス更新
         if (startCameraFlg)
         {
-            startTime += Time.deltaTime;
             lookObj = lookMode ? PlayerTransform.position+new Vector3 (0,LookHiSet,0)  : lookPos;
             XZangle += Time.deltaTime*3;
 
             //通常のカメラ処理に戻る
-            if (Input.GetButtonDown("Circle")&& startTime>1)
+            if (Input.GetButtonDown("Circle") && !SceneLoadManager.Instance.SceneLoadFlg)
             {
                 startCameraAngleResetBf = XZangle;
                 startCameraFlg = false;
