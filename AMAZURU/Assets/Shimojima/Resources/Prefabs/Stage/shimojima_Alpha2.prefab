@@ -8735,7 +8735,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 875701117137447264}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.5, y: 1, z: 3.1899993}
+  m_LocalPosition: {x: 8.5, y: 1, z: 2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7685551680704529491}
@@ -8780,11 +8780,9 @@ MonoBehaviour:
     m_Bits: 256
   stageWater: {fileID: 0}
   mode: 1
-  startPos: {x: 8.5, y: 1, z: 5.5}
-  startRot: {x: 0, y: 180, z: 0}
   enemySize: 1
   movePlan:
-  - {x: 0, y: -3}
+  - {x: 0, y: 3}
   moveType: 0
   lateTime: 0.5
   enemySpeed: 1.5
@@ -34453,14 +34451,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3256380993667227353}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 10.5, y: 1, z: 5.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 846382460947460860}
   m_Father: {fileID: 468965053766983490}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!135 &7229604282805424235
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -34499,11 +34497,9 @@ MonoBehaviour:
     m_Bits: 256
   stageWater: {fileID: 0}
   mode: 1
-  startPos: {x: 10.5, y: 1, z: 1.5}
-  startRot: {x: 0, y: 0, z: 0}
   enemySize: 1
   movePlan:
-  - {x: 0, y: 4}
+  - {x: 0, y: -4}
   moveType: 0
   lateTime: 0.5
   enemySpeed: 1.5
