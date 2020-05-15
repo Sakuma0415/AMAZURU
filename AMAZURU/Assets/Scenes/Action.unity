@@ -1101,8 +1101,16 @@ MonoBehaviour:
   sphereCollider: {fileID: 721732559}
   CameraColFlg: 1
   LookHiSet: 0.5
-  stickSpeadS: 40
-  stickSpeadP: 100
+  stickSpead: 0
+  resultControl: {fileID: 1971748816}
+  cameraSpS:
+  - 10
+  - 30
+  - 50
+  cameraSpP:
+  - 20
+  - 40
+  - 60
   CameraDisS: 20
   CameraDisP: 8
   lookPos: {x: 4, y: 4, z: 4}
