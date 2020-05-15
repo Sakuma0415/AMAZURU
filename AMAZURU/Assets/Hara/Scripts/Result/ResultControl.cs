@@ -74,29 +74,27 @@ public class ResultControl : MyAnimation
     /// <param name="num"></param>
     private void ButtonAction(int num)
     {
-        SoundManager.soundManager.StopBgm(0.5f);
-        bool hiddenFlag;
+        if(num != 0)
+        {
+            SoundManager.soundManager.StopBgm(0.5f);
+        }
+        HiddenObject(num == 0);
 
         switch (num)
         {
             case 0:
                 Option(true);
-                hiddenFlag = true;
                 break;
             case 1:
                 SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
-                hiddenFlag = false;
                 break;
             case 2:
                 SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.StageSlect);
-                hiddenFlag = false;
                 break;
             default:
                 SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Title);
-                hiddenFlag = false;
                 break;
         }
-        HiddenObject(hiddenFlag);
     }
 
     /// <summary>
