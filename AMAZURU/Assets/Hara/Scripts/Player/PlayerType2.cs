@@ -204,7 +204,7 @@ public class PlayerType2 : MonoBehaviour
         else
         {
             // アニメーションの停止
-            if(playerAnimator != null)
+            if(playerAnimator != null && mode == PlayState.GameMode.Pause)
             {
                 playerAnimator.enabled = false;
             }

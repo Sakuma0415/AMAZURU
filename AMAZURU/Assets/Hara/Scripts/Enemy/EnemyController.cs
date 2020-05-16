@@ -239,7 +239,7 @@ public class EnemyController : MyAnimation
         else
         {
             // アニメーションの停止
-            if(enemyAnime != null)
+            if(enemyAnime != null && mode == PlayState.GameMode.Pause)
             {
                 enemyAnime.enabled = false;
             }
