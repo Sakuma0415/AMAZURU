@@ -74,29 +74,27 @@ public class ResultControl : MyAnimation
     /// <param name="num"></param>
     private void ButtonAction(int num)
     {
-        SoundManager.soundManager.StopBgm(0.5f);
-        bool hiddenFlag;
+        if(num != 0)
+        {
+            SoundManager.soundManager.StopBgm(0.5f);
+        }
+        HiddenObject(num == 0);
 
         switch (num)
         {
             case 0:
                 Option(true);
-                hiddenFlag = true;
                 break;
             case 1:
                 SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
-                hiddenFlag = false;
                 break;
             case 2:
                 SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.StageSlect);
-                hiddenFlag = false;
                 break;
             default:
                 SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Title);
-                hiddenFlag = false;
                 break;
         }
-        HiddenObject(hiddenFlag);
     }
 
     /// <summary>
@@ -223,7 +221,7 @@ public class ResultControl : MyAnimation
 
         bool end;
         float span = 1.0f;
-        float input = Mathf.Abs(Input.GetAxis("Vertical")) > 0.1f ? Input.GetAxis("Vertical") : Input.GetAxis("Vertical3");
+        float input = Input.GetAxis("Vertical3");
         int key = input > 0.1f ? -1 : input < -0.1f ? 1 : 0;
 
         // 選択状態のボタンのアニメーションを実行する
@@ -302,6 +300,12 @@ public class ResultControl : MyAnimation
                     ButtonAction(selectButtonNum);
                 }
             }
+        }
+
+        if(Input.GetButtonDown("Cross") && actionFlag)
+        {
+            PauseAction();
+            Option(false);
         }
     }
 

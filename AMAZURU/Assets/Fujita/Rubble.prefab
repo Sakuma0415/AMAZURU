@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4000014283963976}
   - component: {fileID: 33000011929077930}
   - component: {fileID: 23000013755351158}
-  - component: {fileID: 888472170841700546}
+  - component: {fileID: 5515633558542293247}
   - component: {fileID: 3405917856499528359}
   - component: {fileID: 3494534095831464573}
   m_Layer: 15
@@ -82,7 +82,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &888472170841700546
+--- !u!114 &5515633558542293247
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91,18 +91,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1000011198625306}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 342b5980fd2aba14f8fe86b397e45111, type: 3}
+  m_Script: {fileID: 11500000, guid: c5bc26ce6e7adef48bc487867f739b19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waterHi: {fileID: 0}
   layerMask:
     serializedVersion: 2
     m_Bits: 256
   rb: {fileID: 3494534095831464573}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 1
-  maxSize: 20
+  rubbleCollider: {fileID: 3405917856499528359}
 --- !u!65 &3405917856499528359
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -130,5 +126,5 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 1
-  m_Constraints: 126
+  m_Constraints: 112
   m_CollisionDetection: 3

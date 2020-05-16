@@ -21,8 +21,6 @@ public class EnemyController : MyAnimation
         Wrap
     }
 
-    [SerializeField, Header("ゲーム開始時の座標")] private Vector3 startPos = Vector3.zero;
-    [SerializeField, Header("ゲーム開始時の向き")] private Vector3 startRot = Vector3.zero;
     [SerializeField, Header("敵のサイズ"), Range(1.0f, 5.0f)] private float enemySize = 1.0f;
     [SerializeField, Header("行動計画")] private Vector2[] movePlan = null;
     [SerializeField, Header("行動パターン")] private EnemyMoveType moveType = EnemyMoveType.Lap;
@@ -86,7 +84,7 @@ public class EnemyController : MyAnimation
         enemy.radius = colliderSize;
         enemy.center = new Vector3(0, colliderSize, 0);
 
-        Ray ray = new Ray(new Vector3(startPos.x, startPos.y + enemy.center.y, startPos.z), Vector3.down);
+        Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + enemy.center.y, transform.position.z), Vector3.down);
         RaycastHit hit;
 
         // 水面の取得
@@ -105,9 +103,7 @@ public class EnemyController : MyAnimation
         if (Physics.Raycast(ray, out hit, 200, groundLayer))
         {
             // 敵の開始時の位置を設定
-            transform.position = new Vector3(startPos.x, hit.point.y, startPos.z);
-            // 敵の開始時の向きを設定
-            transform.rotation = Quaternion.Euler(startRot);
+            transform.position = new Vector3(transform.position.x, hit.point.y, transform.position.z);
             // 敵の開始時のサイズを設定
             transform.localScale = Vector3.one * enemySize;
             // 行動計画を設定
@@ -231,12 +227,21 @@ public class EnemyController : MyAnimation
             // 足音の再生
             if (enemyAnime != null)
             {
+                enemyAnime.enabled = true;
                 animationTime += delta;
                 if (animationTime >= animationSpeed)
                 {
                     animationTime = 0;
                     SoundManager.soundManager.PlaySe3D("EnemyMove", transform.position, 0.5f);
                 }
+            }
+        }
+        else
+        {
+            // アニメーションの停止
+            if(enemyAnime != null)
+            {
+                enemyAnime.enabled = false;
             }
         }
     }
