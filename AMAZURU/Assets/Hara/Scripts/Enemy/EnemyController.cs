@@ -239,9 +239,16 @@ public class EnemyController : MyAnimation
         else
         {
             // アニメーションの停止
-            if(enemyAnime != null && mode == PlayState.GameMode.Pause)
+            if(enemyAnime != null)
             {
-                enemyAnime.enabled = false;
+                if(mode == PlayState.GameMode.StartEf || mode == PlayState.GameMode.Stop)
+                {
+                    enemyAnime.enabled = true;
+                }
+                else
+                {
+                    enemyAnime.enabled = false;
+                }
             }
         }
     }
