@@ -118,6 +118,7 @@ public class PlayerType2 : MonoBehaviour
         if(mode == PlayState.GameMode.Play)
         {
             bool input;
+            float inputSpeed = (Mathf.Abs(inputX) + Mathf.Abs(inputZ)) * 0.5f < 0.5f ? Mathf.Abs(inputX) + Mathf.Abs(inputZ) : 1.0f;
 
             // 一方通行の崖を利用する際に実行
             if (CliffFlag)
@@ -175,11 +176,11 @@ public class PlayerType2 : MonoBehaviour
 
                     // プレイヤーの移動先の算出
                     float speed = inWater ? playerWaterSpeed : playerSpeed;
-                    moveDirection *= speed * delta;
+                    moveDirection *= speed * delta * inputSpeed;
 
                     // 足音の再生
                     time += delta;
-                    if (time >= animatorSpeed * 0.25f)
+                    if (time >= animatorSpeed * 0.25f / inputSpeed)
                     {
                         time = 0;
                         SoundManager.soundManager.PlaySe3D("FitGround_Dast2_1", transform.position, 0.3f);
@@ -199,6 +200,7 @@ public class PlayerType2 : MonoBehaviour
             {
                 playerAnimator.enabled = true;
                 playerAnimator.SetBool("wate", input);
+                playerAnimator.SetFloat("speed", inputSpeed);
             }
         }
         else
