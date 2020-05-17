@@ -19,6 +19,8 @@ public class PlayerType2 : MonoBehaviour
 
     [SerializeField, Header("プレイヤーの移動速度"), Range(0, 10)] private float playerSpeed = 5;
     [SerializeField, Header("プレイヤーの水中移動速度"), Range(0, 10)] private float playerWaterSpeed = 2.5f;
+    [SerializeField, Header("プレイヤーの加速度グラフ")] private AnimationCurve curve = null;
+    [SerializeField, Header("最高速度到達時間"), Range(0.1f, 2.0f)] private float maxSpeedTime = 0.5f;
     [SerializeField, Header("Rayの長さ"), Range(0, 10)] private float rayLength = 0.5f;
     [SerializeField, Header("重力値"), Range(0, 10)] private float gravity = 10.0f;
     [SerializeField, Header("透明な壁のサイズ"), Range(0.01f, 5.0f)] private float wallSize = 1.0f;
@@ -61,6 +63,9 @@ public class PlayerType2 : MonoBehaviour
     // アニメーションの速度を取得する用の変数
     private float animatorSpeed = 0;
     private float time = 0;
+
+    // プレイヤーが動き始めてからの経過時間
+    private float speedTime = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -176,7 +181,11 @@ public class PlayerType2 : MonoBehaviour
 
                     // プレイヤーの移動先の算出
                     float speed = inWater ? playerWaterSpeed : playerSpeed;
-                    moveDirection *= speed * delta * inputSpeed;
+                    if(speedTime < maxSpeedTime)
+                    {
+                        speedTime += delta;
+                    }
+                    moveDirection *= speed * delta * inputSpeed * curve.Evaluate(speedTime / maxSpeedTime);
 
                     // 足音の再生
                     time += delta;
@@ -185,6 +194,11 @@ public class PlayerType2 : MonoBehaviour
                         time = 0;
                         SoundManager.soundManager.PlaySe3D("FitGround_Dast2_1", transform.position, 0.3f);
                     }
+                }
+                else
+                {
+                    time = 0;
+                    speedTime = 0;
                 }
 
                 // プレイヤーを移動させる
@@ -200,7 +214,7 @@ public class PlayerType2 : MonoBehaviour
             {
                 playerAnimator.enabled = true;
                 playerAnimator.SetBool("wate", input);
-                playerAnimator.SetFloat("speed", inputSpeed);
+                playerAnimator.SetFloat("speed", inputSpeed * curve.Evaluate(speedTime / maxSpeedTime));
             }
         }
         else
