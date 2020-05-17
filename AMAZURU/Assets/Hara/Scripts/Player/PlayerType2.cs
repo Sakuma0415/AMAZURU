@@ -185,11 +185,15 @@ public class PlayerType2 : MonoBehaviour
                     {
                         speedTime += delta;
                     }
+                    else
+                    {
+                        speedTime = maxSpeedTime;
+                    }
                     moveDirection *= speed * delta * inputSpeed * curve.Evaluate(speedTime / maxSpeedTime);
 
                     // 足音の再生
                     time += delta;
-                    if (time >= animatorSpeed * 0.25f / inputSpeed)
+                    if (time >= animatorSpeed * 0.25f / inputSpeed / curve.Evaluate(speedTime / maxSpeedTime))
                     {
                         time = 0;
                         SoundManager.soundManager.PlaySe3D("FitGround_Dast2_1", transform.position, 0.3f);
