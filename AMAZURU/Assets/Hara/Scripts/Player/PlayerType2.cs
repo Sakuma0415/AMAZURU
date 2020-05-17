@@ -60,10 +60,6 @@ public class PlayerType2 : MonoBehaviour
     /// </summary>
     public bool CliffFlag { set; private get; } = false;
 
-    // アニメーションの速度を取得する用の変数
-    private float animatorSpeed = 0;
-    private float time = 0;
-
     // プレイヤーが動き始めてからの経過時間
     private float speedTime = 0;
 
@@ -97,8 +93,6 @@ public class PlayerType2 : MonoBehaviour
         if (PlayerCamera == null) { PlayerCamera = Camera.main; }
 
         connectPlayState = GetPlayState();
-
-        if(playerAnimator != null) { animatorSpeed = playerAnimator.GetCurrentAnimatorStateInfo(0).speed; }
 
         CreateHiddenWall();
     }
@@ -190,18 +184,9 @@ public class PlayerType2 : MonoBehaviour
                         speedTime = maxSpeedTime;
                     }
                     moveDirection *= speed * delta * inputSpeed * curve.Evaluate(speedTime / maxSpeedTime);
-
-                    // 足音の再生
-                    time += delta;
-                    if (time >= animatorSpeed * 0.25f / inputSpeed / curve.Evaluate(speedTime / maxSpeedTime))
-                    {
-                        time = 0;
-                        SoundManager.soundManager.PlaySe3D("FitGround_Dast2_1", transform.position, 0.3f);
-                    }
                 }
                 else
                 {
-                    time = 0;
                     speedTime = 0;
                 }
 
@@ -218,7 +203,7 @@ public class PlayerType2 : MonoBehaviour
             {
                 playerAnimator.enabled = true;
                 playerAnimator.SetBool("wate", input);
-                playerAnimator.SetFloat("speed", inputSpeed * curve.Evaluate(speedTime / maxSpeedTime));
+                playerAnimator.SetFloat("speed", inWater ? (inputSpeed * curve.Evaluate(speedTime / maxSpeedTime)) / (playerSpeed / playerWaterSpeed) : inputSpeed * curve.Evaluate(speedTime / maxSpeedTime));
             }
         }
         else
