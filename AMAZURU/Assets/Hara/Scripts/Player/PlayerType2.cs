@@ -197,6 +197,9 @@ public class PlayerType2 : MonoBehaviour
                 moveDirection.y -= gravity * delta;
                 character.Move(moveDirection);
 
+                // AnimationEventのプレイヤーの座標データを更新
+                animeEvent.PlayerPosition = transform.position;
+
                 // 透明な壁の設置処理
                 if (input) { SetHiddenWall(); }
             }
