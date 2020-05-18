@@ -10,6 +10,7 @@ public class PlayerType2 : MonoBehaviour
     [SerializeField, Tooltip("透明な壁")] private BoxCollider hiddenWallPrefab = null;
     [SerializeField, Tooltip("地面のLayerMask")] private LayerMask layerMask;
     [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
+    [SerializeField, Tooltip("AnimationEventスクリプト")] private PlayerAnimeEvent animeEvent = null;
     private bool connectPlayState = false;
 
     // コントローラーの入力
@@ -134,6 +135,8 @@ public class PlayerType2 : MonoBehaviour
 
                 inWater = StageWater != null && PlayerPositionY < StageWater.max && mode == PlayState.GameMode.Play;
                 UnderWater = StageWater != null && PlayerPositionY + character.height * 0.5f < StageWater.max && mode == PlayState.GameMode.Play;
+                // AnimationEventのフラグ管理
+                animeEvent.WaterStep = inWater;
 
                 // 移動方向
                 Vector3 moveDirection = Vector3.zero;
