@@ -24,11 +24,14 @@ public class Progress : MonoBehaviour
     {
         SetState();
         progress = this;
-        SoundManager.soundManager.StopBgm(1f);
+        SoundManager.soundManager.PlayBgm("PerituneMaterial_Wonder3_loop", 0.5f, 0.5f, 1);
+        //謎
+        //SoundManager.soundManager.StopBgm(1f,0);
     }
-
+    
     private void Update()
     {
+
 
         //ポーズ画面の開閉
         if (Input.GetButtonDown("Option"))

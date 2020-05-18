@@ -42,7 +42,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 0.5
   m_Pitch: 1
   Loop: 1
@@ -175,7 +175,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seAudioSource: {fileID: 2664668361822163092}
-  bgmAudioSource: {fileID: 2664668361709833634}
+  bgmAudioSource:
+  - {fileID: 2664668361709833634}
+  - {fileID: 942320988}
   bgmAudioSource2: {fileID: 942320988}
   audioParent: {fileID: 2664668362232560240}
 --- !u!1 &2664668361709833637

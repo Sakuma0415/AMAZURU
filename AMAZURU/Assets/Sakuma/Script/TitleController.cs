@@ -9,8 +9,8 @@ public class TitleController : MonoBehaviour
 
     private void Start()
     {
-        SoundManager.soundManager.PlayBgm("MusMus-BGM-043", 0.1f, 0.8f);
-        SoundManager.soundManager.PlayBgmBAG("rain_loop", 0.5f);
+        SoundManager.soundManager.PlayBgm("MusMus-BGM-043", 0.1f, 0.8f,0);
+        SoundManager.soundManager.PlayBgm("rain_loop",0.1f, 0.5f,1);
     }
     // Update is called once per frame
     void Update()
@@ -20,7 +20,7 @@ public class TitleController : MonoBehaviour
             SoundManager.soundManager.PlaySe("btn01", 0.5f);
             titleAnime.AnimationFlag = true;
             SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName .StageSlect ,false );
-            SoundManager.soundManager.StopBgm(1);
+            SoundManager.soundManager.StopBgm(1,0);
         }
     }
 }

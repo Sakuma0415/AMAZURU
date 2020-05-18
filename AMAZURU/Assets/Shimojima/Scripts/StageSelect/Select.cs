@@ -115,7 +115,7 @@ public class Select : MonoBehaviour
         if (Input.GetButtonDown("Circle")&& !SceneLoadManager.Instance.SceneLoadFlg)
         {
             StageMake.LoadStageData = sData;
-            SoundManager.soundManager.StopBgmBAG();
+            SoundManager.soundManager.StopBgm(0.5f,1);
             SoundManager.soundManager.PlaySe("btn01", 0.5f);
             SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
         }

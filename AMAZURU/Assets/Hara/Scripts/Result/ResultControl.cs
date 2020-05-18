@@ -76,7 +76,8 @@ public class ResultControl : MyAnimation
     {
         if(num != 0)
         {
-            SoundManager.soundManager.StopBgm(0.5f);
+            SoundManager.soundManager.StopBgm(0.5f,0);
+            SoundManager.soundManager.StopBgm(0.5f, 1);
         }
         HiddenObject(num == 0);
 
