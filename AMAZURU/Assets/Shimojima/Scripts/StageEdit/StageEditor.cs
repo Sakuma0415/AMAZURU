@@ -63,7 +63,7 @@ public class StageEditor : MonoBehaviour
     public GameObject stageRoot;
     
     [SerializeField,Tooltip("ステージに使う参照オブジェクト")]
-    private GameObject[] referenceObject, floorRefObj;
+    private GameObject[] referenceObject, floorRefObj, prismRefObj;
     private int refObjIndex = 0;
     [Tooltip("配置するオブジェクト")]
     private GameObject stageObj;
@@ -352,10 +352,14 @@ public class StageEditor : MonoBehaviour
     {
         if (_StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] != null) { Debug.Log("既にオブジェクトが設置されています"); return; }
         GameObject o;
+        int x = Random.Range(0, 6);
         if (referenceObject[refObjIndex].name == "SandFloor")
         {
-            int x = Random.Range(0, 6);
             o = Instantiate(floorRefObj[x]);
+        }
+        else if(referenceObject[refObjIndex].name == "prism")
+        {
+            o = Instantiate(prismRefObj[x]);
         }
         else { o = Instantiate(obj); }
         o.name = obj.name;
@@ -392,10 +396,14 @@ public class StageEditor : MonoBehaviour
             if (obj.name == objName)
             {
                 GameObject o;
+                int x = Random.Range(0, 6);
                 if (referenceObject[refObjIndex].name == "SandFloor")
                 {
-                    int x = Random.Range(0, 6);
                     o = Instantiate(floorRefObj[x]);
+                }
+                else if (referenceObject[refObjIndex].name == "Prism")
+                {
+                    o = Instantiate(prismRefObj[x]);
                 }
                 else { o = Instantiate(referenceObject[refObjIndex]); }
                 
