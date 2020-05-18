@@ -95,6 +95,8 @@ public class PlayerType2 : MonoBehaviour
 
         connectPlayState = GetPlayState();
 
+        PlayerPositionY = transform.position.y + character.center.y;
+
         CreateHiddenWall();
     }
 
@@ -103,8 +105,6 @@ public class PlayerType2 : MonoBehaviour
     /// </summary>
     private void GetInputController()
     {
-        if (connectPlayState) { mode = PlayState.playState.gameMode; }
-
         // キー入力取得
         inputX = Input.GetAxis("Horizontal");
         inputZ = Input.GetAxis("Vertical");
@@ -115,7 +115,16 @@ public class PlayerType2 : MonoBehaviour
     /// </summary>
     private void PlayerMove(bool fixedUpdate)
     {
-        if(mode == PlayState.GameMode.Play)
+        if (connectPlayState)
+        {
+            mode = PlayState.playState.gameMode;
+        }
+        else
+        {
+            mode = PlayState.GameMode.Play;
+        }
+
+        if (mode == PlayState.GameMode.Play)
         {
             bool input;
             float inputSpeed = (Mathf.Abs(inputX) + Mathf.Abs(inputZ)) * 0.5f < 0.5f ? Mathf.Abs(inputX) + Mathf.Abs(inputZ) : 1.0f;
@@ -133,16 +142,8 @@ public class PlayerType2 : MonoBehaviour
             {
                 float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
 
-                inWater = StageWater != null && PlayerPositionY < StageWater.max && mode == PlayState.GameMode.Play;
-                UnderWater = StageWater != null && PlayerPositionY + character.height * 0.5f < StageWater.max && mode == PlayState.GameMode.Play;
-                // AnimationEventのフラグ管理
-                animeEvent.WaterStep = inWater;
-
                 // 移動方向
                 Vector3 moveDirection = Vector3.zero;
-
-                // プレイヤーのY座標の位置情報を更新
-                PlayerPositionY = transform.position.y + character.center.y;
 
                 // 入力の最低許容値
                 float inputMin = 0.1f;
@@ -197,11 +198,30 @@ public class PlayerType2 : MonoBehaviour
                 moveDirection.y -= gravity * delta;
                 character.Move(moveDirection);
 
-                // AnimationEventのプレイヤーの座標データを更新
-                animeEvent.PlayerPosition = transform.position;
+                // プレイヤーのY座標の位置情報を更新
+                PlayerPositionY = transform.position.y + character.center.y;
 
-                // 透明な壁の設置処理
+                // 透明な壁の設置
                 if (input) { SetHiddenWall(); }
+
+                // 水中フラグの設定
+                if (StageWater != null)
+                {
+                    inWater = PlayerPositionY < StageWater.max;
+                    UnderWater = PlayerPositionY + character.height * 0.5f < StageWater.max;
+                }
+                else
+                {
+                    inWater = false;
+                    UnderWater = false;
+                }
+
+                // AnimationEventの設定
+                if (animeEvent != null)
+                {
+                    animeEvent.WaterStep = inWater;
+                    animeEvent.PlayerPosition = transform.position;
+                }
             }
 
             // アニメーション実行
@@ -303,6 +323,8 @@ public class PlayerType2 : MonoBehaviour
     /// <param name="flag">条件式</param>
     public void HitEnemy(bool flag)
     {
+        if(connectPlayState == false) { return; }
+
         if (flag)
         {
             // ゲームオーバー処理
