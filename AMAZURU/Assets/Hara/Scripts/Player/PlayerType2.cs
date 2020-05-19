@@ -152,14 +152,14 @@ public class PlayerType2 : MonoBehaviour
                 if (input)
                 {
                     // カメラの向いている方向を取得
-                    Vector3 cameraForward = Vector3.Scale(PlayerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+                    Vector3 cameraForward = Vector3.Scale(PlayerCamera.transform.forward == Vector3.up ? -PlayerCamera.transform.up : PlayerCamera.transform.forward == Vector3.down ? PlayerCamera.transform.up : PlayerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
 
                     // プレイヤーカメラ起点の入力方向
                     Vector3 direction = cameraForward * inputZ + PlayerCamera.transform.right * inputX;
 
                     // 入力方向を向く処理
                     Quaternion rot = Quaternion.LookRotation(direction, Vector3.up);
-                    rot = Quaternion.Slerp(transform.rotation, rot, 15 * delta);
+                    rot = Quaternion.Slerp(transform.rotation, rot, 7.5f * delta);
                     transform.rotation = rot;
 
                     // 移動方向の決定
