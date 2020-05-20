@@ -136,7 +136,7 @@ Material:
     - _BumpScaleMatcap: 1
     - _CameraRolling_Stabilizer: 1
     - _ColorShift_Speed: 0
-    - _CullMode: 2
+    - _CullMode: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -210,7 +210,7 @@ Material:
     - _Tweak_LightDirection_MaskLevel: 0
     - _Tweak_MatCapUV: 0
     - _Tweak_MatcapMaskLevel: 0
-    - _Tweak_RimLightMaskLevel: -0.69
+    - _Tweak_RimLightMaskLevel: 0
     - _Tweak_SystemShadowsLevel: -0.35
     - _UVSec: 0
     - _Unlit_Intensity: 1
