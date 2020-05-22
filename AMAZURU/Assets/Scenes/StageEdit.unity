@@ -621,12 +621,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef9a57a2fc08c6f4a8738cd86f3f72fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageName: ss0502
+  stageName: 0
   loadStage: 0
   isSave: 0
   isCreateStage: 0
   objName: 
-  cells: {x: 30, y: 20, z: 30}
+  cells: {x: 5, y: 5, z: 5}
   cellNum: {x: 0, y: 0, z: 0}
   mainCamera: {fileID: 989471370}
   gridObj: {fileID: 5999110429068370210, guid: 0be17e78958f64648b65ad877da141c4, type: 3}
@@ -654,6 +654,13 @@ MonoBehaviour:
   - {fileID: 3092175833138153174, guid: 61af8cf03057dd54a8d8aa6ab6cf42f9, type: 3}
   - {fileID: 3092175833138153174, guid: 4771174d63499ea4d8b6b55870353426, type: 3}
   - {fileID: 3092175833138153174, guid: ba7b99b1465d1b945b11819883e0c143, type: 3}
+  prismRefObj:
+  - {fileID: 3396715007776291505, guid: 435e826fa3b854040bae4b3b494be875, type: 3}
+  - {fileID: 3396715007776291505, guid: dd965e5ea1b81c34da5b275af0d563df, type: 3}
+  - {fileID: 3396715007776291505, guid: 9cccd7c63fa871c45bbb0c6d81716469, type: 3}
+  - {fileID: 3396715007776291505, guid: 777552ba1dcf8f444803868d4abea5a3, type: 3}
+  - {fileID: 3396715007776291505, guid: ee4d57f8c76b6fc44855706f20901e43, type: 3}
+  - {fileID: 3396715007776291505, guid: 85928f69e8ec8ae41908256a5ceae4b4, type: 3}
 --- !u!4 &226080315
 Transform:
   m_ObjectHideFlags: 0

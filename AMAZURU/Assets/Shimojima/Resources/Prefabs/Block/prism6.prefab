@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7215841008056513172}
   - component: {fileID: 3971990433167068781}
   m_Layer: 0
-  m_Name: prism
+  m_Name: prism6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,7 +58,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 05d0114af8d00be46ac8fac2c97c5dc7, type: 2}
+  - {fileID: 2100000, guid: c00ea0e8e57d7644a9037e8dfd4895eb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
