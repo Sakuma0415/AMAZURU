@@ -17,29 +17,56 @@ public class SoundManager : MonoBehaviour
     AudioSource seAudioSource;
     //2DのBGMを再生させるオーディオ
     [SerializeField]
-    AudioSource bgmAudioSource;
+    AudioSource[] bgmAudioSource;
     //3Dサウンドの再生地点を記憶するオブジェの親
     [SerializeField]
     Transform audioParent;
     
     //private
+    struct BGMList
+    {
+        //BGMのボリューム
+        public float MaxVolume;
+        //BGMがフェード中かどうかのフラグ
+        public bool bgmFade;
+        //フェード後に再生するBGMの退避先
+        public AudioClip fadeBf;
+        //フェードインの時間
+        public float inTime;
+        //フェードアウトの時間
+        public float outTime;
+        //フェードインアウトの全体時間
+        public float fadelate;
+        //フェードアウト後音量を格納しておく場所
+        public float afterVol;
+        //BGM停止時にフェードする場合のフラグ
+        public bool stopFade;
 
-    //BGMのボリューム
-    float MaxVolume = 0;
-    //BGMがフェード中かどうかのフラグ
-    bool bgmFade = false;
-    //フェード後に再生するBGMの退避先
-    AudioClip fadeBf;
-    //フェードインの時間
-    float inTime = 0;
-    //フェードアウトの時間
-    float outTime = 0;
-    //フェードインアウトの全体時間
-    float fadelate = 0;
-    //フェードアウト後音量を格納しておく場所
-    float afterVol = 0;
-    //BGM停止時にフェードする場合のフラグ
-    bool stopFade = false;
+        public bool volBgmFade;
+        public float startVol;
+        public float endVol;
+        public float volFadeTime;
+        public float volFadeSpan;
+
+        public void Init()
+        {
+            MaxVolume = 0;
+            bgmFade = false;
+            inTime = 0;
+            outTime = 0;
+            fadelate = 0;
+            afterVol = 0;
+            stopFade = false;
+            volBgmFade=false;
+            startVol=0;
+            endVol=0;
+            volFadeTime=0;
+            volFadeSpan=0;
+        }
+    }
+
+    private BGMList[] BGMLists=new BGMList[2];
+
 
     //3Dサウンドの再生オブジェの状態をまとめた構造体
     struct ClipList3D
@@ -78,6 +105,10 @@ public class SoundManager : MonoBehaviour
             soundManager = this;
             DontDestroyOnLoad(gameObject);
             clipList3Ds[0].StateSet(audioParent);
+            for(int i=0;i< BGMLists.Length; i++)
+            {
+                BGMLists[i].Init();
+            }
         }
         else
         {
@@ -90,46 +121,68 @@ public class SoundManager : MonoBehaviour
     {
 
         //BGMがフェード処理中
-        if (bgmFade)
+        for (int i = 0; i < BGMLists.Length; i++)
         {
-
-            if(outTime > 0)
+            if (BGMLists[i].bgmFade)
             {
 
-                //フェードアウトの処理
-                outTime -= Time.deltaTime;
-                bgmAudioSource.volume = (outTime / fadelate) * MaxVolume;
-
-                if (outTime <= 0)
+                if (BGMLists[i].outTime > 0)
                 {
-                    if (stopFade)
+
+                    //フェードアウトの処理
+                    BGMLists[i].outTime -= Time.deltaTime;
+                    bgmAudioSource[i].volume = (BGMLists[i].outTime / BGMLists[i].fadelate) * BGMLists[i].MaxVolume;
+
+                    if (BGMLists[i].outTime <= 0)
                     {
-                        bgmFade = false;
-                        stopFade = false;
-                        bgmAudioSource.Stop();
-                        bgmAudioSource.clip = null;
+
+                        bgmAudioSource[i].volume = 0;
+
+                        if (BGMLists[i].stopFade)
+                        {
+                            BGMLists[i].bgmFade = false;
+                            BGMLists[i].stopFade = false;
+                            bgmAudioSource[i].Stop();
+                            bgmAudioSource[i].clip = null;
+                        }
+                        else
+                        {
+                            BGMLists[i].outTime = 0;
+                            bgmAudioSource[i].clip = BGMLists[i].fadeBf;
+                            BGMLists[i].MaxVolume = BGMLists[i].afterVol;
+                            bgmAudioSource[i].Play();
+                        }
                     }
-                    else
+                }
+                else
+                {
+                    //フェードインの処理
+                    BGMLists[i].inTime -= Time.deltaTime;
+                    bgmAudioSource[i].volume = BGMLists[i].MaxVolume - ((BGMLists[i].inTime / BGMLists[i].fadelate) * BGMLists[i].MaxVolume);
+
+                    if (BGMLists[i].inTime <= 0)
                     {
-                        outTime = 0;
-                        bgmAudioSource.clip = fadeBf;
-                        MaxVolume = afterVol;
-                        bgmAudioSource.Play();
+                        bgmAudioSource[i].volume = BGMLists[i].MaxVolume;
+                        BGMLists[i].inTime = 0;
+                        BGMLists[i].bgmFade = false;
                     }
                 }
             }
-            else
-            {
-                //フェードインの処理
-                inTime -= Time.deltaTime;
-                bgmAudioSource.volume = MaxVolume - ((inTime / fadelate) * MaxVolume);
 
-                if (inTime <= 0)
+            if (BGMLists[i].volBgmFade)
+            {
+                BGMLists[i].volFadeTime += Time.deltaTime;
+                bgmAudioSource[i].volume =Mathf.Lerp (BGMLists[i].startVol , BGMLists[i].endVol,(BGMLists[i].volFadeTime / BGMLists[i].volFadeSpan));
+                if (BGMLists[i].volFadeTime> BGMLists[i].volFadeSpan)
                 {
-                    inTime = 0;
-                    bgmFade = false;
+                    bgmAudioSource[i].volume = BGMLists[i].endVol;
+                    BGMLists[i].MaxVolume = BGMLists[i].endVol;
+                    BGMLists[i].volBgmFade = false;
                 }
             }
+
+
+
         }
 
         //3Dサウンドの再生時間更新
@@ -140,58 +193,68 @@ public class SoundManager : MonoBehaviour
     }
 
     //BGM停止
-    public void StopBgm(float fadeTime)
+    public void StopBgm(float fadeTime,int hierarchy)
     {
         if (fadeTime > 0)
         {
 
             //フェードする場合
-            bgmFade = true;
-            stopFade = true;
-            outTime = fadeTime;
-            fadelate = fadeTime;
+            BGMLists[hierarchy].bgmFade = true;
+            BGMLists[hierarchy].stopFade = true;
+            BGMLists[hierarchy].outTime = fadeTime;
+            BGMLists[hierarchy].fadelate = fadeTime;
         }
         else
         {
 
             //フェードしない場合
-            bgmAudioSource.Stop();
-            bgmAudioSource.clip = null;
+            bgmAudioSource[hierarchy].Stop();
+            bgmAudioSource[hierarchy].clip = null;
         }
     }
 
     //BGM再生
-    public void PlayBgm(string bgmName,float fadeTime, float volume)
+    public void PlayBgm(string bgmName,float fadeTime, float volume, int hierarchy)
     {
         string ResName = "Sounds/BGM/" + bgmName;
-        fadeBf = Resources.Load(ResName) as AudioClip;
+        BGMLists[hierarchy].fadeBf = Resources.Load(ResName) as AudioClip;
 
         //フェードがいる処理
         if (fadeTime > 0)
         {
-            bgmFade = true;
-            inTime = fadeTime;
-            fadelate = fadeTime;
-            afterVol = volume;
-            if (bgmAudioSource.clip ==null)
+            BGMLists[hierarchy].bgmFade = true;
+            BGMLists[hierarchy].inTime = fadeTime;
+            BGMLists[hierarchy].fadelate = fadeTime;
+            BGMLists[hierarchy].afterVol = volume;
+            if (bgmAudioSource[hierarchy].clip ==null)
             {
-                outTime = 0;
-                MaxVolume = afterVol;
-                bgmAudioSource.clip = fadeBf;
-                bgmAudioSource.Play();
+                BGMLists[hierarchy].outTime = 0;
+                BGMLists[hierarchy].MaxVolume = BGMLists[hierarchy].afterVol;
+                bgmAudioSource[hierarchy].clip = BGMLists[hierarchy].fadeBf;
+                bgmAudioSource[hierarchy].Play();
             }
             else
             {
-                outTime = fadeTime;
+                BGMLists[hierarchy].outTime = fadeTime;
             }
 
         }
         else
         {
-            bgmAudioSource.clip = fadeBf;
-            bgmAudioSource.volume = volume;
-            bgmAudioSource.Play();
+            bgmAudioSource[hierarchy].clip = BGMLists[hierarchy].fadeBf;
+            bgmAudioSource[hierarchy].volume = volume;
+            bgmAudioSource[hierarchy].Play();
         }
+    }
+
+    //BGMのフェード
+    public void VolFadeBgm(float fadeTime, float volume, int hierarchy)
+    {
+        BGMLists[hierarchy].volBgmFade =true;
+        BGMLists[hierarchy].startVol= BGMLists[hierarchy].MaxVolume;
+        BGMLists[hierarchy].endVol=volume ;
+        BGMLists[hierarchy].volFadeTime=0;
+        BGMLists[hierarchy].volFadeSpan=fadeTime;
     }
 
     //2DSE再生
@@ -236,4 +299,23 @@ public class SoundManager : MonoBehaviour
         clipList3Ds[listnum].audioSource.PlayOneShot(Clip);
         clipList3Ds[listnum].audioSource.volume= volume;
     }
+
+
+    ////裏のBGM停止
+    //public void StopBgmBAG()
+    //{
+    //    bgmAudioSource2.Stop();
+    //    bgmAudioSource2.clip = null;
+        
+    //}
+
+    ////裏のBGM再生
+    //public void PlayBgmBAG(string bgmName,float volume)
+    //{
+    //    string ResName = "Sounds/BGM/" + bgmName;
+    //    bgmAudioSource2.clip = Resources.Load(ResName) as AudioClip;
+    //    bgmAudioSource2.volume = volume;
+    //    bgmAudioSource2.Play();
+    //}
+
 }

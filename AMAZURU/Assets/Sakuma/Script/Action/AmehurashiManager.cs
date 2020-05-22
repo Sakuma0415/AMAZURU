@@ -43,7 +43,7 @@ public class AmehurashiManager : MonoBehaviour
                 if (backRainBGM != 2)
                 {
                     backRainBGM = 2;
-                    SoundManager.soundManager.PlayBgm("haevy_rain_loop", 0.5f, 0.3f);
+                    SoundManager.soundManager.PlayBgm("haevy_rain_loop", 0.5f, 0.3f,0);
                 }
             }
             else if((float)amehurashiTrueCont / (float)AmehurashiQuantity > 0)
@@ -51,7 +51,7 @@ public class AmehurashiManager : MonoBehaviour
                 if (backRainBGM != 1)
                 {
                     backRainBGM = 1;
-                    SoundManager.soundManager.PlayBgm("rain_loop", 0.5f, 0.8f);
+                    SoundManager.soundManager.PlayBgm("rain_loop", 0.5f, 0.8f,0);
                 }
             }
             else
@@ -59,7 +59,7 @@ public class AmehurashiManager : MonoBehaviour
                 if (backRainBGM != 0)
                 {
                     backRainBGM = 0;
-                    SoundManager.soundManager.StopBgm(1f);
+                    SoundManager.soundManager.StopBgm(1f,0);
                 }
             }
         }

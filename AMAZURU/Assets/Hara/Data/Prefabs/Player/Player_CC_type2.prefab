@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2001958938084469647}
   - component: {fileID: 2001958938084469646}
   - component: {fileID: 7510005379315772952}
+  - component: {fileID: -2952915303650524396}
   m_Layer: 9
   m_Name: Player_CC_type2
   m_TagString: Untagged
@@ -45,12 +46,12 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.5
-  m_Radius: 0.2
+  m_Radius: 0.25
   m_SlopeLimit: 60
-  m_StepOffset: 0.05
+  m_StepOffset: 0.08
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0
-  m_Center: {x: 0, y: 0.8, z: 0}
+  m_Center: {x: 0, y: 0.75, z: 0}
 --- !u!114 &7510005379315772952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,23 +68,48 @@ MonoBehaviour:
   playerAnimator: {fileID: 2934536632129885332}
   hiddenWallPrefab: {fileID: 8378400810947322284, guid: 20f0eb19eff9d37448a5f53a6970d386,
     type: 3}
-  playerCamera: {fileID: 0}
-  stageWater: {fileID: 0}
-  mode: 4
-  stateSet: 1
-  inputX: 0
-  inputZ: 0
-  playerSpeed: 4
-  playerWaterSpeed: 2
   layerMask:
     serializedVersion: 2
     m_Bits: 1
-  waterLayerMask:
+  mode: 1
+  playerSpeed: 4
+  playerWaterSpeed: 2
+  curve:
     serializedVersion: 2
-    m_Bits: 256
-  rayLength: 1.22
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  maxSpeedTime: 0.5
+  rayLength: 1.25
   gravity: 3
   wallSize: 1.5
+--- !u!81 &-2952915303650524396
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001958938084469648}
+  m_Enabled: 1
 --- !u!1001 &2001958939563436611
 PrefabInstance:
   m_ObjectHideFlags: 0

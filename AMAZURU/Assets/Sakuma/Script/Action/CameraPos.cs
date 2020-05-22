@@ -31,6 +31,15 @@ public class CameraPos : MonoBehaviour
     //カメラ捜査の速度
     [SerializeField]
     float stickSpead = 0;
+    //カメラの速度取得用
+    [SerializeField]
+    ResultControl resultControl;
+    //カメラの速度ステージ注視時
+    [SerializeField]
+    float[] cameraSpS;
+    //カメラの速度プレイヤー注視時
+    [SerializeField]
+    float[] cameraSpP;
 
     [Header("以下変更不可")]
     //ステージ注視時のカメラ、ステージ間の距離
@@ -87,6 +96,7 @@ public class CameraPos : MonoBehaviour
     bool outflg = false;
     //アメフラシ起動時に移動する角度
     float lotAngle = 0;
+    
 
     void Start()
     {
@@ -154,7 +164,6 @@ public class CameraPos : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         //ゲーム開始時の定点カメラの特殊挙動時のステータス更新
         if (startCameraFlg)
         {
@@ -162,7 +171,7 @@ public class CameraPos : MonoBehaviour
             XZangle += Time.deltaTime*3;
 
             //通常のカメラ処理に戻る
-            if (Input.GetButtonDown("Circle"))
+            if (Input.GetButtonDown("Circle") && !SceneLoadManager.Instance.SceneLoadFlg)
             {
                 startCameraAngleResetBf = XZangle;
                 startCameraFlg = false;
@@ -179,14 +188,6 @@ public class CameraPos : MonoBehaviour
 
             //マウスカーソルの設定
             Cursor.visible = !MouseHack;
-            //if (MouseHack)
-            //{
-            //    Cursor.lockState = CursorLockMode.Locked;
-            //}
-            //else
-            //{
-            //    Cursor.lockState = CursorLockMode.None;
-            //}
 
             //マウスカーソルの切り替え
             if (Input.GetKeyDown(KeyCode.Mouse1))
@@ -198,21 +199,56 @@ public class CameraPos : MonoBehaviour
             {
                 if (MouseCheck)
                 {
+                    if (!lookMode)
+                    {
+                        switch (resultControl.SpeedType)
+                        {
+                            case CameraSpeed.Slow:
+                                stickSpead = cameraSpS[0];
+                                break;
+                            case CameraSpeed.Nomal:
+                                stickSpead = cameraSpS[1];
+                                break;
+                            case CameraSpeed.Quick:
+                                stickSpead = cameraSpS[2];
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switch (resultControl.SpeedType)
+                        {
+                            case CameraSpeed.Slow:
+                                stickSpead = cameraSpP[0];
+                                break;
+                            case CameraSpeed.Nomal:
+                                stickSpead = cameraSpP[1];
+                                break;
+                            case CameraSpeed.Quick:
+                                stickSpead = cameraSpP[2];
+                                break;
+                        }
+                    }
+
+
+
+
+
 
                     //マウスの移動情報を角度の変更量に変換
-                    float mouse_x_delta = Mathf.Abs(Input.GetAxis("Horizontal2"))<0.1f?0: Input.GetAxis("Horizontal2") * stickSpead*Time.deltaTime ;
+                    float mouse_x_delta = Mathf.Abs(Input.GetAxis("Horizontal2"))<0.1f?0: Input.GetAxis("Horizontal2") * stickSpead * Time.deltaTime ;
                     float mouse_y_delta = Mathf.Abs( Input.GetAxis("Vertical2")) < 0.1f ? 0 : Input.GetAxis("Vertical2") * stickSpead * Time.deltaTime;
 
-                    XZangle -= mouse_x_delta * (lookMode ? CameraDisS : CameraDisP) / 10;
-                    Yangle -= mouse_y_delta * (lookMode ? CameraDisS : CameraDisP) / 10;
+                    XZangle -= mouse_x_delta ;
+                    Yangle -= mouse_y_delta ;
 
-                    if (Yangle > 90)
+                    if (Yangle > 85)
                     {
-                        Yangle = 90;
+                        Yangle = 85;
                     }
-                    if (Yangle < -90)
+                    if (Yangle < -85)
                     {
-                        Yangle = -90;
+                        Yangle = -85;
                     }
                 }
             }

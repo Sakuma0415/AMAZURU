@@ -46,7 +46,7 @@ public class O2Controller : MonoBehaviour
         {
 
             //呼吸可能時間の増減
-            if (!breath)
+            if (!breath&&!Progress .progress.key )
             {
                 breathTime = (breathTime + Time.deltaTime > breathLimitTime) ? breathLimitTime : breathTime + Time.deltaTime;
             }

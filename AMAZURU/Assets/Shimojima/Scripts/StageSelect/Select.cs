@@ -28,8 +28,9 @@ public class Select : MonoBehaviour
     [SerializeField]
     private int rotateAngle;
     private float sumAngle;
+    private float interval=0;
+
     private bool isRotation = false;
-    
     private enum Selection
     {
         Forwerd = 0,
@@ -98,24 +99,27 @@ public class Select : MonoBehaviour
     void Update()
     {
         float h = Input.GetAxis("Horizontal");
-        if (h < 0)
+        float h2 = Input.GetAxis("Horizontal3");
+        if (h < 0||h2<0)
         {
             if (isRotation) { return; }
             selection = Selection.Forwerd;
             isRotation = true;
         }
-        else if (h > 0)
+        else if (h > 0 || h2 > 0)
         {
             if (isRotation) { return; }
             selection = Selection.FallBack;
             isRotation = true;
         }
-
-        if (Input.GetButtonDown("Circle"))
+        if (Input.GetButtonDown("Circle")&& !SceneLoadManager.Instance.SceneLoadFlg)
         {
             StageMake.LoadStageData = sData;
+            SoundManager.soundManager.StopBgm(0.5f,1);
+            SoundManager.soundManager.PlaySe("btn01", 0.5f);
             SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
         }
+
     }
 
     private void FixedUpdate()

@@ -9,7 +9,7 @@ public class Progress : MonoBehaviour
 {
     //Instance
     static public Progress progress;
-    //鍵の取得のフラグ(現在未使用)
+    //水中呼吸アイテム取得のフラグ
     public bool key;
     //Clear時に呼び出すresult
     [SerializeField]
@@ -24,16 +24,18 @@ public class Progress : MonoBehaviour
     {
         SetState();
         progress = this;
-        SoundManager.soundManager.StopBgm(1f);
+        SoundManager.soundManager.PlayBgm("PerituneMaterial_Wonder3_loop", 0.5f, 0.5f, 1);
+        //謎
+        //SoundManager.soundManager.StopBgm(1f,0);
     }
-
+    
     private void Update()
     {
+
 
         //ポーズ画面の開閉
         if (Input.GetButtonDown("Option"))
         {
-            Debug.Log(23);
             if (PlayState.playState.gameMode == PlayState.GameMode.Play)
             {
                 resultControl.GamePause(true);

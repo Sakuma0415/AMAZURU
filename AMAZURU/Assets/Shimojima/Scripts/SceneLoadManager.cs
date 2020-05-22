@@ -24,6 +24,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
     }
 
     private bool IsLoadScene = false;
+    public GameObject loadImage;
     public Image fadeImage;
     [SerializeField]
     private Shader shader;
@@ -34,7 +35,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
     [SerializeField]
     private GameObject anounceText;
     private bool fadeEnd, DoKeyPress;
-
+    public bool SceneLoadFlg = false;
 #if UNITY_EDITOR
     void OnValidate()
     {
@@ -74,6 +75,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
         DoKeyPress = keyPress;
         StartCoroutine("Load");
         IsLoadScene = true;
+        SceneLoadFlg = true;
     }
 
     /// <summary>
@@ -83,22 +85,27 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
     /// <returns></returns>
     private IEnumerator Load()
     {
-        StartCoroutine(Fade(2, FadeMode.OUT));
+        StartCoroutine(Fade(1, FadeMode.OUT));
+        yield return new WaitForSeconds(1);
         AsyncOperation async = SceneManager.LoadSceneAsync(sceneName.ToString());
+        loadImage.SetActive(DoKeyPress);
         Animator animator = anounceText.GetComponent<Animator>();
         async.allowSceneActivation = false;
         bool DoOnce = false;
-
+        bool cha = false;
         while (!async.isDone)
         {
             if (DoKeyPress)
             {
                 if (async.progress >= 0.9f && !DoOnce && fadeEnd) { DoOnce = true; Debug.Log("compleated"); animator.SetTrigger("FadeIn"); }
-                if (Input.GetButtonDown("Circle") && fadeEnd)
+                if (Input.GetButtonDown("Circle") && fadeEnd&& !cha)
                 {
                     async.allowSceneActivation = true;
+                    loadImage.GetComponent<LoadImage>().WaveReSet();
+                    loadImage.SetActive(false);
                     animator.ResetTrigger("FadeIn");
                     animator.SetTrigger("FadeOut");
+                    cha = true;
                 }
             }
             else
@@ -126,7 +133,6 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
     /// <returns></returns>
     private IEnumerator Fade(float sec, FadeMode fadeMode)
     {
-        float speed = 1 / (sec * 60);
         alphaCut = fadeImage.material.GetFloat("_Alpha");
         fadeEnd = false;
 
@@ -134,19 +140,20 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
         {
             if (fadeMode == FadeMode.IN)
             {
+                alphaCut -= Time.deltaTime / sec; ;
                 fadeImage.material.SetFloat("_Alpha", alphaCut);
-                alphaCut -= speed;
                 if(alphaCut <= 0) { fadeEnd = true; }
             }
             else if(fadeMode == FadeMode.OUT)
             {
+                alphaCut += Time.deltaTime / sec; ;
                 fadeImage.material.SetFloat("_Alpha", alphaCut);
-                alphaCut += speed;
                 if (alphaCut >= 1) { fadeEnd = true; }
             }
 
             yield return null;
         }
+        if (fadeMode == FadeMode.IN) { SceneLoadFlg = false; }
         yield return null;
     }
 }

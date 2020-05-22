@@ -15,6 +15,10 @@ MonoBehaviour:
   stageName: "\u4EEE\u30B9\u30C6\u30FC\u30B81"
   stageSize: {x: 10, y: 5, z: 5}
   startPos: {x: 0, y: 0, z: 0}
-  waterHeight: 3
-  stagePrefab: {fileID: 4412154186803275303, guid: 66a6f4c5931e08d469771d823e2d5210,
+  waterStep: 0
+  stagePrefab: {fileID: 6911727456603234469, guid: 703badf82e95b5647b2b36fdba9faa16,
     type: 3}
+  AmehurashiQuantity: 0
+  startAngle: 0
+  CameraDisS: 0
+  CameraDisP: 0
