@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Island01River01ReflectionProbes
+  m_Shader: {fileID: 4800000, guid: 21cd43cfe96a0184db6f018fa511a971, type: 3}
+  m_ShaderKeywords: _INVERSEDIRECTION_ON _INVERSEWAVESDIRECTION_ON _INVERSEWAVES_ON
+    _RADIALWAVES_ON _USEDISPWAVES_ON _USEFAKEREFLECTION_ON _USEMASK_ON _USERADIALMASK_ON
+    _USEREFLECTION_ON
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - <noninit>:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DisplacementMask:
+        m_Texture: {fileID: 2800000, guid: 306f7b8087773cb42a665b9c5eeff8f1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DisplacementTile:
+        m_Texture: {fileID: 2800000, guid: 1494fa713d330b84b9ce081df7b5c0c0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Foam:
+        m_Texture: {fileID: 2800000, guid: 8f73045fe260a1b41ae0ed08a11e457e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal:
+        m_Texture: {fileID: 2800000, guid: 60977704998116b4dbd3350b7b9c4bae, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - <noninit>: 0
+    - _Cutoff: 0.5
+    - _Density: 1
+    - _DisplacementSpeed: 1
+    - _FadeLevel: 4
+    - _FoamDistance: 0
+    - _FoamIntensity: 0.6
+    - _FoamScale: 20
+    - _FoamSpeed: 1
+    - _FoamWavesIntensity: 1
+    - _Fresnel: 1
+    - _Gloss: 0.25
+    - _InverseWavesDirection: 0
+    - _MaskIntensity: 1
+    - _NormalIntensity: 1.4
+    - _RefractionIntensity: 0.4
+    - _Scale: 0.7
+    - _ShoreOpacity: 0
+    - _ShoreTransparency: 6
+    - _Specularity: 0.5
+    - _WaterOpacity: 1
+    - _WaterSpeed: 0.35
+    - _WavesAmplitude: 0.1
+    - _WavesTileScale: 60
+    m_Colors:
+    - <noninit>: {r: 0, g: 2.5999786e-34, b: 0, a: 2.599964e-34}
+    - _WaterColor: {r: 1, g: 1, b: 1, a: 1}
