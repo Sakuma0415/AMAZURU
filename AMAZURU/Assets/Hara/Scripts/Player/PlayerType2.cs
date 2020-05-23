@@ -219,7 +219,18 @@ public class PlayerType2 : MonoBehaviour
                 // AnimationEventの設定
                 if (animeEvent != null)
                 {
-                    animeEvent.WaterStep = inWater;
+                    if (UnderWater)
+                    {
+                        animeEvent.PlayerStepMode = StepMode.UnderWater;
+                    }
+                    else if (inWater)
+                    {
+                        animeEvent.PlayerStepMode = StepMode.InWater;
+                    }
+                    else
+                    {
+                        animeEvent.PlayerStepMode = StepMode.Nomal;
+                    }
                     animeEvent.PlayerPosition = transform.position;
                 }
             }
