@@ -15,6 +15,7 @@ MonoBehaviour:
   stageName: Tutorial_ss_1
   diificulty: 0
   stage: {fileID: 1939540034701030741, guid: 711b8fceed298f0439bba1de9a6698db, type: 3}
-  viewStage: {fileID: 0}
-  sData: {fileID: 0}
+  viewStage: {fileID: 1939540034701030741, guid: 6510e9a059eb04b4f869b791ace2ab3f,
+    type: 3}
+  sData: {fileID: 11400000, guid: 6e78fdeca4027684182bad3340f36e96, type: 2}
   gridCells: {x: 10, y: 10, z: 10}

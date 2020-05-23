@@ -25,6 +25,7 @@ public class AmehurashiManager : MonoBehaviour
     //雨のBGMの連続性を検知するための変数
     private int backRainBGM = -1;
     //+　初期化
+
     public void ManagerSet()
     {
         amehurashi = this;
