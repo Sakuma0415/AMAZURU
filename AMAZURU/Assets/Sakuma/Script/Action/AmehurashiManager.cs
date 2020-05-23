@@ -51,7 +51,7 @@ public class AmehurashiManager : MonoBehaviour
                 if (backRainBGM != 1)
                 {
                     backRainBGM = 1;
-                    SoundManager.soundManager.PlayBgm("rain_loop", 0.5f, 0.8f,0);
+                    SoundManager.soundManager.PlayBgm("rain_loop", 0.5f, 0.5f,0);
                 }
             }
             else
