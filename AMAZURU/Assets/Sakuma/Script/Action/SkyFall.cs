@@ -57,11 +57,31 @@ public class SkyFall : MonoBehaviour
         {
             if (amehurashiNumber != AmehurashiManager.amehurashi.amehurashiTrueCont)
             {
+                float skyMode = -1;
+                if((float)AmehurashiManager.amehurashi.amehurashiTrueCont / (float)AmehurashiManager.amehurashi.AmehurashiQuantity > 0.5f)
+                {
+                    skyMode = 1;
+                }
+                else if((float)AmehurashiManager.amehurashi.amehurashiTrueCont / (float)AmehurashiManager.amehurashi.AmehurashiQuantity > 0)
+                {
+                    skyMode = 0.5f;
+                }
+                else
+                {
+                    skyMode = 0;
+                }
+
+
+
+
                 changeTime = 0;
                 ChangeFlg = true;
                 amehurashiNumber = AmehurashiManager.amehurashi.amehurashiTrueCont;
                 startBrightness = material.GetColor("_Tint").r;
-                endBrightness = baseSkyBrightness-(((float)AmehurashiManager.amehurashi.amehurashiTrueCont / (float)AmehurashiManager.amehurashi.AmehurashiQuantity) * (baseSkyBrightness - maxSkyBrightness));
+                //endBrightness = baseSkyBrightness - (((float)AmehurashiManager.amehurashi.amehurashiTrueCont / (float)AmehurashiManager.amehurashi.AmehurashiQuantity) * (baseSkyBrightness - maxSkyBrightness));
+                endBrightness = baseSkyBrightness - (skyMode * (baseSkyBrightness - maxSkyBrightness));
+
+
             }
         }
 

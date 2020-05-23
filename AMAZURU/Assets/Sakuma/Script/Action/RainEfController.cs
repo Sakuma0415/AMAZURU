@@ -58,7 +58,7 @@ public class RainEfController : MonoBehaviour
 
             //起動数で雨の量を決定
             float def = (float)AmehurashiCont / (float)AmehurashiManager.amehurashi.AmehurashiQuantity;
-            def *= def;
+            //def *= def;
             for (int i = 0; i < rainScript.Length; i++)
             {
                 rainScript[i].RainIntensity = def;
