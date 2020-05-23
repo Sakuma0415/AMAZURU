@@ -125,7 +125,7 @@ public class EnemyController : MyAnimation
 
         inWater = stageWater != null && transform.position.y + enemy.radius < stageWater.max;
 
-        if (mode == PlayState.GameMode.Play && standby)
+        if ((mode == PlayState.GameMode.Play || mode == PlayState.GameMode.Rain) && standby)
         {
             int nextLocation;
             if (finishOneLoop)
