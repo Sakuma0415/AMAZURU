@@ -6,6 +6,8 @@ using UnityEngine;
 public class PrefabStageData : ScriptableObject
 {
     public string stageName;
+    [Tooltip("難易度")]
+    public int diificulty;
     [Tooltip("ステージプレファブ")]
     public GameObject stage;
     [Tooltip("ステージセレクト用プレファブ")]

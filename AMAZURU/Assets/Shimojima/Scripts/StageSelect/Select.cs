@@ -17,13 +17,15 @@ public class Select : MonoBehaviour
     [SerializeField]
     private Text stageNameText;
 
+    //読み込んだステージを格納
     private List<GameObject> stages = new List<GameObject>();
+    //プレファブステージデータ
     private PrefabStageData[] psd;
-    [SerializeField]
+    [SerializeField,Tooltip("初期位置")]
     private Vector3 defPos;
-    [SerializeField]
+    [SerializeField,Tooltip("サイズ調整")]
     private Vector2 scaleAdjust;
-    [SerializeField, Range(1, 10)]
+    [SerializeField, Range(1, 10),Tooltip("回転速度")]
     private float speed = 1;
     [SerializeField]
     private int rotateAngle;
@@ -53,6 +55,9 @@ public class Select : MonoBehaviour
         public int index;
         public int psdIndex;
 
+        /// <summary>
+        /// 初期化
+        /// </summary>
         public void Init()
         {
             name = "";
@@ -64,6 +69,10 @@ public class Select : MonoBehaviour
             psdIndex = 0;
         }
 
+        /// <summary>
+        /// データの引き渡し
+        /// </summary>
+        /// <param name="v"></param>
         public void TookOver(ViewStage v)
         {
             name = v.name;
@@ -118,6 +127,12 @@ public class Select : MonoBehaviour
             SoundManager.soundManager.StopBgm(0.5f,1);
             SoundManager.soundManager.PlaySe("btn01", 0.5f);
             SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
+        }
+        else if (Input.GetButtonDown("Cross") && !SceneLoadManager.Instance.SceneLoadFlg)
+        {
+            SoundManager.soundManager.StopBgm(0.5f, 1);
+            SoundManager.soundManager.PlaySe("btn01", 0.5f);
+            SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Title);
         }
 
     }
