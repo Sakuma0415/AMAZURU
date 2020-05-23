@@ -22,7 +22,7 @@ public class PlayerAnimeEvent : MonoBehaviour
         if (WaterStep)
         {
             // 水中時
-            SoundManager.soundManager.PlaySe3D("FitGround_Dast2_1", PlayerPosition, 0.3f);
+            SoundManager.soundManager.PlaySe3D("step_in_water", PlayerPosition, 0.3f);
         }
         else
         {
