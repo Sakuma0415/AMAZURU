@@ -66,7 +66,7 @@ public class SoundManager : MonoBehaviour
     }
 
     private BGMList[] BGMLists=new BGMList[2];
-
+    public bool BGMnull1=false , BGMnull2 = false;
 
     //3Dサウンドの再生オブジェの状態をまとめた構造体
     struct ClipList3D
@@ -119,6 +119,9 @@ public class SoundManager : MonoBehaviour
     //フレーム処理
     void Update()
     {
+
+        BGMnull1= !(bgmAudioSource[0].clip == null);
+        BGMnull2 = !(bgmAudioSource[1].clip == null);
 
         //BGMがフェード処理中
         for (int i = 0; i < BGMLists.Length; i++)

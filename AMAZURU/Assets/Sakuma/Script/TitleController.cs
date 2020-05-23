@@ -55,8 +55,7 @@ public class TitleController : MyAnimation
         }
 
         SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.StageSlect, false);
-        SoundManager.soundManager.StopBgm(1, 0);
-
+        SoundManager.soundManager.VolFadeBgm(1, 0.1f, 0);
         coroutine = null;
     }
 

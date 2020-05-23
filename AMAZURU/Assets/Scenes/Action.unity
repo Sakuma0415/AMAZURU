@@ -611,6 +611,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text1: {fileID: 67666157}
   text2: {fileID: 1029511170}
+  text3: {fileID: 1245331521}
+  fontSizeMax: 100
+  fontSizeMin: 75
 --- !u!1 &363166040
 GameObject:
   m_ObjectHideFlags: 0
