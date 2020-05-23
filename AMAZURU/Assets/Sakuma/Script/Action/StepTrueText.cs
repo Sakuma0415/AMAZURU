@@ -47,6 +47,6 @@ public class StepTrueText : MonoBehaviour
         textMaterial.color = new Color(textMaterial.color.r, textMaterial.color.g, textMaterial.color.b, textTime*(1/fadeTime));
 
         //テキストが常にカメラを向く
-        textObj.transform.eulerAngles = new Vector3(0,cameraObj.transform.eulerAngles.y,0);
+        textObj.transform.eulerAngles = new Vector3(cameraObj.transform.eulerAngles.x, cameraObj.transform.eulerAngles.y,0);
     }
 }

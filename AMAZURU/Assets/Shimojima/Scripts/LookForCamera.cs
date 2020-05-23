@@ -51,9 +51,11 @@ public class LookForCamera : MonoBehaviour
 
     private void LookCamera()
     {
-        Vector3 pos = Camera.main.transform.position - selectUI.transform.position;
-        selectUI.transform.rotation = Quaternion.LookRotation(-pos, Vector3.up);
+        //Vector3 pos = Camera.main.transform.position - selectUI.transform.position;
+        //selectUI.transform.rotation = Quaternion.LookRotation(-pos, Vector3.up);
+        selectUI.transform.eulerAngles = new Vector3(Camera.main.transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, 0);
     }
+
 
     private void OnTriggerStay(Collider other)
     {
