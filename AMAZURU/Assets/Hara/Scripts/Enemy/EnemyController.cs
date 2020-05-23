@@ -48,7 +48,7 @@ public class EnemyController : MyAnimation
     // Start is called before the first frame update
     void Start()
     {
-        EnemyInit();
+        EnemyInit(true);
     }
 
     private void FixedUpdate()
@@ -58,7 +58,7 @@ public class EnemyController : MyAnimation
         if (inspectorUpdate)
         {
             inspectorUpdate = false;
-            EnemyInit();
+            EnemyInit(false);
         }
     }
 
@@ -70,7 +70,7 @@ public class EnemyController : MyAnimation
     /// <summary>
     /// 敵の初期化
     /// </summary>
-    private void EnemyInit()
+    private void EnemyInit(bool first)
     {
         step = 0;
         location = 0;
@@ -106,7 +106,7 @@ public class EnemyController : MyAnimation
             // 敵の開始時のサイズを設定
             transform.localScale = Vector3.one * enemySize;
             // 行動計画を設定
-            SetMoveSchedule(movePlan);
+            SetMoveSchedule(movePlan, first);
             // 処理実行
             standby = true;
         }
@@ -135,8 +135,9 @@ public class EnemyController : MyAnimation
             {
                 nextLocation = location + 1 >= moveSchedule.Length ? moveType == EnemyMoveType.Lap ? 0 : location - 1 : location + 1;
             }
+            Vector3 nowPos = moveSchedule[location];
             Vector3 nextPos = moveSchedule[nextLocation];
-            Vector3 forward = (nextPos - transform.position).normalized;
+            Vector3 forward = (nextPos - nowPos).normalized;
 
             // プレイヤーと接触しているかをチェック
             RaycastHit hit;
@@ -151,7 +152,7 @@ public class EnemyController : MyAnimation
                 switch (step)
                 {
                     case 0:
-                        transform.position = moveSchedule[location];
+                        transform.position = nowPos;
                         if (Vector3.Distance(transform.position, moveSchedule[nextLocation]) < 0.1f)
                         {
                             step = -5;
@@ -169,15 +170,15 @@ public class EnemyController : MyAnimation
                             float speed = inWater ? enemyWaterSpeed : enemySpeed;
                             transform.position += forward * speed * delta * vec;
 
-                            float distanceX = Mathf.Abs(moveSchedule[location].x - nextPos.x);
-                            float distanceY = Mathf.Abs(moveSchedule[location].y - nextPos.y);
-                            float distanceZ = Mathf.Abs(moveSchedule[location].z - nextPos.z);
-
-                            stepEnd = Mathf.Abs(transform.position.x - moveSchedule[location].x) > distanceX || Mathf.Abs(transform.position.y - moveSchedule[location].y) > distanceY || Mathf.Abs(transform.position.z - moveSchedule[location].z) > distanceZ;
+                            float distanceX = Mathf.Abs(Mathf.Abs(nowPos.x) - Mathf.Abs(nextPos.x));
+                            float distanceY = Mathf.Abs(Mathf.Abs(nowPos.y) - Mathf.Abs(nextPos.y));
+                            float distanceZ = Mathf.Abs(Mathf.Abs(nowPos.z) - Mathf.Abs(nextPos.z));
+                            Vector3 now = new Vector3(Mathf.Abs(Mathf.Abs(transform.position.x) - Mathf.Abs(nowPos.x)), Mathf.Abs(Mathf.Abs(transform.position.y) - Mathf.Abs(nowPos.y)), Mathf.Abs(Mathf.Abs(transform.position.z) - Mathf.Abs(nowPos.z)));
+                            stepEnd = now.x >= distanceX && now.y >= distanceY && now.z >= distanceZ;
                         }
                         else
                         {
-                            step = 2;
+                            step = 1;
                         }
                         break;
                     default:
@@ -248,21 +249,25 @@ public class EnemyController : MyAnimation
     /// <summary>
     /// 敵の移動スケジュールを設定
     /// </summary>
-    private void SetMoveSchedule(Vector2[] plan)
+    private void SetMoveSchedule(Vector2[] plan, bool first)
     {
-        moveSchedule = new Vector3[plan.Length < 2 ? 2 : plan.Length + 1];
-        for(int i = 0; i < moveSchedule.Length; i++)
+        if (first)
         {
-            if(i > 0 && plan.Length > 0)
-            {
-                moveSchedule[i] = moveSchedule[i - 1];
-                moveSchedule[i].x += plan[i - 1].x;
-                moveSchedule[i].z += plan[i - 1].y;
-            }
-            else
-            {
-                moveSchedule[i] = transform.position;
-            }
+            moveSchedule = new Vector3[plan.Length < 2 ? 2 : plan.Length + 1];
+            moveSchedule[0] = transform.position;
+        }
+        else
+        {
+            Vector3 pos = moveSchedule[0];
+            moveSchedule = new Vector3[plan.Length < 2 ? 2 : plan.Length + 1];
+            moveSchedule[0] = pos;
+        }
+        
+        for(int i = 1; i < moveSchedule.Length; i++)
+        {
+            moveSchedule[i] = moveSchedule[i - 1];
+            moveSchedule[i].x += plan[i - 1].x;
+            moveSchedule[i].z += plan[i - 1].y;
         }
     }
 
