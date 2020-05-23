@@ -2,12 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum StepMode
+{
+    Nomal,
+    InWater,
+    UnderWater
+}
+
 public class PlayerAnimeEvent : MonoBehaviour
 {
-    /// <summary>
-    /// 水中移動時のフラグ
-    /// </summary>
-    public bool WaterStep { set; private get; } = false;
+    // 足音のボリューム
+    private float volume = 0.5f;
+
+    public StepMode PlayerStepMode { set; private get; } = StepMode.Nomal;
 
     /// <summary>
     /// プレイヤーの座標情報
@@ -19,15 +26,28 @@ public class PlayerAnimeEvent : MonoBehaviour
     /// </summary>
     public void Step()
     {
-        if (WaterStep)
+        if(PlayerStepMode == StepMode.UnderWater)
         {
-            // 水中時
-            SoundManager.soundManager.PlaySe3D("step_in_water", PlayerPosition, 0.3f);
+            // 完全にプレイヤーが水没している際の足音
+            SoundManager.soundManager.PlaySe3D("step_under_water", PlayerPosition, volume);
+        }
+        else if(PlayerStepMode == StepMode.InWater)
+        {
+            // プレイヤーが腰の高さまで水に浸かっている際の足音
+            float rnd = Random.Range(0, 10);
+            if(rnd % 2 == 0)
+            {
+                SoundManager.soundManager.PlaySe3D("step_in_water_1", PlayerPosition, volume);
+            }
+            else
+            {
+                SoundManager.soundManager.PlaySe3D("step_in_water_2", PlayerPosition, volume);
+            }
         }
         else
         {
-            // 通常時
-            SoundManager.soundManager.PlaySe3D("FitGround_Dast2_1", PlayerPosition, 0.3f);
+            // 通常時のプレイヤーの足音
+            SoundManager.soundManager.PlaySe3D("FitGround_Dast2_1", PlayerPosition, volume);
         }
     }
 }
