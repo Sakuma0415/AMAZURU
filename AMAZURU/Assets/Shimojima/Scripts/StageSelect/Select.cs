@@ -126,14 +126,14 @@ public class Select : MonoBehaviour
             StageMake.LoadStageData = sData;
             SoundManager.soundManager.StopBgm(0.5f, 1);
             SoundManager.soundManager.StopBgm(0.5f, 0);
-            SoundManager.soundManager.PlaySe("btn01", 0.5f);
+            SoundManager.soundManager.PlaySe("btn01", 0.2f);
             SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
         }
         else if (Input.GetButtonDown("Cross") && !SceneLoadManager.Instance.SceneLoadFlg)
         {
             SoundManager.soundManager.StopBgm(0.5f, 1);
             SoundManager.soundManager.StopBgm(0.5f, 0);
-            SoundManager.soundManager.PlaySe("btn01", 0.5f);
+            SoundManager.soundManager.PlaySe("btn01", 0.3f);
             SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Title,false);
         }
 
@@ -151,8 +151,8 @@ public class Select : MonoBehaviour
     private void Init()
     {
 
-        if (!SoundManager.soundManager.BGMnull1) { SoundManager.soundManager.PlayBgm("MusMus-BGM-043", 0.1f, 0.1f, 0); }
-        if (!SoundManager.soundManager.BGMnull2) { SoundManager.soundManager.PlayBgm("rain_loop", 0.1f, 0.5f, 1); }
+        if (!SoundManager.soundManager.BGMnull1) { SoundManager.soundManager.PlayBgm("MusMus-BGM-043", 0.1f, 0.2f, 0); }
+        if (!SoundManager.soundManager.BGMnull2) { SoundManager.soundManager.PlayBgm("rain_loop", 0.1f, 0.3f, 1); }
 
         psd = Resources.LoadAll<PrefabStageData>("EditData/");
         int overCount = 1;

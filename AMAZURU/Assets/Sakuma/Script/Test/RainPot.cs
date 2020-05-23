@@ -56,7 +56,7 @@ public class RainPot : MonoBehaviour
         {
             if (Input.GetButtonDown("Circle") && PlayState.playState.gameMode == PlayState.GameMode.Play)
             {
-                SoundManager.soundManager.PlaySe("btn09", 1);
+                SoundManager.soundManager.PlaySe("btn09", 0.5f);
                 look.RainFall = sw;
                 sw = !sw;
                 

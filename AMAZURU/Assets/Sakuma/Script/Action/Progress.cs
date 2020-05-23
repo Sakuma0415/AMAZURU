@@ -24,7 +24,7 @@ public class Progress : MonoBehaviour
     {
         SetState();
         progress = this;
-        SoundManager.soundManager.PlayBgm("PerituneMaterial_Wonder3_loop", 0.5f, 0.5f, 1);
+        SoundManager.soundManager.PlayBgm("PerituneMaterial_Wonder3_loop", 0.5f, 0.4f, 1);
         //謎
         //SoundManager.soundManager.StopBgm(1f,0);
     }
