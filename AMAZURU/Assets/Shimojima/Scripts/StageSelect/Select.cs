@@ -112,27 +112,31 @@ public class Select : MonoBehaviour
         if (h < 0||h2<0)
         {
             if (isRotation) { return; }
+            SoundManager.soundManager.PlaySe("cncl05", 1f);
             selection = Selection.Forwerd;
             isRotation = true;
         }
         else if (h > 0 || h2 > 0)
         {
             if (isRotation) { return; }
+            SoundManager.soundManager.PlaySe("cncl05", 1f);
             selection = Selection.FallBack;
             isRotation = true;
         }
         if (Input.GetButtonDown("Circle")&& !SceneLoadManager.Instance.SceneLoadFlg)
         {
             StageMake.LoadStageData = sData;
-            SoundManager.soundManager.StopBgm(0.5f,1);
-            SoundManager.soundManager.PlaySe("btn01", 0.5f);
+            SoundManager.soundManager.StopBgm(0.5f, 1);
+            SoundManager.soundManager.StopBgm(0.5f, 0);
+            SoundManager.soundManager.PlaySe("btn01", 0.2f);
             SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
         }
         else if (Input.GetButtonDown("Cross") && !SceneLoadManager.Instance.SceneLoadFlg)
         {
             SoundManager.soundManager.StopBgm(0.5f, 1);
-            SoundManager.soundManager.PlaySe("btn01", 0.5f);
-            SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Title);
+            SoundManager.soundManager.StopBgm(0.5f, 0);
+            SoundManager.soundManager.PlaySe("btn01", 0.3f);
+            SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Title,false);
         }
 
     }
@@ -148,6 +152,10 @@ public class Select : MonoBehaviour
     /// </summary>
     private void Init()
     {
+
+        if (!SoundManager.soundManager.BGMnull1) { SoundManager.soundManager.PlayBgm("MusMus-BGM-043", 0.1f, 0.2f, 0); }
+        if (!SoundManager.soundManager.BGMnull2) { SoundManager.soundManager.PlayBgm("rain_loop", 0.1f, 0.3f, 1); }
+
         psd = Resources.LoadAll<PrefabStageData>("EditData/");
         int overCount = 1;
         for (int i = 0; i < 5; i++)

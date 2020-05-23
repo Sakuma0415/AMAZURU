@@ -25,14 +25,13 @@ public class EnemyController : MyAnimation
     [SerializeField, Header("行動計画")] private Vector2[] movePlan = null;
     [SerializeField, Header("行動パターン")] private EnemyMoveType moveType = EnemyMoveType.Lap;
     [SerializeField, Header("行動遅延時間"), Range(0, 3)] private float lateTime = 1.0f; 
-    [SerializeField, Header("敵の移動速度"), Range(0, 5)] private float enemySpeed = 1.0f;
-    [SerializeField, Header("敵の水中移動速度"), Range(0, 5)] private float enemyWaterSpeed = 1.0f;
+    [SerializeField, Header("敵の移動速度"), Range(0, 10)] private float enemySpeed = 1.0f;
+    [SerializeField, Header("敵の水中移動速度"), Range(0, 20)] private float enemyWaterSpeed = 1.0f;
     [SerializeField, Header("回転力")] private float rotatePower = 50f;
     [SerializeField, Header("敵のコライダーの大きさ"), Range(0.1f, 1.0f)] private float colliderSize = 0.5f;
 
     private Vector3[] moveSchedule = null;
     private int location = 0;
-    private float time = 0;
     private int step = 0;
     private bool stepEnd = false;
     private bool standby = false;
@@ -125,7 +124,7 @@ public class EnemyController : MyAnimation
 
         inWater = stageWater != null && transform.position.y + enemy.radius < stageWater.max;
 
-        if (mode == PlayState.GameMode.Play && standby)
+        if ((mode == PlayState.GameMode.Play || mode == PlayState.GameMode.Rain) && standby)
         {
             int nextLocation;
             if (finishOneLoop)
@@ -160,27 +159,21 @@ public class EnemyController : MyAnimation
                         stepEnd = true;
                         break;
                     case 1:
-                        stepEnd = Wait(time, lateTime);
-                        time += delta;
-                        break;
-                    case 2:
                         stepEnd = RotateAnimation(transform.gameObject, forward, rotatePower * delta, false);
                         break;
-                    case 3:
-                        stepEnd = Wait(time, lateTime);
-                        time += delta;
-                        break;
-                    case 4:
+                    case 2:
                         if (transform.rotation == Quaternion.LookRotation(forward))
                         {
                             float vec = Mathf.Abs(forward.x) >= Mathf.Abs(forward.z) ? forward.z / forward.x : forward.x / forward.z;
                             vec = 1.0f / Mathf.Sqrt(1.0f + vec * vec);
                             float speed = inWater ? enemyWaterSpeed : enemySpeed;
                             transform.position += forward * speed * delta * vec;
-                            if (Vector3.Distance(transform.position, nextPos) < 0.1f)
-                            {
-                                stepEnd = true;
-                            }
+
+                            float distanceX = Mathf.Abs(moveSchedule[location].x - nextPos.x);
+                            float distanceY = Mathf.Abs(moveSchedule[location].y - nextPos.y);
+                            float distanceZ = Mathf.Abs(moveSchedule[location].z - nextPos.z);
+
+                            stepEnd = Mathf.Abs(transform.position.x - moveSchedule[location].x) > distanceX || Mathf.Abs(transform.position.y - moveSchedule[location].y) > distanceY || Mathf.Abs(transform.position.z - moveSchedule[location].z) > distanceZ;
                         }
                         else
                         {
@@ -220,7 +213,6 @@ public class EnemyController : MyAnimation
                 {
                     stepEnd = false;
                     step++;
-                    time = 0;
                 }
             }
 
@@ -232,7 +224,7 @@ public class EnemyController : MyAnimation
                 if (animationTime >= animationSpeed)
                 {
                     animationTime = 0;
-                    SoundManager.soundManager.PlaySe3D("EnemyMove", transform.position, 0.5f);
+                    SoundManager.soundManager.PlaySe3D("EnemyMove", transform.position, 0.3f);
                 }
             }
         }

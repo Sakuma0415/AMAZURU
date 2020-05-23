@@ -12,7 +12,7 @@ public enum StepMode
 public class PlayerAnimeEvent : MonoBehaviour
 {
     // 足音のボリューム
-    private float volume = 0.5f;
+    private float volume = 0.3f;
 
     public StepMode PlayerStepMode { set; private get; } = StepMode.Nomal;
 

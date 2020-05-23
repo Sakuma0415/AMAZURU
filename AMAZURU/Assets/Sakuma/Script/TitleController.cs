@@ -22,8 +22,8 @@ public class TitleController : MyAnimation
 
     private void Start()
     {
-        SoundManager.soundManager.PlayBgm("MusMus-BGM-043", 0.1f, 0.8f,0);
-        SoundManager.soundManager.PlayBgm("rain_loop",0.1f, 0.5f,1);
+        SoundManager.soundManager.PlayBgm("MusMus-BGM-043", 0.1f, 0.5f,0);
+        SoundManager.soundManager.PlayBgm("rain_loop",0.1f, 0.3f,1);
 
         selectNum = 0;
         creditFlag = false;
@@ -55,8 +55,7 @@ public class TitleController : MyAnimation
         }
 
         SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.StageSlect, false);
-        SoundManager.soundManager.StopBgm(1, 0);
-
+        SoundManager.soundManager.VolFadeBgm(1, 0.2f, 0);
         coroutine = null;
     }
 
@@ -195,7 +194,7 @@ public class TitleController : MyAnimation
     private void ButtonAction(int id)
     {
         // ボタンSEの再生
-        SoundManager.soundManager.PlaySe("btn01", 0.5f);
+        SoundManager.soundManager.PlaySe("btn01", 0.2f);
 
         // idによる処理内容の分岐
         switch (id)
