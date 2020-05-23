@@ -124,7 +124,7 @@ public class PlayerType2 : MonoBehaviour
             mode = PlayState.GameMode.Play;
         }
 
-        if (mode == PlayState.GameMode.Play)
+        if (mode == PlayState.GameMode.Play || mode == PlayState.GameMode.Rain)
         {
             bool input;
             float inputSpeed = (Mathf.Abs(inputX) + Mathf.Abs(inputZ)) * 0.5f < 0.5f ? Mathf.Abs(inputX) + Mathf.Abs(inputZ) : 1.0f;
@@ -147,7 +147,7 @@ public class PlayerType2 : MonoBehaviour
 
                 // 入力の最低許容値
                 float inputMin = 0.1f;
-                input = (Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin) && dontInput == false;
+                input = (Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin) && mode == PlayState.GameMode.Play && dontInput == false;
 
                 if (input)
                 {
