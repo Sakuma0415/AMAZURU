@@ -112,12 +112,14 @@ public class Select : MonoBehaviour
         if (h < 0||h2<0)
         {
             if (isRotation) { return; }
+            SoundManager.soundManager.PlaySe("cncl05", 1f);
             selection = Selection.Forwerd;
             isRotation = true;
         }
         else if (h > 0 || h2 > 0)
         {
             if (isRotation) { return; }
+            SoundManager.soundManager.PlaySe("cncl05", 1f);
             selection = Selection.FallBack;
             isRotation = true;
         }
