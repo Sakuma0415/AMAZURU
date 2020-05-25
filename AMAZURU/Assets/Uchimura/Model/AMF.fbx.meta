@@ -1,16 +1,11 @@
 fileFormatVersion: 2
-guid: 96fe36b76971ed74ba91b0caab784e72
+guid: 3115945acfde31948a3dad363cc43764
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: lambert1
-    second: {fileID: 2100000, guid: 41a79b23df18d3b458537edb95448e8e, type: 2}
+  externalObjects: {}
   materials:
-    materialImportMode: 1
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -73,7 +68,7 @@ ModelImporter:
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   referencedClips: []
-  importAnimation: 1
+  importAnimation: 0
   humanDescription:
     serializedVersion: 3
     human: []
@@ -86,7 +81,7 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 1
-    rootMotionBoneName: Jt_Umbrella_loot
+    rootMotionBoneName: Jt_AMF_root
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
