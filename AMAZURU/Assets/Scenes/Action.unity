@@ -230,6 +230,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: 0
   resultControl: {fileID: 1971748816}
+  ResultDelayTime: 1
 --- !u!4 &76967582
 Transform:
   m_ObjectHideFlags: 0
@@ -1114,6 +1115,8 @@ MonoBehaviour:
   - 75
   - 150
   - 300
+  GameEndDis: 2.5
+  GameEndEfSpan: 0.5
   CameraDisS: 20
   CameraDisP: 8
   lookPos: {x: 4, y: 4, z: 4}

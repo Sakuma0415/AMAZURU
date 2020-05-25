@@ -40,6 +40,12 @@ public class CameraPos : MonoBehaviour
     //カメラの速度プレイヤー注視時
     [SerializeField]
     float[] cameraSpP;
+    //ゲーム終了時のカメラの距離
+    [SerializeField]
+    float GameEndDis = 0;
+    //ゲーム終了時の演出にかかる時間
+    [SerializeField]
+    float GameEndEfSpan = 0;
 
     [Header("以下変更不可")]
     //ステージ注視時のカメラ、ステージ間の距離
@@ -96,7 +102,16 @@ public class CameraPos : MonoBehaviour
     bool outflg = false;
     //アメフラシ起動時に移動する角度
     float lotAngle = 0;
-    
+    //ゲームオーバー、クリア時の瞬間を検知するためのシーケンサー
+    PlayState.GameMode gameMode;
+    //ゲームオーバー、クリア時の演出中かどうかのフラグ
+    bool GameEndFlg = false;
+    //ゲーム終了からの経過時間
+    float EndAfterTime = 0;
+    //ゲーム終了時のカメラの距離
+    float disToGameEnd = 0;
+    //ゲーム終了時の注視点の座標
+    Vector3 transformToGameEnd = Vector3.zero;
 
     void Start()
     {
@@ -105,6 +120,7 @@ public class CameraPos : MonoBehaviour
         XZangle = fAngle;
         CameraDis =lookMode ? CameraDisP: CameraDisS;
         MouseCheck = true;
+        gameMode = PlayState.playState.gameMode;
     }
 
     private void LateUpdate()
@@ -144,7 +160,6 @@ public class CameraPos : MonoBehaviour
                             endCameraPos = CameraDis;
                         }
 
-
                     }
 
                 }
@@ -160,12 +175,49 @@ public class CameraPos : MonoBehaviour
             //角度変更
             transform.localEulerAngles = new Vector3(Yangle, -XZangle - 90, 0);
         }
+        else if(GameEndFlg)
+        {
+            if (EndAfterTime < GameEndEfSpan)
+            {
+                transform.position = Vector3.Lerp(
+                    transformToGameEnd,
+                    (new Vector3(Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad), Mathf.Sin(Yangle * Mathf.Deg2Rad) + newLookHi, Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(Yangle * Mathf.Deg2Rad)) * GameEndDis) + PlayerTransform.position + new Vector3(0, LookHiSet, 0),
+                    (EndAfterTime / GameEndEfSpan)
+                );
+                EndAfterTime += Time.deltaTime;
+            }
+
+        }
+
+        //ゲームの終了を検知するシーケンサー
+        if(gameMode != PlayState.playState.gameMode)
+        {
+            if (PlayState.playState.gameMode==PlayState.GameMode.GameOver || PlayState.playState.gameMode == PlayState.GameMode.Clear )
+            {
+                //ゲーム終了後の演出開始時の処理
+                GameEndFlg = true;
+                EndAfterTime = 0;
+                transformToGameEnd = transform.position;
+                if (lookAnimeTime > 0)
+                {
+                    disToGameEnd = !lookMode ? CameraDisS : CameraDisP;
+                }
+                else
+                {
+                    disToGameEnd = endCameraPos;
+                }
+            }
+            gameMode = PlayState.playState.gameMode;
+        }
+
+
     }
-    // Update is called once per frame
+    
+
     void Update()
     {
         //ゲーム開始時の定点カメラの特殊挙動時のステータス更新
-        if (startCameraFlg)
+        if (startCameraFlg&& PlayState.playState.gameMode == PlayState.GameMode.StartEf)
         {
             lookObj = lookMode ? PlayerTransform.position+new Vector3 (0,LookHiSet,0)  : lookPos;
             XZangle += Time.deltaTime*3;
