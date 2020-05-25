@@ -32315,7 +32315,7 @@ PrefabInstance:
     - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
       propertyPath: enemyWaterSpeed
-      value: 9
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1023837329241063398, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
@@ -32415,7 +32415,7 @@ PrefabInstance:
     - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
       propertyPath: movePlan.Array.data[1].y
-      value: 9
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1023837329241063398, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
