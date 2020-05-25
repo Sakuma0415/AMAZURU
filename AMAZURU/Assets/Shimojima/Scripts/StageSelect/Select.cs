@@ -107,36 +107,39 @@ public class Select : MonoBehaviour
 
     void Update()
     {
-        float h = Input.GetAxis("Horizontal");
-        float h2 = Input.GetAxis("Horizontal3");
-        if (h < 0||h2<0)
+        if (!SceneLoadManager.Instance.SceneLoadFlg)
         {
-            if (isRotation) { return; }
-            SoundManager.soundManager.PlaySe("cncl05", 1f);
-            selection = Selection.Forwerd;
-            isRotation = true;
-        }
-        else if (h > 0 || h2 > 0)
-        {
-            if (isRotation) { return; }
-            SoundManager.soundManager.PlaySe("cncl05", 1f);
-            selection = Selection.FallBack;
-            isRotation = true;
-        }
-        if (Input.GetButtonDown("Circle")&& !SceneLoadManager.Instance.SceneLoadFlg)
-        {
-            StageMake.LoadStageData = sData;
-            SoundManager.soundManager.StopBgm(0.5f, 1);
-            SoundManager.soundManager.StopBgm(0.5f, 0);
-            SoundManager.soundManager.PlaySe("btn01", 0.2f);
-            SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
-        }
-        else if (Input.GetButtonDown("Cross") && !SceneLoadManager.Instance.SceneLoadFlg)
-        {
-            SoundManager.soundManager.StopBgm(0.5f, 1);
-            SoundManager.soundManager.StopBgm(0.5f, 0);
-            SoundManager.soundManager.PlaySe("btn01", 0.3f);
-            SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Title,false);
+            float h = Input.GetAxis("Horizontal");
+            float h2 = Input.GetAxis("Horizontal3");
+            if (h < 0 || h2 < 0)
+            {
+                if (isRotation) { return; }
+                SoundManager.soundManager.PlaySe("cncl05", 1f);
+                selection = Selection.Forwerd;
+                isRotation = true;
+            }
+            else if (h > 0 || h2 > 0)
+            {
+                if (isRotation) { return; }
+                SoundManager.soundManager.PlaySe("cncl05", 1f);
+                selection = Selection.FallBack;
+                isRotation = true;
+            }
+            if (Input.GetButtonDown("Circle"))
+            {
+                StageMake.LoadStageData = sData;
+                SoundManager.soundManager.StopBgm(0.5f, 1);
+                SoundManager.soundManager.StopBgm(0.5f, 0);
+                SoundManager.soundManager.PlaySe("btn01", 0.2f);
+                SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
+            }
+            else if (Input.GetButtonDown("Cross") )
+            {
+                SoundManager.soundManager.StopBgm(0.5f, 1);
+                SoundManager.soundManager.StopBgm(0.5f, 0);
+                SoundManager.soundManager.PlaySe("btn01", 0.3f);
+                SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Title, false);
+            }
         }
 
     }
