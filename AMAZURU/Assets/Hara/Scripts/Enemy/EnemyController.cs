@@ -13,6 +13,7 @@ public class EnemyController : MyAnimation
     [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
     private bool connectPlayState = false;
     private PlayerType2 player = null;
+    private PlayerControllerNav player2 = null;
     
 
     private enum EnemyMoveType
@@ -145,7 +146,14 @@ public class EnemyController : MyAnimation
             {
                 // プレイヤーと接触している場合はプレイヤーの方向を向く処理を実行
                 if(player == null) { player = hit.transform.gameObject.GetComponent<PlayerType2>(); }
-                player.HitEnemy(RotateAnimation(transform.gameObject, (new Vector3(hit.transform.position.x, 0, hit.transform.position.z) - new Vector3(transform.position.x, 0, transform.position.z)).normalized, rotatePower * delta * 2.5f, false));
+                if(player == null && player2 == null)
+                {
+                    player2 = hit.transform.gameObject.GetComponent<PlayerControllerNav>();
+                }
+                bool complete = RotateAnimation(transform.gameObject, (new Vector3(hit.transform.position.x, 0, hit.transform.position.z) - new Vector3(transform.position.x, 0, transform.position.z)).normalized, rotatePower * delta * 2.5f, false);
+                
+                if(player != null) { player.HitEnemy(complete); }
+                if(player == null && player2 != null) { player2.HitEnemy(complete); }
             }
             else
             {

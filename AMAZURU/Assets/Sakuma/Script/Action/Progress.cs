@@ -14,6 +14,9 @@ public class Progress : MonoBehaviour
     //Clear時に呼び出すresult
     [SerializeField]
     ResultControl resultControl;
+    //resultを描画し始めるまでの時間
+    [SerializeField]
+    float ResultDelayTime;
     //初期化
     void SetState()
     {
@@ -53,12 +56,19 @@ public class Progress : MonoBehaviour
     //result画面を呼び出す関数
     public void ResultSet()
     {
-        resultControl.StartResult( true);
+        StartCoroutine(ResultDelay(true));
     }
 
     //gameover画面を呼び出す関数
     public void GameOverSet()
     {
-        resultControl.StartResult(false );
+        StartCoroutine(ResultDelay(false));
     }
+
+    IEnumerator ResultDelay(bool GameOver)
+    {
+        yield return new WaitForSeconds(ResultDelayTime);
+        resultControl.StartResult(GameOver);
+    }
+
 }
