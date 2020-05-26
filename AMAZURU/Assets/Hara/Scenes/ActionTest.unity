@@ -2308,7 +2308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2911a5758a6359a4095e00ddd31c7630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SLoadStageData: {fileID: 11400000, guid: 36cc5f267b25be14e87764b41ff0ae31, type: 2}
+  SLoadStageData: {fileID: 11400000, guid: 734ddb3bc69d2c14199c9cabbb856841, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
   playerObj: {fileID: 6755071351934159494, guid: 0cc585088fb8645428a3b78b07e7b545,
     type: 3}
@@ -3138,7 +3138,7 @@ MonoBehaviour:
   fatAnimeTimeLimit: 0.5
   breathLimitTime: 10
   breath: 1
-  playerType2: {fileID: 0}
+  playerNav: {fileID: 0}
 --- !u!114 &1971748816 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 557910765403537232, guid: 9d5848febb5604b4ea1f788e75a0f88d,

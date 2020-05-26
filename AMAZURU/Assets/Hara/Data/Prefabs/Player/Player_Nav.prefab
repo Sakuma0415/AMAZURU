@@ -206,6 +206,7 @@ MonoBehaviour:
     type: 3}
   playerAgent: {fileID: 1097438116694365798}
   playerRigid: {fileID: 3538289977656028124}
+  playerCollider: {fileID: 4035505698908824104}
   playerAnimator: {fileID: 7984643623444313474}
   layerMask:
     serializedVersion: 2
@@ -240,11 +241,9 @@ MonoBehaviour:
     m_RotationOrder: 4
   maxSpeedTime: 0.25
   rayLength: 1.5
-  wallSize: 1
-  updateSize: {x: 30, y: 30, z: 30}
   navLayerMask:
     serializedVersion: 2
-    m_Bits: 32769
+    m_Bits: 1
 --- !u!195 &1097438116694365798
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -252,7 +251,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6755071351934159494}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.25
   m_Speed: 0
@@ -299,7 +298,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6755071351934159494}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.25
   m_Height: 1.5

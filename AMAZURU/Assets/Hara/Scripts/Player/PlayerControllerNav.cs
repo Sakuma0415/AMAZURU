@@ -12,6 +12,7 @@ public class PlayerControllerNav : MonoBehaviour
     private NavMeshSurface playerNav = null;
     [SerializeField, Tooltip("NavMeshAgent")] private NavMeshAgent playerAgent = null;
     [SerializeField, Tooltip("Rigidbody")] private Rigidbody playerRigid = null;
+    [SerializeField, Tooltip("Collider")] private CapsuleCollider playerCollider = null;
     [SerializeField, Tooltip("PlayerのAnimator")] private Animator playerAnimator = null;
     [SerializeField, Tooltip("地面のLayerMask")] private LayerMask layerMask;
     [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
@@ -28,12 +29,9 @@ public class PlayerControllerNav : MonoBehaviour
     [SerializeField, Header("プレイヤーの加速度グラフ")] private AnimationCurve curve = null;
     [SerializeField, Header("最高速度到達時間"), Range(0.1f, 2.0f)] private float maxSpeedTime = 0.5f;
     [SerializeField, Header("Rayの長さ"), Range(0, 10)] private float rayLength = 0.5f;
-    [SerializeField, Header("透明な壁のサイズ"), Range(0.01f, 5.0f)] private float wallSize = 1.0f;
 
-    [SerializeField, Header("NavMesh関連の設定項目"), Tooltip("NavMeshの更新範囲")] private Vector3 updateSize = Vector3.zero;
-    [SerializeField, Tooltip("NavMesh用のLayerMask")] private LayerMask navLayerMask;
+    [SerializeField, Header("NavMesh関連の設定項目"), Tooltip("NavMesh用のLayerMask")] private LayerMask navLayerMask;
     private bool navMeshFlag = false;
-    private AsyncOperation meshOperation = null;
     private bool specialMove = false;
 
     /// <summary>
@@ -66,7 +64,6 @@ public class PlayerControllerNav : MonoBehaviour
     /// 一方通行の崖を検知する用のフラグ
     /// </summary>
     public bool CliffFlag { set; private get; } = false;
-    [SerializeField] private bool test = false;
 
     // プレイヤーが動き始めてからの経過時間
     private float speedTime = 0;
@@ -103,7 +100,7 @@ public class PlayerControllerNav : MonoBehaviour
 
         connectPlayState = GetPlayState();
 
-        PlayerPositionY = transform.position.y + playerAgent.baseOffset;
+        PlayerPositionY = transform.position.y + playerCollider.center.y;
 
         BakeNavMesh();
     }
@@ -145,18 +142,24 @@ public class PlayerControllerNav : MonoBehaviour
                     navMeshFlag = false;
                     UpdateNavMesh();
                 }
+
+                if (specialMove && CliffFlag == false)
+                {
+                    specialMove = false;
+                    playerAgent.Warp(transform.position);
+                    playerAgent.updatePosition = true;
+                    playerRigid.isKinematic = true;
+                }
             }
             else
             {
                 navMeshFlag = true;
+                specialMove = true;
                 playerAgent.updatePosition = false;
                 playerRigid.isKinematic = false;
             }
 
             // 一方通行の崖を利用する際に実行
-
-            CliffFlag = test;
-
             if (CliffFlag)
             {
                 specialMove = true;
@@ -173,15 +176,6 @@ public class PlayerControllerNav : MonoBehaviour
                 // 入力の最低許容値
                 float inputMin = 0.1f;
                 input = (Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin) && mode == PlayState.GameMode.Play && dontInput == false;
-
-                if (specialMove)
-                {
-                    specialMove = false;
-                    playerAgent.ResetPath();
-                    playerAgent.Warp(transform.position);
-                    playerAgent.updatePosition = true;
-                    playerRigid.isKinematic = true;
-                }
 
                 if (input)
                 {
@@ -210,7 +204,6 @@ public class PlayerControllerNav : MonoBehaviour
                         Vector3 dir = moveDirection - Vector3.Dot(moveDirection, nomal) * nomal;
                         moveDirection = dir.normalized;
                     }
-                    
 
                     // プレイヤーの移動先の算出
                     float speed = inWater ? playerWaterSpeed : playerSpeed;
@@ -230,13 +223,13 @@ public class PlayerControllerNav : MonoBehaviour
                 }
 
                 // プレイヤーを移動させる
-                if (playerAgent.updatePosition)
+                if (playerNav != null && playerAgent.updatePosition)
                 {
                     playerAgent.Move(moveDirection);
                 }
 
                 // プレイヤーのY座標の位置情報を更新
-                PlayerPositionY = transform.position.y + playerAgent.baseOffset;
+                PlayerPositionY = transform.position.y + playerCollider.center.y;
 
                 // 水中フラグの設定
                 if (StageWater != null)
@@ -347,12 +340,10 @@ public class PlayerControllerNav : MonoBehaviour
                 playerNav = Instantiate(surfacePrefab, Vector3.zero, Quaternion.identity);
             }
         }
-        playerAgent.agentTypeID = playerNav.agentTypeID;
-        playerNav.center = updateSize * 0.5f;
-        playerNav.size = updateSize;
         playerNav.layerMask = navLayerMask;
-        playerAgent.radius = NavMesh.GetSettingsByID(playerAgent.agentTypeID).agentRadius;
         playerNav.BuildNavMesh();
+        playerAgent.enabled = true;
+        playerAgent.agentTypeID = playerNav.agentTypeID;
         navMeshFlag = true;
     }
 
@@ -361,10 +352,8 @@ public class PlayerControllerNav : MonoBehaviour
     /// </summary>
     private void UpdateNavMesh()
     {
-        if (playerNav == null || (meshOperation != null && meshOperation.isDone == false)) { return; }
-        playerNav.center = updateSize * 0.5f;
-        playerNav.size = updateSize;
+        if (playerNav == null) { return; }
         playerNav.layerMask = navLayerMask;
-        meshOperation = playerNav.UpdateNavMesh(playerNav.navMeshData);
+        playerNav.UpdateNavMesh(playerNav.navMeshData);
     }
 }
