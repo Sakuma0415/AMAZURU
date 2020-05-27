@@ -7,6 +7,7 @@ public class PlayerType2 : MonoBehaviour
 {
     [SerializeField, Tooltip("PlayerのCharacterController")] private CharacterController character = null;
     [SerializeField, Tooltip("PlayerのAnimator")] private Animator playerAnimator = null;
+    [SerializeField, Tooltip("Playerの傘のAnimator")] private Animator umbrellaAnimator = null;
     [SerializeField, Tooltip("透明な壁")] private BoxCollider hiddenWallPrefab = null;
     [SerializeField, Tooltip("地面のLayerMask")] private LayerMask layerMask;
     [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
@@ -239,8 +240,8 @@ public class PlayerType2 : MonoBehaviour
             if (playerAnimator != null)
             {
                 playerAnimator.enabled = true;
-                playerAnimator.SetBool("wate", input);
-                playerAnimator.SetFloat("speed", inWater ? (inputSpeed * curve.Evaluate(speedTime / maxSpeedTime)) / (playerSpeed / playerWaterSpeed) : inputSpeed * curve.Evaluate(speedTime / maxSpeedTime));
+                playerAnimator.SetBool("Run", input);
+                playerAnimator.SetFloat("Speed", inWater ? (inputSpeed * curve.Evaluate(speedTime / maxSpeedTime)) / (playerSpeed / playerWaterSpeed) : inputSpeed * curve.Evaluate(speedTime / maxSpeedTime));
             }
         }
         else
