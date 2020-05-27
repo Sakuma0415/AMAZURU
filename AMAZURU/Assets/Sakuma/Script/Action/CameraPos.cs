@@ -217,13 +217,13 @@ public class CameraPos : MonoBehaviour
     void Update()
     {
         //ゲーム開始時の定点カメラの特殊挙動時のステータス更新
-        if (startCameraFlg&& PlayState.playState.gameMode == PlayState.GameMode.StartEf)
+        if (startCameraFlg )
         {
             lookObj = lookMode ? PlayerTransform.position+new Vector3 (0,LookHiSet,0)  : lookPos;
             XZangle += Time.deltaTime*3;
 
             //通常のカメラ処理に戻る
-            if (Input.GetButtonDown("Circle") && !SceneLoadManager.Instance.SceneLoadFlg)
+            if (Input.GetButtonDown("Circle") && !SceneLoadManager.Instance.SceneLoadFlg && !PlayState.playState.Tutorial)
             {
                 startCameraAngleResetBf = XZangle;
                 startCameraFlg = false;
