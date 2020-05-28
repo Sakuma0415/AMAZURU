@@ -24,7 +24,7 @@ public class PlayState : MonoBehaviour
         RainSelect,
         Clear,
         GameOver,
-        Pause
+        Pause,
     }
     //ゲームモードの変化を検知するシーケンサー用の変数
     GameMode backGameMode;
@@ -33,13 +33,18 @@ public class PlayState : MonoBehaviour
     //アメフラシ起動演出の状態からプレイモードに遷移するまでの時間
     public float rainTime = 0;
 
-    
+    public bool Tutorial = false;
+
+    [SerializeField]
+    TutorialUI tutorialUI;
+
     // 初期化
     void Start()
     {
         playState = new PlayState();
-        playState.gameMode = gameMode;
-        
+        playState.gameMode =gameMode;
+        playState.Tutorial = StageMake.LoadStageData.TutorialFlg;
+        if (playState.Tutorial) { tutorialUI.TutorialStart(); }
         if (!PlayState.copyFlg)
         {
             DontDestroyOnLoad(gameObject);

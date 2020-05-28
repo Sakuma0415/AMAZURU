@@ -7,6 +7,7 @@ public class PlayerType2 : MonoBehaviour
 {
     [SerializeField, Tooltip("PlayerのCharacterController")] private CharacterController character = null;
     [SerializeField, Tooltip("PlayerのAnimator")] private Animator playerAnimator = null;
+    [SerializeField, Tooltip("Playerの傘のAnimator")] private Animator umbrellaAnimator = null;
     [SerializeField, Tooltip("透明な壁")] private BoxCollider hiddenWallPrefab = null;
     [SerializeField, Tooltip("地面のLayerMask")] private LayerMask layerMask;
     [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
@@ -239,8 +240,8 @@ public class PlayerType2 : MonoBehaviour
             if (playerAnimator != null)
             {
                 playerAnimator.enabled = true;
-                playerAnimator.SetBool("wate", input);
-                playerAnimator.SetFloat("speed", inWater ? (inputSpeed * curve.Evaluate(speedTime / maxSpeedTime)) / (playerSpeed / playerWaterSpeed) : inputSpeed * curve.Evaluate(speedTime / maxSpeedTime));
+                playerAnimator.SetBool("Run", input);
+                playerAnimator.SetFloat("Speed", inWater ? (inputSpeed * curve.Evaluate(speedTime / maxSpeedTime)) / (playerSpeed / playerWaterSpeed) : inputSpeed * curve.Evaluate(speedTime / maxSpeedTime));
             }
         }
         else
@@ -248,13 +249,13 @@ public class PlayerType2 : MonoBehaviour
             // アニメーションの停止
             if(playerAnimator != null)
             {
-                if(mode == PlayState.GameMode.StartEf || mode == PlayState.GameMode.Stop)
+                if(mode == PlayState.GameMode.Pause)
                 {
-                    playerAnimator.enabled = true;
+                    playerAnimator.enabled = false;
                 }
                 else
                 {
-                    playerAnimator.enabled = false;
+                    playerAnimator.enabled = true;
                 }
             }
         }
@@ -281,18 +282,71 @@ public class PlayerType2 : MonoBehaviour
         for (int i = 0; i < hiddenWalls.Length; i++)
         {
             // 床があるかチェック
-            Ray ground = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
-            bool go = Physics.Raycast(ground, rayLength, layerMask);
-            
+            Ray mainRay;
+            RaycastHit hit;
+            bool set;
+            int count = 0;
+            mainRay = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
+            if(Physics.Raycast(mainRay, out hit, rayLength, layerMask))
+            {
+                if(Vector3.Angle(Vector3.up, hit.normal) == 0)
+                {
+                    // プレイヤーの当たり判定の両端からRayを飛ばして進めるかをチェック
+                    Ray subRay;
+                    float hitDistance = hit.distance;
+                    for (int j = 0; j < 2; j++)
+                    {
+                        subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * (character.radius - 0.0001f) * (j == 0 ? 1 : -1), mainRay.direction);
+                        Debug.DrawRay(subRay.origin, subRay.direction);
+                        if (Physics.Raycast(subRay, out hit, rayLength, layerMask))
+                        {
+                            if(Vector3.Angle(Vector3.up, hit.normal) == 0 && hit.distance < hitDistance)
+                            {
+                                count++;
+                            }
+                        }
+                        else
+                        {
+                            count--;
+                            break;
+                        }
+                    }
+                }
+
+                set = count == 1;
+
+                if(set == false)
+                {
+                    Ray slopeRay;
+                    count = 0;
+                    for (int j = 0; j < 2; j++)
+                    {
+                        slopeRay = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z) + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * (j == 0 ? 0.025f : -0.025f), rayPosition[i]);
+                        if (Physics.Raycast(slopeRay, out hit, character.radius + 1.0f, layerMask))
+                        {
+                            if (Vector3.Angle(Vector3.up, hit.normal) < character.slopeLimit)
+                            {
+                                count++;
+                            }
+                        }
+                    }
+                    set = count == 1;
+                }
+            }
+            else
+            {
+                set = true;
+            }
+
             // 床が無ければ透明な壁を有効化する
-            if (go == false && hiddenWalls[i].enabled == false)
+            if (set && hiddenWalls[i].enabled == false)
             {
                 hiddenWalls[i].size = Vector3.one * wallSize;
-                hiddenWalls[i].transform.position = ground.origin + rayPosition[i] * wallSize * 0.5001f;
+                hiddenWalls[i].transform.position = mainRay.origin + rayPosition[i] * wallSize * 0.5001f;
                 hiddenWalls[i].enabled = true;
             }
             
-            if(go == false && hiddenWalls[i].enabled)
+            if(set && hiddenWalls[i].enabled)
             {
                 // 透明な壁をプレイヤーの移動に合わせて移動させる
                 if (i % 2 == 0)

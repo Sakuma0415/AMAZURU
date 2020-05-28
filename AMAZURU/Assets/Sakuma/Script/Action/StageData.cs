@@ -27,4 +27,8 @@ public class StageData : ScriptableObject
     public float CameraDisS;
     //プレイヤー-カメラ間の距離
     public float CameraDisP;
+    //チュートリアルがあるかどうかのフラグ
+    public bool TutorialFlg=false ;
+    //チュートリアルに表示するオブジェ
+    public GameObject[] TutorialObjs; 
 }
