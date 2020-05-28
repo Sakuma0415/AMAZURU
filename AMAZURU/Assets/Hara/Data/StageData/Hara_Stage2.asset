@@ -22,3 +22,8 @@ MonoBehaviour:
   startAngle: -90
   CameraDisS: 25
   CameraDisP: 5
+  TutorialFlg: 1
+  TutorialObjs:
+  - {fileID: 1256797477728859292, guid: fb9bbc433c4575548841afd3e1e253e0, type: 3}
+  - {fileID: 1256797477728859292, guid: b1153325ea112da4d817126b35fb9eed, type: 3}
+  - {fileID: 1256797477728859292, guid: ff396fe4aebb4eb4f8c44c8700b5c93b, type: 3}
