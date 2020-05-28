@@ -17,19 +17,29 @@ public class Select : MonoBehaviour
     [SerializeField]
     private Text stageNameText;
 
-    //読み込んだステージを格納
-    private List<GameObject> stages = new List<GameObject>();
-    //プレファブステージデータ
-    private PrefabStageData[] psd;
+    [System.Serializable]
+    public struct PSD
+    {
+        //プレファブステージデータ
+        public PrefabStageData psd;
+        public int stageNumber;
+    }
+
+    public PSD[] psd;
+    [SerializeField,Tooltip("操作不要変数")]
+    private List<PrefabStageData> _psd = new List<PrefabStageData>();
+    [SerializeField]
+    private List<int> psdNumber = new List<int>();
+    
     [SerializeField,Tooltip("初期位置")]
-    private Vector3 defPos;
+    private Vector3 defPos = Vector3.zero;
     [SerializeField,Tooltip("サイズ調整")]
-    private Vector2 scaleAdjust;
+    private Vector2 scaleAdjust = Vector2.zero;
     [SerializeField, Range(1, 10),Tooltip("回転速度")]
     private float speed = 1;
     [SerializeField]
-    private int rotateAngle;
-    private float sumAngle;
+    private int rotateAngle = 0;
+    private float sumAngle = 0;
     private float interval=0;
 
     private bool isRotation = false;
@@ -159,25 +169,39 @@ public class Select : MonoBehaviour
         if (!SoundManager.soundManager.BGMnull1) { SoundManager.soundManager.PlayBgm("MusMus-BGM-043", 0.1f, 0.2f, 0); }
         if (!SoundManager.soundManager.BGMnull2) { SoundManager.soundManager.PlayBgm("rain_loop", 0.1f, 0.3f, 1); }
 
-        psd = Resources.LoadAll<PrefabStageData>("EditData/");
+
+        //表示順に格納、初期化の最後でリストをクリア
+        _psd[2] = psd[0].psd;
+        _psd[1] = psd[1].psd;
+        _psd[0] = psd[2].psd;
+        _psd[3] = psd[5].psd;
+        _psd[4] = psd[4].psd;
+
+        //表示順に格納、初期化の最後でリストをクリア
+        psdNumber[2] = psd[0].stageNumber;
+        psdNumber[1] = psd[1].stageNumber;
+        psdNumber[0] = psd[2].stageNumber;
+        psdNumber[3] = psd[5].stageNumber;
+        psdNumber[4] = psd[4].stageNumber;
+
         int overCount = 1;
         for (int i = 0; i < 5; i++)
         {
-            if(i > (psd.Length - 1) * overCount)
+            if(i > (_psd.Count - 1) * overCount)
             {
                 int _i = i - (psd.Length * overCount); ;
                 
-                viewStage[i].stage = Instantiate(psd[_i].viewStage);
-                viewStage[i].name = psd[_i].stageName;
-                StageReSize(psd[_i], i);
-                viewStage[i].psdIndex = _i;
+                viewStage[i].stage = Instantiate(_psd[_i].viewStage);
+                viewStage[i].name = _psd[_i].stageName;
+                StageReSize(_psd[_i], i);
+                viewStage[i].psdIndex = psdNumber[_i];
             }
             else
             {
-                viewStage[i].stage = Instantiate(psd[i].viewStage);
-                viewStage[i].name = psd[i].stageName;
-                StageReSize(psd[i], i);
-                viewStage[i].psdIndex = i;
+                viewStage[i].stage = Instantiate(_psd[i].viewStage);
+                viewStage[i].name = _psd[i].stageName;
+                StageReSize(_psd[i], i);
+                viewStage[i].psdIndex = psdNumber[i];
             }
 
             
@@ -199,11 +223,15 @@ public class Select : MonoBehaviour
                 }
 
                 stageNameText.text = viewStage[i].name;
-                sData = psd[i].sData;
+                sData = _psd[i].sData;
             }
 
             if (i > (psd.Length - 1) * (overCount + 1)) { overCount++; }
         }
+
+        //Listのクリア
+        _psd.Clear();
+        psdNumber.Clear();
     }
 
     /// <summary>
@@ -294,7 +322,7 @@ public class Select : MonoBehaviour
                 {
                     case 1:
                         viewStage[i].stage.transform.localScale += viewStage[i].reSizeSpeed;
-                        sData = psd[viewStage[i].psdIndex].sData;
+                        sData = psd[viewStage[i].psdIndex].psd.sData;
                         break;
                     case 2:
                         viewStage[i].stage.transform.localScale -= viewStage[i].reSizeSpeed;
@@ -319,7 +347,7 @@ public class Select : MonoBehaviour
                         break;
                     case 3:
                         viewStage[i].stage.transform.localScale += viewStage[i].reSizeSpeed;
-                        sData = psd[viewStage[i].psdIndex].sData;
+                        sData = psd[viewStage[i].psdIndex].psd.sData;
                         break;
                     case 5:
                         viewStage[i].stage.transform.localScale += viewStage[i].zeroScalingSpeed;
@@ -450,11 +478,11 @@ public class Select : MonoBehaviour
             int index = viewStage[0].psdIndex + 1;
             if (index > psd.Length - 1) { index = 0; }
 
-            viewStage[5].stage = Instantiate(psd[index].viewStage);
-            viewStage[5].name = psd[index].stageName;
+            viewStage[5].stage = Instantiate(psd[index].psd.viewStage);
+            viewStage[5].name = psd[index].psd.stageName;
             viewStage[5].index = 5;
             viewStage[5].psdIndex = index;
-            StageReSize(psd[index], 5);
+            StageReSize(psd[index].psd, 5);
             viewStage[5].stage.transform.localScale = viewStage[5].defScale;
             viewStage[5].stage.transform.position = defPos;
             SetScaleChangeSpeed(5);
@@ -465,11 +493,11 @@ public class Select : MonoBehaviour
         {
             int index = viewStage[3].psdIndex - 1;
             if(index < 0) { index = psd.Length - 1; }
-            viewStage[4].stage = Instantiate(psd[index].viewStage);
-            viewStage[4].name = psd[index].stageName;
+            viewStage[4].stage = Instantiate(psd[index].psd.viewStage);
+            viewStage[4].name = psd[index].psd.stageName;
             viewStage[4].index = 5;
             viewStage[4].psdIndex = index;
-            StageReSize(psd[index], 4);
+            StageReSize(psd[index].psd, 4);
             viewStage[4].stage.transform.localScale = viewStage[4].defScale;
             viewStage[4].stage.transform.position = defPos;
             SetScaleChangeSpeed(4);
