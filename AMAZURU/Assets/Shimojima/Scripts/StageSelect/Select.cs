@@ -18,14 +18,14 @@ public class Select : MonoBehaviour
     private Text stageNameText;
 
     [System.Serializable]
-    public struct PSD
+    public struct PrefabStageDatas
     {
         //プレファブステージデータ
         public PrefabStageData psd;
         public int stageNumber;
     }
 
-    public PSD[] psd;
+    public PrefabStageDatas[] psd;
     [SerializeField,Tooltip("操作不要変数")]
     private List<PrefabStageData> _psd = new List<PrefabStageData>();
     [SerializeField]
