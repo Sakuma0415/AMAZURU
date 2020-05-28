@@ -20,6 +20,9 @@ public class TutorialUI : MonoBehaviour
 
     int num = 0;
     GameObject[] UIObjs;
+
+    bool leftH=false , rightH=false ;
+    int leftT = 0, rightT = 0;
     void Start()
     {
     }
@@ -43,6 +46,19 @@ public class TutorialUI : MonoBehaviour
                     UIParent.SetActive(false);
                     StartCoroutine("FadeOut");
                 }
+            }
+
+            float h2 = Input.GetAxis("Horizontal3");
+            if (h2 > 0.2f) { leftT += 1; } else { leftT = 0; }
+            if (h2 < -0.2f) { rightT += 1; } else { rightT = 0; }
+
+            if (rightT == 1&&num>0)
+            {
+                num--;
+            }
+            if (leftT == 1 && num < UIObjs.Length-1)
+            {
+                num++;
             }
         }
     }
