@@ -242,6 +242,8 @@ public class PlayerType2 : MonoBehaviour
                 playerAnimator.enabled = true;
                 playerAnimator.SetBool("Run", input);
                 playerAnimator.SetFloat("Speed", inWater ? (inputSpeed * curve.Evaluate(speedTime / maxSpeedTime)) / (playerSpeed / playerWaterSpeed) : inputSpeed * curve.Evaluate(speedTime / maxSpeedTime));
+                playerAnimator.SetBool("Switch", mode == PlayState.GameMode.Rain);
+                playerAnimator.SetBool("Jump", CliffFlag);
             }
         }
         else
@@ -256,6 +258,8 @@ public class PlayerType2 : MonoBehaviour
                 else
                 {
                     playerAnimator.enabled = true;
+                    playerAnimator.SetBool("StageClear", mode == PlayState.GameMode.Clear);
+                    playerAnimator.SetBool("GameOver", mode == PlayState.GameMode.GameOver);
                 }
             }
         }
@@ -289,7 +293,7 @@ public class PlayerType2 : MonoBehaviour
             mainRay = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
             if(Physics.Raycast(mainRay, out hit, rayLength, layerMask))
             {
-                if(Vector3.Angle(Vector3.up, hit.normal) == 0)
+                if(Vector3.Angle(Vector3.up, hit.normal) <= 5)
                 {
                     // プレイヤーの当たり判定の両端からRayを飛ばして進めるかをチェック
                     Ray subRay;
@@ -300,7 +304,7 @@ public class PlayerType2 : MonoBehaviour
                         Debug.DrawRay(subRay.origin, subRay.direction);
                         if (Physics.Raycast(subRay, out hit, rayLength, layerMask))
                         {
-                            if(Vector3.Angle(Vector3.up, hit.normal) == 0 && hit.distance < hitDistance)
+                            if(Vector3.Angle(Vector3.up, hit.normal) <= 5 && hit.distance < hitDistance)
                             {
                                 count++;
                             }
