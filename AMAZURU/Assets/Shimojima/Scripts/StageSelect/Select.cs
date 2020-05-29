@@ -14,8 +14,8 @@ public class Select : MonoBehaviour
     [SerializeField]
     private Vector3 pivotCubeSize;
 
-    [SerializeField]
-    private Text stageNameText;
+    //[SerializeField]
+    //private Text stageNameText;
 
     [System.Serializable]
     public struct PrefabStageDatas
@@ -215,14 +215,14 @@ public class Select : MonoBehaviour
             {
                 if (viewStage[i].defScale != Vector3.one)
                 {
-                    viewStage[i].stage.transform.localScale = Vector3.one;
+                    viewStage[i].stage.transform.localScale = new Vector3(0.9f, 0.9f, 0.9f);
                 }
                 else
                 {
-                    viewStage[i].stage.transform.localScale = new Vector3(1.5f, 1, 1.5f);
+                    viewStage[i].stage.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                 }
 
-                stageNameText.text = viewStage[i].name;
+                //stageNameText.text = viewStage[i].name;
                 sData = _psd[i].sData;
             }
 
@@ -374,8 +374,8 @@ public class Select : MonoBehaviour
     /// <param name="select"></param>
     private void StageDataChange(Selection select)
     {
-        //ステージ名
-        string n = "";
+        ////ステージ名
+        //string n = "";
 
         if (select == Selection.Forwerd)
         {
@@ -389,7 +389,7 @@ public class Select : MonoBehaviour
                 
                 if(viewStage[i].stage == null) { continue; }
                 viewStage[i].CountUp();
-                if (viewStage[i].index == 2) { n = viewStage[i].name; }
+                //if (viewStage[i].index == 2) { n = viewStage[i].name; }
             }
         }
         else if (select == Selection.FallBack)
@@ -404,11 +404,11 @@ public class Select : MonoBehaviour
 
                 if (viewStage[i].stage == null) { continue; }
                 viewStage[i].CountDown();
-                if (viewStage[i].index == 2) { n = viewStage[i].name; }
+                //if (viewStage[i].index == 2) { n = viewStage[i].name; }
             }
         }
 
-        stageNameText.text = n;
+        //stageNameText.text = n;
     }
 
     /// <summary>
