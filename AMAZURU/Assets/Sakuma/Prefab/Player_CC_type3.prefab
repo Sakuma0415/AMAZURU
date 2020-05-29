@@ -188,7 +188,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.5
-  m_Radius: 0.25
+  m_Radius: 0.35
   m_SlopeLimit: 60
   m_StepOffset: 0.08
   m_SkinWidth: 0.08
@@ -243,7 +243,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   maxSpeedTime: 0.25
-  rayLength: 1.25
+  rayLength: 1.5
   gravity: 3
   wallSize: 1.5
 --- !u!81 &-4046928715049505338
