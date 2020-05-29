@@ -230,7 +230,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: 0
   resultControl: {fileID: 1971748816}
-  ResultDelayTime: 1
+  ResultDelayTime: 0.2
+  animation:
+  - {fileID: 1827226128182048838, guid: fcc6f51f2e2191f4aa21e226e73d7344, type: 3}
+  - {fileID: 1827226128182048838, guid: 3ede6083293fe1d46898e2e2a9eb3a6c, type: 3}
 --- !u!4 &76967582
 Transform:
   m_ObjectHideFlags: 0
@@ -3743,7 +3746,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rainScript:
   - {fileID: 1459397621}
-  rainMax: 50
+  rainMax: 8
   simpleRain: {fileID: 2037572871}
   rainCamera: {fileID: 1303174599}
   inCamera: {fileID: 721732560}
