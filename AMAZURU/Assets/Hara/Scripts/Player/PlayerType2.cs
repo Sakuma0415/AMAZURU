@@ -335,24 +335,6 @@ public class PlayerType2 : MonoBehaviour
                 }
 
                 set = sum == 3;
-
-                if (set == false)
-                {
-                    Ray slopeRay;
-                    int count = 0;
-                    for (int j = 0; j < 2; j++)
-                    {
-                        slopeRay = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z) + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * (j == 0 ? 0.025f : -0.025f), rayPosition[i]);
-                        if (Physics.Raycast(slopeRay, out hit, character.radius + 1.0f, layerMask))
-                        {
-                            if (Vector3.Angle(Vector3.up, hit.normal) < character.slopeLimit)
-                            {
-                                count++;
-                            }
-                        }
-                    }
-                    set = count == 1;
-                }
             }
             else
             {
