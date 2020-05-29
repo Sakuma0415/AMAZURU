@@ -73,7 +73,7 @@ ModelImporter:
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   referencedClips: []
-  importAnimation: 1
+  importAnimation: 0
   humanDescription:
     serializedVersion: 3
     human: []
@@ -86,7 +86,7 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 1
-    rootMotionBoneName: Jt_Umbrella_loot
+    rootMotionBoneName: Jt_Umbrella_root
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
