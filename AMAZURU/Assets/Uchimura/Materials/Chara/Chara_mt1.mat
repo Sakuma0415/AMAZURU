@@ -108,7 +108,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Set_HighColorMask:
-        m_Texture: {fileID: 2800000, guid: be77aa9f9c0c19143a6baca01fb723de, type: 3}
+        m_Texture: {fileID: 2800000, guid: eec6efa5e8c683240950e3ebe99eb49b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Set_MatcapMask:
@@ -146,7 +146,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _HighColor_Power: 0.575
+    - _HighColor_Power: 0.433
     - _Inverse_MatcapMask: 0
     - _Inverse_Z_Axis_BLD: 1
     - _Is_BLD: 0
@@ -206,7 +206,7 @@ Material:
     - _StepOffset: 0
     - _TweakHighColorOnShadow: 1
     - _TweakMatCapOnShadow: 0
-    - _Tweak_HighColorMaskLevel: -0.37
+    - _Tweak_HighColorMaskLevel: -0.33
     - _Tweak_LightDirection_MaskLevel: 0.5
     - _Tweak_MatCapUV: 0
     - _Tweak_MatcapMaskLevel: 0
@@ -229,7 +229,7 @@ Material:
     - _ColorShift: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Emissive_Color: {r: 0, g: 0, b: 0, a: 1}
-    - _HighColor: {r: 0.397, g: 0.397, b: 0.397, a: 1}
+    - _HighColor: {r: 0.496, g: 0.496, b: 0.496, a: 1}
     - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
     - _Outline_Color: {r: 0.44, g: 0.44, b: 0.44, a: 1}
     - _RimLightColor: {r: 0.468, g: 0.468, b: 0.468, a: 1}
