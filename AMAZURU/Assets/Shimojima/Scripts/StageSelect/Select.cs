@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Select : MonoBehaviour
 {
@@ -14,8 +15,9 @@ public class Select : MonoBehaviour
     [SerializeField]
     private Vector3 pivotCubeSize;
 
-    //[SerializeField]
-    //private Text stageNameText;
+    
+    [SerializeField]
+    private TextMeshProUGUI amehurashiNum, increasedWaterVolume;
 
     [System.Serializable]
     public struct PrefabStageDatas
@@ -58,6 +60,9 @@ public class Select : MonoBehaviour
     public struct ViewStage
     {
         public string name;
+        public int difficulity;
+        public int amehurashiNum;
+        public int increasedWaterVolume;
         public GameObject stage;
         public Vector3 defScale;
         public Vector3 reSizeSpeed;
@@ -71,6 +76,9 @@ public class Select : MonoBehaviour
         public void Init()
         {
             name = "";
+            difficulity = 0;
+            amehurashiNum = 0;
+            increasedWaterVolume = 0;
             stage = null;
             defScale = Vector3.zero;
             reSizeSpeed = Vector3.zero;
@@ -86,6 +94,9 @@ public class Select : MonoBehaviour
         public void TookOver(ViewStage v)
         {
             name = v.name;
+            difficulity = v.difficulity;
+            amehurashiNum = v.amehurashiNum;
+            increasedWaterVolume = v.increasedWaterVolume;
             stage = v.stage;
             defScale = v.defScale;
             reSizeSpeed = v.reSizeSpeed;
@@ -193,6 +204,9 @@ public class Select : MonoBehaviour
                 
                 viewStage[i].stage = Instantiate(_psd[_i].viewStage);
                 viewStage[i].name = _psd[_i].stageName;
+                viewStage[i].difficulity = _psd[_i].diificulty;
+                viewStage[i].amehurashiNum = _psd[_i].amehurashiNum;
+                viewStage[i].increasedWaterVolume = _psd[_i].increasedWaterVolume;
                 StageReSize(_psd[_i], i);
                 viewStage[i].psdIndex = psdNumber[_i];
             }
@@ -200,6 +214,9 @@ public class Select : MonoBehaviour
             {
                 viewStage[i].stage = Instantiate(_psd[i].viewStage);
                 viewStage[i].name = _psd[i].stageName;
+                viewStage[i].difficulity = _psd[i].diificulty;
+                viewStage[i].amehurashiNum = _psd[i].amehurashiNum;
+                viewStage[i].increasedWaterVolume = _psd[i].increasedWaterVolume;
                 StageReSize(_psd[i], i);
                 viewStage[i].psdIndex = psdNumber[i];
             }
@@ -222,7 +239,8 @@ public class Select : MonoBehaviour
                     viewStage[i].stage.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                 }
 
-                //stageNameText.text = viewStage[i].name;
+                amehurashiNum.text = viewStage[i].amehurashiNum.ToString();
+                increasedWaterVolume.text = viewStage[i].increasedWaterVolume.ToString();
                 sData = _psd[i].sData;
             }
 
@@ -374,8 +392,9 @@ public class Select : MonoBehaviour
     /// <param name="select"></param>
     private void StageDataChange(Selection select)
     {
-        ////ステージ名
-        //string n = "";
+        string ame, iwv;
+        ame = "";
+        iwv = "";
 
         if (select == Selection.Forwerd)
         {
@@ -389,7 +408,11 @@ public class Select : MonoBehaviour
                 
                 if(viewStage[i].stage == null) { continue; }
                 viewStage[i].CountUp();
-                //if (viewStage[i].index == 2) { n = viewStage[i].name; }
+                if (viewStage[i].index == 2) 
+                {
+                    ame = viewStage[i].amehurashiNum.ToString();
+                    iwv = viewStage[i].increasedWaterVolume.ToString();
+                }
             }
         }
         else if (select == Selection.FallBack)
@@ -404,11 +427,16 @@ public class Select : MonoBehaviour
 
                 if (viewStage[i].stage == null) { continue; }
                 viewStage[i].CountDown();
-                //if (viewStage[i].index == 2) { n = viewStage[i].name; }
+                if (viewStage[i].index == 2)
+                {
+                    ame = viewStage[i].amehurashiNum.ToString();
+                    iwv = viewStage[i].increasedWaterVolume.ToString();
+                }
             }
         }
 
-        //stageNameText.text = n;
+        amehurashiNum.text = ame;
+        increasedWaterVolume.text = iwv;
     }
 
     /// <summary>
@@ -480,6 +508,9 @@ public class Select : MonoBehaviour
 
             viewStage[5].stage = Instantiate(psd[index].psd.viewStage);
             viewStage[5].name = psd[index].psd.stageName;
+            viewStage[5].difficulity = psd[index].psd.diificulty;
+            viewStage[5].amehurashiNum = psd[index].psd.amehurashiNum;
+            viewStage[5].increasedWaterVolume = psd[index].psd.increasedWaterVolume;
             viewStage[5].index = 5;
             viewStage[5].psdIndex = index;
             StageReSize(psd[index].psd, 5);
@@ -495,6 +526,9 @@ public class Select : MonoBehaviour
             if(index < 0) { index = psd.Length - 1; }
             viewStage[4].stage = Instantiate(psd[index].psd.viewStage);
             viewStage[4].name = psd[index].psd.stageName;
+            viewStage[4].difficulity = psd[index].psd.diificulty;
+            viewStage[4].amehurashiNum = psd[index].psd.amehurashiNum;
+            viewStage[4].increasedWaterVolume = psd[index].psd.increasedWaterVolume;
             viewStage[4].index = 5;
             viewStage[4].psdIndex = index;
             StageReSize(psd[index].psd, 4);

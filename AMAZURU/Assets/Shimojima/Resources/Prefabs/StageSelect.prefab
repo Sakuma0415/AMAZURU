@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.02}
   m_AnchorMax: {x: 1, y: 0.1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 23, y: 26}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1758310049229130519
@@ -65,7 +65,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 50
+    m_FontSize: 31
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 4
@@ -76,7 +76,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u3007:\u9078\u629E \u2716:\u623B\u308B L\u30B9\u30C6\u30A3\u30C3\u30AF:\u5DE6\u53F3\u79FB\u52D5"
+  m_Text: "\u3007\u30DC\u30BF\u30F3:\u9078\u629E  \xD7\u30DC\u30BF\u30F3:\u623B\u308B 
+    \u5341\u5B57\u30DC\u30BF\u30F3:\u5DE6\u53F3\u79FB\u52D5"
 --- !u!1 &2225893717949438472
 GameObject:
   m_ObjectHideFlags: 0
@@ -1225,6 +1226,8 @@ MonoBehaviour:
   sData: {fileID: 0}
   senterPivot: {fileID: 2997859917046427251}
   pivotCubeSize: {x: 3, y: 3, z: 3}
+  amehurashiNum: {fileID: 2225893719123768194}
+  increasedWaterVolume: {fileID: 2225893718969510036}
   psd:
   - psd: {fileID: 11400000, guid: e542c162e6d45234a9fc558e81bd8f20, type: 2}
     stageNumber: 0
@@ -1251,6 +1254,9 @@ MonoBehaviour:
   rotateAngle: 36
   viewStage:
   - name: 
+    difficulity: 0
+    amehurashiNum: 0
+    increasedWaterVolume: 0
     stage: {fileID: 0}
     defScale: {x: 0, y: 0, z: 0}
     reSizeSpeed: {x: 0, y: 0, z: 0}
@@ -1258,6 +1264,9 @@ MonoBehaviour:
     index: 0
     psdIndex: 0
   - name: 
+    difficulity: 0
+    amehurashiNum: 0
+    increasedWaterVolume: 0
     stage: {fileID: 0}
     defScale: {x: 0, y: 0, z: 0}
     reSizeSpeed: {x: 0, y: 0, z: 0}
@@ -1265,6 +1274,9 @@ MonoBehaviour:
     index: 0
     psdIndex: 0
   - name: 
+    difficulity: 0
+    amehurashiNum: 0
+    increasedWaterVolume: 0
     stage: {fileID: 0}
     defScale: {x: 0, y: 0, z: 0}
     reSizeSpeed: {x: 0, y: 0, z: 0}
@@ -1272,6 +1284,9 @@ MonoBehaviour:
     index: 0
     psdIndex: 0
   - name: 
+    difficulity: 0
+    amehurashiNum: 0
+    increasedWaterVolume: 0
     stage: {fileID: 0}
     defScale: {x: 0, y: 0, z: 0}
     reSizeSpeed: {x: 0, y: 0, z: 0}
@@ -1279,6 +1294,9 @@ MonoBehaviour:
     index: 0
     psdIndex: 0
   - name: 
+    difficulity: 0
+    amehurashiNum: 0
+    increasedWaterVolume: 0
     stage: {fileID: 0}
     defScale: {x: 0, y: 0, z: 0}
     reSizeSpeed: {x: 0, y: 0, z: 0}
@@ -1286,6 +1304,9 @@ MonoBehaviour:
     index: 0
     psdIndex: 0
   - name: 
+    difficulity: 0
+    amehurashiNum: 0
+    increasedWaterVolume: 0
     stage: {fileID: 0}
     defScale: {x: 0, y: 0, z: 0}
     reSizeSpeed: {x: 0, y: 0, z: 0}
