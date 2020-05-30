@@ -294,35 +294,32 @@ public class PlayerType2 : MonoBehaviour
             if(Physics.Raycast(mainRay, out hit, rayLength, layerMask))
             {
                 float hitDistance = hit.distance;
-                if (Vector3.Angle(Vector3.up, hit.normal) <= 5)
+                // プレイヤーの当たり判定の両端からRayを飛ばして進めるかをチェック
+                Ray subRay;
+                bool check = false;
+                for (int j = 0; j < index.Length; j++)
                 {
-                    // プレイヤーの当たり判定の両端からRayを飛ばして進めるかをチェック
-                    Ray subRay;
-                    bool check = false;
-                    for(int j = 0; j < index.Length; j++)
-                    {
-                        subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
-                        check = Physics.Raycast(subRay, rayLength, layerMask);
-                        if (check) { break; }
-                    }
+                    subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
+                    check = Physics.Raycast(subRay, rayLength, layerMask);
+                    if (check) { break; }
+                }
 
-                    if (check)
+                if (check)
+                {
+                    for (int j = 0; j < index.Length; j++)
                     {
-                        for (int j = 0; j < index.Length; j++)
+                        subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), mainRay.direction);
+                        if (Physics.Raycast(subRay, out hit, rayLength, layerMask))
                         {
-                            subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), mainRay.direction);
-                            if (Physics.Raycast(subRay, out hit, rayLength, layerMask))
+                            float disA = Mathf.Ceil(Mathf.Floor(hit.distance * 1000) / 10);
+                            float disB = Mathf.Ceil(Mathf.Floor(hitDistance * 1000) / 10);
+                            if (disA < disB)
                             {
-                                float disA = Mathf.Ceil(Mathf.Floor(hit.distance * 1000) / 10);
-                                float disB = Mathf.Ceil(Mathf.Floor(hitDistance * 1000) / 10);
-                                if (disA < disB)
-                                {
-                                    index[j] = 1;
-                                }
-                                else
-                                {
-                                    index[j] = 2;
-                                }
+                                index[j] = 1;
+                            }
+                            else
+                            {
+                                index[j] = 2;
                             }
                         }
                     }
