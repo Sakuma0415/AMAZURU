@@ -155,7 +155,7 @@ public class PlayerType2 : MonoBehaviour
                     // カメラの向いている方向を取得
                     Vector3 cameraForward = Vector3.Scale(PlayerCamera.transform.forward == Vector3.up ? -PlayerCamera.transform.up : PlayerCamera.transform.forward == Vector3.down ? PlayerCamera.transform.up : PlayerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
 
-                    // プレイヤーカメラ起点の入力方向
+                    // カメラから見た入力方向を取得
                     Vector3 direction = cameraForward * inputZ + PlayerCamera.transform.right * inputX;
 
                     // 入力方向を向く処理
@@ -163,12 +163,12 @@ public class PlayerType2 : MonoBehaviour
                     rot = Quaternion.Slerp(transform.rotation, rot, 7.5f * delta);
                     transform.rotation = rot;
 
-                    // 移動方向の決定
+                    // X-Z平面における三角関数を考慮した移動量を計算
                     float vec = Mathf.Abs(inputX) >= Mathf.Abs(inputZ) ? inputZ / inputX : inputX / inputZ;
                     vec = 1.0f / Mathf.Sqrt(1.0f + vec * vec);
                     moveDirection = direction * vec;
 
-                    // 床にRayを飛ばして斜面の角度を取得
+                    // X-Y平面における(坂の上り下り)三角関数を考慮した移動量を計算
                     Ray ground = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z), Vector3.down);
                     RaycastHit hit;
                     if (Physics.Raycast(ground, out hit, rayLength, layerMask))
@@ -178,7 +178,7 @@ public class PlayerType2 : MonoBehaviour
                         moveDirection = dir.normalized;
                     }
 
-                    // プレイヤーの移動先の算出
+                    // 水中かどうかをチェックし、加速度グラフに基づいた移動速度を計算
                     float speed = inWater ? playerWaterSpeed : playerSpeed;
                     if(speedTime < maxSpeedTime)
                     {
@@ -240,6 +240,7 @@ public class PlayerType2 : MonoBehaviour
             if (playerAnimator != null)
             {
                 playerAnimator.enabled = true;
+                if (umbrellaAnimator != null) { umbrellaAnimator.enabled = true; }
                 playerAnimator.SetBool("Run", input);
                 playerAnimator.SetFloat("Speed", inWater ? (inputSpeed * curve.Evaluate(speedTime / maxSpeedTime)) / (playerSpeed / playerWaterSpeed) : inputSpeed * curve.Evaluate(speedTime / maxSpeedTime));
                 playerAnimator.SetBool("Switch", mode == PlayState.GameMode.Rain);
@@ -259,8 +260,12 @@ public class PlayerType2 : MonoBehaviour
                 else
                 {
                     playerAnimator.enabled = true;
-                    playerAnimator.SetBool("StageClear", mode == PlayState.GameMode.Clear);
-                    playerAnimator.SetBool("GameOver", mode == PlayState.GameMode.GameOver);
+                    if(umbrellaAnimator != null) { umbrellaAnimator.enabled = true; }
+                    if(mode == PlayState.GameMode.Clear || mode == PlayState.GameMode.GameOver)
+                    {
+                        // クリア時またはゲームオーバー時のアニメーションを再生
+                        playerAnimator.SetBool(mode == PlayState.GameMode.Clear ? "StageClear" : "GameOver", true);
+                    }
                 }
             }
         }
