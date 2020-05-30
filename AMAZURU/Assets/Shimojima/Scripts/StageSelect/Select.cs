@@ -6,9 +6,12 @@ using TMPro;
 
 public class Select : MonoBehaviour
 {
-    public StageData[] SLoadStageData;
-    [SerializeField]
     private StageData sData;
+
+    [SerializeField]
+    private Sprite[] referenceImage;
+    [SerializeField]
+    private Image[] dfImage;
 
     [SerializeField]
     private GameObject senterPivot;
@@ -239,6 +242,7 @@ public class Select : MonoBehaviour
                     viewStage[i].stage.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                 }
 
+                DifficultyChange(viewStage[i]);
                 amehurashiNum.text = viewStage[i].amehurashiNum.ToString();
                 increasedWaterVolume.text = viewStage[i].increasedWaterVolume.ToString();
                 sData = _psd[i].sData;
@@ -386,6 +390,23 @@ public class Select : MonoBehaviour
         }
     }
 
+    private void DifficultyChange(ViewStage vStage)
+    {
+        for (int i = 0; i < dfImage.Length; i++)
+        {
+            if(vStage.difficulity == 0) { dfImage[i].sprite = referenceImage[1]; }
+
+            if (i < vStage.difficulity)
+            {
+                dfImage[i].sprite = referenceImage[0];
+            }
+            else
+            {
+                dfImage[i].sprite = referenceImage[1];
+            }
+        }
+    }
+
     /// <summary>
     /// データ変更
     /// </summary>
@@ -410,6 +431,7 @@ public class Select : MonoBehaviour
                 viewStage[i].CountUp();
                 if (viewStage[i].index == 2) 
                 {
+                    DifficultyChange(viewStage[i]);
                     ame = viewStage[i].amehurashiNum.ToString();
                     iwv = viewStage[i].increasedWaterVolume.ToString();
                 }
@@ -429,6 +451,7 @@ public class Select : MonoBehaviour
                 viewStage[i].CountDown();
                 if (viewStage[i].index == 2)
                 {
+                    DifficultyChange(viewStage[i]);
                     ame = viewStage[i].amehurashiNum.ToString();
                     iwv = viewStage[i].increasedWaterVolume.ToString();
                 }
