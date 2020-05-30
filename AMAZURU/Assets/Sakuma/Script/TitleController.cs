@@ -6,6 +6,7 @@ public class TitleController : MyAnimation
 {
     [SerializeField, Tooltip("タイトル画面の項目")] private GameObject[] titleMenu = null;
     [SerializeField, Tooltip("クレジット")] private GameObject creditObject = null;
+    [SerializeField, Tooltip("カーソルオブジェクト")] private GameObject cursor = null;
     private Coroutine coroutine = null;
     private int selectNum = 0;
     private bool creditFlag = false;
@@ -98,6 +99,14 @@ public class TitleController : MyAnimation
     private void SelectedMenu()
     {
         GameObject animeObject = titleMenu[selectNum];
+
+        // カーソルを移動する
+        if(cursor != null)
+        {
+            Vector3 cursorPos = animeObject.transform.localPosition;
+            cursorPos += Vector3.left * 260;
+            cursor.transform.localPosition = cursorPos;
+        }
 
         if(animeObject == null) { return; }
         if (animeStop)

@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 9e26430623a939b4d9c7f50aa20cfebd
+guid: c9b82c604ac6dd7468012c64434ea866
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable:
   - first:
-      74: 4668972728960652471
-    second: Cororo_idle
+      74: -3398771713680841234
+    second: umbrella_Idle
   externalObjects: {}
   materials:
     materialImportMode: 1
@@ -35,10 +35,10 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Cororo_idle
-      takeName: Cororo_idle
+      name: umbrella_Idle
+      takeName: umbrella_Idle
       internalID: 0
-      firstFrame: 0
+      firstFrame: 1
       lastFrame: 60
       wrapMode: 0
       orientationOffsetY: 0
