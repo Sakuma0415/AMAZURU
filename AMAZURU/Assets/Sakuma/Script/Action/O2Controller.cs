@@ -57,10 +57,10 @@ public class O2Controller : MonoBehaviour
         }
 
         //酸素ゲージの色、ゲージの更新
-        float late = 1 - (breathTime / breathLimitTime);
+        float late = 0.675f- ((((breathTime / breathLimitTime)) / 2)*(0.6f/0.5f));
         gage.fillAmount = late;
         late = 1 - late;
-        gage.color = new Color(late < 0.5f ? late*2:1, late > 0.5f ? 1-((late -0.5f)*2) : 1, gage.color.b, 1);
+        //gage.color = new Color(late < 0.5f ? late*2:1, late > 0.5f ? 1-((late -0.5f)*2) : 1, gage.color.b, 1);
         
         //酸素ゲージ拡大する処理
         if (breathTime > 0)
