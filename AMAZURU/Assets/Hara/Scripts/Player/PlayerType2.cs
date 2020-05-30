@@ -248,12 +248,13 @@ public class PlayerType2 : MonoBehaviour
         }
         else
         {
-            // アニメーションの停止
             if(playerAnimator != null)
             {
                 if(mode == PlayState.GameMode.Pause)
                 {
+                    // ポーズ中のみアニメーションを停止
                     playerAnimator.enabled = false;
+                    if(umbrellaAnimator != null) { umbrellaAnimator.enabled = false; }
                 }
                 else
                 {
