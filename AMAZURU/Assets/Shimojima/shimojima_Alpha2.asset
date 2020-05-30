@@ -19,6 +19,8 @@ MonoBehaviour:
   stagePrefab: {fileID: 5754773224503800460, guid: b3bec5fe4d2923e47ae0c18b8eceb772,
     type: 3}
   AmehurashiQuantity: 10
-  startAngle: 0
+  startAngle: -160
   CameraDisS: 25
   CameraDisP: 5
+  TutorialFlg: 0
+  TutorialObjs: []

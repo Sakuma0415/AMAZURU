@@ -14,7 +14,9 @@ public class ResultControl : MyAnimation
 {
     [SerializeField, Tooltip("項目ボタン")] private GameObject[] menuButton = null;
     [SerializeField, Tooltip("カメラ感度設定ボタン")] private GameObject[] cameraOptionButton = null;
-    [SerializeField, Tooltip("テキストオブジェクト")] private Text textObject = null;
+    [SerializeField, Tooltip("クリア時のロゴ")] private GameObject clear = null;
+    [SerializeField, Tooltip("ゲームオーバー時のロゴ")] private GameObject over = null;
+    [SerializeField, Tooltip("ポーズ時のロゴ")] private GameObject pause = null;
     [SerializeField, Tooltip("カメラ感度設定ウィンドウ")] private GameObject cameraOptionWindow = null;
     [SerializeField, Tooltip("カメラ感度の現在設定")] private Text nowSettingText = null;
 
@@ -63,8 +65,14 @@ public class ResultControl : MyAnimation
     /// </summary>
     private void HiddenObject(bool hiddenOnlyButton)
     {
-        if(textObject != null && hiddenOnlyButton == false) { textObject.gameObject.SetActive(false); }
-        if(hiddenOnlyButton == false) { StopButtonAnimation(); }
+        // ロゴを非表示
+        if(hiddenOnlyButton == false)
+        {
+            if(clear != null && clear.activeSelf) { clear.SetActive(false); }
+            if(over != null && over.activeSelf) { over.SetActive(false); }
+            if(pause != null && pause.activeSelf) { pause.SetActive(false); }
+            StopButtonAnimation();
+        }
         ButtonActive(false);
     }
 
@@ -150,24 +158,24 @@ public class ResultControl : MyAnimation
     /// <returns></returns>
     private IEnumerator ResultAction(bool resultFlag)
     {
-        if (textObject == null) { yield break; }
+        if (clear == null || over == null) { yield break; }
+
+        GameObject result;
 
         if (resultFlag)
         {
-            textObject.text = "STAGE CLEAR";
-            textObject.color = new Color(255f / 255f, 179f / 255f, 0f / 255f);
+            result = clear;
         }
         else
         {
-            textObject.text = "GAME OVER";
-            textObject.color = Color.red;
+            result = over;
         }
 
-        textObject.transform.localPosition = Vector3.zero;
-        textObject.gameObject.SetActive(true);
+        result.transform.localPosition = Vector3.zero;
+        result.SetActive(true);
 
         time = 0;
-        while(ScaleAnimation(textObject.gameObject, time, span, Vector3.zero, Vector3.one) == false)
+        while(ScaleAnimation(result, time, span, Vector3.zero, Vector3.one) == false)
         {
             time += Time.deltaTime;
             yield return null;
@@ -181,7 +189,7 @@ public class ResultControl : MyAnimation
         }
 
         time = 0;
-        while (MoveAnimation(textObject.gameObject, time, span, Vector3.zero, Vector3.up * Screen.height * 0.25f, true) == false)
+        while (MoveAnimation(result, time, span, Vector3.zero, Vector3.up * Screen.height * 0.25f, true) == false)
         {
             time += Time.deltaTime;
             yield return null;
@@ -203,13 +211,9 @@ public class ResultControl : MyAnimation
     /// </summary>
     private void PauseAction()
     {
-        if(textObject == null) { return; }
-
-        textObject.text = "PAUSE";
-        textObject.color = Color.black;
-        textObject.transform.localPosition = Vector3.up * Screen.height * 0.25f;
-
-        textObject.gameObject.SetActive(true);
+        if(pause == null) { return; }
+        pause.transform.localPosition = Vector3.up * Screen.height * 0.25f;
+        pause.SetActive(true);
         ButtonActive(true, true);
     }
 
