@@ -17,6 +17,8 @@ public class Progress : MonoBehaviour
     //resultを描画し始めるまでの時間
     [SerializeField]
     float ResultDelayTime;
+    [SerializeField]
+    AnimationClip[] animation;
     //初期化
     void SetState()
     {
@@ -67,7 +69,7 @@ public class Progress : MonoBehaviour
 
     IEnumerator ResultDelay(bool GameOver)
     {
-        yield return new WaitForSeconds(ResultDelayTime);
+        yield return new WaitForSeconds(animation[GameOver?0:1].length+ResultDelayTime);
         resultControl.StartResult(GameOver);
     }
 

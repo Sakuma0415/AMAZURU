@@ -242,6 +242,8 @@ public class PlayerType2 : MonoBehaviour
                 playerAnimator.enabled = true;
                 playerAnimator.SetBool("Run", input);
                 playerAnimator.SetFloat("Speed", inWater ? (inputSpeed * curve.Evaluate(speedTime / maxSpeedTime)) / (playerSpeed / playerWaterSpeed) : inputSpeed * curve.Evaluate(speedTime / maxSpeedTime));
+                playerAnimator.SetBool("Switch", mode == PlayState.GameMode.Rain);
+                playerAnimator.SetBool("Jump", CliffFlag);
             }
         }
         else
@@ -256,6 +258,8 @@ public class PlayerType2 : MonoBehaviour
                 else
                 {
                     playerAnimator.enabled = true;
+                    playerAnimator.SetBool("StageClear", mode == PlayState.GameMode.Clear);
+                    playerAnimator.SetBool("GameOver", mode == PlayState.GameMode.GameOver);
                 }
             }
         }
@@ -285,53 +289,49 @@ public class PlayerType2 : MonoBehaviour
             Ray mainRay;
             RaycastHit hit;
             bool set;
-            int count = 0;
+            int[] index = new int[2] { 0, 0 };
             mainRay = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
             if(Physics.Raycast(mainRay, out hit, rayLength, layerMask))
             {
-                if(Vector3.Angle(Vector3.up, hit.normal) == 0)
+                float hitDistance = hit.distance;
+                // プレイヤーの当たり判定の両端からRayを飛ばして進めるかをチェック
+                Ray subRay;
+                bool check = false;
+                for (int j = 0; j < index.Length; j++)
                 {
-                    // プレイヤーの当たり判定の両端からRayを飛ばして進めるかをチェック
-                    Ray subRay;
-                    float hitDistance = hit.distance;
-                    for (int j = 0; j < 2; j++)
+                    subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
+                    check = Physics.Raycast(subRay, rayLength, layerMask);
+                    if (check) { break; }
+                }
+
+                if (check)
+                {
+                    for (int j = 0; j < index.Length; j++)
                     {
-                        subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * (character.radius - 0.0001f) * (j == 0 ? 1 : -1), mainRay.direction);
-                        Debug.DrawRay(subRay.origin, subRay.direction);
+                        subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), mainRay.direction);
                         if (Physics.Raycast(subRay, out hit, rayLength, layerMask))
                         {
-                            if(Vector3.Angle(Vector3.up, hit.normal) == 0 && hit.distance < hitDistance)
+                            float disA = Mathf.Ceil(Mathf.Floor(hit.distance * 1000) / 10);
+                            float disB = Mathf.Ceil(Mathf.Floor(hitDistance * 1000) / 10);
+                            if (disA < disB)
                             {
-                                count++;
+                                index[j] = 1;
                             }
-                        }
-                        else
-                        {
-                            count--;
-                            break;
+                            else
+                            {
+                                index[j] = 2;
+                            }
                         }
                     }
                 }
 
-                set = count == 1;
-
-                if(set == false)
+                int sum = 0;
+                foreach (int k in index)
                 {
-                    Ray slopeRay;
-                    count = 0;
-                    for (int j = 0; j < 2; j++)
-                    {
-                        slopeRay = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z) + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * (j == 0 ? 0.025f : -0.025f), rayPosition[i]);
-                        if (Physics.Raycast(slopeRay, out hit, character.radius + 1.0f, layerMask))
-                        {
-                            if (Vector3.Angle(Vector3.up, hit.normal) < character.slopeLimit)
-                            {
-                                count++;
-                            }
-                        }
-                    }
-                    set = count == 1;
+                    sum += k;
                 }
+
+                set = sum == 3;
             }
             else
             {

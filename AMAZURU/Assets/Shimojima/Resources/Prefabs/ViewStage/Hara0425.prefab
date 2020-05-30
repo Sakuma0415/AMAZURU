@@ -13408,7 +13408,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1992434325241925090}
-  - component: {fileID: 3909600240739012230}
   m_Layer: 0
   m_Name: Amehurasi
   m_TagString: Untagged
@@ -13432,19 +13431,6 @@ Transform:
   m_Father: {fileID: 7377990955495922266}
   m_RootOrder: 32
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &3909600240739012230
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2060690877291113241}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 2.0349858, z: 1}
-  m_Center: {x: 0, y: 1.0174929, z: 0}
 --- !u!1 &2132641267126195952
 GameObject:
   m_ObjectHideFlags: 0
@@ -16426,7 +16412,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3868752457950618585}
-  - component: {fileID: 954242919027875691}
   m_Layer: 0
   m_Name: Amehurasi
   m_TagString: Untagged
@@ -16450,19 +16435,6 @@ Transform:
   m_Father: {fileID: 7377990955495922266}
   m_RootOrder: 342
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &954242919027875691
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2628951481811553297}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 2.0349858, z: 1}
-  m_Center: {x: 0, y: 1.0174929, z: 0}
 --- !u!1 &2646167558783590443
 GameObject:
   m_ObjectHideFlags: 0
@@ -31703,7 +31675,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 623392928350529149}
-  - component: {fileID: 3803948493621318535}
   m_Layer: 0
   m_Name: Amehurasi
   m_TagString: Untagged
@@ -31727,19 +31698,6 @@ Transform:
   m_Father: {fileID: 7377990955495922266}
   m_RootOrder: 76
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &3803948493621318535
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5279567722821851989}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 2.0349858, z: 1}
-  m_Center: {x: 0, y: 1.0174929, z: 0}
 --- !u!1 &5286139081812379511
 GameObject:
   m_ObjectHideFlags: 0
@@ -48348,7 +48306,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3077876753904559392}
-  - component: {fileID: 5815835379047540078}
   m_Layer: 0
   m_Name: Amehurasi
   m_TagString: Untagged
@@ -48372,19 +48329,6 @@ Transform:
   m_Father: {fileID: 7377990955495922266}
   m_RootOrder: 167
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &5815835379047540078
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8008223010065197415}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 2.0349858, z: 1}
-  m_Center: {x: 0, y: 1.0174929, z: 0}
 --- !u!1 &8021953648685927035
 GameObject:
   m_ObjectHideFlags: 0
