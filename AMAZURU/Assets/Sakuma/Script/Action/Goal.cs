@@ -7,6 +7,10 @@ using UnityEngine;
 /// </summary>
 public class Goal : MonoBehaviour
 {
+    [SerializeField]
+    float fadeTime=1;
+    [SerializeField]
+    Material material;
 
     //接触判定
     private void OnTriggerEnter(Collider other)
@@ -20,7 +24,23 @@ public class Goal : MonoBehaviour
             if(AmehurashiManager.amehurashi.amehurashiTrueCont == AmehurashiManager.amehurashi.AmehurashiQuantity)
             {
                 PlayState.playState.gameMode = PlayState.GameMode.Clear ;
+                StartCoroutine("FadeIn");
             }
         }
+    }
+
+
+
+    IEnumerator FadeIn()
+    {
+        float time = 0;
+
+        while (time < fadeTime)
+        {
+            material.SetFloat("_Fade", time / fadeTime);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        material.SetFloat("_Fade",1f);
     }
 }
