@@ -12,6 +12,10 @@ public class Goal : MonoBehaviour
     [SerializeField]
     Material material;
 
+    private void Start()
+    {
+        material.SetFloat("_Fade", 0f);
+    }
     //接触判定
     private void OnTriggerEnter(Collider other)
     {

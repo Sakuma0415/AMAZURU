@@ -4,6 +4,8 @@
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
 		_Fade ("Fade", float) = 0
 		_NormalTex("_NormalTex", 2D) = "white" {}
+		_Glossiness ("Smoothness", Range(0,1)) = 0.5
+        _Metallic ("Metallic", Range(0,1)) = 0.0
 	}
 
 	SubShader {
@@ -18,7 +20,8 @@
 		CGPROGRAM
 		#pragma surface surf Standard fullforwardshadows alpha:fade
 		#pragma target 3.0
-
+		half _Glossiness;
+        half _Metallic;
 		sampler2D _MainTex;
 		sampler2D _NormalTex;
 		float _Fade;
@@ -32,8 +35,8 @@
 		{
 			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
 			o.Albedo = c.rgb;
-			o.Metallic = 0;
-			o.Smoothness = 0;
+			o.Metallic = _Metallic;
+			o.Smoothness = _Glossiness;
 			o.Alpha = _Fade;
 			o.Normal=UnpackNormal(tex2D(_NormalTex, IN.uv_MainTex));
 		}
