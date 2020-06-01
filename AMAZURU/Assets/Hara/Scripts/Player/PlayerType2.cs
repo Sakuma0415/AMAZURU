@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerType2 : MonoBehaviour
+public class PlayerType2 : MyAnimation
 {
     [SerializeField, Tooltip("PlayerのCharacterController")] private CharacterController character = null;
     [SerializeField, Tooltip("PlayerのAnimator")] private Animator playerAnimator = null;
     [SerializeField, Tooltip("Playerの傘のAnimator")] private Animator umbrellaAnimator = null;
     [SerializeField, Tooltip("透明な壁")] private BoxCollider hiddenWallPrefab = null;
-    [SerializeField, Tooltip("地面のLayerMask")] private LayerMask layerMask;
+    [SerializeField, Tooltip("地面のLayerMask")] private LayerMask groundLayer;
     [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
     [SerializeField, Tooltip("AnimationEventスクリプト")] private PlayerAnimeEvent animeEvent = null;
     private bool connectPlayState = false;
@@ -125,6 +125,14 @@ public class PlayerType2 : MonoBehaviour
             mode = PlayState.GameMode.Play;
         }
 
+        // カメラの向いている方向を取得
+        Vector3 cameraForward = Vector3.Scale(PlayerCamera.transform.forward == Vector3.up ? -PlayerCamera.transform.up : PlayerCamera.transform.forward == Vector3.down ? PlayerCamera.transform.up : PlayerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+
+        // カメラから見た入力方向を取得
+        Vector3 direction = cameraForward * inputZ + PlayerCamera.transform.right * inputX;
+
+        float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
+
         if (mode == PlayState.GameMode.Play || mode == PlayState.GameMode.Rain)
         {
             bool input;
@@ -141,8 +149,6 @@ public class PlayerType2 : MonoBehaviour
             }
             else
             {
-                float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
-
                 // 移動方向
                 Vector3 moveDirection = Vector3.zero;
 
@@ -152,12 +158,6 @@ public class PlayerType2 : MonoBehaviour
 
                 if (input)
                 {
-                    // カメラの向いている方向を取得
-                    Vector3 cameraForward = Vector3.Scale(PlayerCamera.transform.forward == Vector3.up ? -PlayerCamera.transform.up : PlayerCamera.transform.forward == Vector3.down ? PlayerCamera.transform.up : PlayerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
-
-                    // カメラから見た入力方向を取得
-                    Vector3 direction = cameraForward * inputZ + PlayerCamera.transform.right * inputX;
-
                     // 入力方向を向く処理
                     Quaternion rot = Quaternion.LookRotation(direction, Vector3.up);
                     rot = Quaternion.Slerp(transform.rotation, rot, 7.5f * delta);
@@ -171,7 +171,7 @@ public class PlayerType2 : MonoBehaviour
                     // X-Y平面における(坂の上り下り)三角関数を考慮した移動量を計算
                     Ray ground = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z), Vector3.down);
                     RaycastHit hit;
-                    if (Physics.Raycast(ground, out hit, rayLength, layerMask))
+                    if (Physics.Raycast(ground, out hit, rayLength, groundLayer))
                     {
                         var nomal = hit.normal;
                         Vector3 dir = moveDirection - Vector3.Dot(moveDirection, nomal) * nomal;
@@ -264,7 +264,14 @@ public class PlayerType2 : MonoBehaviour
                     if(mode == PlayState.GameMode.Clear || mode == PlayState.GameMode.GameOver)
                     {
                         // クリア時またはゲームオーバー時のアニメーションを再生
-                        playerAnimator.SetBool(mode == PlayState.GameMode.Clear ? "StageClear" : "GameOver", true);
+                        if(mode == PlayState.GameMode.Clear)
+                        {
+                            playerAnimator.SetBool("StageClear", RotateAnimation(transform.gameObject, cameraForward * -1, 125 * delta, true));
+                        }
+                        else
+                        {
+                            playerAnimator.SetBool("GameOver", true);
+                        }
                     }
                 }
             }
@@ -297,7 +304,7 @@ public class PlayerType2 : MonoBehaviour
             bool set;
             int[] index = new int[2] { 0, 0 };
             mainRay = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
-            if(Physics.Raycast(mainRay, out hit, rayLength, layerMask))
+            if(Physics.Raycast(mainRay, out hit, rayLength, groundLayer))
             {
                 float hitDistance = hit.distance;
                 // プレイヤーの当たり判定の両端からRayを飛ばして進めるかをチェック
@@ -306,7 +313,7 @@ public class PlayerType2 : MonoBehaviour
                 for (int j = 0; j < index.Length; j++)
                 {
                     subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
-                    check = Physics.Raycast(subRay, rayLength, layerMask);
+                    check = Physics.Raycast(subRay, rayLength, groundLayer);
                     if (check) { break; }
                 }
 
@@ -315,7 +322,7 @@ public class PlayerType2 : MonoBehaviour
                     for (int j = 0; j < index.Length; j++)
                     {
                         subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), mainRay.direction);
-                        if (Physics.Raycast(subRay, out hit, rayLength, layerMask))
+                        if (Physics.Raycast(subRay, out hit, rayLength, groundLayer))
                         {
                             float disA = Mathf.Ceil(Mathf.Floor(hit.distance * 1000) / 10);
                             float disB = Mathf.Ceil(Mathf.Floor(hitDistance * 1000) / 10);

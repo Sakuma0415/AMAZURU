@@ -211,13 +211,13 @@ MonoBehaviour:
   umbrellaAnimator: {fileID: 8242031965211325684}
   hiddenWallPrefab: {fileID: 8378400810947322284, guid: 20f0eb19eff9d37448a5f53a6970d386,
     type: 3}
-  layerMask:
+  groundLayer:
     serializedVersion: 2
     m_Bits: 1
   mode: 1
   animeEvent: {fileID: 6563818926262237068}
-  playerSpeed: 4
-  playerWaterSpeed: 2
+  playerSpeed: 5
+  playerWaterSpeed: 2.5
   curve:
     serializedVersion: 2
     m_Curve:
