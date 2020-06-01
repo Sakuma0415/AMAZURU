@@ -11,8 +11,7 @@ public class Select : MonoBehaviour
     [SerializeField]
     private Sprite[] referenceImage;
     [SerializeField]
-    private Image[] dfImage;
-
+    private Image[] dfImage, selectUIs;
     [SerializeField]
     private GameObject senterPivot;
     [SerializeField]
@@ -20,7 +19,7 @@ public class Select : MonoBehaviour
 
     
     [SerializeField]
-    private TextMeshProUGUI amehurashiNum, increasedWaterVolume;
+    private TextMeshProUGUI stageName, amehurashiNum, increasedWaterVolume;
 
     [System.Serializable]
     public struct PrefabStageDatas
@@ -140,6 +139,7 @@ public class Select : MonoBehaviour
                 if (isRotation) { return; }
                 SoundManager.soundManager.PlaySe("cncl05", 1f);
                 selection = Selection.Forwerd;
+                selectUIs[0].GetComponent<Animator>().SetTrigger("ChangeSize");
                 isRotation = true;
             }
             else if (h > 0 || h2 > 0)
@@ -147,6 +147,7 @@ public class Select : MonoBehaviour
                 if (isRotation) { return; }
                 SoundManager.soundManager.PlaySe("cncl05", 1f);
                 selection = Selection.FallBack;
+                selectUIs[1].GetComponent<Animator>().SetTrigger("ChangeSize");
                 isRotation = true;
             }
             if (Input.GetButtonDown("Circle"))
@@ -243,6 +244,7 @@ public class Select : MonoBehaviour
                 }
 
                 DifficultyChange(viewStage[i]);
+                stageName.text = viewStage[i].name;
                 amehurashiNum.text = viewStage[i].amehurashiNum.ToString();
                 increasedWaterVolume.text = viewStage[i].increasedWaterVolume.ToString();
                 sData = _psd[i].sData;
@@ -413,7 +415,8 @@ public class Select : MonoBehaviour
     /// <param name="select"></param>
     private void StageDataChange(Selection select)
     {
-        string ame, iwv;
+        string n, ame, iwv;
+        n = "";
         ame = "";
         iwv = "";
 
@@ -432,6 +435,7 @@ public class Select : MonoBehaviour
                 if (viewStage[i].index == 2) 
                 {
                     DifficultyChange(viewStage[i]);
+                    n = viewStage[i].name;
                     ame = viewStage[i].amehurashiNum.ToString();
                     iwv = viewStage[i].increasedWaterVolume.ToString();
                 }
@@ -452,12 +456,13 @@ public class Select : MonoBehaviour
                 if (viewStage[i].index == 2)
                 {
                     DifficultyChange(viewStage[i]);
+                    n = viewStage[i].name;
                     ame = viewStage[i].amehurashiNum.ToString();
                     iwv = viewStage[i].increasedWaterVolume.ToString();
                 }
             }
         }
-
+        stageName.text = n;
         amehurashiNum.text = ame;
         increasedWaterVolume.text = iwv;
     }
