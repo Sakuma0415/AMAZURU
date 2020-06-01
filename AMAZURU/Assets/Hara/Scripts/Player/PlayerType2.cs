@@ -266,7 +266,11 @@ public class PlayerType2 : MyAnimation
                         // クリア時またはゲームオーバー時のアニメーションを再生
                         if(mode == PlayState.GameMode.Clear)
                         {
-                            playerAnimator.SetBool("StageClear", RotateAnimation(transform.gameObject, cameraForward * -1, 125 * delta, true));
+                            if(RotateAnimation(transform.gameObject, cameraForward * -1, 125 * delta, true))
+                            {
+                                playerAnimator.SetBool("Run", false);
+                                playerAnimator.SetBool("StageClear", true);
+                            }
                         }
                         else
                         {
