@@ -27,7 +27,8 @@ public class StepBrock : MonoBehaviour
     float dora=0.05f;
     //段差ブロック全体で共有する段差アニメーションのフラグ
     static public bool stepAnime=false;
-
+    [SerializeField]
+    GameObject maru;
 
     //private
 
@@ -76,6 +77,7 @@ public class StepBrock : MonoBehaviour
         //降りれる状態の処理
         if(onStep && !StepBrock.stepAnime&& Mathf.Abs(Mathf.DeltaAngle(playerTransform.eulerAngles.y, transform.eulerAngles.y)) < 90)
         {
+            maru.SetActive(true);
             StepTrue = true;
             StepTrueText.textFlg = true;
             
@@ -106,7 +108,7 @@ public class StepBrock : MonoBehaviour
         }
         else
         {
-
+            maru.SetActive(false);
             //降りれなくなった瞬間の処理
             if (StepTrue)
             {

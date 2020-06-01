@@ -71,18 +71,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   stageWater: {fileID: 0}
-  player: {fileID: 0}
   mode: 1
-  startPos: {x: 0, y: 0, z: 0}
-  startRot: {x: 0, y: 0, z: 0}
   enemySize: 1
   movePlan: []
-  type: 1
+  moveType: 0
   lateTime: 0.5
   enemySpeed: 1.5
-  enemyWaterSpeed: 3
+  enemyWaterSpeed: 4
   rotatePower: 125
-  hitRange: 1.25
   colliderSize: 0.45
   inspectorUpdate: 0
 --- !u!114 &1531546374721261317
