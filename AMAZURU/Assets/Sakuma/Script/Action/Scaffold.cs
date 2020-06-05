@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class Scaffold : MonoBehaviour
 {
-    [SerializeField]
-    WaterHi waterHi;
+    WaterHi waterHi = null;
     [SerializeField]
     LayerMask layerMask;
-    [SerializeField]
-    Rigidbody rb;
+    Rigidbody rb = null;
+    BoxCollider boxCollider = null;
 
     [SerializeField, Tooltip("地面のレイヤー")] private LayerMask groundLayer;
     [SerializeField, Tooltip("ステージの最大マス")] private float maxSize = 20;
@@ -18,11 +17,15 @@ public class Scaffold : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // コンポーネント取得
+        rb = GetComponent<Rigidbody>();
+        boxCollider = GetComponent<BoxCollider>();
+
         Ray ray = new Ray(transform.position ,transform.TransformDirection(Vector3.down));
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit,200, layerMask))
         {
-            waterHi=hit.collider.gameObject.GetComponent<WaterHi>();
+            waterHi = hit.collider.gameObject.GetComponent<WaterHi>();
         }
 
         SetMaxPos();
@@ -51,7 +54,7 @@ public class Scaffold : MonoBehaviour
     private void SetMaxPos()
     {
         // 足場の厚さの半分の値
-        float scaffoldHalfHeight = transform.localScale.y * 0.5f;
+        float scaffoldHalfHeight = boxCollider.size.y * 0.5f;
 
         Ray ray = new Ray(transform.position, Vector3.up);
         RaycastHit hit;
