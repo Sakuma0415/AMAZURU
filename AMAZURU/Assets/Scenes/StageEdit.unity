@@ -622,13 +622,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stageName: 0
+  underFloor: 0
   loadStage: 0
   isSave: 0
   isCreateStage: 0
   objName: 
   cells: {x: 5, y: 5, z: 5}
   cellNum: {x: 0, y: 0, z: 0}
-  mainCamera: {fileID: 989471370}
   gridObj: {fileID: 5999110429068370210, guid: 0be17e78958f64648b65ad877da141c4, type: 3}
   guideObj: {fileID: 2088944082}
   cell:

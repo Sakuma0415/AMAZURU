@@ -25,7 +25,7 @@ public class StageEditor : MonoBehaviour
     [Tooltip("ステージ名")]
     public string stageName;
 
-    public bool underFloor = true;
+    public bool underFloor = false;
     [HideInInspector]
     public bool loadStage;
     [HideInInspector]
@@ -298,7 +298,7 @@ public class StageEditor : MonoBehaviour
             {
                 int x = Random.Range(0, 6);
                 GameObject s_obj = Instantiate(floorRefObj[x], gridPos[i,0,j].transform.position, Quaternion.identity);
-                s_obj.name = floorRefObj[x].name;
+                s_obj.name = referenceObject[0].name;
                 s_obj.AddComponent<MyCellIndex>().cellIndex = new Vector3Int(i, 0, j);
                 s_obj.transform.parent = stageRoot.transform;
                 _StageObjects[i, 0, j] = s_obj;
@@ -573,11 +573,6 @@ public class StageEditor : MonoBehaviour
     {
         if (_StageObjects[i, j, k] == null) { return; }
         GameObject obj = Instantiate(_StageObjects[i, j, k]);
-        if (i == 0 && j == 1 && k == 4)
-        {
-            Debug.Log(_StageObjects[i, j, k].transform.position);
-            Debug.Log(obj.transform.position);
-        }
         obj.transform.parent = _obj.transform;
         _StageObjects[i, j, k] = obj;
     }
@@ -632,13 +627,12 @@ public class StageEditorCustom : Editor
             if (child.GetComponent<MyCellIndex>())
             {
                 v = child.GetComponent<MyCellIndex>().cellIndex;
-                if(v.y != stageEditor.cells.y)
+                if(v.y != stageEditor.cells.y && stageEditor.underFloor)
                 {
                     v = new Vector3Int(v.x, v.y + 1, v.z);
                 }
                 child.GetComponent<MyCellIndex>().cellIndex = v;
             }
-            Debug.Log(v);
             stageEditor.gridPos[v.x, v.y, v.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true ;
             stageEditor._StageObjects[v.x, v.y, v.z] = child.gameObject;
         }
