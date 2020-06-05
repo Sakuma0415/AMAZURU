@@ -208,16 +208,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character: {fileID: 2001958938084469646}
   playerAnimator: {fileID: 8894341503791333974}
-  umbrellaAnimator: {fileID: 0}
+  umbrellaAnimator: {fileID: 8242031965211325684}
   hiddenWallPrefab: {fileID: 8378400810947322284, guid: 20f0eb19eff9d37448a5f53a6970d386,
     type: 3}
-  layerMask:
+  groundLayer:
     serializedVersion: 2
     m_Bits: 1
   mode: 1
   animeEvent: {fileID: 6563818926262237068}
-  playerSpeed: 4
-  playerWaterSpeed: 2
+  playerSpeed: 5
+  playerWaterSpeed: 2.5
   curve:
     serializedVersion: 2
     m_Curve:
@@ -370,6 +370,12 @@ Transform:
 --- !u!95 &8894341503791333974 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 3985595624997623670, guid: 8bfded61014e60642aa91fbc581531ed,
+    type: 3}
+  m_PrefabInstance: {fileID: 5485562894406554912}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &8242031965211325684 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4485926098873311700, guid: 8bfded61014e60642aa91fbc581531ed,
     type: 3}
   m_PrefabInstance: {fileID: 5485562894406554912}
   m_PrefabAsset: {fileID: 0}

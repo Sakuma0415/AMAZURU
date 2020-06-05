@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,15 +13,20 @@ public enum CameraSpeed
 
 public class ResultControl : MyAnimation
 {
-    [SerializeField, Tooltip("項目ボタン")] private GameObject[] menuButton = null;
-    [SerializeField, Tooltip("カメラ感度設定ボタン")] private GameObject[] cameraOptionButton = null;
+    [SerializeField, Tooltip("カーソルオブジェクト")] private GameObject cursor = null;
+    [SerializeField, Tooltip("項目")] private GameObject menuButton = null;
+    [SerializeField, Tooltip("カメラ感度設定")] private GameObject cameraOptionButton = null;
+    [SerializeField, Tooltip("ポーズ画面背景")] private GameObject pauseBack = null;
     [SerializeField, Tooltip("クリア時のロゴ")] private GameObject clear = null;
     [SerializeField, Tooltip("ゲームオーバー時のロゴ")] private GameObject over = null;
     [SerializeField, Tooltip("ポーズ時のロゴ")] private GameObject pause = null;
     [SerializeField, Tooltip("カメラ感度設定ウィンドウ")] private GameObject cameraOptionWindow = null;
-    [SerializeField, Tooltip("カメラ感度の現在設定")] private Text nowSettingText = null;
+    [SerializeField, Tooltip("カメラ感度の現在設定")] private TextMeshProUGUI nowSettingText = null;
 
     [SerializeField, Header("アニメーション実行間隔"), Range(0, 3)] private float span = 1.0f;
+
+    private RectTransform[] button = null;
+    private RectTransform[] optionButton = null;
 
     private float time = 0;
     private float selectChangeTime = 0;
@@ -29,7 +35,7 @@ public class ResultControl : MyAnimation
     private Coroutine coroutine = null;
     private bool selectMenu = false;
     private int selectButtonNum = 0;
-    private GameObject[] animationObject = null;
+    private RectTransform[] animationObject = null;
 
     private int minButtonLength = 0;
     private bool actionFlag = false;
@@ -55,25 +61,9 @@ public class ResultControl : MyAnimation
     /// </summary>
     private void ResultInit()
     {
-        // オブジェクトを非表示
-        HiddenObject(false);
-        Option(false);
-    }
+        ButtonSet();
 
-    /// <summary>
-    /// オブジェクトを非表示にする
-    /// </summary>
-    private void HiddenObject(bool hiddenOnlyButton)
-    {
-        // ロゴを非表示
-        if(hiddenOnlyButton == false)
-        {
-            if(clear != null && clear.activeSelf) { clear.SetActive(false); }
-            if(over != null && over.activeSelf) { over.SetActive(false); }
-            if(pause != null && pause.activeSelf) { pause.SetActive(false); }
-            StopButtonAnimation();
-        }
-        ButtonActive(false);
+        Pause(false);
     }
 
     /// <summary>
@@ -86,13 +76,17 @@ public class ResultControl : MyAnimation
         {
             SoundManager.soundManager.StopBgm(0.5f,0);
             SoundManager.soundManager.StopBgm(0.5f, 1);
+            Pause(false);
         }
-        HiddenObject(num == 0);
+        else
+        {
+            ButtonActive(false);
+        }
 
         switch (num)
         {
             case 0:
-                Option(true);
+                CameraOption(true);
                 break;
             case 1:
                 SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
@@ -112,42 +106,41 @@ public class ResultControl : MyAnimation
     /// <param name="active"></param>
     private void ButtonActive(bool active, bool optionWindow = false)
     {
-        int index;
+        int index = 0;
         if (active)
         {
-            if (optionWindow)
+            if (optionWindow == false)
             {
-                index = 0;
+                index = 1;
+                button[0].gameObject.SetActive(false);
             }
             else
             {
-                index = 1;
+                button[0].gameObject.SetActive(true);
             }
-        }
-        else
-        {
-            index = 0;
-        }
-
-        for(int i = index; i < menuButton.Length; i++)
-        {
-            if (active)
-            {
-                if (optionWindow)
-                {
-                    menuButton[i].transform.localPosition = new Vector3(0, 180 + (-120 * i), 0);
-                }
-                else
-                {
-                    menuButton[i].transform.localPosition = new Vector3(0, 140 + (-140 * (i - 1)), 0);
-                }
-            }
-            menuButton[i].SetActive(active);
         }
 
         if (active)
         {
-            StartButtonAnimation(menuButton, index);
+            for (int i = index; i < button.Length; i++)
+            {
+                if (optionWindow)
+                {
+                    button[i].transform.localPosition = new Vector3(0, 180 + (-120 * i), 0);
+                }
+                else
+                {
+                    button[i].transform.localPosition = new Vector3(0, 140 + (-140 * (i - 1)), 0);
+                }
+            }
+        }
+       
+        menuButton.SetActive(active);
+
+        if (active)
+        {
+            StartButtonAnimation(button, index);
+            if(cursor != null) { cursor.SetActive(true); }
         }
     }
 
@@ -207,17 +200,6 @@ public class ResultControl : MyAnimation
     }
 
     /// <summary>
-    /// ポーズ画面のアクション
-    /// </summary>
-    private void PauseAction()
-    {
-        if(pause == null) { return; }
-        pause.transform.localPosition = Vector3.up * Screen.height * 0.25f;
-        pause.SetActive(true);
-        ButtonActive(true, true);
-    }
-
-    /// <summary>
     /// メニューボタンの処理
     /// </summary>
     private void MenuButtonAction()
@@ -229,23 +211,30 @@ public class ResultControl : MyAnimation
         float input = Input.GetAxis("Vertical3");
         int key = input > 0.1f ? -1 : input < -0.1f ? 1 : 0;
 
+        if(cursor != null)
+        {
+            Vector3 pos = animationObject[selectButtonNum].transform.position;
+            pos += Vector3.left * animationObject[selectButtonNum].sizeDelta.x * 0.6f;
+            cursor.transform.position = pos;
+        }
+
         // 選択状態のボタンのアニメーションを実行する
         switch (step)
         {
             case 0:
-                end = ScaleAnimation(animationObject[selectButtonNum], time, span / 4, Vector3.one, Vector3.one * 1.05f);
+                end = ScaleAnimation(animationObject[selectButtonNum].gameObject, time, span / 4, Vector3.one, Vector3.one * 1.05f);
                 time += Time.deltaTime;
                 break;
             case 1:
-                end = ScaleAnimation(animationObject[selectButtonNum], time, span / 4, Vector3.one * 1.05f, Vector3.one);
+                end = ScaleAnimation(animationObject[selectButtonNum].gameObject, time, span / 4, Vector3.one * 1.05f, Vector3.one);
                 time += Time.deltaTime;
                 break;
             case 2:
-                end = ScaleAnimation(animationObject[selectButtonNum], time, span / 4, Vector3.one, Vector3.one * 0.95f);
+                end = ScaleAnimation(animationObject[selectButtonNum].gameObject, time, span / 4, Vector3.one, Vector3.one * 0.95f);
                 time += Time.deltaTime;
                 break;
             case 3:
-                end = ScaleAnimation(animationObject[selectButtonNum], time, span / 4, Vector3.one * 0.95f, Vector3.one);
+                end = ScaleAnimation(animationObject[selectButtonNum].gameObject, time, span / 4, Vector3.one * 0.95f, Vector3.one);
                 time += Time.deltaTime;
                 break;
             default:
@@ -309,8 +298,8 @@ public class ResultControl : MyAnimation
 
         if(Input.GetButtonDown("Cross") && actionFlag)
         {
-            PauseAction();
-            Option(false);
+            CameraOption(false);
+            ButtonActive(true, true);
         }
     }
 
@@ -320,15 +309,7 @@ public class ResultControl : MyAnimation
     /// <param name="active">trueなら表示、falseなら非表示</param>
     public void GamePause(bool active)
     {
-        if (active)
-        {
-            PauseAction();
-        }
-        else
-        {
-            HiddenObject(false);
-            Option(false);
-        }
+        Pause(active);
     }
 
     /// <summary>
@@ -353,7 +334,7 @@ public class ResultControl : MyAnimation
     /// <summary>
     /// ゲーム設定画面を表示・非表示
     /// </summary>
-    private void Option(bool open)
+    private void CameraOption(bool open)
     {
         if (open)
         {
@@ -369,7 +350,7 @@ public class ResultControl : MyAnimation
             {
                 nowSettingText.text = "ふつう";
             }
-            StartButtonAnimation(cameraOptionButton, 0, true);
+            StartButtonAnimation(optionButton, 0, true);
         }
         cameraOptionWindow.SetActive(open);
     }
@@ -400,7 +381,7 @@ public class ResultControl : MyAnimation
     /// <summary>
     /// ボタンアニメーションの開始
     /// </summary>
-    private void StartButtonAnimation(GameObject[] objects, int selectedObjectNum, bool cameraOption = false)
+    private void StartButtonAnimation(RectTransform[] objects, int selectedObjectNum, bool cameraOption = false)
     {
         step = 0;
         time = 0;
@@ -416,10 +397,57 @@ public class ResultControl : MyAnimation
     }
 
     /// <summary>
-    /// ボタンアニメーションの停止
+    /// 項目ボタン情報を取得
     /// </summary>
-    private void StopButtonAnimation()
+    private void ButtonSet()
     {
-        selectMenu = false;
+        // 項目ボタン
+        button = new RectTransform[menuButton.transform.childCount];
+        for(int i = 0; i < button.Length; i++)
+        {
+            button[i] = menuButton.transform.GetChild(i).GetComponent<RectTransform>();
+        }
+
+        // カメラオプションボタン
+        optionButton = new RectTransform[cameraOptionButton.transform.childCount];
+        for(int i = 0; i < optionButton.Length; i++)
+        {
+            optionButton[i] = cameraOptionButton.transform.GetChild(i).GetComponent<RectTransform>();
+        }
+    }
+
+    private void Pause(bool active)
+    {
+        // 背景の表示管理
+        if(pauseBack != null) { pauseBack.SetActive(active); }
+
+        // 項目ボタンの表示管理
+        if(menuButton != null) { menuButton.SetActive(active); }
+
+        // 項目選択の許可
+        selectMenu = active;
+
+        if(active)
+        {
+            if (pause != null)
+            {
+                pause.transform.localPosition = Vector3.up * Screen.height * 0.25f;
+                pause.SetActive(true);
+            }
+            ButtonActive(true, true);
+        }
+        else
+        {
+            // カメラオプションを閉じる
+            if (cameraOptionWindow != null) { cameraOptionWindow.SetActive(false); }
+
+            // ロゴの非表示
+            if (clear != null && clear.activeSelf) { clear.SetActive(false); }
+            if (over != null && over.activeSelf) { over.SetActive(false); }
+            if (pause != null && pause.activeSelf) { pause.SetActive(false); }
+
+            // カーソルをオフ
+            if(cursor != null) { cursor.SetActive(false); }
+        }
     }
 }

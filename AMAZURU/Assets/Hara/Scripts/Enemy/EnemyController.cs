@@ -173,16 +173,9 @@ public class EnemyController : MyAnimation
                     case 2:
                         if (transform.rotation == Quaternion.LookRotation(forward))
                         {
-                            float vec = Mathf.Abs(forward.x) >= Mathf.Abs(forward.z) ? forward.z / forward.x : forward.x / forward.z;
-                            vec = 1.0f / Mathf.Sqrt(1.0f + vec * vec);
                             float speed = inWater ? enemyWaterSpeed : enemySpeed;
-                            transform.position += forward * speed * delta * vec;
-
-                            float distanceX = Mathf.Abs(Mathf.Abs(nowPos.x) - Mathf.Abs(nextPos.x));
-                            float distanceY = Mathf.Abs(Mathf.Abs(nowPos.y) - Mathf.Abs(nextPos.y));
-                            float distanceZ = Mathf.Abs(Mathf.Abs(nowPos.z) - Mathf.Abs(nextPos.z));
-                            Vector3 now = new Vector3(Mathf.Abs(Mathf.Abs(transform.position.x) - Mathf.Abs(nowPos.x)), Mathf.Abs(Mathf.Abs(transform.position.y) - Mathf.Abs(nowPos.y)), Mathf.Abs(Mathf.Abs(transform.position.z) - Mathf.Abs(nowPos.z)));
-                            stepEnd = now.x >= distanceX && now.y >= distanceY && now.z >= distanceZ;
+                            transform.position = Vector3.MoveTowards(transform.position, moveSchedule[nextLocation], speed * delta);
+                            stepEnd = transform.position == moveSchedule[nextLocation];
                         }
                         else
                         {

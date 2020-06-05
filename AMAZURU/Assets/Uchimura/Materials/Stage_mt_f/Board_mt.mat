@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Block_5
+  m_Name: Board_mt
   m_Shader: {fileID: 4800000, guid: 512879a2fb4b754429b4c8ff3e98498c, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -40,15 +40,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _LightMap:
-        m_Texture: {fileID: 2800000, guid: e656009a102c65340adb1ebabfbd6b8e, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 1053b9d8f1cb7a9408bd6d92ce4e49b6, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTexture:
-        m_Texture: {fileID: 2800000, guid: 1053b9d8f1cb7a9408bd6d92ce4e49b6, type: 3}
+        m_Texture: {fileID: 2800000, guid: 14a504c4e20d762468e64b39a5f45e3a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -56,7 +52,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 2800000, guid: 24584f69062ac0b4f8414224ba71095f, type: 3}
+        m_Texture: {fileID: 2800000, guid: edcfdf8ddd7bfd2458ee4f00ef06d238, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -71,28 +67,24 @@ Material:
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DiffuseShade: 0
     - _DstBlend: 0
     - _GlossMapScale: 1
-    - _Glossiness: 0.076
+    - _Glossiness: 0.259
     - _GlossyReflections: 1
-    - _High: 3.9
-    - _Metallic: 0.478
+    - _High: 0
+    - _Metallic: 0.24
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SpecularPower: 20
     - _SrcBlend: 1
     - _UVSec: 0
-    - _Xside: 9.98
+    - _Xside: 0
     - _ZWrite: 1
-    - _Zside: 9.98
+    - _Zside: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _InColor: {r: 1, g: 1, b: 1, a: 1}
-    - _LightVec: {r: 1, g: 5, b: 1, a: 0}
-    - _MainColor: {r: 1, g: 1, b: 1, a: 1}
-    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    - _LightVec: {r: 0, g: 0, b: 0, a: 0}
