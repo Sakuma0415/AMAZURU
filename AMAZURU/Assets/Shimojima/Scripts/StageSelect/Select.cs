@@ -147,7 +147,14 @@ public class Select : MonoBehaviour
                 if (isRotation) { return; }
                 SoundManager.soundManager.PlaySe("cncl05", 1f);
                 selection = Selection.FallBack;
-                selectUIs[0].GetComponent<Animator>().SetBool("SizeUp", true);
+                try
+                {
+                    selectUIs[0].GetComponent<Animator>().SetBool("SizeUp", true);
+                }
+                catch
+                {
+                    Debug.Log("a");
+                }
                 isRotation = true;
             }
             else if (h > 0 || h2 > 0)
@@ -159,7 +166,7 @@ public class Select : MonoBehaviour
                 isRotation = true;
             }
 
-            if (h == 0)
+            if (h == 0 && h2 == 0)
             {
                 selectUIs[0].GetComponent<Animator>().SetBool("SizeUp", false);
                 selectUIs[1].GetComponent<Animator>().SetBool("SizeUp", false);
