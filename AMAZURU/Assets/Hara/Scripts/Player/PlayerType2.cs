@@ -37,9 +37,6 @@ public class PlayerType2 : MyAnimation
     /// </summary>
     public WaterHi StageWater { set; private get; } = null;
 
-    // プレイヤーの位置(高さ)
-    public float PlayerPositionY { private set; get; } = 0;
-
     // 透明な壁関連の変数
     private Vector3[] rayPosition = new Vector3[4] { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
     private BoxCollider[] hiddenWalls = null;
@@ -96,8 +93,6 @@ public class PlayerType2 : MyAnimation
 
         connectPlayState = GetPlayState();
 
-        PlayerPositionY = transform.position.y + character.center.y;
-
         CreateHiddenWall();
     }
 
@@ -133,10 +128,13 @@ public class PlayerType2 : MyAnimation
 
         float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
 
-        if (mode == PlayState.GameMode.Play || mode == PlayState.GameMode.Rain)
+        if (mode != PlayState.GameMode.Pause)
         {
             bool input;
             float inputSpeed = (Mathf.Abs(inputX) + Mathf.Abs(inputZ)) * 0.5f < 0.5f ? Mathf.Abs(inputX) + Mathf.Abs(inputZ) : 1.0f;
+
+            // 重力を制御するフラグ
+            bool gravityFlag = false;
 
             // 一方通行の崖を利用する際に実行
             if (CliffFlag)
@@ -169,13 +167,18 @@ public class PlayerType2 : MyAnimation
                     moveDirection = direction * vec;
 
                     // X-Y平面における(坂の上り下り)三角関数を考慮した移動量を計算
-                    Ray ground = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z), Vector3.down);
-                    RaycastHit hit;
-                    if (Physics.Raycast(ground, out hit, rayLength, groundLayer))
+                    Ray ground = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z), Vector3.down);
+                    if(Physics.Raycast(ground, out RaycastHit hit, rayLength, groundLayer))
                     {
                         var nomal = hit.normal;
                         Vector3 dir = moveDirection - Vector3.Dot(moveDirection, nomal) * nomal;
                         moveDirection = dir.normalized;
+
+                        if(moveDirection.y > 0)
+                        {
+                            // 坂を上っている場合
+                            gravityFlag = true;
+                        }
                     }
 
                     // 水中かどうかをチェックし、加速度グラフに基づいた移動速度を計算
@@ -188,7 +191,7 @@ public class PlayerType2 : MyAnimation
                     {
                         speedTime = maxSpeedTime;
                     }
-                    moveDirection *= speed * delta * inputSpeed * curve.Evaluate(speedTime / maxSpeedTime);
+                    moveDirection *= speed * inputSpeed * curve.Evaluate(speedTime / maxSpeedTime);
                 }
                 else
                 {
@@ -196,11 +199,8 @@ public class PlayerType2 : MyAnimation
                 }
 
                 // プレイヤーを移動させる
-                moveDirection.y -= gravity * delta;
-                character.Move(moveDirection);
-
-                // プレイヤーのY座標の位置情報を更新
-                PlayerPositionY = transform.position.y + character.center.y;
+                moveDirection.y -= gravityFlag ? gravity * 0.25f : gravity;
+                character.Move(moveDirection * delta);
 
                 // 透明な壁の設置
                 if (input) { SetHiddenWall(); }
@@ -208,8 +208,8 @@ public class PlayerType2 : MyAnimation
                 // 水中フラグの設定
                 if (StageWater != null)
                 {
-                    inWater = PlayerPositionY < StageWater.max;
-                    UnderWater = PlayerPositionY + character.height * 0.5f < StageWater.max;
+                    inWater = transform.position.y + character.center.y < StageWater.max;
+                    UnderWater = transform.position.y + character.center.y + character.height * 0.5f < StageWater.max;
                 }
                 else
                 {
@@ -241,43 +241,38 @@ public class PlayerType2 : MyAnimation
             {
                 playerAnimator.enabled = true;
                 if (umbrellaAnimator != null) { umbrellaAnimator.enabled = true; }
+
+                // 走るアニメーション
                 playerAnimator.SetBool("Run", input);
                 playerAnimator.SetFloat("Speed", inWater ? (inputSpeed * curve.Evaluate(speedTime / maxSpeedTime)) / (playerSpeed / playerWaterSpeed) : inputSpeed * curve.Evaluate(speedTime / maxSpeedTime));
+
+                // アメフラシを起動するアニメーション
                 playerAnimator.SetBool("Switch", mode == PlayState.GameMode.Rain);
+
+                // 崖から降りるアニメーション
                 playerAnimator.SetBool("Jump", CliffFlag);
+
+                // ゲームオーバー時のアニメーション
+                playerAnimator.SetBool("GameOver", mode == PlayState.GameMode.GameOver);
+
+                // クリア時のアニメーションを再生
+                if (mode == PlayState.GameMode.Clear)
+                {
+                    if (RotateAnimation(transform.gameObject, cameraForward * -1, 125 * delta, true))
+                    {
+                        playerAnimator.SetBool("Run", false);
+                        playerAnimator.SetBool("StageClear", true);
+                    }
+                }
             }
         }
         else
         {
             if(playerAnimator != null)
             {
-                if(mode == PlayState.GameMode.Pause)
-                {
-                    // ポーズ中のみアニメーションを停止
-                    playerAnimator.enabled = false;
-                    if(umbrellaAnimator != null) { umbrellaAnimator.enabled = false; }
-                }
-                else
-                {
-                    playerAnimator.enabled = true;
-                    if(umbrellaAnimator != null) { umbrellaAnimator.enabled = true; }
-                    if(mode == PlayState.GameMode.Clear || mode == PlayState.GameMode.GameOver)
-                    {
-                        // クリア時またはゲームオーバー時のアニメーションを再生
-                        if(mode == PlayState.GameMode.Clear)
-                        {
-                            if(RotateAnimation(transform.gameObject, cameraForward * -1, 125 * delta, true))
-                            {
-                                playerAnimator.SetBool("Run", false);
-                                playerAnimator.SetBool("StageClear", true);
-                            }
-                        }
-                        else
-                        {
-                            playerAnimator.SetBool("GameOver", true);
-                        }
-                    }
-                }
+                // ポーズ中のみアニメーションを停止
+                playerAnimator.enabled = false;
+                if (umbrellaAnimator != null) { umbrellaAnimator.enabled = false; }
             }
         }
     }
@@ -307,7 +302,7 @@ public class PlayerType2 : MyAnimation
             RaycastHit hit;
             bool set;
             int[] index = new int[2] { 0, 0 };
-            mainRay = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
+            mainRay = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
             if(Physics.Raycast(mainRay, out hit, rayLength, groundLayer))
             {
                 float hitDistance = hit.distance;
@@ -317,8 +312,14 @@ public class PlayerType2 : MyAnimation
                 for (int j = 0; j < index.Length; j++)
                 {
                     subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
-                    check = Physics.Raycast(subRay, rayLength, groundLayer);
-                    if (check) { break; }
+                    if (Physics.Raycast(subRay, out hit, rayLength, groundLayer))
+                    {
+                        if(Vector3.Angle(subRay.direction, Vector3.up) < character.slopeLimit)
+                        {
+                            check = true;
+                            break;
+                        }
+                    }
                 }
 
                 if (check)
@@ -368,11 +369,11 @@ public class PlayerType2 : MyAnimation
                 // 透明な壁をプレイヤーの移動に合わせて移動させる
                 if (i % 2 == 0)
                 {
-                    hiddenWalls[i].transform.position = new Vector3(transform.position.x, PlayerPositionY, hiddenWalls[i].transform.position.z);
+                    hiddenWalls[i].transform.position = new Vector3(transform.position.x, transform.position.y + character.center.y, hiddenWalls[i].transform.position.z);
                 }
                 else
                 {
-                    hiddenWalls[i].transform.position = new Vector3(hiddenWalls[i].transform.position.x, PlayerPositionY, transform.position.z);
+                    hiddenWalls[i].transform.position = new Vector3(hiddenWalls[i].transform.position.x, transform.position.y + character.center.y, transform.position.z);
                 }
             }
             else
