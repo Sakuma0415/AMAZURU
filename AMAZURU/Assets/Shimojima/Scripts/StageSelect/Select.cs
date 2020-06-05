@@ -44,7 +44,6 @@ public class Select : MonoBehaviour
     [SerializeField]
     private int rotateAngle = 0;
     private float sumAngle = 0;
-    private float interval=0;
 
     private bool isRotation = false;
     private enum Selection

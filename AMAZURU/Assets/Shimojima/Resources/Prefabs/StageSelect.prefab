@@ -1658,11 +1658,11 @@ MonoBehaviour:
     stageNumber: 0
   - psd: {fileID: 11400000, guid: fb560778485219c4c90a87c90fb8e40f, type: 2}
     stageNumber: 1
-  - psd: {fileID: 11400000, guid: 84ea0d382a9f57e46b019a2505e43bef, type: 2}
-    stageNumber: 2
-  - psd: {fileID: 11400000, guid: 6599d66face45ae43928a3c45b77ff1b, type: 2}
-    stageNumber: 3
   - psd: {fileID: 11400000, guid: 0aca76116e57a6a48ba3b4f4a1adb824, type: 2}
+    stageNumber: 2
+  - psd: {fileID: 11400000, guid: 84ea0d382a9f57e46b019a2505e43bef, type: 2}
+    stageNumber: 3
+  - psd: {fileID: 11400000, guid: 6599d66face45ae43928a3c45b77ff1b, type: 2}
     stageNumber: 4
   - psd: {fileID: 11400000, guid: 5086b1d93f845784e87ec17b9efba1a0, type: 2}
     stageNumber: 5
@@ -1772,7 +1772,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.87}
   m_AnchorMax: {x: 0.3, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 52, y: -40}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6554931153412937772
