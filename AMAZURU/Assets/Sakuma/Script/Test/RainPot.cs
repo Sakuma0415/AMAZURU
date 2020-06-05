@@ -26,6 +26,8 @@ public class RainPot : MonoBehaviour
     GameObject Obj;
     [SerializeField]
     LookForCamera look;
+    [SerializeField]
+    Animator animator;
     // Start is called before the first frame update
     void Start()
     {
@@ -59,7 +61,7 @@ public class RainPot : MonoBehaviour
                 SoundManager.soundManager.PlaySe("btn09", 0.5f);
                 look.RainFall = sw;
                 sw = !sw;
-                
+                animator.SetBool("Bool", sw);
                 AmehurashiManager.amehurashi.amehurashiTrueCont += sw ? 1 : -1;
                 waterHi.HiChange((AmehurashiManager.amehurashi.waterStep * AmehurashiManager.amehurashi.amehurashiTrueCont)+1);
                 Camera.main.gameObject.GetComponent<CameraPos>().RainPotChange();
