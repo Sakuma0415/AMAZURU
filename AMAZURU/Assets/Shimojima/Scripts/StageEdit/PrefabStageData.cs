@@ -6,6 +6,7 @@ using UnityEngine;
 public class PrefabStageData : ScriptableObject
 {
     public string stageName;
+    public string editName;
     [Tooltip("難易度")]
     public int diificulty;
     [Tooltip("アメフラシの数")]

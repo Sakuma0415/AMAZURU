@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: EditData_fn0511
   m_EditorClassIdentifier: 
   stageName: "\u3080\u305A\u304B\u3057\u3044\u3088"
+  editName: fn0511
   diificulty: 3
   amehurashiNum: 5
   increasedWaterVolume: 1
   stage: {fileID: 3609791574993155963, guid: e489a9a0ca17af546a6cde81a988ffa2, type: 3}
-  viewStage: {fileID: 3609791574993155963, guid: afcf256485739ba4895dfdf0de34c398,
+  viewStage: {fileID: 3609791574993155963, guid: f76c9a53d932acc499145e54d89dad33,
     type: 3}
   sData: {fileID: 11400000, guid: 36cc5f267b25be14e87764b41ff0ae31, type: 2}
   gridCells: {x: 10, y: 10, z: 10}

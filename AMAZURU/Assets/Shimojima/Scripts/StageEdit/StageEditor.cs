@@ -25,6 +25,7 @@ public class StageEditor : MonoBehaviour
     [Tooltip("ステージ名")]
     public string stageName;
 
+    public bool underFloor = false;
     [HideInInspector]
     public bool loadStage;
     [HideInInspector]
@@ -90,7 +91,7 @@ public class StageEditor : MonoBehaviour
             SelectObjectAllChange();
         }
 
-        if(Data != null && Data.stageName != stageName)
+        if(Data != null && Data.editName != stageName)
         {
             StageDataIncetance();
         }
@@ -245,13 +246,13 @@ public class StageEditor : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             cellNum.y++;
-            if (cellNum.y == cells.y) { cellNum.y = 0; }
+            if (cellNum.y == cells.y) { cellNum.y = 1; }
             SelectGridObject(cellNum);
         }
         else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             cellNum.y--;
-            if (cellNum.y == -1) { cellNum.y = cells.y - 1; }
+            if (cellNum.y == 0) { cellNum.y = cells.y - 1; }
             SelectGridObject(cellNum);
         }
     }
@@ -268,10 +269,14 @@ public class StageEditor : MonoBehaviour
 
     CreateGrid:
 
+        stageObj = referenceObject[0];
         stageRoot = new GameObject();
         stageRoot.name = "Stage";
         gridRoot = new GameObject();
         gridRoot.name = "GridRootObj";
+        cells = new Vector3Int(cells.x, cells.y + 1, cells.z);
+        cellNum = new Vector3Int(0, 1, 0);
+        tempCnum = new Vector3Int(0, 1, 0);
 
         if (!loadStage) { gridPos = new GameObject[cells.x, cells.y, cells.z];
                           _StageObjects = new GameObject[cells.x, cells.y, cells.z];
@@ -280,12 +285,25 @@ public class StageEditor : MonoBehaviour
         float s = gridObj.transform.localScale.x;
         Array3DForLoop(Vector3Int.zero, cells, 0, s);
         
-        gridPos[0, 0, 0].GetComponent<HighlightObject>().IsSelect = true;
-
-        stageObj = referenceObject[0];
+        gridPos[0, 1, 0].GetComponent<HighlightObject>().IsSelect = true;
+        
         //GuidObjectの生成と初期化
         Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, referenceObject[0], gridPos[cellNum.x,cellNum.y,cellNum.z]);
         guideObj.transform.localPosition = new Vector3(posAdjust, posAdjust, posAdjust);
+
+        if (!underFloor) { return; }
+        for (int i = 0; i < cells.x; i++)
+        {
+            for (int j = 0; j < cells.z; j++)
+            {
+                int x = Random.Range(0, 6);
+                GameObject s_obj = Instantiate(floorRefObj[x], gridPos[i,0,j].transform.position, Quaternion.identity);
+                s_obj.name = referenceObject[0].name;
+                s_obj.AddComponent<MyCellIndex>().cellIndex = new Vector3Int(i, 0, j);
+                s_obj.transform.parent = stageRoot.transform;
+                _StageObjects[i, 0, j] = s_obj;
+            }
+        }
     }
 
     /// <summary>
@@ -300,7 +318,7 @@ public class StageEditor : MonoBehaviour
         }
 
         if(stageName == "") { stageName = "stageName"; }
-        Data.stageName = stageName;
+        Data.editName = stageName;
         if (isSave || loadStage)
         {
             AssetDatabase.DeleteAsset("Assets/Shimojima/Resources/EditData/EditData_" + stageName + ".asset");
@@ -459,7 +477,7 @@ public class StageEditor : MonoBehaviour
     private void StageDataIncetance()
     {
         Data = (PrefabStageData)ScriptableObject.CreateInstance("PrefabStageData");
-        Data.gridCells = cells;
+        Data.gridCells = new Vector3Int(cells.x, cells.y - 1, cells.z);
     }
 
     /// <summary>
@@ -539,7 +557,7 @@ public class StageEditor : MonoBehaviour
     private void GridInit(int i, int j, int k, float s)
     {
         GameObject obj = Instantiate(gridObj);
-        obj.transform.localPosition = new Vector3((i + posAdjust) * s, (j + posAdjust) * s, (k + posAdjust) * s);
+        obj.transform.localPosition = new Vector3((i + posAdjust) * s, (j + posAdjust - 1) * s, (k + posAdjust) * s);
         gridPos[i, j, k] = obj;
         obj.transform.parent = gridRoot.transform;
     }
@@ -594,11 +612,11 @@ public class StageEditorCustom : Editor
     {
         stageEditor.loadStage = true;
         stageEditor.Data = Instantiate(pre);
-        stageEditor.stageName = stageEditor.Data.stageName;
+        stageEditor.stageName = stageEditor.Data.editName;
         GameObject o = Instantiate(pre.stage);
-        stageEditor.cells = pre.gridCells;
-        stageEditor.gridPos = new GameObject[pre.gridCells.x, pre.gridCells.y, pre.gridCells.z];
-        stageEditor._StageObjects = new GameObject[pre.gridCells.x, pre.gridCells.y, pre.gridCells.z];
+        stageEditor.cells = new Vector3Int(pre.gridCells.x, pre.gridCells.y, pre.gridCells.z);
+        stageEditor.gridPos = new GameObject[stageEditor.cells.x, stageEditor.cells.y + 1, stageEditor.cells.z];
+        stageEditor._StageObjects = new GameObject[stageEditor.cells.x, stageEditor.cells.y + 1, stageEditor.cells.z];
         stageEditor.EditStageInit();
 
     ReStart:
@@ -609,6 +627,11 @@ public class StageEditorCustom : Editor
             if (child.GetComponent<MyCellIndex>())
             {
                 v = child.GetComponent<MyCellIndex>().cellIndex;
+                if(v.y != stageEditor.cells.y && stageEditor.underFloor)
+                {
+                    v = new Vector3Int(v.x, v.y + 1, v.z);
+                }
+                child.GetComponent<MyCellIndex>().cellIndex = v;
             }
             stageEditor.gridPos[v.x, v.y, v.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true ;
             stageEditor._StageObjects[v.x, v.y, v.z] = child.gameObject;
