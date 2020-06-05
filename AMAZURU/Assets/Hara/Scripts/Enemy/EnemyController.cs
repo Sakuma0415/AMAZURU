@@ -22,6 +22,8 @@ public class EnemyController : MyAnimation
         Wrap
     }
 
+    [SerializeField, Header("開始座標")] private Vector3 enemyStartPos = Vector3.zero;
+    [SerializeField, Header("開始向き")] private Vector3 enemyStartRot = Vector3.zero;
     [SerializeField, Header("敵のサイズ"), Range(1.0f, 5.0f)] private float enemySize = 1.0f;
     [SerializeField, Header("行動計画")] private Vector2[] movePlan = null;
     [SerializeField, Header("行動パターン")] private EnemyMoveType moveType = EnemyMoveType.Lap;
@@ -49,7 +51,7 @@ public class EnemyController : MyAnimation
     // Start is called before the first frame update
     void Start()
     {
-        EnemyInit(true);
+        EnemyInit();
     }
 
     private void FixedUpdate()
@@ -59,7 +61,7 @@ public class EnemyController : MyAnimation
         if (inspectorUpdate)
         {
             inspectorUpdate = false;
-            EnemyInit(false);
+            EnemyInit();
         }
     }
 
@@ -71,7 +73,7 @@ public class EnemyController : MyAnimation
     /// <summary>
     /// 敵の初期化
     /// </summary>
-    private void EnemyInit(bool first)
+    private void EnemyInit()
     {
         step = 0;
         location = 0;
@@ -84,7 +86,7 @@ public class EnemyController : MyAnimation
         enemy.radius = colliderSize;
         enemy.center = new Vector3(0, colliderSize, 0);
 
-        Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + enemy.center.y, transform.position.z), Vector3.down);
+        Ray ray = new Ray(new Vector3(enemyStartPos.x, enemyStartPos.y + enemyStartPos.y, transform.position.z), Vector3.down);
         RaycastHit hit;
 
         // 水面の取得
@@ -103,11 +105,17 @@ public class EnemyController : MyAnimation
         if (Physics.Raycast(ray, out hit, 200, groundLayer))
         {
             // 敵の開始時の位置を設定
-            transform.position = new Vector3(transform.position.x, hit.point.y, transform.position.z);
+            transform.position = new Vector3(ray.origin.x, hit.point.y, ray.origin.z);
+
+            // 敵の開始時の向き
+            transform.rotation = Quaternion.Euler(enemyStartRot);
+
             // 敵の開始時のサイズを設定
             transform.localScale = Vector3.one * enemySize;
+
             // 行動計画を設定
-            SetMoveSchedule(movePlan, first);
+            SetMoveSchedule(movePlan);
+
             // 処理実行
             standby = true;
         }
@@ -250,21 +258,12 @@ public class EnemyController : MyAnimation
     /// <summary>
     /// 敵の移動スケジュールを設定
     /// </summary>
-    private void SetMoveSchedule(Vector2[] plan, bool first)
+    private void SetMoveSchedule(Vector2[] plan)
     {
-        if (first)
-        {
-            moveSchedule = new Vector3[plan.Length < 2 ? 2 : plan.Length + 1];
-            moveSchedule[0] = transform.position;
-        }
-        else
-        {
-            Vector3 pos = moveSchedule[0];
-            moveSchedule = new Vector3[plan.Length < 2 ? 2 : plan.Length + 1];
-            moveSchedule[0] = pos;
-        }
-        
-        for(int i = 1; i < moveSchedule.Length; i++)
+        moveSchedule = new Vector3[plan.Length < 2 ? 2 : plan.Length + 1];
+        moveSchedule[0] = enemyStartPos;
+
+        for (int i = 1; i < moveSchedule.Length; i++)
         {
             moveSchedule[i] = moveSchedule[i - 1];
             moveSchedule[i].x += plan[i - 1].x;
