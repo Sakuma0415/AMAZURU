@@ -70,6 +70,14 @@ public class Progress : MonoBehaviour
     IEnumerator ResultDelay(bool GameOver)
     {
         yield return new WaitForSeconds(animation[GameOver?0:1].length+ResultDelayTime);
+        if(GameOver)
+        {
+            SoundManager.soundManager.PlaySe("wafu-success", 1);
+        }
+        else
+        {
+            SoundManager.soundManager.PlaySe("dead-sound", 1);
+        }
         resultControl.StartResult(GameOver);
     }
 
