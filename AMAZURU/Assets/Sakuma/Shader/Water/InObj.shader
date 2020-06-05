@@ -10,7 +10,7 @@ Shader "Custom/InObj"
         _Metallic ("Metallic", Range(0,1)) = 0.0
 
 		_LightMap ("LightMap", 2D) = "white" {}
-		
+		_Fade ("Fade", float) = 1
 		_InColor ("InColor", Color) = (1, 1, 1, 1)
 		[Header(Script Check)]
 		_High("_High", float) = 0
@@ -25,9 +25,14 @@ Shader "Custom/InObj"
         Tags { "RenderType"="Opaque" }
         LOD 200
 
+		Pass{
+  		  ZWrite ON
+  		  ColorMask 0
+		}
+
         CGPROGRAM
         // Physically based Standard lighting model, and enable shadows on all light types
-        #pragma surface surf Standard fullforwardshadows
+        #pragma surface surf Standard fullforwardshadows alpha:fade
 
         // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.0
@@ -53,6 +58,7 @@ Shader "Custom/InObj"
 		sampler2D _NormalTex;
 		fixed4 _InColor;
 		float4 _LightVec;
+		float _Fade;
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
         // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
         // #pragma instancing_options assumeuniformscaling
@@ -87,7 +93,7 @@ Shader "Custom/InObj"
             o.Albedo = c.rgb;
             o.Metallic = _Metallic;
             o.Smoothness = _Glossiness;
-            o.Alpha = c.a;
+			o.Alpha = c.a*_Fade;
         }
         ENDCG
     }
