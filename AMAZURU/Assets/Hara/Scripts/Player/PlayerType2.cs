@@ -203,7 +203,8 @@ public class PlayerType2 : MyAnimation
                 character.Move(moveDirection * delta);
 
                 // 透明な壁の設置
-                if (input) { SetHiddenWall(); }
+                //if (input) { SetHiddenWall(); }
+                SetHiddenWall();
 
                 // 水中フラグの設定
                 if (StageWater != null)
@@ -312,9 +313,9 @@ public class PlayerType2 : MyAnimation
                 for (int j = 0; j < index.Length; j++)
                 {
                     subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
-                    if (Physics.Raycast(subRay, out hit, rayLength, groundLayer))
+                    if (Physics.Raycast(subRay, out hit, 2.0f, groundLayer))
                     {
-                        if(Vector3.Angle(subRay.direction, Vector3.up) < character.slopeLimit)
+                        if(hit.normal.y != 0)
                         {
                             check = true;
                             break;

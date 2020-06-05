@@ -48,7 +48,7 @@ public class Select : MonoBehaviour
     private bool isRotation = false;
     private enum Selection
     {
-        Forwerd = 0,
+        Forward = 0,
         FallBack
     }
 
@@ -146,18 +146,32 @@ public class Select : MonoBehaviour
             {
                 if (isRotation) { return; }
                 SoundManager.soundManager.PlaySe("cncl05", 1f);
-                selection = Selection.Forwerd;
-                selectUIs[0].GetComponent<Animator>().SetTrigger("ChangeSize");
+                selection = Selection.FallBack;
+                try
+                {
+                    selectUIs[0].GetComponent<Animator>().SetBool("SizeUp", true);
+                }
+                catch
+                {
+                    Debug.Log("a");
+                }
                 isRotation = true;
             }
             else if (h > 0 || h2 > 0)
             {
                 if (isRotation) { return; }
                 SoundManager.soundManager.PlaySe("cncl05", 1f);
-                selection = Selection.FallBack;
-                selectUIs[1].GetComponent<Animator>().SetTrigger("ChangeSize");
+                selection = Selection.Forward;
+                selectUIs[1].GetComponent<Animator>().SetBool("SizeUp", true);
                 isRotation = true;
             }
+
+            if (h == 0 && h2 == 0)
+            {
+                selectUIs[0].GetComponent<Animator>().SetBool("SizeUp", false);
+                selectUIs[1].GetComponent<Animator>().SetBool("SizeUp", false);
+            }
+
             if (Input.GetButtonDown("Circle"))
             {
                 StageMake.LoadStageData = sData;
@@ -347,7 +361,7 @@ public class Select : MonoBehaviour
             float s = speed;
             if(select == Selection.FallBack) { s *= -1; }
 
-            if(select == Selection.Forwerd)
+            if(select == Selection.Forward)
             {
                 switch (viewStage[i].index) 
                 {
@@ -427,7 +441,7 @@ public class Select : MonoBehaviour
         ame = "";
         iwv = "";
 
-        if (select == Selection.Forwerd)
+        if (select == Selection.Forward)
         {
             for (int i = 0; i < viewStage.Length; i++)
             {
@@ -479,7 +493,7 @@ public class Select : MonoBehaviour
     /// </summary>
     private void StageInstantiate(Selection select)
     {
-        if(select == Selection.Forwerd && sumAngle == 0)
+        if(select == Selection.Forward && sumAngle == 0)
         {
             if (viewStage[5].stage != null)
             {
@@ -536,7 +550,7 @@ public class Select : MonoBehaviour
     /// <param name="select"></param>
     private void NextStageCreate(Selection select)
     {
-        if (select == Selection.Forwerd)
+        if (select == Selection.Forward)
         {
             int index = viewStage[0].psdIndex + 1;
             if (index > psd.Length - 1) { index = 0; }
