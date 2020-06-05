@@ -83,6 +83,9 @@ public class ResultControl : MyAnimation
             ButtonActive(false);
         }
 
+        // ボタンSEの再生
+        SoundManager.soundManager.PlaySe("btn01", 0.2f);
+
         switch (num)
         {
             case 0:
@@ -298,6 +301,9 @@ public class ResultControl : MyAnimation
 
         if(Input.GetButtonDown("Cross") && actionFlag)
         {
+            // ボタンSEの再生
+            SoundManager.soundManager.PlaySe("btn01", 0.2f);
+
             CameraOption(false);
             ButtonActive(true, true);
         }
@@ -361,6 +367,9 @@ public class ResultControl : MyAnimation
     /// <param name="num"></param>
     private void CameraOptionAction(int num)
     {
+        // ボタンSEの再生
+        SoundManager.soundManager.PlaySe("btn01", 0.2f);
+
         switch (num)
         {
             case 0:
