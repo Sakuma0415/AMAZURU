@@ -19,7 +19,7 @@ public class WaterHi : MonoBehaviour
     [Header("変更不可")]
 
     //水の高さ
-    public float max=0.9f;
+    public float max=0.98f;
 
     //private
 
@@ -87,12 +87,12 @@ public class WaterHi : MonoBehaviour
         {
             PlayState.playState.gameMode = PlayState.GameMode.Rain;
 
-            PlayState.playState.rainTime = (Mathf.Abs ( (max+0.1f)-nextHi)/ anmeSpead )+ 2f;
+            PlayState.playState.rainTime = (Mathf.Abs ( (max+0.02f)-nextHi)/ anmeSpead )+ 2f;
             back = transform.localScale.y;
-            next = nextHi-0.1f;
+            next = nextHi- 0.02f;
             rainAnime = true;
 
-            animeTime = (Mathf.Abs((max + 0.1f) - nextHi) / anmeSpead) + 2f;
+            animeTime = (Mathf.Abs((max + 0.02f) - nextHi) / anmeSpead) + 2f;
             animeTimeTik = 0;
         }
     }
