@@ -48,8 +48,6 @@ public class StageEditor : MonoBehaviour
 
     [Header("-以下変更禁止-")]
 
-    [SerializeField]
-    private Camera mainCamera;
     [SerializeField, Tooltip("参照するGridObject")]
     private GameObject gridObj;
     [SerializeField,Tooltip("配置場所を視認し易くするためのオブジェクト")]
@@ -72,6 +70,18 @@ public class StageEditor : MonoBehaviour
 
     private bool IsInputAnyKey { get; set; } = false;
     private float horizontal, vertical = 0;
+
+    private void Start()
+    {
+        //Warningつぶし
+        if (!gridObj) { gridObj = new GameObject(); }
+        if (!guideObj) { guideObj = new GameObject(); }
+        if (cell.Length == 0) { cell = new InputField[1]; }
+        if(referenceObject.Length == 0) { referenceObject = new GameObject[1]; }
+        if(floorRefObj.Length == 0) { floorRefObj = new GameObject[1]; }
+        if(prismRefObj.Length == 0) { prismRefObj = new GameObject[1]; }
+        if(objName == "") { objName = ""; }
+    }
 
     void Update()
     {
@@ -105,11 +115,11 @@ public class StageEditor : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             GameObject obj = guideObj.transform.GetChild(1).gameObject;
-            mainCamera.transform.parent = null;
+            Camera.main.transform.parent = null;
             objAngle.y += -90;
             guideObj.transform.localEulerAngles = objAngle;
             obj.transform.parent = null;
-            mainCamera.transform.parent = guideObj.transform;
+            Camera.main.transform.parent = guideObj.transform;
             obj.transform.parent = guideObj.transform;
         }
 
