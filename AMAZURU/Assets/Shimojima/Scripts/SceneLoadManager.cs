@@ -45,6 +45,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
         }
         catch(NullReferenceException ex)
         {
+            Debug.Log(ex.ToString());
             return;
         }
     }
@@ -52,6 +53,10 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
 
     private void Start()
     {
+        //Warningつぶし
+        if (!shader) { shader = Shader.Find("Custom/InObj"); }
+        if(color == null) { color = new Color(); }
+        if (!anounceText) { anounceText = new GameObject(); }
 
         fadeImage.material = new Material(shader);
         fadeImage.material.SetFloat("_Alpha", alphaCut);

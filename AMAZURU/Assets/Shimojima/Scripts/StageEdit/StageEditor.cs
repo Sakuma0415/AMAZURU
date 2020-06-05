@@ -71,6 +71,18 @@ public class StageEditor : MonoBehaviour
     private bool IsInputAnyKey { get; set; } = false;
     private float horizontal, vertical = 0;
 
+    private void Start()
+    {
+        //Warningつぶし
+        if (!gridObj) { gridObj = new GameObject(); }
+        if (!guideObj) { guideObj = new GameObject(); }
+        if (cell.Length == 0) { cell = new InputField[1]; }
+        if(referenceObject.Length == 0) { referenceObject = new GameObject[1]; }
+        if(floorRefObj.Length == 0) { floorRefObj = new GameObject[1]; }
+        if(prismRefObj.Length == 0) { prismRefObj = new GameObject[1]; }
+        if(objName == "") { objName = ""; }
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.L))

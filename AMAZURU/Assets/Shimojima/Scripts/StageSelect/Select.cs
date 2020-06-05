@@ -124,6 +124,15 @@ public class Select : MonoBehaviour
     
     void Start()
     {
+        //Warningつぶし
+        if (pivotCubeSize == null) { pivotCubeSize = Vector3.zero; }
+        if (dfImage.Length == 0) { dfImage = new Image[2]; }
+        if (selectUIs.Length == 0) { selectUIs = new Image[2]; }
+        if (!amehurashiNum) { amehurashiNum = new TextMeshProUGUI(); }
+        if (!stageName) { stageName = new TextMeshProUGUI(); }
+        if (!increasedWaterVolume) { increasedWaterVolume = new TextMeshProUGUI(); }
+        if (referenceImage.Length == 0) { referenceImage = new Sprite[1]; }
+
         Init();
     }
 
@@ -182,7 +191,6 @@ public class Select : MonoBehaviour
 
         if (!SoundManager.soundManager.BGMnull1) { SoundManager.soundManager.PlayBgm("MusMus-BGM-043", 0.1f, 0.2f, 0); }
         if (!SoundManager.soundManager.BGMnull2) { SoundManager.soundManager.PlayBgm("rain_loop", 0.1f, 0.3f, 1); }
-
 
         //表示順に格納、初期化の最後でリストをクリア
         _psd[2] = psd[0].psd;
