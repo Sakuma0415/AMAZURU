@@ -102,7 +102,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
         {
             if (DoKeyPress)
             {
-                if (async.progress >= 0.9f && !DoOnce && fadeEnd) { DoOnce = true; Debug.Log("compleated"); animator.SetTrigger("FadeIn"); }
+                if (async.progress >= 0.9f && !DoOnce && fadeEnd) { DoOnce = true; animator.SetTrigger("FadeIn"); }
                 if (Input.GetButtonDown("Circle") && fadeEnd&& !cha)
                 {
                     async.allowSceneActivation = true;
