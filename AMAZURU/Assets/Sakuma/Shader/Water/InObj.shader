@@ -67,7 +67,7 @@ Shader "Custom/InObj"
             fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
 
 			float3 L = normalize(_LightVec.xyz);
-			if(_High>IN.worldPos.y&&(_Xside>IN.worldPos.x&&IN.worldPos.x>0)&&(_Zside>IN.worldPos.z&&IN.worldPos.z>0)){
+			if(_High>IN.worldPos.y&&(_Xside>IN.worldPos.x&&IN.worldPos.x>0.01f)&&(_Zside>IN.worldPos.z&&IN.worldPos.z>0.01f)){
 
 				float hi=_High-IN.worldPos.y;
 				float size=3;
