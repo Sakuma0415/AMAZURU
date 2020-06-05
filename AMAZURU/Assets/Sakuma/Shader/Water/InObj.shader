@@ -22,7 +22,7 @@ Shader "Custom/InObj"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags {"RenderType"="Transparent" "Queue"="Transparent"}
         LOD 200
 
 		Pass{
@@ -93,7 +93,7 @@ Shader "Custom/InObj"
             o.Albedo = c.rgb;
             o.Metallic = _Metallic;
             o.Smoothness = _Glossiness;
-			o.Alpha = c.a*_Fade;
+			o.Alpha = c.a;//*_Fade;
         }
         ENDCG
     }
