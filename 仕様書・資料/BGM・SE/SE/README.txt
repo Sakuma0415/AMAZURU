@@ -15,3 +15,11 @@
 
 ・FitGround_Dast2_1
 　└プレイヤーの歩く音
+
+
+■ポケットサウンド　https://pocket-se.info/rules/
+・wafu-success
+　└ステージクリア時
+
+・dead-sound
+　└ゲームオーバー時
