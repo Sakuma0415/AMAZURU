@@ -37,7 +37,7 @@
 			o.Albedo = c.rgb;
 			o.Metallic = _Metallic;
 			o.Smoothness = _Glossiness;
-			o.Alpha = _Fade;
+			o.Alpha = c.a*_Fade;
 			o.Normal=UnpackNormal(tex2D(_NormalTex, IN.uv_MainTex));
 		}
 		ENDCG

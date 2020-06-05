@@ -22,7 +22,7 @@ Shader "Custom/InObj"
     }
     SubShader
     {
-        Tags {"RenderType"="Transparent" "Queue"="Transparent"}
+        Tags {"RenderType"="opaque"}
         LOD 200
 
 		Pass{
