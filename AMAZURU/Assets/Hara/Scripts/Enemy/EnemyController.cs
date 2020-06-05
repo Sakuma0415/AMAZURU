@@ -9,12 +9,12 @@ public class EnemyController : MyAnimation
     [SerializeField, Tooltip("プレイヤーのレイヤー")] private LayerMask playerLayer;
     [SerializeField, Tooltip("地面のレイヤー")] private LayerMask groundLayer;
     [SerializeField, Tooltip("水面のレイヤー")] private LayerMask waterLayer;
-    [SerializeField, Tooltip("ステージの水オブジェクト")] private WaterHi stageWater = null;
     [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
     private bool connectPlayState = false;
     private PlayerType2 player = null;
     private PlayerControllerNav player2 = null;
-    
+    private WaterHi stageWater = null;
+
 
     private enum EnemyMoveType
     {

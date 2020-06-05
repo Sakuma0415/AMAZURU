@@ -94917,6 +94917,26 @@ PrefabInstance:
       propertyPath: movePlan.Array.data[0].x
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: enemyStartPos.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: enemyStartPos.y
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: enemyStartPos.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: enemyStartRot.y
+      value: 90
+      objectReference: {fileID: 0}
     - target: {fileID: 1023837329241063398, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
       propertyPath: m_Name
@@ -95032,6 +95052,26 @@ PrefabInstance:
       propertyPath: movePlan.Array.data[0].x
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: enemyStartPos.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: enemyStartPos.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: enemyStartPos.z
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: enemyStartRot.y
+      value: 90
+      objectReference: {fileID: 0}
     - target: {fileID: 1023837329241063398, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
       propertyPath: m_Name
@@ -95135,6 +95175,21 @@ PrefabInstance:
     - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
         type: 3}
       propertyPath: movePlan.Array.data[0].y
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: enemyStartPos.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: enemyStartPos.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023837329241061405, guid: 6c27c4d89783d964aa4cf90227582e86,
+        type: 3}
+      propertyPath: enemyStartPos.z
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1023837329241063398, guid: 6c27c4d89783d964aa4cf90227582e86,
