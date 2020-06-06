@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class TitleController : MyAnimation
 {
-    [SerializeField, Tooltip("タイトル画面の項目")] private GameObject[] titleMenu = null;
+    [SerializeField, Tooltip("タイトルロゴ")] private GameObject titleLogo = null;
+    [SerializeField, Tooltip("タイトル画面の項目")] private GameObject titleMenu = null;
     [SerializeField, Tooltip("クレジット")] private GameObject creditObject = null;
     [SerializeField, Tooltip("カーソルオブジェクト")] private GameObject cursor = null;
+
+    private GameObject[] buttonObject = null;
     private Coroutine coroutine = null;
     private int selectNum = 0;
     private bool creditFlag = false;
@@ -23,22 +26,42 @@ public class TitleController : MyAnimation
 
     private void Start()
     {
-        SoundManager.soundManager.PlayBgm("MusMus-BGM-043", 0.1f, 0.5f,0);
-        SoundManager.soundManager.PlayBgm("rain_loop",0.1f, 0.3f,1);
-
-        selectNum = 0;
-        creditFlag = false;
-        dontInput = false;
-        keyDown = false;
-        animeMode = false;
-        animeStop = false;
-        OpenCredit(false);
+        Init();
     }
     // Update is called once per frame
     void Update()
     {
         InputKey();
         SelectedMenu();
+    }
+
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    private void Init()
+    {
+        // BGMの再生
+        SoundManager.soundManager.PlayBgm("MusMus-BGM-043", 0.1f, 0.5f, 0);
+        SoundManager.soundManager.PlayBgm("rain_loop", 0.1f, 0.3f, 1);
+
+        // 変数の初期化処理
+        selectNum = 0;
+        creditFlag = false;
+        dontInput = false;
+        keyDown = false;
+        animeMode = false;
+        animeStop = false;
+        if(titleMenu != null)
+        {
+            buttonObject = new GameObject[titleMenu.transform.childCount];
+            for(int i = 0; i < buttonObject.Length; i++)
+            {
+                buttonObject[i] = titleMenu.transform.GetChild(i).gameObject;
+            }
+        }
+
+        // 必要なオブジェクト以外のオブジェクトを非表示にする
+        OpenCredit(false);
     }
 
     /// <summary>
@@ -88,8 +111,8 @@ public class TitleController : MyAnimation
         {
             step = 0;
             animeTime = 0;
-            titleMenu[selectNum].transform.localScale = Vector3.one;
-            selectNum = conditional ? selectNum == 0 ? titleMenu.Length - 1 : selectNum - 1 : selectNum == titleMenu.Length - 1 ? 0 : selectNum + 1;
+            buttonObject[selectNum].transform.localScale = Vector3.one;
+            selectNum = conditional ? selectNum == 0 ? buttonObject.Length - 1 : selectNum - 1 : selectNum == buttonObject.Length - 1 ? 0 : selectNum + 1;
         }
     }
 
@@ -98,7 +121,7 @@ public class TitleController : MyAnimation
     /// </summary>
     private void SelectedMenu()
     {
-        GameObject animeObject = titleMenu[selectNum];
+        GameObject animeObject = buttonObject[selectNum];
 
         // カーソルを移動する
         if(cursor != null)
@@ -181,6 +204,10 @@ public class TitleController : MyAnimation
 
         if(Input.GetButtonDown("Cross") && creditFlag)
         {
+            // ボタンSEの再生
+            SoundManager.soundManager.PlaySe("btn01", 0.2f);
+
+            // クレジットを非表示にする
             OpenCredit(false);
         }
 
@@ -209,12 +236,15 @@ public class TitleController : MyAnimation
         switch (id)
         {
             case 0:
+                // ゲーム開始
                 StartGame();
                 break;
             case 1:
+                // クレジット表示
                 OpenCredit(true);
                 break;
             default:
+                // ゲームのシャットダウン
                 QuitGame();
                 break;
         }
@@ -236,11 +266,32 @@ public class TitleController : MyAnimation
     /// </summary>
     private void OpenCredit(bool open)
     {
-        if(creditObject == null) { return; }
-        creditFlag = open;
-        creditObject.SetActive(open);
+        // 特定のキー入力を制限する
         dontInput = open;
+
+        // タイトルロゴの表示管理
+        if (titleLogo != null) { titleLogo.SetActive(!open); }
+
+        // カーソルの非表示
+        if(cursor != null) { cursor.SetActive(!open); }
+
+        // 選択項目アニメーションの再生管理
         animeStop = open;
+
+        // 選択項目の表示管理
+        if(buttonObject != null)
+        {
+            foreach(var obj in buttonObject)
+            {
+                obj.SetActive(!open);
+            }
+        }
+        
+        // クレジット表示中かどうかのフラグ
+        creditFlag = open;
+
+        // クレジットオブジェクトの表示管理
+        if(creditObject != null) { creditObject.SetActive(open); }
     }
 
     /// <summary>

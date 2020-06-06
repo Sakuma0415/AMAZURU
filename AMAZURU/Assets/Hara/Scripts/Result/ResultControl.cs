@@ -95,10 +95,10 @@ public class ResultControl : MyAnimation
                 SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
                 break;
             case 2:
-                SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.StageSlect);
+                SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.StageSlect, false);
                 break;
             default:
-                SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Title);
+                SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Title, false);
                 break;
         }
     }
