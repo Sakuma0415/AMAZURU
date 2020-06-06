@@ -44,6 +44,9 @@ public class Select : MonoBehaviour
     [SerializeField]
     private int rotateAngle = 0;
     private float sumAngle = 0;
+    private float h, h2 = 0;
+
+    private Animator rightAnimator, leftAnimator;
 
     private bool isRotation = false;
     private enum Selection
@@ -140,36 +143,25 @@ public class Select : MonoBehaviour
     {
         if (!SceneLoadManager.Instance.SceneLoadFlg)
         {
-            float h = Input.GetAxis("Horizontal");
-            float h2 = Input.GetAxis("Horizontal3");
+            h = Input.GetAxis("Horizontal");
+            h2 = Input.GetAxis("Horizontal3");
             if (h < 0 || h2 < 0)
             {
                 if (isRotation) { return; }
                 SoundManager.soundManager.PlaySe("cncl05", 1f);
+                leftAnimator.Play("Idle");
+                leftAnimator.SetTrigger("SizeUp");
                 selection = Selection.FallBack;
-                try
-                {
-                    selectUIs[0].GetComponent<Animator>().SetBool("SizeUp", true);
-                }
-                catch
-                {
-                    Debug.Log("a");
-                }
                 isRotation = true;
             }
             else if (h > 0 || h2 > 0)
             {
                 if (isRotation) { return; }
                 SoundManager.soundManager.PlaySe("cncl05", 1f);
+                rightAnimator.Play("Idle");
+                rightAnimator.SetTrigger("SizeUp");
                 selection = Selection.Forward;
-                selectUIs[1].GetComponent<Animator>().SetBool("SizeUp", true);
                 isRotation = true;
-            }
-
-            if (h == 0 && h2 == 0)
-            {
-                selectUIs[0].GetComponent<Animator>().SetBool("SizeUp", false);
-                selectUIs[1].GetComponent<Animator>().SetBool("SizeUp", false);
             }
 
             if (Input.GetButtonDown("Circle"))
@@ -206,6 +198,9 @@ public class Select : MonoBehaviour
         if (!SoundManager.soundManager.BGMnull1) { SoundManager.soundManager.PlayBgm("MusMus-BGM-043", 0.1f, 0.2f, 0); }
         if (!SoundManager.soundManager.BGMnull2) { SoundManager.soundManager.PlayBgm("rain_loop", 0.1f, 0.3f, 1); }
 
+        leftAnimator = selectUIs[0].GetComponent<Animator>();
+        rightAnimator = selectUIs[1].GetComponent<Animator>();
+        
         //表示順に格納、初期化の最後でリストをクリア
         _psd[2] = psd[0].psd;
         _psd[1] = psd[1].psd;
