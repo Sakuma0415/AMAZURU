@@ -190,7 +190,7 @@ CharacterController:
   m_Height: 1.5
   m_Radius: 0.15
   m_SlopeLimit: 50
-  m_StepOffset: 0.04
+  m_StepOffset: 0.06
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.8, z: 0}
@@ -244,7 +244,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   maxSpeedTime: 0.5
   rayLength: 1.25
-  gravity: 3
+  gravity: 5
   wallSize: 1.5
 --- !u!81 &-4046928715049505338
 AudioListener:
