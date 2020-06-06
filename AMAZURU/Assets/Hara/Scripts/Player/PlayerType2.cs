@@ -133,9 +133,6 @@ public class PlayerType2 : MyAnimation
             bool input;
             float inputSpeed = (Mathf.Abs(inputX) + Mathf.Abs(inputZ)) * 0.5f < 0.5f ? Mathf.Abs(inputX) + Mathf.Abs(inputZ) : 1.0f;
 
-            // 重力を制御するフラグ
-            bool gravityFlag = false;
-
             // 一方通行の崖を利用する際に実行
             if (CliffFlag)
             {
@@ -152,6 +149,8 @@ public class PlayerType2 : MyAnimation
 
                 // 入力の最低許容値
                 float inputMin = 0.1f;
+
+                // 入力を検知したかチェック
                 input = (Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin) && mode == PlayState.GameMode.Play && dontInput == false;
 
                 if (input)
@@ -161,29 +160,9 @@ public class PlayerType2 : MyAnimation
                     rot = Quaternion.Slerp(transform.rotation, rot, 7.5f * delta);
                     transform.rotation = rot;
 
-                    // X-Z平面における三角関数を考慮した移動量を計算
-                    float vec = Mathf.Abs(inputX) >= Mathf.Abs(inputZ) ? inputZ / inputX : inputX / inputZ;
-                    vec = 1.0f / Mathf.Sqrt(1.0f + vec * vec);
-                    moveDirection = direction * vec;
-
-                    // X-Y平面における(坂の上り下り)三角関数を考慮した移動量を計算
-                    Ray ground = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z), Vector3.down);
-                    if(Physics.Raycast(ground, out RaycastHit hit, rayLength, groundLayer))
-                    {
-                        var nomal = hit.normal;
-                        Vector3 dir = moveDirection - Vector3.Dot(moveDirection, nomal) * nomal;
-                        moveDirection = dir.normalized;
-
-                        if(moveDirection.y < 0)
-                        {
-                            // 坂を上っている場合
-                            gravityFlag = true;
-                        }
-                    }
-
                     // 水中かどうかをチェックし、加速度グラフに基づいた移動速度を計算
                     float speed = inWater ? playerWaterSpeed : playerSpeed;
-                    if(speedTime < maxSpeedTime)
+                    if (speedTime < maxSpeedTime)
                     {
                         speedTime += delta;
                     }
@@ -191,6 +170,26 @@ public class PlayerType2 : MyAnimation
                     {
                         speedTime = maxSpeedTime;
                     }
+
+                    // 地面にRayを飛ばす
+                    Ray ground = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z), Vector3.down);
+                    float hitNomalY = 1.0f;
+                    if(Physics.Raycast(ground, out RaycastHit hit, rayLength, groundLayer))
+                    {
+                        // 地面の傾斜を取得
+                        hitNomalY = hit.normal.y;
+                    }
+
+                    // X：横軸の入力　Y：地面の傾斜　Z：縦軸の入力　の3次元空間上のベクトル
+                    Vector3 vec = SquareToCircle(new Vector3(inputX, hitNomalY, inputZ));
+
+                    // vecベクトルの大きさを三平方の定理を用いて算出する
+                    float moveVec = Mathf.Sqrt((vec.x * vec.x) + (vec.y * vec.y) * (vec.z * vec.z));
+
+                    // キャラクターの移動方向(ベクトル) = カメラの向いている方向(ベクトル) * vecベクトルの大きさ
+                    moveDirection = direction * moveVec;
+
+                    // 移動量にスピード値を乗算
                     moveDirection *= speed * inputSpeed * curve.Evaluate(speedTime / maxSpeedTime);
                 }
                 else
@@ -198,8 +197,10 @@ public class PlayerType2 : MyAnimation
                     speedTime = 0;
                 }
 
-                // プレイヤーを移動させる
-                moveDirection.y -= gravityFlag ? moveDirection.y * -0.95f : gravity;
+                // 重力を反映
+                moveDirection.y -= gravity;
+
+                // 実際にキャラクターを動かす
                 character.Move(moveDirection * delta);
 
                 // 透明な壁の設置
@@ -418,5 +419,19 @@ public class PlayerType2 : MyAnimation
             // 敵と接触中は操作ができないようにする
             dontInput = true;
         }
+    }
+
+    /// <summary>
+    /// 斜め方向の入力座標を適正座標に変換する関数
+    /// </summary>
+    /// <param name="input">入力座標</param>
+    /// <returns></returns>
+    private Vector3 SquareToCircle(Vector3 input)
+    {
+        Vector3 output;
+        output.x = input.x * Mathf.Sqrt(1.0f - ((input.y * input.y) * (input.z * input.z)) / 2.0f);
+        output.y = input.y * Mathf.Sqrt(1.0f - ((input.x * input.x) * (input.z * input.z)) / 2.0f);
+        output.z = input.z * Mathf.Sqrt(1.0f - ((input.x * input.x) * (input.y * input.y)) / 2.0f);
+        return output;
     }
 }
