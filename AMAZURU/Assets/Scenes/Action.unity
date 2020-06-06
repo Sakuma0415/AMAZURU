@@ -2776,7 +2776,7 @@ RectTransform:
   - {fileID: 1956414879}
   - {fileID: 353820536}
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2824,7 +2824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2911a5758a6359a4095e00ddd31c7630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SLoadStageData: {fileID: 11400000, guid: 23040f52ddc76e94d87feb9249869759, type: 2}
+  SLoadStageData: {fileID: 11400000, guid: 36cc5f267b25be14e87764b41ff0ae31, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
   playerObj: {fileID: 2001958938084469648, guid: cda06fb60842246498bade9539daf016,
     type: 3}
@@ -3094,7 +3094,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1605605248
 GameObject:
@@ -3315,7 +3315,7 @@ PrefabInstance:
     - target: {fileID: 2750404561466495371, guid: 9ff1a09c38295574bbe97ffd4a7b92a0,
         type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 2750404561466495371, guid: 9ff1a09c38295574bbe97ffd4a7b92a0,
         type: 3}
@@ -3674,7 +3674,7 @@ PrefabInstance:
     - target: {fileID: 8728889718054069548, guid: 62792bd25ebcac84084a5b5a79cdd871,
         type: 3}
       propertyPath: m_RootOrder
-      value: 10
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 8728889718054069548, guid: 62792bd25ebcac84084a5b5a79cdd871,
         type: 3}
@@ -3783,7 +3783,7 @@ PrefabInstance:
     - target: {fileID: 557910765403537242, guid: 9d5848febb5604b4ea1f788e75a0f88d,
         type: 3}
       propertyPath: m_RootOrder
-      value: 17
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 557910765403537242, guid: 9d5848febb5604b4ea1f788e75a0f88d,
         type: 3}
@@ -4310,7 +4310,7 @@ Transform:
   - {fileID: 2041826943}
   - {fileID: 1110511549}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2121653243
 GameObject:

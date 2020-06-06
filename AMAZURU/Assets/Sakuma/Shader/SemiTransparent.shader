@@ -9,7 +9,7 @@
 	}
 
 	SubShader {
-		Tags { "RenderType"="Transparent" "Queue"="Transparent"}
+		Tags { "RenderType"="opaque" "Queue"="Transparent-2"}
 		LOD 200
 
 		Pass{
