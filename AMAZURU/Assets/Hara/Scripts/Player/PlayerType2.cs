@@ -174,7 +174,7 @@ public class PlayerType2 : MyAnimation
                         Vector3 dir = moveDirection - Vector3.Dot(moveDirection, nomal) * nomal;
                         moveDirection = dir.normalized;
 
-                        if(moveDirection.y > 0)
+                        if(moveDirection.y < 0)
                         {
                             // 坂を上っている場合
                             gravityFlag = true;
@@ -199,12 +199,11 @@ public class PlayerType2 : MyAnimation
                 }
 
                 // プレイヤーを移動させる
-                moveDirection.y -= gravityFlag ? gravity * 0.25f : gravity;
+                moveDirection.y -= gravityFlag ? moveDirection.y * -0.95f : gravity;
                 character.Move(moveDirection * delta);
 
                 // 透明な壁の設置
-                //if (input) { SetHiddenWall(); }
-                SetHiddenWall();
+                if (input) { SetHiddenWall(); }
 
                 // 水中フラグの設定
                 if (StageWater != null)
