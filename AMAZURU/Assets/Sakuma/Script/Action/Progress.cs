@@ -69,6 +69,8 @@ public class Progress : MonoBehaviour
 
     IEnumerator ResultDelay(bool GameOver)
     {
+        SoundManager.soundManager.VolFadeBgm(1,0.2f,0);
+        SoundManager.soundManager.StopBgm(1, 1);
         yield return new WaitForSeconds(animation[GameOver?0:1].length+ResultDelayTime);
         if(GameOver)
         {
