@@ -234,6 +234,7 @@ MonoBehaviour:
   animation:
   - {fileID: 1827226128182048838, guid: fcc6f51f2e2191f4aa21e226e73d7344, type: 3}
   - {fileID: 1827226128182048838, guid: 3ede6083293fe1d46898e2e2a9eb3a6c, type: 3}
+  animator: {fileID: 0}
 --- !u!4 &76967582
 Transform:
   m_ObjectHideFlags: 0
@@ -2824,7 +2825,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2911a5758a6359a4095e00ddd31c7630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SLoadStageData: {fileID: 11400000, guid: 23040f52ddc76e94d87feb9249869759, type: 2}
+  SLoadStageData: {fileID: 11400000, guid: 6e78fdeca4027684182bad3340f36e96, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
   playerObj: {fileID: 2001958938084469648, guid: cda06fb60842246498bade9539daf016,
     type: 3}
