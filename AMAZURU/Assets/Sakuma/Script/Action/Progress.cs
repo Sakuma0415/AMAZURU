@@ -73,13 +73,15 @@ public class Progress : MonoBehaviour
     {
         SoundManager.soundManager.VolFadeBgm(1,0.1f,0);
         SoundManager.soundManager.StopBgm(1, 1);
-
-        while (!animator.GetBool("StageClear"))
+        if (GameOver)
         {
-            yield return null;
+            while (!animator.GetBool("StageClear"))
+            {
+                yield return null;
+            }
         }
-
         yield return new WaitForSeconds(animation[GameOver?0:1].length+ResultDelayTime);
+
         if(GameOver)
         {
             SoundManager.soundManager.PlaySe("wafu-success", 1);
