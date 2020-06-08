@@ -55,6 +55,7 @@ public class StageMake : MonoBehaviour
         //プレイヤー生成
         GameObject player = Instantiate(playerObj, StageMake.LoadStageData.startPos-new Vector3 (0.5f,0,0.5f),Quaternion.identity);
         player.GetComponent<PlayerType2>().StageWater = waterObj.GetComponent<WaterHi>();
+        Progress.progress.animator  = player.transform.GetChild(1) .GetComponent<Animator >();
 
         //カメラの設定
         cameraPos.lookPos = new Vector3(StageMake.LoadStageData.stageSize.x/2, StageMake.LoadStageData.stageSize.y / 2, StageMake.LoadStageData.stageSize.z/2);

@@ -84,7 +84,7 @@ public class StepBrock : MonoBehaviour
             //段差アニメ開始時の初期化
             if (Input.GetButtonDown("Circle"))
             {
-                Debug.Log(playerTransform.position);
+                //Debug.Log(playerTransform.position);
                 onStep = false;
                 stepAnimeFlg = true;
                 StepBrock.stepAnime = true;
