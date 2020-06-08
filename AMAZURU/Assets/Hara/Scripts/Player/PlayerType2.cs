@@ -189,6 +189,14 @@ public class PlayerType2 : MyAnimation
                     // キャラクターの移動方向(ベクトル) = カメラの向いている方向(ベクトル) * vecベクトルの大きさ
                     moveDirection = direction * moveVec;
 
+                    // 移動方向(ベクトル)を地面の傾斜に合わせて補正する
+                    if(hitNomalY != 1.0f)
+                    {
+                        var nomal = hit.normal;
+                        Vector3 dir = moveDirection - Vector3.Dot(moveDirection, nomal) * nomal;
+                        moveDirection = dir.normalized;
+                    }
+
                     // 移動量にスピード値を乗算
                     moveDirection *= speed * inputSpeed * curve.Evaluate(speedTime / maxSpeedTime);
                 }
