@@ -87,12 +87,12 @@ public class WaterHi : MonoBehaviour
         {
             PlayState.playState.gameMode = PlayState.GameMode.Rain;
 
-            PlayState.playState.rainTime = (Mathf.Abs ( (max+0.02f)-nextHi)/ anmeSpead )+ 2f;
+            PlayState.playState.rainTime = (Mathf.Abs ( (max+0.06f)-nextHi)/ anmeSpead )+ 2f;
             back = transform.localScale.y;
-            next = nextHi- 0.02f;
+            next = nextHi- 0.06f;
             rainAnime = true;
 
-            animeTime = (Mathf.Abs((max + 0.02f) - nextHi) / anmeSpead) + 2f;
+            animeTime = (Mathf.Abs((max + 0.06f) - nextHi) / anmeSpead) + 2f;
             animeTimeTik = 0;
         }
     }
