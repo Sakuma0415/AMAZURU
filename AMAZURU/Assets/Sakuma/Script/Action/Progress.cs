@@ -80,9 +80,7 @@ public class Progress : MonoBehaviour
                 yield return null;
             }
         }
-        yield return new WaitForSeconds(animation[GameOver?0:1].length+ResultDelayTime);
-
-        if(GameOver)
+        if (GameOver)
         {
             SoundManager.soundManager.PlaySe("wafu-success", 1);
         }
@@ -90,6 +88,9 @@ public class Progress : MonoBehaviour
         {
             SoundManager.soundManager.PlaySe("dead-sound", 1);
         }
+        yield return new WaitForSeconds(animation[GameOver?0:1].length+ResultDelayTime);
+
+
         resultControl.StartResult(GameOver);
     }
 
