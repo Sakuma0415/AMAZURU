@@ -429,7 +429,7 @@ public class StageEditor : MonoBehaviour
                 {
                     o = Instantiate(floorRefObj[x]);
                 }
-                else if (referenceObject[refObjIndex].name == "Prism")
+                else if (referenceObject[refObjIndex].name == "prism")
                 {
                     o = Instantiate(prismRefObj[x]);
                 }
