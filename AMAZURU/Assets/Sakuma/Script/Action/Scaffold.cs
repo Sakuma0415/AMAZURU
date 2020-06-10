@@ -54,7 +54,7 @@ public class Scaffold : MonoBehaviour
     private void SetMaxPos()
     {
         // 足場の厚さの半分の値
-        float scaffoldHalfHeight = boxCollider.size.y * 0.5f;
+        float scaffoldHalfHeight = (boxCollider.size.y + boxCollider.center.y) * 0.5f;
 
         Ray ray = new Ray(transform.position, Vector3.up);
         RaycastHit hit;
