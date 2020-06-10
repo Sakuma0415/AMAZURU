@@ -131,7 +131,7 @@ public class PlayerType2 : MyAnimation
         if (mode != PlayState.GameMode.Pause)
         {
             bool input;
-            float inputSpeed = (Mathf.Abs(inputX) + Mathf.Abs(inputZ)) * 0.5f < 0.5f ? Mathf.Abs(inputX) + Mathf.Abs(inputZ) : 1.0f;
+            float inputSpeed = Mathf.Sqrt((inputX * inputX) + (inputZ * inputZ));
 
             // 一方通行の崖を利用する際に実行
             if (CliffFlag)
@@ -180,17 +180,11 @@ public class PlayerType2 : MyAnimation
                         hitNomalY = hit.normal.y;
                     }
 
-                    // X：横軸の入力　Y：地面の傾斜　Z：縦軸の入力　の3次元空間上のベクトル
-                    Vector3 vec = SquareToCircle(new Vector3(inputX, hitNomalY, inputZ));
+                    // 斜め入力時の移動量を修正
+                    moveDirection = direction.normalized;
 
-                    // vecベクトルの大きさを三平方の定理を用いて算出する
-                    float moveVec = Mathf.Sqrt((vec.x * vec.x) + (vec.y * vec.y) * (vec.z * vec.z));
-
-                    // キャラクターの移動方向(ベクトル) = カメラの向いている方向(ベクトル) * vecベクトルの大きさ
-                    moveDirection = direction * moveVec;
-
-                    // 移動方向(ベクトル)を地面の傾斜に合わせて補正する
-                    if(hitNomalY != 1.0f)
+                    // 坂を移動する際の傾斜を考慮した移動量に修正
+                    if (hitNomalY != 1.0f)
                     {
                         var nomal = hit.normal;
                         Vector3 dir = moveDirection - Vector3.Dot(moveDirection, nomal) * nomal;
@@ -427,19 +421,5 @@ public class PlayerType2 : MyAnimation
             // 敵と接触中は操作ができないようにする
             dontInput = true;
         }
-    }
-
-    /// <summary>
-    /// 斜め方向の入力座標を適正座標に変換する関数
-    /// </summary>
-    /// <param name="input">入力座標</param>
-    /// <returns></returns>
-    private Vector3 SquareToCircle(Vector3 input)
-    {
-        Vector3 output;
-        output.x = input.x * Mathf.Sqrt(1.0f - ((input.y * input.y) * (input.z * input.z)) / 2.0f);
-        output.y = input.y * Mathf.Sqrt(1.0f - ((input.x * input.x) * (input.z * input.z)) / 2.0f);
-        output.z = input.z * Mathf.Sqrt(1.0f - ((input.x * input.x) * (input.y * input.y)) / 2.0f);
-        return output;
     }
 }
