@@ -288,8 +288,8 @@ public class CameraPos : MonoBehaviour
 
 
                     //マウスの移動情報を角度の変更量に変換
-                    float mouse_x_delta = Mathf.Abs(ControllerInput .Instance .stick .LStickHorizontal )<0.1f?0: ControllerInput.Instance.stick.LStickHorizontal * stickSpead * Time.deltaTime ;
-                    float mouse_y_delta = Mathf.Abs(ControllerInput.Instance.stick.LStickVertical ) < 0.1f ? 0 : ControllerInput.Instance.stick.LStickVertical * stickSpead * Time.deltaTime;
+                    float mouse_x_delta = Mathf.Abs(ControllerInput .Instance .stick .RStickHorizontal )<0.1f?0: ControllerInput.Instance.stick.LStickHorizontal * stickSpead * Time.deltaTime ;
+                    float mouse_y_delta = Mathf.Abs(ControllerInput.Instance.stick.RStickVertical ) < 0.1f ? 0 : ControllerInput.Instance.stick.LStickVertical * stickSpead * Time.deltaTime;
 
                     XZangle -= mouse_x_delta ;
                     Yangle -= mouse_y_delta ;
