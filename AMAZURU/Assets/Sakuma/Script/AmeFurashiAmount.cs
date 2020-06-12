@@ -53,8 +53,8 @@ public class AmeFurashiAmount : MonoBehaviour
         else
         {
             ti2[0].sprite = backimage;
-            ti2[2].sprite = image[GetPointDigit(AmehurashiManager.amehurashi.amehurashiTrueCont, 1)];
-            ti2[1].sprite = image[GetPointDigit(AmehurashiManager.amehurashi.amehurashiTrueCont, 2)];
+            ti2[1].sprite = image[GetPointDigit(AmehurashiManager.amehurashi.amehurashiTrueCont, 1)];
+            ti2[2].sprite = image[GetPointDigit(AmehurashiManager.amehurashi.amehurashiTrueCont, 2)];
         }
 
         //text1.text = AmehurashiManager.amehurashi.amehurashiTrueCont.ToString ();
