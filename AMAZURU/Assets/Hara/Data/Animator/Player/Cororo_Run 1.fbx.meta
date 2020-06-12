@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b26c17090ac156a4d92bfd77d22ae503
+guid: 71787a3a71f989049a180f8ef308da6a
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable:
@@ -59,14 +59,14 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.5008355
+      - time: 0.50507206
         functionName: Step
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.9905019
+      - time: 0.9947364
         functionName: Step
         data: 
         objectReferenceParameter: {instanceID: 0}
