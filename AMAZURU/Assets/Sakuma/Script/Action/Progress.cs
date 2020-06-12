@@ -41,7 +41,7 @@ public class Progress : MonoBehaviour
 
 
         //ポーズ画面の開閉
-        if (Input.GetButtonDown("Option"))
+        if (ControllerInput .Instance .buttonDown .option )
         {
             if (PlayState.playState.gameMode == PlayState.GameMode.Play)
             {

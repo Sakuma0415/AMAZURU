@@ -28,8 +28,8 @@ public class InCamera : MonoBehaviour
         //マスク設定
         maskObj.SetActive(set);
 
-        X = Input.GetAxis("Horizontal3");
-        Y = Input.GetAxis("Vertical3");
+        X = ControllerInput .Instance.stick .crossHorizontal ;
+        Y = ControllerInput.Instance.stick.crossHorizontal;
     }
 
     //水と接触時

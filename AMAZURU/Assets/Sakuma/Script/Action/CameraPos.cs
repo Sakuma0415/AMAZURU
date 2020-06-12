@@ -223,7 +223,7 @@ public class CameraPos : MonoBehaviour
             XZangle += Time.deltaTime*3;
 
             //通常のカメラ処理に戻る
-            if (Input.GetButtonDown("Circle") && !SceneLoadManager.Instance.SceneLoadFlg && !PlayState.playState.Tutorial)
+            if (ControllerInput .Instance.buttonDown.circle && !SceneLoadManager.Instance.SceneLoadFlg && !PlayState.playState.Tutorial)
             {
                 startCameraAngleResetBf = XZangle;
                 startCameraFlg = false;
@@ -288,8 +288,8 @@ public class CameraPos : MonoBehaviour
 
 
                     //マウスの移動情報を角度の変更量に変換
-                    float mouse_x_delta = Mathf.Abs(Input.GetAxis("Horizontal2"))<0.1f?0: Input.GetAxis("Horizontal2") * stickSpead * Time.deltaTime ;
-                    float mouse_y_delta = Mathf.Abs( Input.GetAxis("Vertical2")) < 0.1f ? 0 : Input.GetAxis("Vertical2") * stickSpead * Time.deltaTime;
+                    float mouse_x_delta = Mathf.Abs(ControllerInput .Instance .stick .LStickHorizontal )<0.1f?0: ControllerInput.Instance.stick.LStickHorizontal * stickSpead * Time.deltaTime ;
+                    float mouse_y_delta = Mathf.Abs(ControllerInput.Instance.stick.LStickVertical ) < 0.1f ? 0 : ControllerInput.Instance.stick.LStickVertical * stickSpead * Time.deltaTime;
 
                     XZangle -= mouse_x_delta ;
                     Yangle -= mouse_y_delta ;
@@ -306,7 +306,7 @@ public class CameraPos : MonoBehaviour
             }
             
             //注視点変更
-            if (Input.GetButtonDown("Triangle") && lookAnimeTime == 0&&!startCameraFlg )
+            if (ControllerInput .Instance .buttonDown .triangle  && lookAnimeTime == 0&&!startCameraFlg )
             {
                 lookMode = !lookMode;
                 lookAnimeTime = changeTime;
