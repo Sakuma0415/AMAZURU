@@ -134,8 +134,8 @@ public class ControllerInput : MonoBehaviour
             Instance.stick.LStickHorizontal = Input.GetAxis("Horizontal");
             Instance.stick.LStickVertical = Input.GetAxis("Vertical");
             Instance.stick.RStickHorizontal = Input.GetAxis("DPadH");
-            Instance.stick.RStickVertical = Input.GetAxis("DPadV");
-            Instance.stick.crossHorizontal = Input.GetAxis("Vertical2");
+            Instance.stick.RStickVertical =-1* Input.GetAxis("DPadV");
+            Instance.stick.crossHorizontal =-1* Input.GetAxis("Vertical2");
             Instance.stick.crossVertical = Input.GetAxis("Horizontal3");
         }
 
