@@ -102,8 +102,8 @@ public class PlayerType2 : MyAnimation
     private void GetInputController()
     {
         // キー入力取得
-        inputX = Input.GetAxis("Horizontal");
-        inputZ = Input.GetAxis("Vertical");
+        inputX = ControllerInput.Instance.stick.LStickHorizontal;
+        inputZ = ControllerInput.Instance.stick.LStickVertical;
     }
 
     /// <summary>
@@ -211,8 +211,8 @@ public class PlayerType2 : MyAnimation
                 // 水中フラグの設定
                 if (StageWater != null)
                 {
-                    inWater = transform.position.y + character.center.y < StageWater.max;
-                    UnderWater = transform.position.y + character.center.y + character.height * 0.5f < StageWater.max;
+                    inWater = (transform.position.y + character.center.y) - (character.height * 0.25f) < StageWater.max;
+                    UnderWater = transform.position.y + character.center.y + character.height * 0.25f < StageWater.max;
                 }
                 else
                 {

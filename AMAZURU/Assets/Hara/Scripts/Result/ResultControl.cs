@@ -211,7 +211,7 @@ public class ResultControl : MyAnimation
 
         bool end;
         float span = 1.0f;
-        float input = Input.GetAxis("Vertical3");
+        float input = ControllerInput.Instance.stick.crossVertical;
         int key = input > 0.1f ? -1 : input < -0.1f ? 1 : 0;
 
         if(cursor != null)
@@ -284,7 +284,7 @@ public class ResultControl : MyAnimation
         }
 
         // キー入力処理
-        if (Input.GetButtonDown("Circle"))
+        if (ControllerInput.Instance.buttonDown.circle)
         {
             if (actionFlag)
             {
@@ -299,7 +299,7 @@ public class ResultControl : MyAnimation
             }
         }
 
-        if(Input.GetButtonDown("Cross") && actionFlag)
+        if(ControllerInput.Instance.buttonDown.cross && actionFlag)
         {
             // ボタンSEの再生
             SoundManager.soundManager.PlaySe("btn01", 0.2f);
