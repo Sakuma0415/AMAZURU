@@ -29,7 +29,7 @@ public class ControllerInput : MonoBehaviour
         }
     }
     [System.Serializable]
-    public struct ButtonDoun
+    public struct ButtonDown
     {
         public bool circle;
         public bool cross;
@@ -65,7 +65,7 @@ public class ControllerInput : MonoBehaviour
 
     public Stick stick;
     public Button button;
-    public ButtonDoun buttonDoun;
+    public ButtonDown buttonDown;
 
     private void Awake()
     {
@@ -84,7 +84,7 @@ public class ControllerInput : MonoBehaviour
             Debug.Log("接続しているコントローラーは " + contName + " です。");
             stick.Init();
             button.Init();
-            buttonDoun.Init();
+            buttonDown.Init();
             IsPS4Controller = !(contName == "Controller (XBOX 360 For Windows)");
             DontDestroyOnLoad(gameObject);
             Instance = this;
@@ -107,10 +107,10 @@ public class ControllerInput : MonoBehaviour
             Instance.button.triangle = Input.GetButton("Triangle");
             Instance.button.option = Input.GetButton("Option");
 
-            Instance.buttonDoun.circle = Input.GetButtonDown ("Circle");
-            Instance.buttonDoun.cross = Input.GetButtonDown("Cross");
-            Instance.buttonDoun.triangle = Input.GetButtonDown("Triangle");
-            Instance.buttonDoun.option = Input.GetButtonDown("Option");
+            Instance.buttonDown.circle = Input.GetButtonDown ("Circle");
+            Instance.buttonDown.cross = Input.GetButtonDown("Cross");
+            Instance.buttonDown.triangle = Input.GetButtonDown("Triangle");
+            Instance.buttonDown.option = Input.GetButtonDown("Option");
 
             Instance.stick.LStickHorizontal = Input.GetAxis("Horizontal");
             Instance.stick.LStickVertical  = Input.GetAxis("Vertical");
@@ -126,10 +126,10 @@ public class ControllerInput : MonoBehaviour
             Instance.button.triangle = Input.GetButton("Triangle");
             Instance.button.option = Input.GetButton("Start");
 
-            Instance.buttonDoun.circle = Input.GetButtonDown("Cross");
-            Instance.buttonDoun.cross = Input.GetButtonDown("A");
-            Instance.buttonDoun.triangle = Input.GetButtonDown("Triangle");
-            Instance.buttonDoun.option = Input.GetButtonDown("Start");
+            Instance.buttonDown.circle = Input.GetButtonDown("Cross");
+            Instance.buttonDown.cross = Input.GetButtonDown("A");
+            Instance.buttonDown.triangle = Input.GetButtonDown("Triangle");
+            Instance.buttonDown.option = Input.GetButtonDown("Start");
 
             Instance.stick.LStickHorizontal = Input.GetAxis("Horizontal");
             Instance.stick.LStickVertical = Input.GetAxis("Vertical");
