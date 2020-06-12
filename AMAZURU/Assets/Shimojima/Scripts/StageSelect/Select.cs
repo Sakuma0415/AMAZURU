@@ -143,8 +143,8 @@ public class Select : MonoBehaviour
     {
         if (!SceneLoadManager.Instance.SceneLoadFlg)
         {
-            h = Input.GetAxis("Horizontal");
-            h2 = Input.GetAxis("Horizontal3");
+            h = ControllerInput.Instance.stick.LStickHorizontal;
+            h2 = ControllerInput.Instance.stick.crossHorizontal;
             if (h < 0 || h2 < 0)
             {
                 if (isRotation) { return; }
@@ -164,7 +164,7 @@ public class Select : MonoBehaviour
                 isRotation = true;
             }
 
-            if (Input.GetButtonDown("Circle"))
+            if (ControllerInput.Instance.buttonDown.circle)
             {
                 StageMake.LoadStageData = sData;
                 SoundManager.soundManager.StopBgm(0.5f, 1);
@@ -172,7 +172,7 @@ public class Select : MonoBehaviour
                 SoundManager.soundManager.PlaySe("btn01", 0.2f);
                 SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
             }
-            else if (Input.GetButtonDown("Cross") )
+            else if (ControllerInput.Instance.buttonDown.cross)
             {
                 SoundManager.soundManager.StopBgm(0.5f, 1);
                 SoundManager.soundManager.StopBgm(0.5f, 0);
