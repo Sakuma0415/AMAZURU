@@ -197,12 +197,12 @@ public class TitleController : MyAnimation
     /// </summary>
     private void InputKey()
     {
-        if (Input.GetButtonDown("Circle") && SceneLoadManager.Instance.SceneLoadFlg == false && dontInput == false)
+        if (ControllerInput.Instance.buttonDown.circle && SceneLoadManager.Instance.SceneLoadFlg == false && dontInput == false)
         {
             ButtonAction(selectNum);
         }
 
-        if(Input.GetButtonDown("Cross") && creditFlag)
+        if(ControllerInput.Instance.buttonDown.cross && creditFlag)
         {
             // ボタンSEの再生
             SoundManager.soundManager.PlaySe("btn01", 0.2f);
@@ -211,7 +211,7 @@ public class TitleController : MyAnimation
             OpenCredit(false);
         }
 
-        float input = dontInput == false && SceneLoadManager.Instance.SceneLoadFlg == false ? Input.GetAxis("Vertical3") : 0;
+        float input = dontInput == false && SceneLoadManager.Instance.SceneLoadFlg == false ? ControllerInput.Instance.stick.crossVertical : 0;
         if(Mathf.Abs(input) > 0.1f)
         {
             ChangeSelectId(input > 0, keyDown);

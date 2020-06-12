@@ -102,8 +102,8 @@ public class PlayerType2 : MyAnimation
     private void GetInputController()
     {
         // キー入力取得
-        inputX = Input.GetAxis("Horizontal");
-        inputZ = Input.GetAxis("Vertical");
+        inputX = ControllerInput.Instance.stick.LStickHorizontal;
+        inputZ = ControllerInput.Instance.stick.LStickVertical;
     }
 
     /// <summary>
