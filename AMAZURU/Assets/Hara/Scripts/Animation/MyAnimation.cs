@@ -87,6 +87,17 @@ public class MyAnimation : MonoBehaviour
         Quaternion rotation = Quaternion.RotateTowards(from, to, time);
         _ = local ? obj.transform.localRotation = rotation : obj.transform.rotation = rotation;
 
+        // 正規値に修正
+        from.x = Mathf.Abs(from.x);
+        from.y = Mathf.Abs(from.y);
+        from.z = Mathf.Abs(from.z);
+        from.w = Mathf.Abs(from.w);
+
+        to.x = Mathf.Abs(to.x);
+        to.y = Mathf.Abs(to.y);
+        to.z = Mathf.Abs(to.z);
+        to.w = Mathf.Abs(to.w);
+
         if(from == to)
         {
             return true;
