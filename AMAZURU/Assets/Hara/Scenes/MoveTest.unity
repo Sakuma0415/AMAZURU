@@ -952,6 +952,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5372834632801943904, guid: 0cc585088fb8645428a3b78b07e7b545,
+        type: 3}
+      propertyPath: playerSpeed
+      value: 4.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5372834632801943904, guid: 0cc585088fb8645428a3b78b07e7b545,
+        type: 3}
+      propertyPath: playerWaterSpeed
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5372834632801943904, guid: 0cc585088fb8645428a3b78b07e7b545,
+        type: 3}
+      propertyPath: maxSpeedTime
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6755071351934159494, guid: 0cc585088fb8645428a3b78b07e7b545,
         type: 3}
       propertyPath: m_Name
