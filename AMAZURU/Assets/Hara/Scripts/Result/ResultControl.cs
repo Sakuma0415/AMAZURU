@@ -156,6 +156,9 @@ public class ResultControl : MyAnimation
     {
         if (clear == null || over == null) { yield break; }
 
+        // アニメーション再生中にオプションが開ける場合があるので対策
+        Pause(false);
+
         GameObject result;
 
         if (resultFlag)
@@ -425,6 +428,10 @@ public class ResultControl : MyAnimation
         }
     }
 
+    /// <summary>
+    /// ポーズ画面を表示・非表示
+    /// </summary>
+    /// <param name="active">表示 = true, 非表示 = false</param>
     private void Pause(bool active)
     {
         // 背景の表示管理

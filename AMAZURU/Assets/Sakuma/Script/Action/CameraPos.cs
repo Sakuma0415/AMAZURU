@@ -71,7 +71,7 @@ public class CameraPos : MonoBehaviour
     //注視点　true=プレイヤー：false=ステージ
     bool lookMode = false;
     //注視点変更アニメーションの経過時間
-    float lookAnimeTime = 0;
+    public float lookAnimeTime = 0;
     //注視点変更アニメーションの開始地点の座標
     Vector3 animePos;
     //マウスを固定＆透明化させるかのフラグ

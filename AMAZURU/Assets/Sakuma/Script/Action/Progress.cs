@@ -73,10 +73,12 @@ public class Progress : MonoBehaviour
     {
         SoundManager.soundManager.VolFadeBgm(1,0.1f,0);
         SoundManager.soundManager.StopBgm(1, 1);
+        float timeob = 0;
         if (GameOver)
         {
-            while (!animator.GetBool("StageClear"))
+            while (!animator.GetBool("StageClear")||timeob >2f)
             {
+                timeob += Time.deltaTime;
                 yield return null;
             }
         }
