@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using NavMeshBuilder = UnityEngine.AI.NavMeshBuilder;
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerControllerNav : MonoBehaviour
+public class PlayerControllerNav : MyAnimation
 {
     [SerializeField, Tooltip("NavMeshSurfaceのPrefab")] private NavMeshSurface surfacePrefab = null;
     private NavMeshSurface playerNav = null;
@@ -14,10 +13,12 @@ public class PlayerControllerNav : MonoBehaviour
     [SerializeField, Tooltip("Rigidbody")] private Rigidbody playerRigid = null;
     [SerializeField, Tooltip("Collider")] private CapsuleCollider playerCollider = null;
     [SerializeField, Tooltip("PlayerのAnimator")] private Animator playerAnimator = null;
-    [SerializeField, Tooltip("地面のLayerMask")] private LayerMask layerMask;
+    [SerializeField, Tooltip("Playerの傘のAnimator")] private Animator umbrellaAnimator = null;
+    [SerializeField, Tooltip("地面のLayerMask")] private LayerMask groundLayer;
     [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
     [SerializeField, Tooltip("AnimationEventスクリプト")] private PlayerAnimeEvent animeEvent = null;
     private bool connectPlayState = false;
+    private bool connectControllerInput = false;
 
     // コントローラーの入力
     private float inputX = 0;
@@ -43,9 +44,6 @@ public class PlayerControllerNav : MonoBehaviour
     /// Stageの水オブジェクト
     /// </summary>
     public WaterHi StageWater { set; private get; } = null;
-
-    // プレイヤーの位置(高さ)
-    public float PlayerPositionY { private set; get; } = 0;
 
     // 水が腰の高さになったか
     private bool inWater = false;
@@ -100,7 +98,7 @@ public class PlayerControllerNav : MonoBehaviour
 
         connectPlayState = GetPlayState();
 
-        PlayerPositionY = transform.position.y + playerCollider.center.y;
+        connectControllerInput = GetControllerInput();
 
         BakeNavMesh();
     }
@@ -111,8 +109,8 @@ public class PlayerControllerNav : MonoBehaviour
     private void GetInputController()
     {
         // キー入力取得
-        inputX = Input.GetAxis("Horizontal");
-        inputZ = Input.GetAxis("Vertical");
+        inputX = connectControllerInput ? ControllerInput.Instance.stick.LStickHorizontal : Input.GetAxis("Horizontal");
+        inputZ = connectControllerInput ? ControllerInput.Instance.stick.LStickVertical : Input.GetAxis("Vertical");
     }
 
     /// <summary>
@@ -124,25 +122,39 @@ public class PlayerControllerNav : MonoBehaviour
         {
             mode = PlayState.playState.gameMode;
         }
-        else
-        {
-            mode = PlayState.GameMode.Play;
-        }
 
-        if (mode == PlayState.GameMode.Play || mode == PlayState.GameMode.Rain)
+        // カメラの向いている方向を取得
+        Vector3 cameraForward = Vector3.Scale(PlayerCamera.transform.forward == Vector3.up ? -PlayerCamera.transform.up : PlayerCamera.transform.forward == Vector3.down ? PlayerCamera.transform.up : PlayerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+
+        // カメラから見た入力方向を取得
+        Vector3 direction = cameraForward * inputZ + PlayerCamera.transform.right * inputX;
+
+        float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
+
+        if (mode != PlayState.GameMode.Pause)
         {
             bool input;
-            float inputSpeed = (Mathf.Abs(inputX) + Mathf.Abs(inputZ)) * 0.5f < 0.5f ? Mathf.Abs(inputX) + Mathf.Abs(inputZ) : 1.0f;
+            float inputSpeed = Mathf.Sqrt((inputX * inputX) + (inputZ * inputZ));
 
             // NavMeshの更新
-            if (mode == PlayState.GameMode.Play)
+            if (mode == PlayState.GameMode.Rain)
             {
+                navMeshFlag = true;
+                specialMove = true;
+                playerAgent.updatePosition = false;
+                playerRigid.isKinematic = false;
+                
+            }
+            else
+            {
+                // ナビメッシュの更新をかける
                 if (navMeshFlag)
                 {
                     navMeshFlag = false;
                     UpdateNavMesh();
                 }
 
+                // アメフラシ起動またはジャンプの動作が終了したら座標を更新する
                 if (specialMove && CliffFlag == false)
                 {
                     specialMove = false;
@@ -150,13 +162,6 @@ public class PlayerControllerNav : MonoBehaviour
                     playerAgent.updatePosition = true;
                     playerRigid.isKinematic = true;
                 }
-            }
-            else
-            {
-                navMeshFlag = true;
-                specialMove = true;
-                playerAgent.updatePosition = false;
-                playerRigid.isKinematic = false;
             }
 
             // 一方通行の崖を利用する際に実行
@@ -168,8 +173,6 @@ public class PlayerControllerNav : MonoBehaviour
             }
             else
             {
-                float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
-
                 // 移動方向
                 Vector3 moveDirection = Vector3.zero;
 
@@ -179,33 +182,12 @@ public class PlayerControllerNav : MonoBehaviour
 
                 if (input)
                 {
-                    // カメラの向いている方向を取得
-                    Vector3 cameraForward = Vector3.Scale(PlayerCamera.transform.forward == Vector3.up ? -PlayerCamera.transform.up : PlayerCamera.transform.forward == Vector3.down ? PlayerCamera.transform.up : PlayerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
-
-                    // プレイヤーカメラ起点の入力方向
-                    Vector3 direction = cameraForward * inputZ + PlayerCamera.transform.right * inputX;
-
                     // 入力方向を向く処理
                     Quaternion rot = Quaternion.LookRotation(direction, Vector3.up);
                     rot = Quaternion.Slerp(transform.rotation, rot, 7.5f * delta);
                     transform.rotation = rot;
 
-                    // 移動方向の決定
-                    float vec = Mathf.Abs(inputX) >= Mathf.Abs(inputZ) ? inputZ / inputX : inputX / inputZ;
-                    vec = 1.0f / Mathf.Sqrt(1.0f + vec * vec);
-                    moveDirection = direction * vec;
-
-                    // 床にRayを飛ばして斜面の角度を取得
-                    Ray ground = new Ray(new Vector3(transform.position.x, PlayerPositionY, transform.position.z), Vector3.down);
-                    RaycastHit hit;
-                    if (Physics.Raycast(ground, out hit, rayLength, layerMask))
-                    {
-                        var nomal = hit.normal;
-                        Vector3 dir = moveDirection - Vector3.Dot(moveDirection, nomal) * nomal;
-                        moveDirection = dir.normalized;
-                    }
-
-                    // プレイヤーの移動先の算出
+                    // 水中かどうかをチェックし、加速度グラフに基づいた移動速度を計算
                     float speed = inWater ? playerWaterSpeed : playerSpeed;
                     if (speedTime < maxSpeedTime)
                     {
@@ -215,7 +197,29 @@ public class PlayerControllerNav : MonoBehaviour
                     {
                         speedTime = maxSpeedTime;
                     }
-                    moveDirection *= speed * delta * inputSpeed * curve.Evaluate(speedTime / maxSpeedTime);
+
+                    // 地面にRayを飛ばす
+                    Ray ground = new Ray(new Vector3(transform.position.x, transform.position.y + playerCollider.center.y, transform.position.z), Vector3.down);
+                    float hitNomalY = 1.0f;
+                    if (Physics.Raycast(ground, out RaycastHit hit, rayLength, groundLayer))
+                    {
+                        // 地面の傾斜を取得
+                        hitNomalY = hit.normal.y;
+                    }
+
+                    // 斜め入力時の移動量を修正
+                    moveDirection = direction.normalized;
+
+                    // 坂を移動する際の傾斜を考慮した移動量に修正
+                    if (hitNomalY != 1.0f)
+                    {
+                        var nomal = hit.normal;
+                        Vector3 dir = moveDirection - Vector3.Dot(moveDirection, nomal) * nomal;
+                        moveDirection = dir.normalized;
+                    }
+
+                    // 移動量にスピード値を乗算
+                    moveDirection *= speed * inputSpeed * curve.Evaluate(speedTime / maxSpeedTime);
                 }
                 else
                 {
@@ -225,17 +229,14 @@ public class PlayerControllerNav : MonoBehaviour
                 // プレイヤーを移動させる
                 if (playerNav != null && playerAgent.updatePosition)
                 {
-                    playerAgent.Move(moveDirection);
+                    playerAgent.Move(moveDirection * delta);
                 }
-
-                // プレイヤーのY座標の位置情報を更新
-                PlayerPositionY = transform.position.y + playerCollider.center.y;
 
                 // 水中フラグの設定
                 if (StageWater != null)
                 {
-                    inWater = PlayerPositionY < StageWater.max;
-                    UnderWater = PlayerPositionY + playerAgent.height * 0.5f < StageWater.max;
+                    inWater = (transform.position.y + playerCollider.center.y) - (playerCollider.height * 0.25f) < StageWater.max;
+                    UnderWater = transform.position.y + playerCollider.center.y + playerCollider.height * 0.25f < StageWater.max;
                 }
                 else
                 {
@@ -266,8 +267,30 @@ public class PlayerControllerNav : MonoBehaviour
             if (playerAnimator != null)
             {
                 playerAnimator.enabled = true;
-                playerAnimator.SetBool("wate", input);
-                playerAnimator.SetFloat("speed", inWater ? (inputSpeed * curve.Evaluate(speedTime / maxSpeedTime)) / (playerSpeed / playerWaterSpeed) : inputSpeed * curve.Evaluate(speedTime / maxSpeedTime));
+                if (umbrellaAnimator != null) { umbrellaAnimator.enabled = true; }
+
+                // 走るアニメーション
+                playerAnimator.SetBool("Run", input);
+                playerAnimator.SetFloat("Speed", inWater ? (inputSpeed * curve.Evaluate(speedTime / maxSpeedTime)) / (playerSpeed / playerWaterSpeed) : inputSpeed * curve.Evaluate(speedTime / maxSpeedTime));
+
+                // アメフラシを起動するアニメーション
+                playerAnimator.SetBool("Switch", mode == PlayState.GameMode.Rain);
+
+                // 崖から降りるアニメーション
+                playerAnimator.SetBool("Jump", CliffFlag);
+
+                // ゲームオーバー時のアニメーション
+                playerAnimator.SetBool("GameOver", mode == PlayState.GameMode.GameOver);
+
+                // クリア時のアニメーションを再生
+                if (mode == PlayState.GameMode.Clear)
+                {
+                    if (RotateAnimation(transform.gameObject, cameraForward * -1, 360 * delta, true))
+                    {
+                        playerAnimator.SetBool("Run", false);
+                        playerAnimator.SetBool("StageClear", true);
+                    }
+                }
             }
         }
         else
@@ -275,14 +298,9 @@ public class PlayerControllerNav : MonoBehaviour
             // アニメーションの停止
             if (playerAnimator != null)
             {
-                if (mode == PlayState.GameMode.StartEf || mode == PlayState.GameMode.Stop)
-                {
-                    playerAnimator.enabled = true;
-                }
-                else
-                {
-                    playerAnimator.enabled = false;
-                }
+                // ポーズ中のみアニメーションを停止
+                playerAnimator.enabled = false;
+                if (umbrellaAnimator != null) { umbrellaAnimator.enabled = false; }
             }
         }
     }
@@ -295,6 +313,23 @@ public class PlayerControllerNav : MonoBehaviour
         try
         {
             var state = PlayState.playState.gameMode;
+            return true;
+        }
+        catch (System.NullReferenceException)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// ControllerInputにアクセスできるかチェック
+    /// </summary>
+    /// <returns></returns>
+    private bool GetControllerInput()
+    {
+        try
+        {
+            var input = ControllerInput.Instance.stick;
             return true;
         }
         catch (System.NullReferenceException)

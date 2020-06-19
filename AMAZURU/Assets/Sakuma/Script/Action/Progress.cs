@@ -31,7 +31,7 @@ public class Progress : MonoBehaviour
     {
         SetState();
         progress = this;
-        SoundManager.soundManager.PlayBgm("PerituneMaterial_Wonder3_loop", 0.5f, 0.4f, 1);
+        SoundManager.soundManager.PlayBgm("PerituneMaterial_Wonder3_loop", 0.5f, 0.1f, 1);
         //謎
         //SoundManager.soundManager.StopBgm(1f,0);
     }
@@ -73,10 +73,12 @@ public class Progress : MonoBehaviour
     {
         SoundManager.soundManager.VolFadeBgm(1,0.1f,0);
         SoundManager.soundManager.StopBgm(1, 1);
+        float timeob = 0;
         if (GameOver)
         {
-            while (!animator.GetBool("StageClear"))
+            while (!animator.GetBool("StageClear")||timeob >2f)
             {
+                timeob += Time.deltaTime;
                 yield return null;
             }
         }
