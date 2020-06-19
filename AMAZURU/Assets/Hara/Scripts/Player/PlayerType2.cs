@@ -24,7 +24,6 @@ public class PlayerType2 : MyAnimation
     [SerializeField, Header("プレイヤーの加速度グラフ")] private AnimationCurve curve = null;
     [SerializeField, Header("最高速度到達時間"), Range(0.1f, 2.0f)] private float maxSpeedTime = 0.5f;
     [SerializeField, Header("Rayの長さ"), Range(0, 10)] private float rayLength = 0.5f;
-    [SerializeField, Header("重力値"), Range(0, 10)] private float gravity = 10.0f;
     [SerializeField, Header("透明な壁のサイズ"), Range(0.01f, 5.0f)] private float wallSize = 1.0f;
 
     /// <summary>
@@ -200,7 +199,7 @@ public class PlayerType2 : MyAnimation
                 }
 
                 // 重力を反映
-                moveDirection.y -= gravity;
+                moveDirection.y -= 10.0f;
 
                 // 実際にキャラクターを動かす
                 character.Move(moveDirection * delta);
