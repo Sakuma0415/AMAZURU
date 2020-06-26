@@ -77965,6 +77965,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: fn0511_DC
       objectReference: {fileID: 0}
+    - target: {fileID: 9220275008052134537, guid: d6a5cdfbcb16f3c4f812d7c97a242047,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.428
+      objectReference: {fileID: 0}
+    - target: {fileID: 9220275008052134537, guid: d6a5cdfbcb16f3c4f812d7c97a242047,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.012
+      objectReference: {fileID: 0}
+    - target: {fileID: 9220275008052134537, guid: d6a5cdfbcb16f3c4f812d7c97a242047,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.184
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d6a5cdfbcb16f3c4f812d7c97a242047, type: 3}
 --- !u!1 &3728894948510495652 stripped

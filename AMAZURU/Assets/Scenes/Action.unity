@@ -1496,6 +1496,7 @@ MonoBehaviour:
   PlayerTransform: {fileID: 0}
   fAngle: 270
   rainPotChangeAnimeTimeSpead: 0.75
+  lookAnimeTime: 0
 --- !u!135 &721732559
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2899,7 +2900,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2911a5758a6359a4095e00ddd31c7630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SLoadStageData: {fileID: 11400000, guid: 80cf93b53a4783845bcb3b11678a2c90, type: 2}
+  SLoadStageData: {fileID: 11400000, guid: 734ddb3bc69d2c14199c9cabbb856841, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
   playerObj: {fileID: 2001958938084469648, guid: cda06fb60842246498bade9539daf016,
     type: 3}
