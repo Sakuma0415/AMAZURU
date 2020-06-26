@@ -34,6 +34,8 @@ public class Select : MonoBehaviour
     private List<PrefabStageData> _psd = new List<PrefabStageData>();
     [SerializeField]
     private List<int> psdNumber = new List<int>();
+
+    private int level = 0;
     
     [SerializeField,Tooltip("初期位置")]
     private Vector3 defPos = Vector3.zero;
@@ -122,7 +124,7 @@ public class Select : MonoBehaviour
         }
     }
 
-    public ViewStage[] viewStage = new ViewStage[6];
+    public ViewStage[,] viewStage = new ViewStage[3,6];
 
     
     void Start()
@@ -216,58 +218,65 @@ public class Select : MonoBehaviour
         psdNumber[4] = psd[4].stageNumber;
 
         int overCount = 1;
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 3; i++)
         {
-            if(i > (_psd.Count - 1) * overCount)
+            for (int j = 0; j < 5; j++)
             {
-                int _i = i - (psd.Length * overCount); ;
-                
-                viewStage[i].stage = Instantiate(_psd[_i].viewStage);
-                viewStage[i].name = _psd[_i].stageName;
-                viewStage[i].difficulity = _psd[_i].diificulty;
-                viewStage[i].amehurashiNum = _psd[_i].amehurashiNum;
-                viewStage[i].increasedWaterVolume = _psd[_i].increasedWaterVolume;
-                StageReSize(_psd[_i], i);
-                viewStage[i].psdIndex = psdNumber[_i];
-            }
-            else
-            {
-                viewStage[i].stage = Instantiate(_psd[i].viewStage);
-                viewStage[i].name = _psd[i].stageName;
-                viewStage[i].difficulity = _psd[i].diificulty;
-                viewStage[i].amehurashiNum = _psd[i].amehurashiNum;
-                viewStage[i].increasedWaterVolume = _psd[i].increasedWaterVolume;
-                StageReSize(_psd[i], i);
-                viewStage[i].psdIndex = psdNumber[i];
-            }
-
-            
-            
-            viewStage[i].stage.transform.localScale = viewStage[i].defScale;
-            SetScaleChangeSpeed(i);
-            viewStage[i].stage.transform.position = defPos;
-            viewStage[i].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, rotateAngle * (i + 8));
-            viewStage[i].index = i;
-            if(i == 2) 
-            {
-                if (viewStage[i].defScale != Vector3.one)
+                //表示するのは0内のみ
+                if(i == 0)
                 {
-                    viewStage[i].stage.transform.localScale = new Vector3(0.9f, 0.9f, 0.9f);
-                }
-                else
-                {
-                    viewStage[i].stage.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-                }
+                    if (i * (psd.Length - 1) + j > (_psd.Count - 1) * overCount)
+                    {
+                        int _j = (i + (psd.Length - 1) + j) - (psd.Length * overCount);
 
-                DifficultyChange(viewStage[i]);
-                stageName.text = viewStage[i].name;
-                amehurashiNum.text = viewStage[i].amehurashiNum.ToString();
-                increasedWaterVolume.text = viewStage[i].increasedWaterVolume.ToString();
-                sData = _psd[i].sData;
+                        viewStage[i, j].stage = Instantiate(_psd[_j].viewStage);
+                        viewStage[i, j].name = _psd[_j].stageName;
+                        viewStage[i, j].difficulity = _psd[_j].diificulty;
+                        viewStage[i, j].amehurashiNum = _psd[_j].amehurashiNum;
+                        viewStage[i, j].increasedWaterVolume = _psd[_j].increasedWaterVolume;
+                        StageReSize(_psd[_j], i, j);
+                        viewStage[i, j].psdIndex = psdNumber[_j];
+                    }
+                    else
+                    {
+                        viewStage[i, j].stage = Instantiate(_psd[j].viewStage);
+                        viewStage[i, j].name = _psd[j].stageName;
+                        viewStage[i, j].difficulity = _psd[j].diificulty;
+                        viewStage[i, j].amehurashiNum = _psd[j].amehurashiNum;
+                        viewStage[i, j].increasedWaterVolume = _psd[j].increasedWaterVolume;
+                        StageReSize(_psd[j], i, j);
+                        viewStage[i, j].psdIndex = psdNumber[j];
+                    }
+
+
+
+                    viewStage[i, j].stage.transform.localScale = viewStage[i, j].defScale;
+                    SetScaleChangeSpeed(i , j);
+                    viewStage[i, j].stage.transform.position = defPos;
+                    viewStage[i, j].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, rotateAngle * (j + 8));
+                    viewStage[i, j].index = j;
+                    if (j == 2)
+                    {
+                        if (viewStage[i, j].defScale != Vector3.one)
+                        {
+                            viewStage[i, j].stage.transform.localScale = new Vector3(0.9f, 0.9f, 0.9f);
+                        }
+                        else
+                        {
+                            viewStage[i, j].stage.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                        }
+
+                        DifficultyChange(viewStage[i, j]);
+                        stageName.text = viewStage[i, j].name;
+                        amehurashiNum.text = viewStage[i, j].amehurashiNum.ToString();
+                        increasedWaterVolume.text = viewStage[i, j].increasedWaterVolume.ToString();
+                        sData = _psd[j].sData;
+                    }
+                }
+                if (i * (psd.Length - 1) + j > (psd.Length - 1) * (overCount + 1)) { overCount++; }
             }
-
-            if (i > (psd.Length - 1) * (overCount + 1)) { overCount++; }
         }
+            
 
         //Listのクリア
         _psd.Clear();
@@ -279,7 +288,7 @@ public class Select : MonoBehaviour
     /// </summary>
     /// <param name="obj">ステージデータアセット</param>
     /// <param name="i">インデックス</param>
-    private void StageReSize(PrefabStageData obj, int i)
+    private void StageReSize(PrefabStageData obj, int i, int j)
     {
         if(scaleAdjust.x <= 0 || scaleAdjust.y <= 0) { return; }
         Vector2 scale = new Vector2(obj.gridCells.x, obj.gridCells.z);
@@ -313,11 +322,11 @@ public class Select : MonoBehaviour
             else { magni = scaleAdjust.y / z; }
 
             Vector2 reSize = new Vector2((x * magni) / scale.x, (z * magni) / scale.y);
-            viewStage[i].defScale = new Vector3(reSize.x, 1, reSize.y);
+            viewStage[i,j].defScale = new Vector3(reSize.x, 1, reSize.y);
         }
         else
         {
-            viewStage[i].defScale = Vector3.one;
+            viewStage[i,j].defScale = Vector3.one;
         }
     }
 
@@ -325,23 +334,23 @@ public class Select : MonoBehaviour
     /// スケールチェンジの速さを設定
     /// </summary>
     /// <param name="i"></param>
-    private void SetScaleChangeSpeed(int i)
+    private void SetScaleChangeSpeed(int i, int j)
     {
-        if (viewStage[i].stage.transform.localScale == Vector3.one)
+        if (viewStage[i, j].stage.transform.localScale == Vector3.one)
         {
-            Vector2 scale = new Vector2(1.5f - viewStage[i].stage.transform.localScale.x,
-                                        1.5f - viewStage[i].stage.transform.localScale.z);
-            viewStage[i].reSizeSpeed = new Vector3(scale.x / rotateAngle, 0, scale.y / rotateAngle);
+            Vector2 scale = new Vector2(1.5f - viewStage[i, j].stage.transform.localScale.x,
+                                        1.5f - viewStage[i, j].stage.transform.localScale.z);
+            viewStage[i, j].reSizeSpeed = new Vector3(scale.x / rotateAngle, 0, scale.y / rotateAngle);
         }
         else
         {
-            Vector2 scale = new Vector2(1 - viewStage[i].stage.transform.localScale.x,
-                                        1 - viewStage[i].stage.transform.localScale.z);
-            viewStage[i].reSizeSpeed = new Vector3(scale.x / rotateAngle, 0, scale.y / rotateAngle);
+            Vector2 scale = new Vector2(1 - viewStage[i, j].stage.transform.localScale.x,
+                                        1 - viewStage[i, j].stage.transform.localScale.z);
+            viewStage[i, j].reSizeSpeed = new Vector3(scale.x / rotateAngle, 0, scale.y / rotateAngle);
         }
 
-        Vector3 _scale = viewStage[i].stage.transform.localScale;
-        viewStage[i].zeroScalingSpeed = new Vector3(_scale.x / rotateAngle, _scale.y / rotateAngle, _scale.z / rotateAngle);
+        Vector3 _scale = viewStage[i, j].stage.transform.localScale;
+        viewStage[i, j].zeroScalingSpeed = new Vector3(_scale.x / rotateAngle, _scale.y / rotateAngle, _scale.z / rotateAngle);
     }
 
     /// <summary>
@@ -351,51 +360,52 @@ public class Select : MonoBehaviour
     {
         StageInstantiate(select);
 
-        for (int i = 0; i < viewStage.Length; i++)
+        for (int i = 0; i < viewStage.GetLength(1); i++)
         {
             float s = speed;
-            if(select == Selection.FallBack) { s *= -1; }
+            if (select == Selection.FallBack) { s *= -1; }
 
-            if(select == Selection.Forward)
+            if (select == Selection.Forward)
             {
-                switch (viewStage[i].index) 
+                switch (viewStage[0, i].index)
                 {
                     case 1:
-                        viewStage[i].stage.transform.localScale += viewStage[i].reSizeSpeed;
-                        sData = psd[viewStage[i].psdIndex].psd.sData;
+                        viewStage[0, i].stage.transform.localScale += viewStage[0, i].reSizeSpeed;
+                        sData = psd[viewStage[i, i].psdIndex].psd.sData;
                         break;
                     case 2:
-                        viewStage[i].stage.transform.localScale -= viewStage[i].reSizeSpeed;
+                        viewStage[0, i].stage.transform.localScale -= viewStage[0, i].reSizeSpeed;
                         break;
                     case 4:
-                        viewStage[i].stage.transform.localScale -= viewStage[i].zeroScalingSpeed;
+                        viewStage[0, i].stage.transform.localScale -= viewStage[0, i].zeroScalingSpeed;
                         break;
                     case 5:
-                        viewStage[i].stage.transform.localScale += viewStage[i].zeroScalingSpeed;
+                        viewStage[0, i].stage.transform.localScale += viewStage[0, i].zeroScalingSpeed;
                         break;
                 }
             }
             else
             {
-                switch (viewStage[i].index)
+                Debug.Log(viewStage[0, i].index);
+                switch (viewStage[0, i].index)
                 {
                     case 0:
-                        viewStage[i].stage.transform.localScale -= viewStage[i].zeroScalingSpeed;
+                        viewStage[0, i].stage.transform.localScale -= viewStage[0, i].zeroScalingSpeed;
                         break;
                     case 2:
-                        viewStage[i].stage.transform.localScale -= viewStage[i].reSizeSpeed;
+                        viewStage[0, i].stage.transform.localScale -= viewStage[0, i].reSizeSpeed;
                         break;
                     case 3:
-                        viewStage[i].stage.transform.localScale += viewStage[i].reSizeSpeed;
-                        sData = psd[viewStage[i].psdIndex].psd.sData;
+                        viewStage[0, i].stage.transform.localScale += viewStage[0, i].reSizeSpeed;
+                        sData = psd[viewStage[i, i].psdIndex].psd.sData;
                         break;
                     case 5:
-                        viewStage[i].stage.transform.localScale += viewStage[i].zeroScalingSpeed;
+                        viewStage[0, i].stage.transform.localScale += viewStage[0, i].zeroScalingSpeed;
                         break;
                 }
             }
-            if(viewStage[i].stage == null) { continue; }
-            viewStage[i].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, s) ;
+            if (viewStage[0, i].stage == null) { continue; }
+            viewStage[0, i].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, s);
         }
 
         sumAngle += speed;
@@ -438,43 +448,43 @@ public class Select : MonoBehaviour
 
         if (select == Selection.Forward)
         {
-            for (int i = 0; i < viewStage.Length; i++)
+            for (int j = 0; j < viewStage.GetLength(1); j++)
             {
-                if(viewStage[i].index == 4)
+                if(viewStage[0, j].index == 4)
                 {
-                    Destroy(viewStage[i].stage);
-                    viewStage[i].Init();
+                    Destroy(viewStage[0, j].stage);
+                    viewStage[0, j].Init();
                 }
                 
-                if(viewStage[i].stage == null) { continue; }
-                viewStage[i].CountUp();
-                if (viewStage[i].index == 2) 
+                if(viewStage[0, j].stage == null) { continue; }
+                viewStage[0, j].CountUp();
+                if (viewStage[0, j].index == 2) 
                 {
-                    DifficultyChange(viewStage[i]);
-                    n = viewStage[i].name;
-                    ame = viewStage[i].amehurashiNum.ToString();
-                    iwv = viewStage[i].increasedWaterVolume.ToString();
+                    DifficultyChange(viewStage[0, j]);
+                    n = viewStage[0, j].name;
+                    ame = viewStage[0, j].amehurashiNum.ToString();
+                    iwv = viewStage[0, j].increasedWaterVolume.ToString();
                 }
             }
         }
         else if (select == Selection.FallBack)
         {
-            for (int i = 0; i < viewStage.Length; i++)
+            for (int j = 0; j < viewStage.GetLength(1); j++)
             {
-                if (viewStage[i].index == 0)
+                if (viewStage[0, j].index == 0)
                 {
-                    Destroy(viewStage[i].stage);
-                    viewStage[i].Init();
+                    Destroy(viewStage[0, j].stage);
+                    viewStage[0, j].Init();
                 }
 
-                if (viewStage[i].stage == null) { continue; }
-                viewStage[i].CountDown();
-                if (viewStage[i].index == 2)
+                if (viewStage[0, j].stage == null) { continue; }
+                viewStage[0, j].CountDown();
+                if (viewStage[0, j].index == 2)
                 {
-                    DifficultyChange(viewStage[i]);
-                    n = viewStage[i].name;
-                    ame = viewStage[i].amehurashiNum.ToString();
-                    iwv = viewStage[i].increasedWaterVolume.ToString();
+                    DifficultyChange(viewStage[0, j]);
+                    n = viewStage[0, j].name;
+                    ame = viewStage[0, j].amehurashiNum.ToString();
+                    iwv = viewStage[0, j].increasedWaterVolume.ToString();
                 }
             }
         }
@@ -490,18 +500,18 @@ public class Select : MonoBehaviour
     {
         if(select == Selection.Forward && sumAngle == 0)
         {
-            if (viewStage[5].stage != null)
+            if (viewStage[0,5].stage != null)
             {
                 int x = 4;
 
                 while (true)
                 {
-                    viewStage[x].TookOver(viewStage[x - 1]);
+                    viewStage[0, x].TookOver(viewStage[0, x - 1]);
                     x--;
                     if (x == 0)
                     {
-                        viewStage[x].TookOver(viewStage[viewStage.Length - 1]);
-                        viewStage[viewStage.Length - 1].Init();
+                        viewStage[0, x].TookOver(viewStage[0, viewStage.GetLength(1) - 1]);
+                        viewStage[0, viewStage.GetLength(1) - 1].Init();
                         break;
                     }
                 }
@@ -515,7 +525,7 @@ public class Select : MonoBehaviour
         }
         else if(select == Selection.FallBack && sumAngle == 0)
         {
-            if(viewStage[4].stage != null)
+            if(viewStage[0, 4].stage != null)
             {
                 int x = 0;
 
@@ -523,11 +533,11 @@ public class Select : MonoBehaviour
                 {
                     if (x == 0)
                     {
-                        viewStage[viewStage.Length - 1].TookOver(viewStage[x]);
+                        viewStage[0, viewStage.GetLength(1) - 1].TookOver(viewStage[0, x]);
                     }
                     x++;
-                    viewStage[x - 1].TookOver(viewStage[x]);
-                    if (x == 4) { viewStage[x].Init(); break; }
+                    viewStage[0, x - 1].TookOver(viewStage[0, x]);
+                    if (x == 4) { viewStage[0, x].Init(); break; }
                 }
 
                 NextStageCreate(select);
@@ -547,40 +557,40 @@ public class Select : MonoBehaviour
     {
         if (select == Selection.Forward)
         {
-            int index = viewStage[0].psdIndex + 1;
+            int index = viewStage[0,0].psdIndex + 1;
             if (index > psd.Length - 1) { index = 0; }
 
-            viewStage[5].stage = Instantiate(psd[index].psd.viewStage);
-            viewStage[5].name = psd[index].psd.stageName;
-            viewStage[5].difficulity = psd[index].psd.diificulty;
-            viewStage[5].amehurashiNum = psd[index].psd.amehurashiNum;
-            viewStage[5].increasedWaterVolume = psd[index].psd.increasedWaterVolume;
-            viewStage[5].index = 5;
-            viewStage[5].psdIndex = index;
-            StageReSize(psd[index].psd, 5);
-            viewStage[5].stage.transform.localScale = viewStage[5].defScale;
-            viewStage[5].stage.transform.position = defPos;
-            SetScaleChangeSpeed(5);
-            viewStage[5].stage.transform.localScale = Vector3.zero;
-            viewStage[5].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, rotateAngle * 7);
+            viewStage[0, 5].stage = Instantiate(psd[index].psd.viewStage);
+            viewStage[0, 5].name = psd[index].psd.stageName;
+            viewStage[0, 5].difficulity = psd[index].psd.diificulty;
+            viewStage[0, 5].amehurashiNum = psd[index].psd.amehurashiNum;
+            viewStage[0, 5].increasedWaterVolume = psd[index].psd.increasedWaterVolume;
+            viewStage[0, 5].index = 5;
+            viewStage[0, 5].psdIndex = index;
+            StageReSize(psd[index].psd, 0, 5);
+            viewStage[0, 5].stage.transform.localScale = viewStage[0, 5].defScale;
+            viewStage[0, 5].stage.transform.position = defPos;
+            SetScaleChangeSpeed(0, 5);
+            viewStage[0, 5].stage.transform.localScale = Vector3.zero;
+            viewStage[0, 5].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, rotateAngle * 7);
         }
         else if (select == Selection.FallBack)
         {
-            int index = viewStage[3].psdIndex - 1;
+            int index = viewStage[0, 3].psdIndex - 1;
             if(index < 0) { index = psd.Length - 1; }
-            viewStage[4].stage = Instantiate(psd[index].psd.viewStage);
-            viewStage[4].name = psd[index].psd.stageName;
-            viewStage[4].difficulity = psd[index].psd.diificulty;
-            viewStage[4].amehurashiNum = psd[index].psd.amehurashiNum;
-            viewStage[4].increasedWaterVolume = psd[index].psd.increasedWaterVolume;
-            viewStage[4].index = 5;
-            viewStage[4].psdIndex = index;
-            StageReSize(psd[index].psd, 4);
-            viewStage[4].stage.transform.localScale = viewStage[4].defScale;
-            viewStage[4].stage.transform.position = defPos;
-            SetScaleChangeSpeed(4);
-            viewStage[4].stage.transform.localScale = Vector3.zero;
-            viewStage[4].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, rotateAngle * 3);
+            viewStage[0, 4].stage = Instantiate(psd[index].psd.viewStage);
+            viewStage[0, 4].name = psd[index].psd.stageName;
+            viewStage[0, 4].difficulity = psd[index].psd.diificulty;
+            viewStage[0, 4].amehurashiNum = psd[index].psd.amehurashiNum;
+            viewStage[0, 4].increasedWaterVolume = psd[index].psd.increasedWaterVolume;
+            viewStage[0, 4].index = 5;
+            viewStage[0, 4].psdIndex = index;
+            StageReSize(psd[index].psd, 0, 4);
+            viewStage[0, 4].stage.transform.localScale = viewStage[0, 4].defScale;
+            viewStage[0, 4].stage.transform.position = defPos;
+            SetScaleChangeSpeed(0, 4);
+            viewStage[0, 4].stage.transform.localScale = Vector3.zero;
+            viewStage[0, 4].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, rotateAngle * 3);
         }
     }
 
