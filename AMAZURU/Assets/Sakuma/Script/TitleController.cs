@@ -8,6 +8,7 @@ public class TitleController : MyAnimation
     [SerializeField, Tooltip("タイトル画面の項目")] private GameObject titleMenu = null;
     [SerializeField, Tooltip("クレジット")] private GameObject creditObject = null;
     [SerializeField, Tooltip("カーソルオブジェクト")] private GameObject cursor = null;
+    [SerializeField, Tooltip("コンフィグ")] private Config config = null;
 
     private GameObject[] buttonObject = null;
     private Coroutine coroutine = null;
@@ -43,6 +44,9 @@ public class TitleController : MyAnimation
         // BGMの再生
         SoundManager.soundManager.PlayBgm("MusMus-BGM-043", 0.1f, 0.5f, 0);
         SoundManager.soundManager.PlayBgm("rain_loop", 0.1f, 0.3f, 1);
+
+        //コンフィグの初期化
+        config.cameraSpeed = CameraSpeed.Nomal;
 
         // 変数の初期化処理
         selectNum = 0;
