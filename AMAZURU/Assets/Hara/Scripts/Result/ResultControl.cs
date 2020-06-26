@@ -22,6 +22,7 @@ public class ResultControl : MyAnimation
     [SerializeField, Tooltip("ポーズ時のロゴ")] private GameObject pause = null;
     [SerializeField, Tooltip("カメラ感度設定ウィンドウ")] private GameObject cameraOptionWindow = null;
     [SerializeField, Tooltip("カメラ感度の現在設定")] private TextMeshProUGUI nowSettingText = null;
+    [SerializeField, Tooltip("Configデータ")] private Config config = null;
 
     [SerializeField, Header("アニメーション実行間隔"), Range(0, 3)] private float span = 1.0f;
 
@@ -347,17 +348,23 @@ public class ResultControl : MyAnimation
     {
         if (open)
         {
-            if (SpeedType == CameraSpeed.Quick)
+            if(config != null)
             {
-                nowSettingText.text = "はやい";
-            }
-            else if (SpeedType == CameraSpeed.Slow)
-            {
-                nowSettingText.text = "ゆっくり";
-            }
-            else
-            {
-                nowSettingText.text = "ふつう";
+                // カメラの速度を取得
+                SpeedType = config.cameraSpeed;
+
+                if (SpeedType == CameraSpeed.Quick)
+                {
+                    nowSettingText.text = "はやい";
+                }
+                else if (SpeedType == CameraSpeed.Slow)
+                {
+                    nowSettingText.text = "ゆっくり";
+                }
+                else
+                {
+                    nowSettingText.text = "ふつう";
+                }
             }
             StartButtonAnimation(optionButton, 0, true);
         }
@@ -387,6 +394,12 @@ public class ResultControl : MyAnimation
                 nowSettingText.text = "ゆっくり";
                 SpeedType = CameraSpeed.Slow;
                 break;
+        }
+
+        // カメラの設定情報を更新
+        if(config != null)
+        {
+            config.cameraSpeed = SpeedType;
         }
     }
 
