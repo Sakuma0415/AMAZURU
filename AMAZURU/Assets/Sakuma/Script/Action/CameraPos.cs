@@ -46,6 +46,9 @@ public class CameraPos : MonoBehaviour
     //ゲーム終了時の演出にかかる時間
     [SerializeField]
     float GameEndEfSpan = 0;
+    //コンフィグ取得
+    [SerializeField]
+    Config config;
 
     [Header("以下変更不可")]
     //ステージ注視時のカメラ、ステージ間の距離
@@ -112,7 +115,7 @@ public class CameraPos : MonoBehaviour
     float disToGameEnd = 0;
     //ゲーム終了時の注視点の座標
     Vector3 transformToGameEnd = Vector3.zero;
-
+    
     void Start()
     {
         //初期化
@@ -253,7 +256,7 @@ public class CameraPos : MonoBehaviour
                 {
                     if (!lookMode)
                     {
-                        switch (resultControl.SpeedType)
+                        switch (config.cameraSpeed )
                         {
                             case CameraSpeed.Slow:
                                 stickSpead = cameraSpS[0];
@@ -268,7 +271,7 @@ public class CameraPos : MonoBehaviour
                     }
                     else
                     {
-                        switch (resultControl.SpeedType)
+                        switch (config.cameraSpeed)
                         {
                             case CameraSpeed.Slow:
                                 stickSpead = cameraSpP[0];

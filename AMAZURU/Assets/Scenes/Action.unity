@@ -976,36 +976,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c9898a04aadafb2408b1be0d40661f86, type: 3}
---- !u!1 &414493319
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 414493320}
-  m_Layer: 0
-  m_Name: ' Config'
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &414493320
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 414493319}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.9210663, y: -12.615924, z: 6.3489885}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 22
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &425678061
 GameObject:
   m_ObjectHideFlags: 0
@@ -1520,6 +1490,7 @@ MonoBehaviour:
   - 300
   GameEndDis: 2.5
   GameEndEfSpan: 0.5
+  config: {fileID: 11400000, guid: 6595b502da4dec449942f729c30d55f4, type: 2}
   CameraDisS: 20
   CameraDisP: 8
   lookPos: {x: 4, y: 4, z: 4}
