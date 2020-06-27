@@ -12,7 +12,6 @@ public class PlayerType2 : MyAnimation
     [SerializeField, Tooltip("地面のLayerMask")] private LayerMask groundLayer;
     [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
     [SerializeField, Tooltip("AnimationEventスクリプト")] private PlayerAnimeEvent animeEvent = null;
-    private bool connectPlayState = false;
 
     // コントローラーの入力
     private float inputX = 0;
@@ -24,7 +23,6 @@ public class PlayerType2 : MyAnimation
     [SerializeField, Header("プレイヤーの加速度グラフ")] private AnimationCurve curve = null;
     [SerializeField, Header("最高速度到達時間"), Range(0.1f, 2.0f)] private float maxSpeedTime = 0.5f;
     [SerializeField, Header("Rayの長さ"), Range(0, 10)] private float rayLength = 0.5f;
-    [SerializeField, Header("重力値"), Range(0, 10)] private float gravity = 10.0f;
     [SerializeField, Header("透明な壁のサイズ"), Range(0.01f, 5.0f)] private float wallSize = 1.0f;
 
     /// <summary>
@@ -91,8 +89,6 @@ public class PlayerType2 : MyAnimation
     {
         if (PlayerCamera == null) { PlayerCamera = Camera.main; }
 
-        connectPlayState = GetPlayState();
-
         CreateHiddenWall();
     }
 
@@ -102,8 +98,16 @@ public class PlayerType2 : MyAnimation
     private void GetInputController()
     {
         // キー入力取得
-        inputX = ControllerInput.Instance.stick.LStickHorizontal;
-        inputZ = ControllerInput.Instance.stick.LStickVertical;
+        try
+        {
+            inputX = ControllerInput.Instance.stick.LStickHorizontal;
+            inputZ = ControllerInput.Instance.stick.LStickVertical;
+        }
+        catch (System.NullReferenceException)
+        {
+            inputX = Input.GetAxis("Horizontal");
+            inputZ = Input.GetAxis("Vertical");
+        }
     }
 
     /// <summary>
@@ -111,13 +115,13 @@ public class PlayerType2 : MyAnimation
     /// </summary>
     private void PlayerMove(bool fixedUpdate)
     {
-        if (connectPlayState)
+        try
         {
             mode = PlayState.playState.gameMode;
         }
-        else
+        catch (System.NullReferenceException)
         {
-            mode = PlayState.GameMode.Play;
+
         }
 
         // カメラの向いている方向を取得
@@ -200,7 +204,7 @@ public class PlayerType2 : MyAnimation
                 }
 
                 // 重力を反映
-                moveDirection.y -= gravity;
+                moveDirection.y -= 10.0f;
 
                 // 実際にキャラクターを動かす
                 character.Move(moveDirection * delta);
@@ -388,29 +392,11 @@ public class PlayerType2 : MyAnimation
     }
 
     /// <summary>
-    /// PlayStateを取得できるかチェックする
-    /// </summary>
-    private bool GetPlayState()
-    {
-        try
-        {
-            var state = PlayState.playState.gameMode;
-            return true;
-        }
-        catch (System.NullReferenceException)
-        {
-            return false;
-        }
-    }
-
-    /// <summary>
     /// 敵と接触しているときに呼び出す処理
     /// </summary>
     /// <param name="flag">条件式</param>
     public void HitEnemy(bool flag)
     {
-        if(connectPlayState == false) { return; }
-
         if (flag)
         {
             // ゲームオーバー処理
