@@ -71,7 +71,6 @@ namespace Enemy
         // Start is called before the first frame update
         void Start()
         {
-            if (SpecialControl) { return; }
             EnemyInit();
         }
 
@@ -96,6 +95,8 @@ namespace Enemy
         /// </summary>
         public void EnemyInit()
         {
+            if (SpecialControl) { return; }
+            
             step = 0;
             location = 0;
             finishOneLoop = false;

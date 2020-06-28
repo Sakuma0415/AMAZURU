@@ -14,6 +14,7 @@ public class DryEnemy : MonoBehaviour
     [SerializeField, Header("スポーン後の行動パターン")] private EnemyMoveType type = EnemyMoveType.Lap;
     [SerializeField, Header("スポーン時の向き")] private Vector3 spawnRot = Vector3.zero;
     [SerializeField, Header("スポーン時のサイズ"), Range(1.0f, 5.0f)] private float spawnSize = 1.0f;
+    private Vector3 spawnPos = Vector3.zero;  // スポーン地点はこのスクリプト上で設定する
 
     // このオブジェクトに必要なデータ
     private WaterHi stageWater = null;
@@ -67,23 +68,21 @@ public class DryEnemy : MonoBehaviour
         }
         box.enabled = true;
         meshRenderer.enabled = true;
-        float hitY = Physics.Raycast(ray, out hit, 200, groundLayer) ? hit.point.y : transform.position.y - box.size.y * 0.5f;
+        float hitY = Physics.Raycast(ray, out hit, 200, groundLayer) ? hit.point.y : (transform.position.y + box.center.y) - box.size.y * 0.5f;
 
         // 予め、敵のインスタンスを作成しておく
-        Vector3 spawnPos = new Vector3(transform.position.x, hitY, transform.position.z);
-        enemyInstance = Instantiate(enemyPrefab, spawnPos, Quaternion.identity, transform.parent);
+        spawnPos = new Vector3(transform.position.x, hitY, transform.position.z);
+        enemyInstance = Instantiate(enemyPrefab, transform.position + Vector3.up * box.center.y, Quaternion.identity, transform.parent);
+        enemyInstance.gameObject.SetActive(false);
 
         // 敵に必要な情報を渡す
         enemyInstance.SpecialControl = true;
-        enemyInstance.StageWater = stageWater;
+        if(stageWater != null) { enemyInstance.StageWater = stageWater; }
         enemyInstance.MovePlan = plan;
         enemyInstance.MoveType = type;
         enemyInstance.EnemyStartPos = spawnPos;
         enemyInstance.EnemyStartRot = spawnRot;
         enemyInstance.EnemySize = spawnSize;
-
-        // 指示があるまで非表示にしておく
-        enemyInstance.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -92,9 +91,9 @@ public class DryEnemy : MonoBehaviour
     private void CheckWaterHeight()
     {
         // 一度スポーンが完了したら、以降は呼び出さない
-        if (spawnFlag || stageWater == null) { return; }
+        if (spawnFlag || stageWater == null || box == null) { return; }
 
-        if(stageWater.max > transform.position.y)
+        if(stageWater.max > (transform.position.y + box.center.y) + box.size.y * 0.5f)
         {
             spawnFlag = true;
 
@@ -125,14 +124,13 @@ public class DryEnemy : MonoBehaviour
     {
         float time = 0;
         float duration = 1.0f;
-        float diff = 0;
-
+        
         enemyInstance.gameObject.SetActive(true);
         enemyInstance.transform.localScale = Vector3.zero;
 
         while(time < duration)
         {
-            diff = time / duration;
+            float diff = time / duration;
             float sub = 1.0f - diff;
 
             // 敵のサイズを徐々に大きくしていく
@@ -151,9 +149,16 @@ public class DryEnemy : MonoBehaviour
         box.enabled = false;
         transform.localScale = Vector3.one;
 
+        // 生成された敵をゆっくり地面に降下させる
+        while(enemyInstance.transform.position != spawnPos)
+        {
+            enemyInstance.transform.position = Vector3.MoveTowards(enemyInstance.transform.position, spawnPos, 2.0f * Time.deltaTime);
+            yield return null;
+        }
+
         // スポーンした敵の初期化処理を実行
-        enemyInstance.EnemyInit();
         enemyInstance.SpecialControl = false;
+        enemyInstance.EnemyInit();
 
         // 処理完了
         coroutine = null;
