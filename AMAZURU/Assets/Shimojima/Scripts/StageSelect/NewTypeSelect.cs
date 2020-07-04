@@ -113,12 +113,12 @@ public class NewTypeSelect : MonoBehaviour
             if (i == 0)
             {
                 index++;
-                if(index == 6) { index = 0; }
+                if (index == 6) { index = 0; }
             }
-            else if(i == 1)
+            else if (i == 1)
             {
                 index--;
-                if(index == -1) { index = 0; }
+                if (index == -1) { index = 0; }
             }
         }
     }
@@ -141,12 +141,12 @@ public class NewTypeSelect : MonoBehaviour
 
     private void Update()
     {
-        
+
     }
 
     private void FixedUpdate()
     {
-        
+        if (!isRotation) { return; }
     }
 
     private void Init()
@@ -157,13 +157,89 @@ public class NewTypeSelect : MonoBehaviour
         leftAnimator = selectUI[0].GetComponent<Animator>();
         rightAnimator = selectUI[1].GetComponent<Animator>();
 
+        //表示するステージの数より配列の要素が少ないときに使用
         int overCount = 1;
+        //一番目のステージが選択された状態にする為の数字
+        int initNumber = 2;
 
         for (int i = 0; i < 3; i++)
         {
+            PrefabStageDatas[] pData = allPSD[i];
             for (int j = 0; j < 5; j++)
             {
+                if (pData.Length - 1 < initNumber)
+                {
+                    initNumber = pData.Length - 1;
+                }
+
+                viewStage[i, j].stage = Instantiate(pData[initNumber].psd.viewStage);
+                viewStage[i, j].name = pData[initNumber].psd.stageName;
+                viewStage[i, j].difficulity = pData[initNumber].psd.diificulty;
+                viewStage[i, j].amehurashiNum = pData[initNumber].psd.amehurashiNum;
+                viewStage[i, j].increasedWaterVolume = pData[initNumber].psd.increasedWaterVolume;
+                StageReSize(pData[initNumber].psd, i, j);
+                viewStage[i, j].psdIndex = pData[initNumber].stageNumber;
+                viewStage[i, j].stage.transform.localScale = viewStage[i, j].defScale;
+
             }
+        }
+    }
+
+    /// <summary>
+    /// ステージがプレビューで一定の大きさになるようにサイズ調整する
+    /// </summary>
+    /// <param name="data">ステージデータアセット</param>
+    /// <param name="i">列インデックス</param>
+    /// <param name="j">行インデックス</param>
+    private void StageReSize(PrefabStageData data, int i, int j)
+    {
+        if (scaleAdjust.x <= 0 || scaleAdjust.y < 0) { return; }
+        Vector2 scale = new Vector2(data.gridCells.x, data.gridCells.z);
+        if (scale.x > scaleAdjust.x || scale.y > scaleAdjust.y)
+        {
+            int a, b, r;
+            if (scale.x > scale.y)
+            {
+                a = (int)scale.x;
+                b = (int)scale.y;
+            }
+            else
+            {
+                a = (int)scale.y;
+                b = (int)scale.x;
+            }
+
+            r = a % b;
+            while (r != 0)
+            {
+                a = b;
+                b = r;
+                r = a % b;
+            }
+
+            float x = scale.x / b;
+            float z = scale.y / b;
+            float magni;
+
+            if (x > z) { magni = scaleAdjust.x / x; }
+            else { magni = scale.y / z; }
+
+            Vector2 reSize = new Vector2((x * magni) / scale.x, (z * magni) / scale.y);
+            viewStage[i, j].defScale = new Vector3(reSize.x, 1, reSize.y);
+        }
+        else
+        {
+            viewStage[i, j].defScale = Vector3.one;
+        }
+    }
+
+    private void SetScaleChangeSpeed(int i, int j)
+    {
+        if (viewStage[i, j].stage.transform.localScale == Vector3.one)
+        {
+            Vector2 scale = new Vector2(1.5f - viewStage[i, j].stage.transform.localScale.x,
+                                        1.5f - viewStage[i, j].stage.transform.localScale.z);
+            viewStage[i, j].sizeChangeSpeed = new Vector3(scale.x / rotateAngle, 0, scale.y / rotateAngle);
         }
     }
 }
