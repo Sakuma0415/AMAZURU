@@ -76,7 +76,7 @@ public class DryEnemy : MonoBehaviour
         // ブロックの座標データ及び、スケールデータを更新
         transform.localScale = Vector3.one * spawnSize;
         blockPos = transform.position + Vector3.up * ((transform.localScale.y - 1.0f) * 0.5f);
-        groundSetPosY = hitY + box.center.y + box.size.y * 0.5f + (transform.localScale.y - 1.0f) * 0.5f;
+        groundSetPosY = hitY + box.center.y + box.size.y * 0.5f + (spawnSize - 1.0f) * 0.5f;
         transform.position = blockPos;
 
         // 予め、敵のインスタンスを作成しておく
@@ -109,7 +109,7 @@ public class DryEnemy : MonoBehaviour
     {
         if (enemyInstance == null || stageWater == null || box == null) { return; }
 
-        if(stageWater.max > (firstTime ? ((transform.position.y + box.center.y) + box.size.y * 0.5f) : groundSetPosY * 1.5f))
+        if(stageWater.max > (firstTime ? ((transform.position.y + box.center.y) + box.size.y * 0.5f * spawnSize) : groundSetPosY + box.size.y * 0.5f * spawnSize))
         {
             if(spawnFlag == false)
             {
@@ -244,6 +244,7 @@ public class DryEnemy : MonoBehaviour
         // 表示・非表示の管理
         box.enabled = true;
         enemyInstance.gameObject.SetActive(false);
+        enemyInstance.transform.position = blockPos + Vector3.down * box.size.y * 0.5f * spawnSize;
 
         // 処理完了
         coroutine = null;
