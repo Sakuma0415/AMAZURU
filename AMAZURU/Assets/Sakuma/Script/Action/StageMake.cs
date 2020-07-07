@@ -9,7 +9,7 @@ public class StageMake : MonoBehaviour
 {
     //読み込むステージ
     static public StageData LoadStageData;
-
+    
     [Header("設定項目")]
     //シーンのテスト再生時に読み込むステージ
     [SerializeField]
@@ -32,9 +32,13 @@ public class StageMake : MonoBehaviour
     //アメフラシ管理のクラス
     [SerializeField]
     AmehurashiManager amehurashiManager;
+    [SerializeField]
+    GameObject RainEf;
+    [SerializeField]
+    RainEfController RainEfController;
 
     //private
-
+    
     //水のオブジェ
     GameObject waterObj;
 
@@ -69,6 +73,17 @@ public class StageMake : MonoBehaviour
         amehurashiManager.ManagerSet();
         amehurashiManager.waterStep = StageMake.LoadStageData.waterStep;
         amehurashiManager.AmehurashiQuantity  = StageMake.LoadStageData.AmehurashiQuantity;
+
+        //雨のエフェクト生成
+        GameObject rainef =Instantiate(RainEf);
+        rainef.transform.position = new Vector3(StageMake.LoadStageData.stageSize.x / 2, 20, StageMake.LoadStageData.stageSize.y / 2);
+        ParticleSystem ps= rainef.GetComponent<ParticleSystem>();
+        var sh = ps.shape;
+        sh.scale =new Vector3 (StageMake.LoadStageData.stageSize.x, StageMake.LoadStageData.stageSize.y,0);
+        var em=ps.emission;
+        em.rateOverTime = 0;
+        RainEfController.ps = ps;
+        RainEfController.bas = StageMake.LoadStageData.stageSize.x * StageMake.LoadStageData.stageSize.y;
     }
 
 
