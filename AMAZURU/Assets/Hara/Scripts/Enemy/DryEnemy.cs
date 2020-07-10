@@ -191,7 +191,6 @@ public class DryEnemy : MonoBehaviour
         // 値の誤差を修正と、このオブジェクトを非表示にする
         enemyInstance.transform.localScale = Vector3.one * spawnSize;
         meshRenderer.enabled = false;
-        box.enabled = false;
 
         // 生成された敵をゆっくり地面に降下させる
         while (enemyInstance.transform.position != spawnPos)
@@ -199,6 +198,10 @@ public class DryEnemy : MonoBehaviour
             enemyInstance.transform.position = Vector3.MoveTowards(enemyInstance.transform.position, spawnPos, 2.0f * Time.deltaTime);
             yield return null;
         }
+
+        // ブロックの判定を無効にする
+        transform.position = transform.position + Vector3.down * groundSetPosY;
+        box.enabled = false;
 
         // スポーンした敵の移動を許可する
         enemyInstance.SpecialControl = false;

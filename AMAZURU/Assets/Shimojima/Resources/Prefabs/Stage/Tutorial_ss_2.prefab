@@ -25653,6 +25653,7 @@ GameObject:
   - component: {fileID: 5445495041851777348}
   - component: {fileID: 7307914214545462144}
   - component: {fileID: 1048807457304440711}
+  - component: {fileID: 2931809352045591076}
   m_Layer: 0
   m_Name: SandFloor (61)
   m_TagString: Untagged
@@ -25747,6 +25748,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cellIndex: {x: 0, y: 0, z: 3}
+--- !u!114 &2931809352045591076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5414508466219151363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50eb75bc53abe67478a69b3922a4806f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshRenderer: {fileID: 0}
 --- !u!1 &5448423194226027226
 GameObject:
   m_ObjectHideFlags: 0
@@ -40474,6 +40488,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cellIndex: {x: 7, y: 0, z: 0}
+--- !u!64 &8245656978550286425
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8636886106411677483}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300002, guid: db1ac3fac66a58a499727ee964e82e69, type: 3}
+--- !u!114 &9062697639942711226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8636886106411677483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50eb75bc53abe67478a69b3922a4806f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshRenderer: {fileID: 5129464719757878682}
 --- !u!1 &8640730436943503969
 GameObject:
   m_ObjectHideFlags: 0
@@ -44165,10 +44206,20 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4753294115149354917, guid: 5c6eb96c28a539b46979b28cd12ffb37,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5901277948572553494, guid: 5c6eb96c28a539b46979b28cd12ffb37,
         type: 3}
       propertyPath: m_Name
       value: Tutorial_ss_2_DC
+      objectReference: {fileID: 0}
+    - target: {fileID: 8143899057104028948, guid: 5c6eb96c28a539b46979b28cd12ffb37,
+        type: 3}
+      propertyPath: m_Layer
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 8282087365175422306, guid: 5c6eb96c28a539b46979b28cd12ffb37,
         type: 3}
@@ -44227,6 +44278,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c6eb96c28a539b46979b28cd12ffb37, type: 3}
+--- !u!1 &8636886106411677483 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8143899057104028948, guid: 5c6eb96c28a539b46979b28cd12ffb37,
+    type: 3}
+  m_PrefabInstance: {fileID: 493305976443613759}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &5129464719757878682 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4753294115149354917, guid: 5c6eb96c28a539b46979b28cd12ffb37,
+    type: 3}
+  m_PrefabInstance: {fileID: 493305976443613759}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8957721889566716261 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8829495864329421658, guid: 5c6eb96c28a539b46979b28cd12ffb37,
