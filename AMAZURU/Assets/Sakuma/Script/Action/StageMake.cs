@@ -36,7 +36,8 @@ public class StageMake : MonoBehaviour
     GameObject RainEf;
     [SerializeField]
     RainEfController RainEfController;
-
+    [SerializeField]
+    VewPos vewPos;
     //private
     
     //水のオブジェ
@@ -64,6 +65,7 @@ public class StageMake : MonoBehaviour
         //カメラの設定
         cameraPos.lookPos = new Vector3(StageMake.LoadStageData.stageSize.x/2, StageMake.LoadStageData.stageSize.y / 2, StageMake.LoadStageData.stageSize.z/2);
         cameraPos.PlayerTransform = player.GetComponent<Transform >();
+        vewPos.PlayerTransform = player.transform;
 
         //酸素管理の設定
         o2Controller.playerType2 = player.GetComponent<PlayerType2>();
