@@ -72,7 +72,8 @@ public class Select : MonoBehaviour
         public GameObject stage;
         public Vector3 defScale;
         public Vector3 reSizeSpeed;
-        public Vector3 zeroScalingSpeed;
+        public Vector3 zeroSizeChangeSpeed;
+        public Vector3 verticalMoveSizeChangeSpeed;
         public int index;
         public int psdIndex;
 
@@ -88,7 +89,8 @@ public class Select : MonoBehaviour
             stage = null;
             defScale = Vector3.zero;
             reSizeSpeed = Vector3.zero;
-            zeroScalingSpeed = Vector3.zero;
+            zeroSizeChangeSpeed = Vector3.zero;
+            verticalMoveSizeChangeSpeed = Vector3.zero;
             index = 0;
             psdIndex = 0;
         }
@@ -106,7 +108,8 @@ public class Select : MonoBehaviour
             stage = v.stage;
             defScale = v.defScale;
             reSizeSpeed = v.reSizeSpeed;
-            zeroScalingSpeed = v.zeroScalingSpeed;
+            zeroSizeChangeSpeed = v.zeroSizeChangeSpeed;
+            verticalMoveSizeChangeSpeed = v.verticalMoveSizeChangeSpeed;
             index = v.index;
             psdIndex = v.psdIndex;
         }
@@ -321,6 +324,8 @@ public class Select : MonoBehaviour
             if(x > z) { magni = scaleAdjust.x / x; }
             else { magni = scaleAdjust.y / z; }
 
+            Debug.Log(magni);
+
             Vector2 reSize = new Vector2((x * magni) / scale.x, (z * magni) / scale.y);
             viewStage[i,j].defScale = new Vector3(reSize.x, 1, reSize.y);
         }
@@ -350,7 +355,7 @@ public class Select : MonoBehaviour
         }
 
         Vector3 _scale = viewStage[i, j].stage.transform.localScale;
-        viewStage[i, j].zeroScalingSpeed = new Vector3(_scale.x / rotateAngle, _scale.y / rotateAngle, _scale.z / rotateAngle);
+        viewStage[i, j].zeroSizeChangeSpeed = new Vector3(_scale.x / rotateAngle, _scale.y / rotateAngle, _scale.z / rotateAngle);
     }
 
     /// <summary>
@@ -377,10 +382,10 @@ public class Select : MonoBehaviour
                         viewStage[0, i].stage.transform.localScale -= viewStage[0, i].reSizeSpeed;
                         break;
                     case 4:
-                        viewStage[0, i].stage.transform.localScale -= viewStage[0, i].zeroScalingSpeed;
+                        viewStage[0, i].stage.transform.localScale -= viewStage[0, i].zeroSizeChangeSpeed;
                         break;
                     case 5:
-                        viewStage[0, i].stage.transform.localScale += viewStage[0, i].zeroScalingSpeed;
+                        viewStage[0, i].stage.transform.localScale += viewStage[0, i].zeroSizeChangeSpeed;
                         break;
                 }
             }
@@ -390,7 +395,7 @@ public class Select : MonoBehaviour
                 switch (viewStage[0, i].index)
                 {
                     case 0:
-                        viewStage[0, i].stage.transform.localScale -= viewStage[0, i].zeroScalingSpeed;
+                        viewStage[0, i].stage.transform.localScale -= viewStage[0, i].zeroSizeChangeSpeed;
                         break;
                     case 2:
                         viewStage[0, i].stage.transform.localScale -= viewStage[0, i].reSizeSpeed;
@@ -400,7 +405,7 @@ public class Select : MonoBehaviour
                         sData = psd[viewStage[i, i].psdIndex].psd.sData;
                         break;
                     case 5:
-                        viewStage[0, i].stage.transform.localScale += viewStage[0, i].zeroScalingSpeed;
+                        viewStage[0, i].stage.transform.localScale += viewStage[0, i].zeroSizeChangeSpeed;
                         break;
                 }
             }
@@ -565,12 +570,13 @@ public class Select : MonoBehaviour
             viewStage[0, 5].difficulity = psd[index].psd.diificulty;
             viewStage[0, 5].amehurashiNum = psd[index].psd.amehurashiNum;
             viewStage[0, 5].increasedWaterVolume = psd[index].psd.increasedWaterVolume;
-            viewStage[0, 5].index = 5;
-            viewStage[0, 5].psdIndex = index;
             StageReSize(psd[index].psd, 0, 5);
+            viewStage[0, 5].psdIndex = index;
             viewStage[0, 5].stage.transform.localScale = viewStage[0, 5].defScale;
-            viewStage[0, 5].stage.transform.position = defPos;
             SetScaleChangeSpeed(0, 5);
+            viewStage[0, 5].stage.transform.position = defPos;
+            viewStage[0, 5].index = 5;
+
             viewStage[0, 5].stage.transform.localScale = Vector3.zero;
             viewStage[0, 5].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, rotateAngle * 7);
         }

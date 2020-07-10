@@ -102,14 +102,12 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
         {
             if (DoKeyPress)
             {
-                if (async.progress >= 0.9f && !DoOnce && fadeEnd) { DoOnce = true; animator.SetTrigger("FadeIn"); }
+                if (async.progress >= 0.9f && !DoOnce && fadeEnd) { DoOnce = true; }
                 if (ControllerInput.Instance.buttonDown.circle && fadeEnd&& !cha)
                 {
                     async.allowSceneActivation = true;
                     loadImage.GetComponent<LoadImage>().WaveReSet();
                     loadImage.SetActive(false);
-                    animator.ResetTrigger("FadeIn");
-                    animator.SetTrigger("FadeOut");
                     cha = true;
                 }
             }
