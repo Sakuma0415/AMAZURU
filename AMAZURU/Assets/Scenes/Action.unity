@@ -851,7 +851,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 172b1400a24daad47bbe7f16433b806d, type: 3}
   - {fileID: 21300000, guid: bc34b3f0663f50248b4600b2a43eba67, type: 3}
   - {fileID: 21300000, guid: 6d46478ee5dc0e348ac59e682120e74f, type: 3}
-  backimage: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
+  backimage: {fileID: 21300000, guid: 5a9b3daefd487fb41b48ddc301169026, type: 3}
   ti1:
   - {fileID: 259757038}
   - {fileID: 258239470}
@@ -2901,7 +2901,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2911a5758a6359a4095e00ddd31c7630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SLoadStageData: {fileID: 11400000, guid: 6e78fdeca4027684182bad3340f36e96, type: 2}
+  SLoadStageData: {fileID: 11400000, guid: 23040f52ddc76e94d87feb9249869759, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
   playerObj: {fileID: 2001958938084469648, guid: cda06fb60842246498bade9539daf016,
     type: 3}
@@ -2909,6 +2909,8 @@ MonoBehaviour:
   waterMaterial: {fileID: 2100000, guid: 433e8abaf684fc2498fc6c0db370e826, type: 2}
   o2Controller: {fileID: 1956414880}
   amehurashiManager: {fileID: 218085791}
+  RainEf: {fileID: 5824112270382329431, guid: 2e3ed94dc5b7f894c8f77dd6d1939847, type: 3}
+  RainEfController: {fileID: 2105648278}
 --- !u!4 &1355312273
 Transform:
   m_ObjectHideFlags: 0
@@ -4369,6 +4371,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rainScript:
   - {fileID: 1459397621}
+  ps: {fileID: 0}
+  bas: 0
   rainMax: 8
   simpleRain: {fileID: 2037572871}
   rainCamera: {fileID: 1303174599}

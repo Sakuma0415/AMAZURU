@@ -12,7 +12,7 @@ namespace Enemy
 
     public class EnemyController : MyAnimation
     {
-        [SerializeField, Tooltip("敵のCharacterController")] private SphereCollider enemy = null;
+        private SphereCollider enemy = null;
         [SerializeField, Tooltip("敵のAnimator")] private Animator enemyAnime = null;
         [SerializeField, Tooltip("プレイヤーのレイヤー")] private LayerMask playerLayer;
         [SerializeField, Tooltip("地面のレイヤー")] private LayerMask groundLayer;
@@ -55,6 +55,7 @@ namespace Enemy
         private bool stepEnd = false;
         private bool finishOneLoop = false;
         private bool inWater = false;
+        private bool firstFlag = false;  // 外部から呼び出された場合に、重複して呼び出されないようにするフラグ
 
         /// <summary>
         /// 外部からアクセスする際に処理を止めるフラグ
@@ -71,7 +72,6 @@ namespace Enemy
         // Start is called before the first frame update
         void Start()
         {
-            if (SpecialControl) { return; }
             EnemyInit();
         }
 
@@ -94,15 +94,27 @@ namespace Enemy
         /// <summary>
         /// 敵の初期化
         /// </summary>
+        /// <param name="shortcut">一部処理をパスするフラグ</param>
         public void EnemyInit()
         {
+            if (firstFlag) { return; }
+
             step = 0;
             location = 0;
             finishOneLoop = false;
+            firstFlag = true;
+
+            if(enemy == null)
+            {
+                enemy = GetComponent<SphereCollider>();
+            }
 
             // コライダーの設定
             enemy.radius = colliderSize;
             enemy.center = new Vector3(0, colliderSize, 0);
+
+            // アニメーションの速度を取得
+            if (enemyAnime != null) { animationSpeed = enemyAnime.GetCurrentAnimatorStateInfo(0).speed; }
 
             Ray ray = new Ray(new Vector3(enemyStartPos.x, enemyStartPos.y + enemyStartPos.y, transform.position.z), Vector3.down);
             RaycastHit hit;
@@ -115,9 +127,6 @@ namespace Enemy
                     StageWater = hit.transform.gameObject.GetComponent<WaterHi>();
                 }
             }
-
-            // アニメーションの速度を取得
-            if (enemyAnime != null) { animationSpeed = enemyAnime.GetCurrentAnimatorStateInfo(0).speed; }
 
             // 床の位置を取得
             if (Physics.Raycast(ray, out hit, 200, groundLayer))
