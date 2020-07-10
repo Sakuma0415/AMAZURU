@@ -46,6 +46,7 @@ public class NewTypeSelect : MonoBehaviour
     private int rotateAngle = 0;
     private int sumAngle = 0;
     private float h, h2 = 0;
+    private float v, v2 = 0;
 
     private Animator rightAnimator, leftAnimator;
 
@@ -156,6 +157,9 @@ public class NewTypeSelect : MonoBehaviour
         {
             h = ControllerInput.Instance.stick.LStickHorizontal;
             h2 = ControllerInput.Instance.stick.crossHorizontal;
+            v = ControllerInput.Instance.stick.LStickVertical;
+            v2 = ControllerInput.Instance.stick.crossVertical;
+
             if (h < 0 || h2 < 0)
             {
                 if (isRotation) { return; }
@@ -172,6 +176,25 @@ public class NewTypeSelect : MonoBehaviour
                 rightAnimator.Play("Idle");
                 rightAnimator.SetTrigger("SizeUp");
                 selection = Selection.Right;
+                isRotation = true;
+            }
+
+            if (v < 0 || v2 < 0)
+            {
+                if (isRotation) { return; }
+                SoundManager.soundManager.PlaySe("cncl05", 1f);
+                //leftAnimator.Play("Idle");
+                //leftAnimator.SetTrigger("SizeUp");
+                selection = Selection.Down;
+                isRotation = true;
+            }
+            else if (v > 0 || v2 > 0)
+            {
+                if (isRotation) { return; }
+                SoundManager.soundManager.PlaySe("cncl05", 1f);
+                //leftAnimator.Play("Idle");
+                //leftAnimator.SetTrigger("SizeUp");
+                selection = Selection.Left;
                 isRotation = true;
             }
 
@@ -403,10 +426,10 @@ public class NewTypeSelect : MonoBehaviour
                         break;
                     case 2:
                         viewStage[0, i].stage.transform.localScale -= viewStage[0, i].sizeChangeSpeed;
-                        sData = pData[viewStage[0, i].psdIndex].psd.sData;
                         break;
                     case 3:
                         viewStage[0, i].stage.transform.localScale += viewStage[0, i].sizeChangeSpeed;
+                        sData = pData[viewStage[0, i].psdIndex].psd.sData;
                         break;
                     case 5:
                         viewStage[0, i].stage.transform.localScale += viewStage[0, i].mimamSizeChangeSpeed;
