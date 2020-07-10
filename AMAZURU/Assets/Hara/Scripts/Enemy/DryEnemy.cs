@@ -22,7 +22,7 @@ public class DryEnemy : MonoBehaviour
     private EnemyController enemyInstance = null;
     private BoxCollider box = null;
     private bool spawnFlag = false;
-    private MeshRenderer meshRenderer = null;
+    private GameObject blockObject = null;
     private Coroutine coroutine = null;
     private Vector3 blockPos = Vector3.zero;
     private float groundSetPosY = 0;
@@ -67,9 +67,9 @@ public class DryEnemy : MonoBehaviour
         {
             box = GetComponent<BoxCollider>();
         }
-        if(meshRenderer == null)
+        if(blockObject == null)
         {
-            meshRenderer = GetComponent<MeshRenderer>();
+            blockObject = transform.GetChild(0).gameObject;
         }
         float hitY = Physics.Raycast(ray, out hit, 200, groundLayer) ? hit.point.y : (transform.position.y + box.center.y) - box.size.y * 0.5f;
 
@@ -138,7 +138,7 @@ public class DryEnemy : MonoBehaviour
     /// </summary>
     private void SpawnEnemy()
     {
-        if(enemyInstance == null || meshRenderer == null || box == null) { return; }
+        if(enemyInstance == null || blockObject == null || box == null) { return; }
 
         if(coroutine != null)
         {
@@ -152,7 +152,7 @@ public class DryEnemy : MonoBehaviour
     /// </summary>
     private void ReturnBlock()
     {
-        if (enemyInstance == null || meshRenderer == null || box == null) { return; }
+        if (enemyInstance == null || blockObject == null || box == null) { return; }
 
         if (coroutine != null)
         {
@@ -190,7 +190,7 @@ public class DryEnemy : MonoBehaviour
 
         // 値の誤差を修正と、このオブジェクトを非表示にする
         enemyInstance.transform.localScale = Vector3.one * spawnSize;
-        meshRenderer.enabled = false;
+        blockObject.SetActive(false);
 
         // 生成された敵をゆっくり地面に降下させる
         while (enemyInstance.transform.position != spawnPos)
@@ -223,7 +223,7 @@ public class DryEnemy : MonoBehaviour
         transform.position = blockPos;
         transform.localScale = Vector3.zero;
         enemyInstance.SpecialControl = true;
-        meshRenderer.enabled = true;
+        blockObject.SetActive(true);
         spawnPos = new Vector3(blockPos.x, spawnPos.y, blockPos.z);
 
         while (time < duration)
