@@ -319,7 +319,7 @@ public class PlayerType2 : MyAnimation
                 for (int j = 0; j < index.Length; j++)
                 {
                     subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
-                    if (Physics.Raycast(subRay, out hit, 2.0f, groundLayer))
+                    if (Physics.Raycast(subRay, out hit, character.radius * 7.0f, groundLayer))
                     {
                         if(hit.normal.y != 0)
                         {
