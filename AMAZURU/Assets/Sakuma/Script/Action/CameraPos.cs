@@ -63,6 +63,8 @@ public class CameraPos : MonoBehaviour
     public float fAngle;
     //アメフラシの演出のカメラが移動する時間
     public float rainPotChangeAnimeTimeSpead;
+    //注視点　true=プレイヤー：false=ステージ
+    public bool lookMode = false;
 
     //private変数
     //現在のカメラ、注視点間の距離
@@ -71,8 +73,6 @@ public class CameraPos : MonoBehaviour
     Vector3 lookObj;
     //X-Z平面上の注視点から見たカメラの角度
     float XZangle = 0;
-    //注視点　true=プレイヤー：false=ステージ
-    bool lookMode = false;
     //注視点変更アニメーションの経過時間
     public float lookAnimeTime = 0;
     //注視点変更アニメーションの開始地点の座標

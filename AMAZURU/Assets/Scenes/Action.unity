@@ -1413,8 +1413,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerTransform: {fileID: 0}
-  headPos: 1.5
+  headPos: 1
   material: {fileID: 2100000, guid: 1b02f4ffd8b84464b9b88ff3c5808848, type: 2}
+  rad: 0.5
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 65536
+  cameraPos: {fileID: 721732558}
 --- !u!20 &721732556
 Camera:
   m_ObjectHideFlags: 0
@@ -1514,6 +1519,7 @@ MonoBehaviour:
   PlayerTransform: {fileID: 0}
   fAngle: 270
   rainPotChangeAnimeTimeSpead: 0.75
+  lookMode: 0
   lookAnimeTime: 0
 --- !u!135 &721732559
 SphereCollider:
@@ -2920,7 +2926,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2911a5758a6359a4095e00ddd31c7630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SLoadStageData: {fileID: 11400000, guid: a6669a9a78e95524ebd7cbdc06b871e2, type: 2}
+  SLoadStageData: {fileID: 11400000, guid: 23040f52ddc76e94d87feb9249869759, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
   playerObj: {fileID: 2001958938084469648, guid: cda06fb60842246498bade9539daf016,
     type: 3}
@@ -3069,7 +3075,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 65335
+    m_Bits: 458551
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 136f2670cd716b84cb39d7ccf70cd980, type: 2}
   m_TargetDisplay: 0

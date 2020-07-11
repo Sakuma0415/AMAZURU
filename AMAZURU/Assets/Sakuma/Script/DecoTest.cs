@@ -6,23 +6,29 @@ public class DecoTest : MonoBehaviour
 {
 
     [SerializeField]
-    MeshRenderer meshRenderer ;
-
-
-    private void OnTriggerEnter(Collider other)
+    LayerMask layerMask;
+    private void Update()
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Camera"))
+        bool Ist = false;
+        Collider[] col = Physics.OverlapCapsule(VewPos.vewcolPos.endPt1, VewPos.vewcolPos.endPt2, VewPos.vewcolPos.rad, layerMask);
+        for(int i = 0; i < col.Length; i++)
         {
-            meshRenderer.enabled = false;
-            Debug.Log("あ");
+            if(col[i].gameObject ==this.gameObject)
+            {
+                Debug.Log("as");
+                Ist = true;
+            }
         }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Camera"))
+
+        if (Ist)
         {
-            meshRenderer.enabled = true;
-            Debug.Log("は");
+            gameObject.layer = LayerMask.NameToLayer("Deco");
         }
+        else
+        {
+            gameObject.layer = LayerMask.NameToLayer("Deco2");
+        }
+
     }
+
 }
