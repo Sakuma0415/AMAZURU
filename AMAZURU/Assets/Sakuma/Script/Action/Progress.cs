@@ -11,6 +11,7 @@ public class Progress : MonoBehaviour
     static public Progress progress;
     //水中呼吸アイテム取得のフラグ
     public bool key;
+    public WaterHi waterHi;
     //Clear時に呼び出すresult
     [SerializeField]
     ResultControl resultControl;

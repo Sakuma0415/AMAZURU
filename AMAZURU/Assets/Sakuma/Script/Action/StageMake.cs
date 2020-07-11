@@ -38,8 +38,12 @@ public class StageMake : MonoBehaviour
     RainEfController RainEfController;
     [SerializeField]
     VewPos vewPos;
+    [SerializeField]
+    Progress progress;
+
+
     //private
-    
+
     //水のオブジェ
     GameObject waterObj;
 
@@ -49,13 +53,6 @@ public class StageMake : MonoBehaviour
 
         //ステージ生成
         Instantiate(StageMake.LoadStageData.stagePrefab);
-
-        //水生成
-        waterObj = Instantiate(water);
-        waterObj.transform.localScale = new Vector3(StageMake.LoadStageData.stageSize.x,0.25f, StageMake.LoadStageData.stageSize.z) -new Vector3 (0.02f,0,0.02f);
-        waterObj.transform.position += new Vector3(0.01f, 0, 0.01f);
-        waterMaterial.SetFloat("_X", StageMake.LoadStageData.stageSize.x/5);
-        waterMaterial.SetFloat("_Y", StageMake.LoadStageData.stageSize.z/6);
 
         //プレイヤー生成
         GameObject player = Instantiate(playerObj, StageMake.LoadStageData.startPos-new Vector3 (0.5f,0,0.5f),Quaternion.identity);
@@ -95,6 +92,15 @@ public class StageMake : MonoBehaviour
         cameraPos.fAngle = StageMake.LoadStageData.startAngle;
         cameraPos.CameraDisP = StageMake.LoadStageData.CameraDisP;
         cameraPos.CameraDisS = StageMake.LoadStageData.CameraDisS;
+
+
+        //水生成
+        waterObj = Instantiate(water);
+        waterObj.transform.localScale = new Vector3(StageMake.LoadStageData.stageSize.x, 0.25f, StageMake.LoadStageData.stageSize.z) - new Vector3(0.02f, 0, 0.02f);
+        waterObj.transform.position += new Vector3(0.01f, 0, 0.01f);
+        waterMaterial.SetFloat("_X", StageMake.LoadStageData.stageSize.x / 5);
+        waterMaterial.SetFloat("_Y", StageMake.LoadStageData.stageSize.z / 6);
+        progress.waterHi = waterObj.GetComponent<WaterHi >();
     }
 
     //開始時の優先処理
