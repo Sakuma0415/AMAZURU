@@ -5,8 +5,8 @@ using UnityEngine;
 public class RainPot : MonoBehaviour
 {
 
-    [SerializeField]
-    WaterHi waterHi;
+    //[SerializeField]
+    //WaterHi waterHi;
     [SerializeField]
     LayerMask layerMask;
 
@@ -37,12 +37,12 @@ public class RainPot : MonoBehaviour
         look=GetComponent<LookForCamera>();
         look.RainFall = true;
         cameraPos = Camera.main.gameObject.GetComponent<CameraPos>();
-        Ray ray = new Ray(transform.position, transform.TransformDirection(Vector3.down));
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 200, layerMask))
-        {
-            waterHi = hit.collider.gameObject.GetComponent<WaterHi>();
-        }
+        //Ray ray = new Ray(transform.position, transform.TransformDirection(Vector3.down));
+        //RaycastHit hit;
+        //if (Physics.Raycast(ray, out hit, 200, layerMask))
+        //{
+        //    waterHi = hit.collider.gameObject.GetComponent<WaterHi>();
+        //}
     }
 
     // Update is called once per frame
@@ -64,7 +64,7 @@ public class RainPot : MonoBehaviour
                     sw = !sw;
                     animator.SetBool("Bool", sw);
                     AmehurashiManager.amehurashi.amehurashiTrueCont += sw ? 1 : -1;
-                    waterHi.HiChange((AmehurashiManager.amehurashi.waterStep * AmehurashiManager.amehurashi.amehurashiTrueCont) + 1);
+                    Progress.progress . waterHi.HiChange((AmehurashiManager.amehurashi.waterStep * AmehurashiManager.amehurashi.amehurashiTrueCont) + 1);
                     Camera.main.gameObject.GetComponent<CameraPos>().RainPotChange();
                     //UI選択時の奴
                     //AmehurashiManager.amehurashi.rainPot = this;

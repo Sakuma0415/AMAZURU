@@ -229,6 +229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 0
+  waterHi: {fileID: 0}
   resultControl: {fileID: 1971748816}
   ResultDelayTime: 0.5
   animation:
@@ -2919,7 +2920,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2911a5758a6359a4095e00ddd31c7630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SLoadStageData: {fileID: 11400000, guid: 23040f52ddc76e94d87feb9249869759, type: 2}
+  SLoadStageData: {fileID: 11400000, guid: a6669a9a78e95524ebd7cbdc06b871e2, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
   playerObj: {fileID: 2001958938084469648, guid: cda06fb60842246498bade9539daf016,
     type: 3}
@@ -2930,6 +2931,7 @@ MonoBehaviour:
   RainEf: {fileID: 5824112270382329431, guid: 2e3ed94dc5b7f894c8f77dd6d1939847, type: 3}
   RainEfController: {fileID: 2105648278}
   vewPos: {fileID: 721732555}
+  progress: {fileID: 76967581}
 --- !u!4 &1355312273
 Transform:
   m_ObjectHideFlags: 0
