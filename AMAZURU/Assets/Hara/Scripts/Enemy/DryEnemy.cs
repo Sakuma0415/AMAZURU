@@ -54,12 +54,23 @@ public class DryEnemy : MonoBehaviour
 
         spawnFlag = false;
         firstTime = true;
+        Ray ray = new Ray(transform.position, Vector3.down);
+        RaycastHit hit;
 
         // 水面の情報を取得する
-        Ray ray = new Ray(transform.position, Vector3.down);
-        if(Physics.Raycast(ray, out RaycastHit hit, 200, waterLayer) && stageWater == null)
+        if (stageWater == null)
         {
-            stageWater = hit.transform.gameObject.GetComponent<WaterHi>();
+            try
+            {
+                stageWater = Progress.progress.waterHi;
+            }
+            catch
+            {
+                if (Physics.Raycast(ray, out hit, 200, waterLayer) && stageWater == null)
+                {
+                    stageWater = hit.transform.gameObject.GetComponent<WaterHi>();
+                }
+            }
         }
 
         // このオブジェクトに必要なデータを取得する
@@ -109,7 +120,7 @@ public class DryEnemy : MonoBehaviour
     {
         if (enemyInstance == null || stageWater == null || box == null) { return; }
 
-        if(stageWater.max > (firstTime ? ((transform.position.y + box.center.y) + box.size.y * 0.5f * spawnSize) : groundSetPosY + box.size.y * 0.5f * spawnSize))
+        if(stageWater.max > (firstTime ? transform.position.y + box.center.y : groundSetPosY))
         {
             if(spawnFlag == false)
             {

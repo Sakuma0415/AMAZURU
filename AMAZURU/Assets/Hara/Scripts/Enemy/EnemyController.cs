@@ -122,9 +122,16 @@ namespace Enemy
             // 水面の取得
             if (StageWater == null)
             {
-                if (Physics.Raycast(ray, out hit, 200, waterLayer))
+                try
                 {
-                    StageWater = hit.transform.gameObject.GetComponent<WaterHi>();
+                    StageWater = Progress.progress.waterHi;
+                }
+                catch
+                {
+                    if (Physics.Raycast(ray, out hit, 200, waterLayer))
+                    {
+                        StageWater = hit.transform.gameObject.GetComponent<WaterHi>();
+                    }
                 }
             }
 
@@ -153,14 +160,18 @@ namespace Enemy
         {
             float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
 
+            bool isAccess;
             try
             {
                 mode = PlayState.playState.gameMode;
+                isAccess = true;
             }
-            catch (System.NullReferenceException)
+            catch
             {
-
+                isAccess = false;
             }
+
+            if (isAccess) { mode = PlayState.playState.gameMode; }
 
             // 水中かチェックする
             inWater = StageWater != null && transform.position.y + enemy.radius < StageWater.max;
