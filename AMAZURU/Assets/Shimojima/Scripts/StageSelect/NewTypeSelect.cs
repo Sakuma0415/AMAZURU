@@ -460,19 +460,27 @@ public class NewTypeSelect : MonoBehaviour
             {
                 if (viewStage[1, i].index == 2 || viewStage[2, i].index == 2)
                 {
-                    viewStage[1, i].stage.transform.position += viewStage[1, i].verticalMoveSizeChangeSpeed;
+                    viewStage[1, i].stage.transform.position += viewStage[0, i].verticalMoveSizeChangeSpeed;
                     viewStage[2, i].stage.transform.position -= viewStage[2, i].verticalMoveSizeChangeSpeed;
                 }
                 else
                 {
-                    viewStage[1, i].stage.transform.position += viewStage[1, i].mimamSizeChangeSpeed;
+                    viewStage[1, i].stage.transform.position += viewStage[0, i].mimamSizeChangeSpeed;
                     viewStage[2, i].stage.transform.position -= viewStage[2, i].mimamSizeChangeSpeed;
                 }
             }
             else if (sel == Selection.Down)
             {
-                viewStage[0, i].stage.transform.position += viewStage[0, i].verticalMoveSizeChangeSpeed;
-                viewStage[1, i].stage.transform.position -= viewStage[2, i].verticalMoveSizeChangeSpeed;
+                if (viewStage[1, i].index == 2 || viewStage[2, i].index == 2)
+                {
+                    viewStage[0, i].stage.transform.position += viewStage[0, i].verticalMoveSizeChangeSpeed;
+                    viewStage[1, i].stage.transform.position -= viewStage[1, i].verticalMoveSizeChangeSpeed;
+                }
+                else
+                {
+                    viewStage[1, i].stage.transform.position += viewStage[0, i].mimamSizeChangeSpeed;
+                    viewStage[2, i].stage.transform.position -= viewStage[1, i].mimamSizeChangeSpeed;
+                }
             }
         }
     }
@@ -603,7 +611,7 @@ public class NewTypeSelect : MonoBehaviour
                         if (i == 0) 
                         {
                             Destroy(viewStage[1, j].stage);
-                            viewStage[i, j].HandOver(viewStage[1, j]); 
+                            viewStage[i, j].HandOver(viewStage[1, j]);
                         }
                         else if (i == 1) { viewStage[i + 1, j].HandOver(viewStage[0, j]); }
                     }
