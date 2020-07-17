@@ -47,8 +47,6 @@ namespace Enemy
 
         [SerializeField, Header("回転力")] private float rotatePower = 50f;
         [SerializeField, Header("敵のコライダーの大きさ"), Range(0.1f, 1.0f)] private float colliderSize = 0.5f;
-
-        public PlayState GameState { set; private get; } = null;
         public bool DontMove { set; private get; } = false;
 
         private int location = 0;
@@ -145,7 +143,7 @@ namespace Enemy
         {
             float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
 
-            if(GameState != null) { mode = GameState.gameMode; }
+            if(GetGameMode()) { mode = PlayState.playState.gameMode; }
 
             // 水中かチェックする
             inWater = StageWater != null && transform.position.y + enemy.radius < StageWater.max;
@@ -266,6 +264,23 @@ namespace Enemy
                         enemyAnime.enabled = false;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// ゲームステートの取得
+        /// </summary>
+        /// <returns></returns>
+        public bool GetGameMode()
+        {
+            try
+            {
+                var get = PlayState.playState.gameMode;
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
     }

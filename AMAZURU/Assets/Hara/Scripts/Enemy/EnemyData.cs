@@ -40,6 +40,9 @@ public class EnemyData : ScriptableObject
     // 水中速度
     public float WaterSpeed = 1.0f;
 
+    // デフォルト設定を使用するか
+    public bool UseDefaultSetting = true;
+
     // 乾燥ブロックの設置高さ
     public float BlockSetPosY = 1.0f;
 }

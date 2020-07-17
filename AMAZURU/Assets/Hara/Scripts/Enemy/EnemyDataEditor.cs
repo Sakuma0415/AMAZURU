@@ -19,8 +19,9 @@ public class EnemyDataEditor : Editor
         SerializedProperty property = serializedObject.FindProperty("MovePlan");
         EditorGUILayout.PropertyField(property, true);
         enemyData.MoveType = (EnemyMoveType)EditorGUILayout.EnumPopup("巡回方式", enemyData.MoveType);
-        enemyData.NomalSpeed = Mathf.Max(1, EditorGUILayout.FloatField("通常時の移動速度", Mathf.Min(20.0f, enemyData.NomalSpeed)));
-        enemyData.WaterSpeed = Mathf.Max(1, EditorGUILayout.FloatField("水中時の移動速度", Mathf.Min(20.0f, enemyData.WaterSpeed)));
+        enemyData.NomalSpeed = Mathf.Max(0, EditorGUILayout.FloatField("通常時の移動速度", Mathf.Min(20.0f, enemyData.NomalSpeed)));
+        enemyData.WaterSpeed = Mathf.Max(0, EditorGUILayout.FloatField("水中時の移動速度", Mathf.Min(20.0f, enemyData.WaterSpeed)));
+        enemyData.UseDefaultSetting = EditorGUILayout.Toggle("デフォルト設定を使用", enemyData.UseDefaultSetting);
 
         // 個別の設定項目
         if (enemyData.Type != EnemyData.EnemyType.Nomal)

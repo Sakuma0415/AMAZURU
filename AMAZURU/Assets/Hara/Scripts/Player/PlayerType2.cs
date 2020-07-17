@@ -24,7 +24,6 @@ public class PlayerType2 : MyAnimation
     [SerializeField, Header("最高速度到達時間"), Range(0.1f, 2.0f)] private float maxSpeedTime = 0.5f;
     [SerializeField, Header("Rayの長さ"), Range(0, 10)] private float rayLength = 0.5f;
     [SerializeField, Header("透明な壁のサイズ"), Range(0.01f, 5.0f)] private float wallSize = 1.0f;
-    private PlayState state = null;
 
     /// <summary>
     /// プレイヤーカメラ
@@ -89,7 +88,6 @@ public class PlayerType2 : MyAnimation
     public void PlayerInit()
     {
         if (PlayerCamera == null) { PlayerCamera = Camera.main; }
-        state = FindObjectOfType<PlayState>();
         CreateHiddenWall();
     }
 
@@ -117,7 +115,7 @@ public class PlayerType2 : MyAnimation
     private void PlayerMove(bool fixedUpdate)
     {
         // ゲームモードの取得
-        if (state) { mode = state.gameMode; }
+        if (GetGameMode()) { mode = PlayState.playState.gameMode; }
 
         // カメラの向いている方向を取得
         Vector3 cameraForward = Vector3.Scale(PlayerCamera.transform.forward == Vector3.up ? -PlayerCamera.transform.up : PlayerCamera.transform.forward == Vector3.down ? PlayerCamera.transform.up : PlayerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
@@ -401,6 +399,23 @@ public class PlayerType2 : MyAnimation
         {
             // 敵と接触中は操作ができないようにする
             dontInput = true;
+        }
+    }
+
+    /// <summary>
+    /// ゲームステートの取得
+    /// </summary>
+    /// <returns></returns>
+    public bool GetGameMode()
+    {
+        try
+        {
+            var get = PlayState.playState.gameMode;
+            return true;
+        }
+        catch
+        {
+            return false;
         }
     }
 }

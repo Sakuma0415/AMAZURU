@@ -25,14 +25,10 @@ public class EnemyMaster : MonoBehaviour
     {
         transform.position = Vector3.zero;
 
-        // ゲームモードを取得
-        var gameState = FindObjectOfType<PlayState>();
-
         foreach(var enemy in enemyData)
         {
             // 敵のインスタンスを作成
             var enemyObject = Instantiate(enemyPrefab, transform.parent);
-            if(gameState != null) { enemyObject.GameState = gameState; }
             Vector3 startRot;
             switch (enemy.StartRotate)
             {
@@ -55,8 +51,11 @@ public class EnemyMaster : MonoBehaviour
             enemyObject.EnemySize = enemy.Size;
             enemyObject.MovePlan = enemy.MovePlan;
             enemyObject.MoveType = enemy.MoveType;
-            enemyObject.EnemySpeed = enemy.NomalSpeed;
-            enemyObject.EnemyWaterSpeed = enemy.WaterSpeed;
+            if(enemy.UseDefaultSetting == false)
+            {
+                enemyObject.EnemySpeed = enemy.NomalSpeed;
+                enemyObject.EnemyWaterSpeed = enemy.WaterSpeed;
+            }
             enemyObject.EnemyInit();
 
             if(enemy.Type == EnemyData.EnemyType.Dry)
