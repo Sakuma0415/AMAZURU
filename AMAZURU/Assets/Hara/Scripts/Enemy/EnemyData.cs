@@ -44,5 +44,5 @@ public class EnemyData : ScriptableObject
     public bool UseDefaultSetting = true;
 
     // 乾燥ブロックの設置高さ
-    public float BlockSetPosY = 1.0f;
+    public int BlockSetPosY = 1;
 }

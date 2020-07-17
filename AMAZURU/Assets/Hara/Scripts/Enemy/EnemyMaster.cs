@@ -28,7 +28,7 @@ public class EnemyMaster : MonoBehaviour
         foreach(var enemy in enemyData)
         {
             // 敵のインスタンスを作成
-            var enemyObject = Instantiate(enemyPrefab, transform.parent);
+            var enemyObject = Instantiate(enemyPrefab, enemy.MovePlan[0], Quaternion.identity, gameObject.transform);
             Vector3 startRot;
             switch (enemy.StartRotate)
             {
@@ -61,9 +61,10 @@ public class EnemyMaster : MonoBehaviour
             if(enemy.Type == EnemyData.EnemyType.Dry)
             {
                 // 乾燥ブロックのインスタンスを作成
-                var block = Instantiate(dryEnemyPrefab, enemy.MovePlan[0] + Vector3.up * enemy.BlockSetPosY, Quaternion.identity, transform.parent);
+                var block = Instantiate(dryEnemyPrefab, enemy.MovePlan[0], Quaternion.identity, gameObject.transform);
                 block.EnemyObject = enemyObject;
                 block.BlockSize = enemy.Size;
+                block.BlockCenterY = enemy.BlockSetPosY;
                 enemyObject.gameObject.SetActive(false);
                 block.DryEnemyInit();
             }

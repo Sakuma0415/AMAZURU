@@ -15,15 +15,9 @@ namespace Enemy
         private SphereCollider enemy = null;
         [SerializeField, Tooltip("敵のAnimator")] private Animator enemyAnime = null;
         [SerializeField, Tooltip("プレイヤーのレイヤー")] private LayerMask playerLayer;
-        [SerializeField, Tooltip("地面のレイヤー")] private LayerMask groundLayer;
-        [SerializeField, Tooltip("水面のレイヤー")] private LayerMask waterLayer;
         [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
         private PlayerType2 player = null;
-
-        /// <summary>
-        /// ステージの水面情報を格納する変数
-        /// </summary>
-        public WaterHi StageWater { set; private get; } = null;
+        private WaterHi stageWater = null;
 
         [SerializeField, Header("開始向き")] private Vector3 enemyStartRot = Vector3.zero;
         public Vector3 EnemyStartRot { set { enemyStartRot = value; } }
@@ -98,41 +92,24 @@ namespace Enemy
             // アニメーションの速度を取得
             if (enemyAnime != null) { animationSpeed = enemyAnime.GetCurrentAnimatorStateInfo(0).speed; }
 
-            Ray ray = new Ray(transform.position, Vector3.down);
-            RaycastHit hit;
-
             // 水面の取得
-            if (StageWater == null)
+            if (stageWater == null)
             {
                 try
                 {
-                    StageWater = Progress.progress.waterHi;
+                    stageWater = Progress.progress.waterHi;
                 }
                 catch
                 {
-                    if (Physics.Raycast(ray, out hit, 200, waterLayer))
-                    {
-                        StageWater = hit.transform.gameObject.GetComponent<WaterHi>();
-                    }
+                    stageWater = FindObjectOfType<WaterHi>();
                 }
             }
 
-            // 床の位置を取得
-            if (Physics.Raycast(ray, out hit, 200, groundLayer))
-            {
-                // 敵の開始時の位置を設定
-                transform.position = new Vector3(ray.origin.x, hit.point.y, ray.origin.z);
-                for(int i = 0; i < movePlan.Length; i++)
-                {
-                    movePlan[i].y += hit.point.y;
-                }
+            // 敵の開始時の向き
+            transform.rotation = Quaternion.Euler(enemyStartRot);
 
-                // 敵の開始時の向き
-                transform.rotation = Quaternion.Euler(enemyStartRot);
-
-                // 敵の開始時のサイズを設定
-                transform.localScale = Vector3.one * enemySize;
-            }
+            // 敵の開始時のサイズを設定
+            transform.localScale = Vector3.one * enemySize;
         }
 
         /// <summary>
@@ -146,7 +123,7 @@ namespace Enemy
             if(GetGameMode()) { mode = PlayState.playState.gameMode; }
 
             // 水中かチェックする
-            inWater = StageWater != null && transform.position.y + enemy.radius < StageWater.max;
+            inWater = stageWater != null && transform.position.y + enemy.radius < stageWater.max;
 
             if ((mode == PlayState.GameMode.Play || mode == PlayState.GameMode.Rain))
             {

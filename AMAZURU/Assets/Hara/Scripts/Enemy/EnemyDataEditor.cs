@@ -17,7 +17,7 @@ public class EnemyDataEditor : Editor
         enemyData.StartRotate = (EnemyData.RotateDirection)EditorGUILayout.EnumPopup("スタート時の向き", enemyData.StartRotate);
         enemyData.Size = Mathf.Max(1.0f, EditorGUILayout.FloatField("サイズ倍率", Mathf.Min(5.0f, enemyData.Size)));
         SerializedProperty property = serializedObject.FindProperty("MovePlan");
-        EditorGUILayout.PropertyField(property, true);
+        EditorGUILayout.PropertyField(property);
         enemyData.MoveType = (EnemyMoveType)EditorGUILayout.EnumPopup("巡回方式", enemyData.MoveType);
         enemyData.NomalSpeed = Mathf.Max(0, EditorGUILayout.FloatField("通常時の移動速度", Mathf.Min(20.0f, enemyData.NomalSpeed)));
         enemyData.WaterSpeed = Mathf.Max(0, EditorGUILayout.FloatField("水中時の移動速度", Mathf.Min(20.0f, enemyData.WaterSpeed)));
@@ -31,7 +31,7 @@ public class EnemyDataEditor : Editor
             EditorGUILayout.LabelField("-----以下、特殊設定-----", myStyle);
             if (enemyData.Type == EnemyData.EnemyType.Dry)
             {
-                enemyData.BlockSetPosY = Mathf.Max(0, EditorGUILayout.FloatField("ブロックの設置位置", enemyData.BlockSetPosY));
+                enemyData.BlockSetPosY = Mathf.Max(0, EditorGUILayout.IntField("ブロックの設置位置", enemyData.BlockSetPosY));
             }
         }
 

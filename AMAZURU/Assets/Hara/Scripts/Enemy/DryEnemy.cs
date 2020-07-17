@@ -10,6 +10,7 @@ public class DryEnemy : MonoBehaviour
     public bool ReturnDryMode { set; private get; } = true;
 
     public float BlockSize { set; private get; } = 1.0f;
+    public float BlockCenterY { set; private get; } = 0;
     private Vector3 spawnPos = Vector3.zero;  // スポーン地点はこのスクリプト上で設定する
 
     // このオブジェクトに必要なデータ
@@ -20,7 +21,6 @@ public class DryEnemy : MonoBehaviour
     private GameObject blockObject = null;
     private Coroutine coroutine = null;
     private Vector3 blockPos = Vector3.zero;
-    private float groundSetPosY = 0;
     private bool firstTime = true;
 
     // Start is called before the first frame update
@@ -43,8 +43,7 @@ public class DryEnemy : MonoBehaviour
     {
         spawnFlag = false;
         firstTime = true;
-        Ray ray = new Ray(transform.position, Vector3.down);
-        RaycastHit hit;
+        
 
         // 水面の情報を取得する
         if (stageWater == null)
@@ -55,6 +54,8 @@ public class DryEnemy : MonoBehaviour
             }
             catch
             {
+                Ray ray = new Ray(transform.position, Vector3.down);
+                RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, 200, waterLayer) && stageWater == null)
                 {
                     stageWater = hit.transform.gameObject.GetComponent<WaterHi>();
@@ -71,16 +72,14 @@ public class DryEnemy : MonoBehaviour
         {
             blockObject = transform.GetChild(0).gameObject;
         }
-        float hitY = Physics.Raycast(ray, out hit, 200, groundLayer) ? hit.point.y : (transform.position.y + box.center.y) - box.size.y * 0.5f;
+
+        // 敵のスポーン地点を設定
+        spawnPos = transform.position;
 
         // ブロックの座標データ及び、スケールデータを更新
         transform.localScale = Vector3.one * BlockSize;
-        blockPos = transform.position + Vector3.up * ((transform.localScale.y - 1.0f) * 0.5f);
-        groundSetPosY = hitY + box.center.y + box.size.y * 0.5f + (BlockSize - 1.0f) * 0.5f;
-        transform.position = blockPos;
-
-        // 敵のスポーン地点を設定
-        spawnPos = new Vector3(transform.position.x, hitY, transform.position.z);
+        blockPos = FixedPosition(transform.position + Vector3.up * box.center.y);
+        transform.position = blockPos + Vector3.up * BlockCenterY;
     }
 
     /// <summary>
@@ -90,7 +89,7 @@ public class DryEnemy : MonoBehaviour
     {
         if (EnemyObject == null || stageWater == null || box == null) { return; }
 
-        if(stageWater.max > (firstTime ? transform.position.y + box.center.y : groundSetPosY))
+        if(stageWater.max > (firstTime ? transform.position.y + box.center.y : blockPos.y))
         {
             if(spawnFlag == false)
             {
@@ -151,7 +150,7 @@ public class DryEnemy : MonoBehaviour
         float time = 0;
         float duration = 1.0f;
 
-        EnemyObject.transform.position = blockPos;
+        EnemyObject.transform.position = transform.position;
         EnemyObject.gameObject.SetActive(true);
         EnemyObject.transform.localScale = Vector3.zero;
         EnemyObject.DontMove = true;
@@ -184,7 +183,7 @@ public class DryEnemy : MonoBehaviour
         EnemyObject.DontMove = false;
 
         // ブロックの判定を無効にする
-        transform.position = transform.position + Vector3.down * groundSetPosY;
+        transform.position = transform.position + Vector3.down * blockPos.y;
         box.enabled = false;
 
         // 処理完了
@@ -200,12 +199,12 @@ public class DryEnemy : MonoBehaviour
         float time = 0;
         float duration = 1.0f;
 
-        blockPos = new Vector3(EnemyObject.transform.position.x, groundSetPosY, EnemyObject.transform.position.z);
+        blockPos = FixedPosition(EnemyObject.transform.position);
         transform.position = blockPos;
         transform.localScale = Vector3.zero;
         EnemyObject.DontMove = true;
         blockObject.SetActive(true);
-        spawnPos = new Vector3(blockPos.x, spawnPos.y, blockPos.z);
+        spawnPos = new Vector3(blockPos.x, EnemyObject.transform.position.y, blockPos.z);
 
         while (time < duration)
         {
@@ -232,5 +231,15 @@ public class DryEnemy : MonoBehaviour
 
         // 処理完了
         coroutine = null;
+    }
+
+    /// <summary>
+    /// ブロックが埋まらないように座標を修正する
+    /// </summary>
+    /// <param name="pos">修正前の座標</param>
+    /// <returns></returns>
+    private Vector3 FixedPosition(Vector3 pos)
+    {
+        return pos + Vector3.up * 0.5f * BlockSize;
     }
 }
