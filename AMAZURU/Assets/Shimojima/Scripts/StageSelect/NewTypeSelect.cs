@@ -31,7 +31,9 @@ public class NewTypeSelect : MonoBehaviour
     public PrefabStageDatas[] psdExtra;
 
     public List<PrefabStageDatas[]> allPSD = new List<PrefabStageDatas[]>();
+    [SerializeField]
     private PrefabStageDatas[] pData;
+    public ViewStage[] vStage = new ViewStage[6];
 
     public int level = 0;
 
@@ -40,6 +42,7 @@ public class NewTypeSelect : MonoBehaviour
     private Vector3 dPos;
     [SerializeField]
     private Vector2 scaleAdjust = Vector2.zero;
+    private int lineIndex = 0;
     [SerializeField, Range(0, 10), Tooltip("回転速度")]
     private int speed = 1;
     [SerializeField]
@@ -62,7 +65,8 @@ public class NewTypeSelect : MonoBehaviour
 
     [Tooltip("選択方向")]
     private Selection selection;
-
+    
+    [System.Serializable]
     public struct ViewStage
     {
         public string name;
@@ -136,6 +140,7 @@ public class NewTypeSelect : MonoBehaviour
     }
 
     public ViewStage[,] viewStage = new ViewStage[3, 6];
+    
 
     private void Start()
     {
@@ -418,6 +423,7 @@ public class NewTypeSelect : MonoBehaviour
                         break;
                     case 1:
                         viewStage[0, i].stage.transform.localScale += viewStage[0, i].sizeChangeSpeed;
+                        if (pData.Length - 1 < viewStage[0, i].psdIndex) { Debug.Log("i:" + i + "," + viewStage[0, i].psdIndex); }
                         sData = pData[viewStage[0, i].psdIndex].psd.sData;
                         break;
                     case 2:
@@ -439,7 +445,7 @@ public class NewTypeSelect : MonoBehaviour
                         viewStage[0, i].stage.transform.localScale -= viewStage[0, i].sizeChangeSpeed;
                         break;
                     case 3:
-                        viewStage[0, i].stage.transform.localScale += viewStage[0, i].sizeChangeSpeed;                        Debug.Log(i);
+                        viewStage[0, i].stage.transform.localScale += viewStage[0, i].sizeChangeSpeed;
                         sData = pData[viewStage[0, i].psdIndex].psd.sData;
                         break;
                     case 5:
@@ -474,53 +480,37 @@ public class NewTypeSelect : MonoBehaviour
                     if (viewStage[x, j].stage == null) { continue; }
                 }
                 else { if (viewStage[i, j].stage == null) { continue; } }
+                //行番号の変更
+                if (sel == Selection.Up) { lineIndex = 2; }
+                else if(sel == Selection.Down) { lineIndex = 1; }
+                //スケールの変更
+                if (viewStage[0, j].index == 2 || viewStage[lineIndex, j].index == 2)
+                {
+                    if (viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.localScale += viewStage[0, j].verticalMoveSizeChangeSpeed; }
+                    if (viewStage[lineIndex, j].stage != null) { viewStage[lineIndex, j].stage.transform.localScale -= viewStage[lineIndex, j].verticalMoveSizeChangeSpeed; }
+                }
+                else
+                {
+                    if (viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.localScale += viewStage[0, j].minimamSizeChangeSpeed; }
+                    if (viewStage[lineIndex, j].stage != null) { viewStage[lineIndex, j].stage.transform.localScale -= viewStage[lineIndex, j].minimamSizeChangeSpeed; }
+                }
 
+                if (viewStage[0, j].index == 2){ sData = pData[viewStage[0, j].psdIndex].psd.sData; }
+
+                //縦移動の処理
                 if (sel == Selection.Up)
                 {
-                    if (viewStage[0, j].index == 2 || viewStage[2, j].index == 2)
-                    {
-                        if(viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.localScale += viewStage[0, j].verticalMoveSizeChangeSpeed; }
-                        if(viewStage[2, j].stage != null) { viewStage[2, j].stage.transform.localScale -= viewStage[2, j].verticalMoveSizeChangeSpeed; }
-                    }
-                    else
-                    {
-                        if (viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.localScale += viewStage[0, j].minimamSizeChangeSpeed; }
-                        if (viewStage[2, j].stage != null) { viewStage[2, j].stage.transform.localScale -= viewStage[2, j].minimamSizeChangeSpeed; }
-                    }
+                    if(viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.position += new Vector3(0, -(speed * 2), 0); }
+                    if(viewStage[2, j].stage != null) { viewStage[2, j].stage.transform.position += new Vector3(0, -(speed * 2), 0); }
                 }
                 else if (sel == Selection.Down)
                 {
-                    if (viewStage[1, j].index == 2 || viewStage[2, j].index == 2)
-                    {
-                        if(viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.localScale += viewStage[0, j].verticalMoveSizeChangeSpeed; }
-                        if(viewStage[1, j].stage != null) { viewStage[1, j].stage.transform.localScale -= viewStage[1, j].verticalMoveSizeChangeSpeed; }
-                    }
-                    else
-                    {
-                        if (viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.localScale += viewStage[0, j].minimamSizeChangeSpeed; }
-                        if (viewStage[1, j].stage != null) { viewStage[1, j].stage.transform.localScale -= viewStage[1, j].minimamSizeChangeSpeed; }
-                    }
-                }
-
-                if (viewStage[0, j].index == 2)
-                {
-                    sData = pData[viewStage[0, j].psdIndex].psd.sData;
-                }
-
-                if (sel == Selection.Up)
-                {
-                    if(viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.position += new Vector3(0, -speed * 2, 0); }
-                    if(viewStage[2, j].stage != null) { viewStage[2, j].stage.transform.position += new Vector3(0, -speed * 2, 0); }
-                }
-                else if (sel == Selection.Down)
-                {
-                    if(viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.position += new Vector3(0, speed * 2, 0); }
-                    if(viewStage[1, j].stage != null) { viewStage[1, j].stage.transform.position += new Vector3(0, speed * 2, 0); }
+                    if(viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.position += new Vector3(0, (speed * 2), 0); }
+                    if(viewStage[1, j].stage != null) { viewStage[1, j].stage.transform.position += new Vector3(0, (speed * 2), 0); }
                 }
             }
         }
         
-
         sumAngle += speed * 2;
         if(sumAngle >= rotateAngle)
         {
@@ -530,7 +520,7 @@ public class NewTypeSelect : MonoBehaviour
             int initNumber = 2;
             int le = level;
             int pDataIndex = 0;
-            PrefabStageDatas[] p = new PrefabStageDatas[0];
+            PrefabStageDatas[] p;
             if(sel == Selection.Up)
             {
                 pDataIndex = 1;
@@ -539,9 +529,7 @@ public class NewTypeSelect : MonoBehaviour
                     if(le + i > allPSD.Count - 1) { le = 0; }
                     else { le += i; }
                 }
-                p = allPSD[le];
                 dPos = new Vector3(defPos.x, defPos.y + 72, defPos.z);
-                
             }
             else if (sel == Selection.Down)
             {
@@ -551,9 +539,10 @@ public class NewTypeSelect : MonoBehaviour
                     if (le - i < 0) { le = allPSD.Count - 1; }
                     else { le -= i; }
                 }
-                p = allPSD[le];
                 dPos = new Vector3(defPos.x, defPos.y - 72, defPos.z);
             }
+
+            p = allPSD[le];
 
             for (int j = 0; j < 5; j++)
             {
@@ -674,6 +663,12 @@ public class NewTypeSelect : MonoBehaviour
                 {
                     CreateNextStage(selection);
                 }
+                vStage[0] = viewStage[0, 0];
+                vStage[1] = viewStage[0, 1];
+                vStage[2] = viewStage[0, 2];
+                vStage[3] = viewStage[0, 3];
+                vStage[4] = viewStage[0, 4];
+                vStage[5] = viewStage[0, 5];
             }
             else if (sel == Selection.Left)
             {
@@ -694,6 +689,12 @@ public class NewTypeSelect : MonoBehaviour
                 {
                     CreateNextStage(selection);
                 }
+                vStage[0] = viewStage[0, 0];
+                vStage[1] = viewStage[0, 1];
+                vStage[2] = viewStage[0, 2];
+                vStage[3] = viewStage[0, 3];
+                vStage[4] = viewStage[0, 4];
+                vStage[5] = viewStage[0, 5];
             }
 
             if (sel == Selection.Up || sel == Selection.Down)
@@ -710,7 +711,11 @@ public class NewTypeSelect : MonoBehaviour
                                 viewStage[i + 2, j].Init();
                                 viewStage[i + 2, j].HandOver(viewStage[i, j]);
                             }
-                            else if (i == 1) { viewStage[0, j].HandOver(viewStage[i, j]); }
+                            else if (i == 1) 
+                            {
+                                viewStage[0, j].Init();
+                                viewStage[0, j].HandOver(viewStage[i, j]); 
+                            }
                         }
                         else if (sel == Selection.Down)
                         {
@@ -720,10 +725,20 @@ public class NewTypeSelect : MonoBehaviour
                                 viewStage[1, j].Init();
                                 viewStage[1, j].HandOver(viewStage[0, j]);
                             }
-                            else if (i == 1) { viewStage[0, j].HandOver(viewStage[i + 1, j]); }
+                            else if (i == 1) 
+                            {
+                                viewStage[0, j].Init();
+                                viewStage[0, j].HandOver(viewStage[i + 1, j]); 
+                            }
                         }
                     }
                 }
+                vStage[0] = viewStage[0, 0];
+                vStage[1] = viewStage[0, 1];
+                vStage[2] = viewStage[0, 2];
+                vStage[3] = viewStage[0, 3];
+                vStage[4] = viewStage[0, 4];
+                vStage[5] = viewStage[0, 5];
             }
         }
     }
@@ -765,7 +780,15 @@ public class NewTypeSelect : MonoBehaviour
     /// <param name="index">ビューステージのインデックス</param>
     private void DataSetforViewStage(int i, int j, int number, int index, PrefabStageDatas[] p)
     {
-        viewStage[i, j].stage = Instantiate(p[number].psd.viewStage);
+        try
+        {
+            viewStage[i, j].stage = Instantiate(p[number].psd.viewStage);
+        }
+        catch
+        {
+            Debug.Log("psdIndex:" + viewStage[0, 4].psdIndex + "," + number);
+        }
+
         viewStage[i, j].name = p[number].psd.stageName;
         viewStage[i, j].difficulity = p[number].psd.diificulty;
         viewStage[i, j].amehurashiNum = p[number].psd.amehurashiNum;
