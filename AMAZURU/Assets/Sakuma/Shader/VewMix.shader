@@ -7,7 +7,8 @@
 		_Point("Point",Vector)=(0,0,0,0)
 		_Ass("Ass",Vector)=(0,0,0,0)
 		_R("R",float)=0
-    }
+		_Fog("Fog",Range(0,1))=0
+		}
 
     SubShader{
         Tags { 
@@ -41,7 +42,7 @@
 			float4 _Point;
 			float4 _Ass;
 			float _R;
-
+			float _Fog;
 
             VertexOutput vert (VertexInput input) {
             	VertexOutput output;
@@ -69,11 +70,12 @@
 					c.b=(sq/_R)*(sq/_R);
 				}
 				
+
+				c.r=1-((1-c.r)*_Fog);
 				float4 a = tex2D(_MainTex, output.uv) * output.color;
 				float4 b = tex2D(_MainTex2, output.uv) * output.color;
-
-				float4 d=(a*c.r)+(b*(1-c.r));
 				
+				float4 d=(a*c.r)+(b*(1-c.r));
 
                 return d;
             }
