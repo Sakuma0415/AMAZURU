@@ -15,7 +15,8 @@ public class VewPos : MonoBehaviour
     LayerMask layerMask;
     [SerializeField]
     CameraPos cameraPos;
-    
+    [SerializeField]
+    float radLate = 1;
 
     public struct VewColPos
     {
@@ -44,8 +45,10 @@ public class VewPos : MonoBehaviour
         Vector4 Ass = new Vector4(centerPos.x/1920, centerPos.y/1080,0,0);
         material.SetVector("_Point", Ass);
         float rr = r / 1080;
-        material.SetFloat("_R",rr<0.05f?0.05f:rr);
 
+        float dist = Vector3.Distance(Camera.main.gameObject.transform.position, PlayerTransform.position);
+        //material.SetFloat("_R",rr<0.05f?0.05f:rr);
+        material.SetFloat("_R",radLate/ dist );
         Vector3 Pt1 = PlayerTransform.position + new Vector3(0, headPos/2, 0);
         Vector3 Pt2 = Camera.main.transform.position;
         float dis = Vector3.Distance(Pt1, Pt2);
