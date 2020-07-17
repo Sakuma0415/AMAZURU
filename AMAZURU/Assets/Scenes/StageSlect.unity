@@ -844,6 +844,22 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 740598358608742317, guid: 03359417db0b58b4cac7e7e16a94988a,
+        type: 3}
+      propertyPath: psdExtra.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 740598358608742317, guid: 03359417db0b58b4cac7e7e16a94988a,
+        type: 3}
+      propertyPath: psdExtra.Array.data[1].psd
+      value: 
+      objectReference: {fileID: 11400000, guid: 5086b1d93f845784e87ec17b9efba1a0,
+        type: 2}
+    - target: {fileID: 740598358608742317, guid: 03359417db0b58b4cac7e7e16a94988a,
+        type: 3}
+      propertyPath: psdExtra.Array.data[1].stageNumber
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6378084173075838659, guid: 03359417db0b58b4cac7e7e16a94988a,
         type: 3}
       propertyPath: m_Name
