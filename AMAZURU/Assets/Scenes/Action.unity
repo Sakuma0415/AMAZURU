@@ -1418,8 +1418,9 @@ MonoBehaviour:
   rad: 0.5
   layerMask:
     serializedVersion: 2
-    m_Bits: 65536
+    m_Bits: 196608
   cameraPos: {fileID: 721732558}
+  radLate: 1
 --- !u!20 &721732556
 Camera:
   m_ObjectHideFlags: 0
