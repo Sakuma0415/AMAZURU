@@ -19,17 +19,11 @@ namespace Enemy
         [SerializeField, Tooltip("水面のレイヤー")] private LayerMask waterLayer;
         [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
         private PlayerType2 player = null;
-        private PlayerControllerNav player2 = null;
 
         /// <summary>
         /// ステージの水面情報を格納する変数
         /// </summary>
         public WaterHi StageWater { set; private get; } = null;
-
-
-
-        [SerializeField, Header("開始座標")] private Vector3 enemyStartPos = Vector3.zero;
-        public Vector3 EnemyStartPos { set { enemyStartPos = value; } }
 
         [SerializeField, Header("開始向き")] private Vector3 enemyStartRot = Vector3.zero;
         public Vector3 EnemyStartRot { set { enemyStartRot = value; } }
@@ -37,53 +31,46 @@ namespace Enemy
         [SerializeField, Header("敵のサイズ"), Range(1.0f, 5.0f)] private float enemySize = 1.0f;
         public float EnemySize { set { enemySize = value; } }
 
-        [SerializeField, Header("行動計画")] private Vector2[] movePlan = null;
-        public Vector2[] MovePlan { set { movePlan = value; } }
+        [SerializeField, Header("行動計画")] private Vector3[] movePlan = null;
+        public Vector3[] MovePlan { set { movePlan = value; } }
 
         [SerializeField, Header("行動パターン")] private EnemyMoveType moveType = EnemyMoveType.Lap;
         public EnemyMoveType MoveType { set { moveType = value; } }
 
         [SerializeField, Header("行動遅延時間"), Range(0, 3)] private float lateTime = 1.0f;
+
         [SerializeField, Header("敵の移動速度"), Range(0, 10)] private float enemySpeed = 1.0f;
+        public float EnemySpeed { set { enemySpeed = value; } }
+
         [SerializeField, Header("敵の水中移動速度"), Range(0, 20)] private float enemyWaterSpeed = 1.0f;
+        public float EnemyWaterSpeed { set { enemyWaterSpeed = value; } }
+
         [SerializeField, Header("回転力")] private float rotatePower = 50f;
         [SerializeField, Header("敵のコライダーの大きさ"), Range(0.1f, 1.0f)] private float colliderSize = 0.5f;
 
-        private Vector3[] moveSchedule = null;
+        public PlayState GameState { set; private get; } = null;
+        public bool DontMove { set; private get; } = false;
+
         private int location = 0;
         private int step = 0;
         private bool stepEnd = false;
         private bool finishOneLoop = false;
         private bool inWater = false;
-        private bool firstFlag = false;  // 外部から呼び出された場合に、重複して呼び出されないようにするフラグ
-
-        /// <summary>
-        /// 外部からアクセスする際に処理を止めるフラグ
-        /// </summary>
-        public bool SpecialControl { set; private get; } = false;
 
         // 足音再生用の変数
         private float animationSpeed = 0;
         private float animationTime = 0;
 
-        [SerializeField, Header("デバッグ用のデータ更新フラグ")] private bool inspectorUpdate = false;
-
 
         // Start is called before the first frame update
         void Start()
         {
-            EnemyInit();
+            
         }
 
         private void FixedUpdate()
         {
             EnemyMove(true);
-
-            if (inspectorUpdate)
-            {
-                inspectorUpdate = false;
-                EnemyInit();
-            }
         }
 
         private void Reset()
@@ -97,12 +84,9 @@ namespace Enemy
         /// <param name="shortcut">一部処理をパスするフラグ</param>
         public void EnemyInit()
         {
-            if (firstFlag) { return; }
-
             step = 0;
             location = 0;
             finishOneLoop = false;
-            firstFlag = true;
 
             if(enemy == null)
             {
@@ -116,7 +100,7 @@ namespace Enemy
             // アニメーションの速度を取得
             if (enemyAnime != null) { animationSpeed = enemyAnime.GetCurrentAnimatorStateInfo(0).speed; }
 
-            Ray ray = new Ray(new Vector3(enemyStartPos.x, enemyStartPos.y + enemyStartPos.y, transform.position.z), Vector3.down);
+            Ray ray = new Ray(transform.position, Vector3.down);
             RaycastHit hit;
 
             // 水面の取得
@@ -140,15 +124,16 @@ namespace Enemy
             {
                 // 敵の開始時の位置を設定
                 transform.position = new Vector3(ray.origin.x, hit.point.y, ray.origin.z);
+                for(int i = 0; i < movePlan.Length; i++)
+                {
+                    movePlan[i].y += hit.point.y;
+                }
 
                 // 敵の開始時の向き
                 transform.rotation = Quaternion.Euler(enemyStartRot);
 
                 // 敵の開始時のサイズを設定
                 transform.localScale = Vector3.one * enemySize;
-
-                // 行動計画を設定
-                SetMoveSchedule(movePlan);
             }
         }
 
@@ -160,37 +145,26 @@ namespace Enemy
         {
             float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
 
-            bool isAccess;
-            try
-            {
-                mode = PlayState.playState.gameMode;
-                isAccess = true;
-            }
-            catch
-            {
-                isAccess = false;
-            }
-
-            if (isAccess) { mode = PlayState.playState.gameMode; }
+            if(GameState != null) { mode = GameState.gameMode; }
 
             // 水中かチェックする
             inWater = StageWater != null && transform.position.y + enemy.radius < StageWater.max;
 
             if ((mode == PlayState.GameMode.Play || mode == PlayState.GameMode.Rain))
             {
-                if (SpecialControl) { return; }
+                if (DontMove) { return; }
 
                 int nextLocation;
                 if (finishOneLoop)
                 {
-                    nextLocation = location - 1 < 0 ? moveType == EnemyMoveType.Lap ? moveSchedule.Length - 1 : location + 1 : location - 1;
+                    nextLocation = location - 1 < 0 ? moveType == EnemyMoveType.Lap ? movePlan.Length - 1 : location + 1 : location - 1;
                 }
                 else
                 {
-                    nextLocation = location + 1 >= moveSchedule.Length ? moveType == EnemyMoveType.Lap ? 0 : location - 1 : location + 1;
+                    nextLocation = location + 1 >= movePlan.Length ? moveType == EnemyMoveType.Lap ? 0 : location - 1 : location + 1;
                 }
-                Vector3 nowPos = moveSchedule[location];
-                Vector3 nextPos = moveSchedule[nextLocation];
+                Vector3 nowPos = movePlan[location];
+                Vector3 nextPos = movePlan[nextLocation];
                 Vector3 forward = (nextPos - nowPos).normalized;
 
                 // プレイヤーと接触しているかをチェック
@@ -199,14 +173,9 @@ namespace Enemy
                 {
                     // プレイヤーと接触している場合はプレイヤーの方向を向く処理を実行
                     if (player == null) { player = hit.transform.gameObject.GetComponent<PlayerType2>(); }
-                    if (player == null && player2 == null)
-                    {
-                        player2 = hit.transform.gameObject.GetComponent<PlayerControllerNav>();
-                    }
                     bool complete = RotateAnimation(transform.gameObject, (new Vector3(hit.transform.position.x, 0, hit.transform.position.z) - new Vector3(transform.position.x, 0, transform.position.z)).normalized, rotatePower * delta * 2.5f, false);
 
                     if (player != null) { player.HitEnemy(complete); }
-                    if (player == null && player2 != null) { player2.HitEnemy(complete); }
                 }
                 else
                 {
@@ -214,7 +183,7 @@ namespace Enemy
                     {
                         case 0:
                             transform.position = nowPos;
-                            if (Vector3.Distance(transform.position, moveSchedule[nextLocation]) < 0.1f)
+                            if (Vector3.Distance(transform.position, movePlan[nextLocation]) < 0.1f)
                             {
                                 step = -5;
                             }
@@ -227,8 +196,8 @@ namespace Enemy
                             if (transform.rotation == Quaternion.LookRotation(forward))
                             {
                                 float speed = inWater ? enemyWaterSpeed : enemySpeed;
-                                transform.position = Vector3.MoveTowards(transform.position, moveSchedule[nextLocation], speed * delta);
-                                stepEnd = transform.position == moveSchedule[nextLocation];
+                                transform.position = Vector3.MoveTowards(transform.position, movePlan[nextLocation], speed * delta);
+                                stepEnd = transform.position == movePlan[nextLocation];
                             }
                             else
                             {
@@ -242,7 +211,7 @@ namespace Enemy
                                 location--;
                                 if (moveType == EnemyMoveType.Lap)
                                 {
-                                    if (location < 0) { location = moveSchedule.Length - 1; }
+                                    if (location < 0) { location = movePlan.Length - 1; }
                                 }
                                 else
                                 {
@@ -254,11 +223,11 @@ namespace Enemy
                                 location++;
                                 if (moveType == EnemyMoveType.Lap)
                                 {
-                                    if (location >= moveSchedule.Length) { location = 0; }
+                                    if (location >= movePlan.Length) { location = 0; }
                                 }
                                 else
                                 {
-                                    if (location >= moveSchedule.Length - 1) { finishOneLoop = true; }
+                                    if (location >= movePlan.Length - 1) { finishOneLoop = true; }
                                 }
                             }
                             return;
@@ -297,22 +266,6 @@ namespace Enemy
                         enemyAnime.enabled = false;
                     }
                 }
-            }
-        }
-
-        /// <summary>
-        /// 敵の移動スケジュールを設定
-        /// </summary>
-        private void SetMoveSchedule(Vector2[] plan)
-        {
-            moveSchedule = new Vector3[plan.Length < 2 ? 2 : plan.Length + 1];
-            moveSchedule[0] = enemyStartPos;
-
-            for (int i = 1; i < moveSchedule.Length; i++)
-            {
-                moveSchedule[i] = moveSchedule[i - 1];
-                moveSchedule[i].x += plan[i - 1].x;
-                moveSchedule[i].z += plan[i - 1].y;
             }
         }
     }
