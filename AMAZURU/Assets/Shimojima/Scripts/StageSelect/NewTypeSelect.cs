@@ -50,7 +50,7 @@ public class NewTypeSelect : MonoBehaviour
 
     private Animator rightAnimator, leftAnimator;
 
-    private bool isRotation = false;
+    private bool isRotation, isVerticalMove = false;
 
     private enum Selection
     {
@@ -162,7 +162,7 @@ public class NewTypeSelect : MonoBehaviour
 
             if (h < 0 || h2 < 0)
             {
-                if (isRotation) { return; }
+                if (isRotation || isVerticalMove) { return; }
                 SoundManager.soundManager.PlaySe("cncl05", 1f);
                 leftAnimator.Play("Idle");
                 leftAnimator.SetTrigger("SizeUp");
@@ -171,7 +171,7 @@ public class NewTypeSelect : MonoBehaviour
             }
             else if (h > 0 || h2 > 0)
             {
-                if (isRotation) { return; }
+                if (isRotation || isVerticalMove) { return; }
                 SoundManager.soundManager.PlaySe("cncl05", 1f);
                 rightAnimator.Play("Idle");
                 rightAnimator.SetTrigger("SizeUp");
@@ -181,21 +181,21 @@ public class NewTypeSelect : MonoBehaviour
 
             if (v < 0 || v2 < 0)
             {
-                if (isRotation) { return; }
+                if (isRotation || isVerticalMove) { return; }
                 SoundManager.soundManager.PlaySe("cncl05", 1f);
                 //leftAnimator.Play("Idle");
                 //leftAnimator.SetTrigger("SizeUp");
                 selection = Selection.Down;
-                isRotation = true;
+                isVerticalMove = true;
             }
             else if (v > 0 || v2 > 0)
             {
-                if (isRotation) { return; }
+                if (isRotation || isVerticalMove) { return; }
                 SoundManager.soundManager.PlaySe("cncl05", 1f);
                 //leftAnimator.Play("Idle");
                 //leftAnimator.SetTrigger("SizeUp");
-                selection = Selection.Left;
-                isRotation = true;
+                selection = Selection.Up;
+                isVerticalMove = true;
             }
 
             if (ControllerInput.Instance.buttonDown.circle)
@@ -450,6 +450,41 @@ public class NewTypeSelect : MonoBehaviour
         }
     }
 
+    private void StageMoveVertical(Selection sel, PrefabStageDatas[] pData)
+    {
+        StageDataHandOver(sel);
+
+        for (int i = 0; i < 5; i++)
+        {
+            if (sel == Selection.Up)
+            {
+                if (viewStage[1, i].index == 2 || viewStage[2, i].index == 2)
+                {
+                    viewStage[1, i].stage.transform.position += viewStage[0, i].verticalMoveSizeChangeSpeed;
+                    viewStage[2, i].stage.transform.position -= viewStage[2, i].verticalMoveSizeChangeSpeed;
+                }
+                else
+                {
+                    viewStage[1, i].stage.transform.position += viewStage[0, i].mimamSizeChangeSpeed;
+                    viewStage[2, i].stage.transform.position -= viewStage[2, i].mimamSizeChangeSpeed;
+                }
+            }
+            else if (sel == Selection.Down)
+            {
+                if (viewStage[1, i].index == 2 || viewStage[2, i].index == 2)
+                {
+                    viewStage[0, i].stage.transform.position += viewStage[0, i].verticalMoveSizeChangeSpeed;
+                    viewStage[1, i].stage.transform.position -= viewStage[1, i].verticalMoveSizeChangeSpeed;
+                }
+                else
+                {
+                    viewStage[1, i].stage.transform.position += viewStage[0, i].mimamSizeChangeSpeed;
+                    viewStage[2, i].stage.transform.position -= viewStage[1, i].mimamSizeChangeSpeed;
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// ステージデータの変更
     /// </summary>
@@ -554,6 +589,33 @@ public class NewTypeSelect : MonoBehaviour
             else
             {
                 CreateNextStage(selection);
+            }
+        }
+        else if (sel == Selection.Up || sel == Selection.Down && sumAngle == 0)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 6;)
+                {
+                    if (sel == Selection.Up)
+                    {
+                        if (i == 0) 
+                        {
+                            Destroy(viewStage[2, j].stage);
+                            viewStage[i, j].HandOver(viewStage[2, j]); 
+                        }
+                        else if (i == 1) { viewStage[i, j].HandOver(viewStage[0, j]); }
+                    }
+                    else if (sel == Selection.Down)
+                    {
+                        if (i == 0) 
+                        {
+                            Destroy(viewStage[1, j].stage);
+                            viewStage[i, j].HandOver(viewStage[1, j]);
+                        }
+                        else if (i == 1) { viewStage[i + 1, j].HandOver(viewStage[0, j]); }
+                    }
+                }
             }
         }
     }
