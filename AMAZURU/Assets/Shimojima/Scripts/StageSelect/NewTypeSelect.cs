@@ -500,8 +500,8 @@ public class NewTypeSelect : MonoBehaviour
                 //縦移動の処理
                 if (sel == Selection.Up)
                 {
-                    if(viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.position += new Vector3(0, -(speed * 2), 0); }
-                    if(viewStage[2, j].stage != null) { viewStage[2, j].stage.transform.position += new Vector3(0, -(speed * 2), 0); }
+                    if (viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.position += new Vector3(0, -(speed * 2), 0); }
+                    if (viewStage[2, j].stage != null) { viewStage[2, j].stage.transform.position += new Vector3(0, -(speed * 2), 0); }
                 }
                 else if (sel == Selection.Down)
                 {
@@ -524,21 +524,30 @@ public class NewTypeSelect : MonoBehaviour
             if(sel == Selection.Up)
             {
                 pDataIndex = 1;
-                for (int i = 0; i < 2; i++)
-                {
-                    if(le + i > allPSD.Count - 1) { le = 0; }
-                    else { le += i; }
-                }
+                //for (int i = 0; i < 2; i++)
+                //{
+                //    if(le + i > allPSD.Count - 1) { le = 0; }
+                //    else { le += i; }
+                //}
+
+                le += 1;
+                if (le  > allPSD.Count - 1) { le = 0; }
+
                 dPos = new Vector3(defPos.x, defPos.y + 72, defPos.z);
             }
             else if (sel == Selection.Down)
             {
                 pDataIndex = 2;
-                for (int i = 2; i < 2; i++)
-                {
-                    if (le - i < 0) { le = allPSD.Count - 1; }
-                    else { le -= i; }
-                }
+
+                //for (int i = 2; i < 2; i++)
+                //{
+                //    if (le - i < 0) { le = allPSD.Count - 1; }
+                //    else { le -= i; }
+                //}
+
+                le -= 1;
+                if (le  < 0) { le = allPSD.Count - 1; }
+
                 dPos = new Vector3(defPos.x, defPos.y - 72, defPos.z);
             }
 
