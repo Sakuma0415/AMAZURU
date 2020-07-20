@@ -324,8 +324,6 @@ public class Select : MonoBehaviour
             if(x > z) { magni = scaleAdjust.x / x; }
             else { magni = scaleAdjust.y / z; }
 
-            Debug.Log(magni);
-
             Vector2 reSize = new Vector2((x * magni) / scale.x, (z * magni) / scale.y);
             viewStage[i,j].defScale = new Vector3(reSize.x, 1, reSize.y);
         }
@@ -391,7 +389,6 @@ public class Select : MonoBehaviour
             }
             else
             {
-                Debug.Log(viewStage[0, i].index);
                 switch (viewStage[0, i].index)
                 {
                     case 0:

@@ -1729,7 +1729,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8237827756522234064}
   - component: {fileID: 8346689206583010107}
-  - component: {fileID: 4568879434450486911}
   m_Layer: 12
   m_Name: AMF
   m_TagString: Untagged
@@ -1772,19 +1771,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!65 &4568879434450486911
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 406802257733300620}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 2, z: 1}
-  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &435277592313306953
 GameObject:
   m_ObjectHideFlags: 0
@@ -14176,7 +14162,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8495321547341274180}
   - component: {fileID: 5280005618970609183}
-  - component: {fileID: 2052301812760027095}
   m_Layer: 12
   m_Name: AMF
   m_TagString: Untagged
@@ -14219,19 +14204,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!65 &2052301812760027095
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3211489950376004753}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 2, z: 1}
-  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &3214757111100101803
 GameObject:
   m_ObjectHideFlags: 0
