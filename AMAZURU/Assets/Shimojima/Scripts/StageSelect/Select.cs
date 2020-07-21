@@ -374,7 +374,7 @@ public class Select : MonoBehaviour
                 {
                     case 1:
                         viewStage[0, i].stage.transform.localScale += viewStage[0, i].reSizeSpeed;
-                        sData = psd[viewStage[i, i].psdIndex].psd.sData;
+                        sData = psd[viewStage[0, i].psdIndex].psd.sData;
                         break;
                     case 2:
                         viewStage[0, i].stage.transform.localScale -= viewStage[0, i].reSizeSpeed;
@@ -399,7 +399,7 @@ public class Select : MonoBehaviour
                         break;
                     case 3:
                         viewStage[0, i].stage.transform.localScale += viewStage[0, i].reSizeSpeed;
-                        sData = psd[viewStage[i, i].psdIndex].psd.sData;
+                        sData = psd[viewStage[0, i].psdIndex].psd.sData;
                         break;
                     case 5:
                         viewStage[0, i].stage.transform.localScale += viewStage[0, i].zeroSizeChangeSpeed;
