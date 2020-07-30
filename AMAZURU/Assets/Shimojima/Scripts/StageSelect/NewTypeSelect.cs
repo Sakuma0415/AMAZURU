@@ -31,11 +31,9 @@ public class NewTypeSelect : MonoBehaviour
     public PrefabStageDatas[] psdExtra;
 
     public List<PrefabStageDatas[]> allPSD = new List<PrefabStageDatas[]>();
-    [SerializeField]
     private PrefabStageDatas[] pData;
-    public ViewStage[] vStage = new ViewStage[6];
 
-    public int level = 0;
+    private int level = 0;
 
     [Header("操作負荷"), SerializeField]
     private Vector3 defPos = Vector3.zero;
@@ -140,6 +138,7 @@ public class NewTypeSelect : MonoBehaviour
     }
 
     public ViewStage[,] viewStage = new ViewStage[3, 6];
+    private Vector3 vMoveSpeed = Vector3.zero;
     
 
     private void Start()
@@ -153,6 +152,7 @@ public class NewTypeSelect : MonoBehaviour
         if (!increasedWaterVolume) { increasedWaterVolume = new TextMeshProUGUI(); }
         if (referenceImage.Length == 0) { referenceImage = new Sprite[1]; }
 
+        vMoveSpeed = new Vector3(0, speed * 2, 0);
         Init();
     }
 
@@ -469,49 +469,53 @@ public class NewTypeSelect : MonoBehaviour
     private void StageMoveVertical(Selection sel, PrefabStageDatas[] pData)
     {
         StageDataHandOver(sel);
-
-        for (int i = 0; i < 2; i++)
+        for (int j = 0; j < 6; j++)
         {
-            for (int j = 0; j < 6; j++)
+            //行番号の変更
+            if (sel == Selection.Up) { lineIndex = 2; }
+            else if (sel == Selection.Down) { lineIndex = 1; }
+
+            //スケールの変更
+            if (viewStage[0, j].stage != null)
             {
-                if (sel == Selection.Up && i == 1)
+                if (viewStage[0, j].index == 2)
                 {
-                    int x = i + 1;
-                    if (viewStage[x, j].stage == null) { continue; }
-                }
-                else { if (viewStage[i, j].stage == null) { continue; } }
-                //行番号の変更
-                if (sel == Selection.Up) { lineIndex = 2; }
-                else if(sel == Selection.Down) { lineIndex = 1; }
-                //スケールの変更
-                if (viewStage[0, j].index == 2 || viewStage[lineIndex, j].index == 2)
-                {
-                    if (viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.localScale += viewStage[0, j].verticalMoveSizeChangeSpeed; }
-                    if (viewStage[lineIndex, j].stage != null) { viewStage[lineIndex, j].stage.transform.localScale -= viewStage[lineIndex, j].verticalMoveSizeChangeSpeed; }
+                    viewStage[0, j].stage.transform.localScale += viewStage[0, j].verticalMoveSizeChangeSpeed;
                 }
                 else
                 {
-                    if (viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.localScale += viewStage[0, j].minimamSizeChangeSpeed; }
-                    if (viewStage[lineIndex, j].stage != null) { viewStage[lineIndex, j].stage.transform.localScale -= viewStage[lineIndex, j].minimamSizeChangeSpeed; }
-                }
-
-                if (viewStage[0, j].index == 2){ sData = pData[viewStage[0, j].psdIndex].psd.sData; }
-
-                //縦移動の処理
-                if (sel == Selection.Up)
-                {
-                    if (viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.position += new Vector3(0, -(speed * 2), 0); }
-                    if (viewStage[2, j].stage != null) { viewStage[2, j].stage.transform.position += new Vector3(0, -(speed * 2), 0); }
-                }
-                else if (sel == Selection.Down)
-                {
-                    if(viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.position += new Vector3(0, (speed * 2), 0); }
-                    if(viewStage[1, j].stage != null) { viewStage[1, j].stage.transform.position += new Vector3(0, (speed * 2), 0); }
+                    viewStage[0, j].stage.transform.localScale += viewStage[0, j].minimamSizeChangeSpeed;
                 }
             }
+
+            if (viewStage[lineIndex, j].stage != null)
+            {
+                if (viewStage[lineIndex, j].index == 2)
+                {
+                    viewStage[lineIndex, j].stage.transform.localScale -= viewStage[lineIndex, j].verticalMoveSizeChangeSpeed;
+                }
+                else
+                {
+                    viewStage[lineIndex, j].stage.transform.localScale -= viewStage[lineIndex, j].minimamSizeChangeSpeed;
+                }
+            }
+
+            if (viewStage[0, j].index == 2) { sData = pData[viewStage[0, j].psdIndex].psd.sData; }
+
+            //縦移動の処理
+            if (sel == Selection.Up)
+            {
+                if (viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.position -= vMoveSpeed; }
+                if (viewStage[2, j].stage != null) { viewStage[2, j].stage.transform.position -= vMoveSpeed; }
+            }
+            else if (sel == Selection.Down)
+            {
+                if (viewStage[0, j].stage != null) { viewStage[0, j].stage.transform.position += vMoveSpeed; }
+                if (viewStage[1, j].stage != null) { viewStage[1, j].stage.transform.position += vMoveSpeed; }
+            }
         }
-        
-        sumAngle += speed * 2;
+
+        sumAngle += speed;
         if(sumAngle >= rotateAngle)
         {
             sumAngle = 0;
@@ -582,9 +586,9 @@ public class NewTypeSelect : MonoBehaviour
         ame = "";
         iwv = "";
 
-        if (select == Selection.Right)
+        for (int i = 0; i < viewStage.GetLength(1); i++)
         {
-            for (int i = 0; i < viewStage.GetLength(1); i++)
+            if (select == Selection.Right)
             {
                 if (viewStage[0, i].index == 4)
                 {
@@ -595,18 +599,8 @@ public class NewTypeSelect : MonoBehaviour
                 if (viewStage[0, i].stage == null) { continue; }
 
                 viewStage[0, i].CountUpDown();
-                if (viewStage[0, i].index == 2)
-                {
-                    DifficultyChange(viewStage[0, i]);
-                    n = viewStage[0, i].name;
-                    ame = viewStage[0, i].amehurashiNum.ToString();
-                    iwv = viewStage[0, i].increasedWaterVolume.ToString();
-                }
             }
-        }
-        else if (select == Selection.Left)
-        {
-            for (int i = 0; i < viewStage.GetLength(1); i++)
+            else if (select == Selection.Left)
             {
                 if (viewStage[0, i].index == 0)
                 {
@@ -617,26 +611,14 @@ public class NewTypeSelect : MonoBehaviour
                 if (viewStage[0, i].stage == null) { continue; }
 
                 viewStage[0, i].CountUpDown(1);
-                if (viewStage[0, i].index == 2)
-                {
-                    DifficultyChange(viewStage[0, i]);
-                    n = viewStage[0, i].name;
-                    ame = viewStage[0, i].amehurashiNum.ToString();
-                    iwv = viewStage[0, i].increasedWaterVolume.ToString();
-                }
             }
-        }
-        else if (select == Selection.Up || select == Selection.Down)
-        {
-            for (int i = 0; i < viewStage.GetLength(1); i++)
+
+            if (viewStage[0, i].index == 2)
             {
-                if(viewStage[0, i].index == 2)
-                {
-                    DifficultyChange(viewStage[0, i]);
-                    n = viewStage[0, i].name;
-                    ame = viewStage[0, i].amehurashiNum.ToString();
-                    iwv = viewStage[0, i].increasedWaterVolume.ToString();
-                }
+                DifficultyChange(viewStage[0, i]);
+                n = viewStage[0, i].name;
+                ame = viewStage[0, i].amehurashiNum.ToString();
+                iwv = viewStage[0, i].increasedWaterVolume.ToString();
             }
         }
 
@@ -672,12 +654,6 @@ public class NewTypeSelect : MonoBehaviour
                 {
                     CreateNextStage(selection);
                 }
-                vStage[0] = viewStage[0, 0];
-                vStage[1] = viewStage[0, 1];
-                vStage[2] = viewStage[0, 2];
-                vStage[3] = viewStage[0, 3];
-                vStage[4] = viewStage[0, 4];
-                vStage[5] = viewStage[0, 5];
             }
             else if (sel == Selection.Left)
             {
@@ -698,12 +674,6 @@ public class NewTypeSelect : MonoBehaviour
                 {
                     CreateNextStage(selection);
                 }
-                vStage[0] = viewStage[0, 0];
-                vStage[1] = viewStage[0, 1];
-                vStage[2] = viewStage[0, 2];
-                vStage[3] = viewStage[0, 3];
-                vStage[4] = viewStage[0, 4];
-                vStage[5] = viewStage[0, 5];
             }
 
             if (sel == Selection.Up || sel == Selection.Down)
@@ -742,12 +712,6 @@ public class NewTypeSelect : MonoBehaviour
                         }
                     }
                 }
-                vStage[0] = viewStage[0, 0];
-                vStage[1] = viewStage[0, 1];
-                vStage[2] = viewStage[0, 2];
-                vStage[3] = viewStage[0, 3];
-                vStage[4] = viewStage[0, 4];
-                vStage[5] = viewStage[0, 5];
             }
         }
     }
