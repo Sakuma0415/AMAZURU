@@ -33,8 +33,6 @@ public class NewTypeSelect : MonoBehaviour
     public List<PrefabStageDatas[]> allPSD = new List<PrefabStageDatas[]>();
     private PrefabStageDatas[] pData;
 
-    private int level = 0;
-
     [Header("操作負荷"), SerializeField]
     private Vector3 defPos = Vector3.zero;
     private Vector3 dPos;
@@ -139,7 +137,16 @@ public class NewTypeSelect : MonoBehaviour
 
     public ViewStage[,] viewStage = new ViewStage[3, 6];
     private Vector3 vMoveSpeed = Vector3.zero;
-    
+    public ViewStage[] vStage = new ViewStage[6];
+
+    private struct SaveSelectStageData
+    {
+        public bool doRetention;
+        public int initNumber;
+        public int level;
+    }
+
+    private static SaveSelectStageData sssd;
 
     private void Start()
     {
@@ -190,9 +197,9 @@ public class NewTypeSelect : MonoBehaviour
                     //leftAnimator.SetTrigger("SizeUp");
                     selection = Selection.Up;
                     isVerticalMove = true;
-                    level++;
-                    if (level > allPSD.Count - 1) { level = 0; }
-                    pData = allPSD[level];
+                    sssd.level++;
+                    if (sssd.level > allPSD.Count - 1) { sssd.level = 0; }
+                    pData = allPSD[sssd.level];
                 }
                 else if (v < 0 || v2 < 0)
                 {
@@ -201,9 +208,9 @@ public class NewTypeSelect : MonoBehaviour
                     //leftAnimator.SetTrigger("SizeUp");
                     selection = Selection.Down;
                     isVerticalMove = true;
-                    level--;
-                    if (level < 0) { level = allPSD.Count - 1; }
-                    pData = allPSD[level];
+                    sssd.level--;
+                    if (sssd.level < 0) { sssd.level = allPSD.Count - 1; }
+                    pData = allPSD[sssd.level];
                 }
             }
 
@@ -213,6 +220,9 @@ public class NewTypeSelect : MonoBehaviour
                 SoundManager.soundManager.StopBgm(0.5f, 1);
                 SoundManager.soundManager.StopBgm(0.5f, 0);
                 SoundManager.soundManager.PlaySe("btn01", 0.2f);
+
+                if (!sssd.doRetention) { sssd.doRetention = true; }
+
                 SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
             }
             else if (ControllerInput.Instance.buttonDown.cross)
@@ -222,6 +232,13 @@ public class NewTypeSelect : MonoBehaviour
                 SoundManager.soundManager.PlaySe("btn01", 0.3f);
                 SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Title, false);
             }
+
+            vStage[0] = viewStage[0,0];
+            vStage[1] = viewStage[0,1];
+            vStage[2] = viewStage[0,2];
+            vStage[3] = viewStage[0,3];
+            vStage[4] = viewStage[0,4];
+            vStage[5] = viewStage[0,5];
         }
     }
 
@@ -250,26 +267,30 @@ public class NewTypeSelect : MonoBehaviour
         allPSD.Add(psdNormal);
         allPSD.Add(psdExtra);
 
-        //一番目のステージが選択された状態にする為の数字
-        int initNumber = 2;
+        if (!sssd.doRetention)
+        {
+            //一番目のステージが選択された状態にする為の数字
+            sssd.initNumber = 2;
+            sssd.level = 0;
+        }
+        
         dPos = defPos;
 
         for (int i = 0; i < 3; i++)
         {
-            //バイオームの数が足りない場合は既存のバイオームを使用
-            if (allPSD.Count == i) { pData = allPSD[allPSD.Count - 1]; }
-            else { pData = allPSD[i]; }
+            pData = allPSD[sssd.level];
+
             //上下に配置するための処理
             if (i == 1) { dPos = new Vector3(defPos.x, defPos.y + 72, defPos.z); }
             else if (i == 2) { dPos = new Vector3(defPos.x, defPos.y - 72, defPos.z); }
             //ビューステージの生成とデータの格納
             for (int j = 0; j < 5; j++)
             {
-                if (pData.Length - 1 < initNumber)
+                if (pData.Length - 1 < sssd.initNumber)
                 {
-                    initNumber = pData.Length - 1;
+                    sssd.initNumber = pData.Length - 1;
                 }
-                DataSetforViewStage(i,j,initNumber,j, pData);
+                DataSetforViewStage(i,j,sssd.initNumber,j, pData);
                 viewStage[i, j].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, rotateAngle * (j + 8));
 
                 if (i == 0 && j == 2)
@@ -287,17 +308,21 @@ public class NewTypeSelect : MonoBehaviour
                     stageName.text = viewStage[i, j].name;
                     amehurashiNum.text = viewStage[i, j].amehurashiNum.ToString();
                     increasedWaterVolume.text = viewStage[i, j].increasedWaterVolume.ToString();
-                    sData = pData[initNumber].psd.sData;
+                    sData = pData[sssd.initNumber].psd.sData;
                 }
 
                 if(i == 1 || i == 2) { viewStage[i, j].stage.transform.localScale = Vector3.zero; }
 
-                initNumber--;
-                if (initNumber == -1) { initNumber = pData.Length - 1; }
+                sssd.initNumber--;
+                if (sssd.initNumber == -1) { sssd.initNumber = pData.Length - 1; }
             }
+
+            sssd.level++;
+            if (sssd.level == allPSD.Count) { sssd.level = 0; }
         }
 
         pData = allPSD[0];
+        sssd.level = 0;
         dPos = defPos;
     }
 
@@ -423,8 +448,15 @@ public class NewTypeSelect : MonoBehaviour
                         break;
                     case 1:
                         viewStage[0, i].stage.transform.localScale += viewStage[0, i].sizeChangeSpeed;
-                        if (pData.Length - 1 < viewStage[0, i].psdIndex) { Debug.Log("i:" + i + "," + viewStage[0, i].psdIndex); }
                         sData = pData[viewStage[0, i].psdIndex].psd.sData;
+                        if (viewStage[0, i].psdIndex + 2 > allPSD[sssd.level].Length - 1)
+                        {
+                            sssd.initNumber = viewStage[0, i].psdIndex + 2 - allPSD[sssd.level].Length;
+                        }
+                        else
+                        {
+                            sssd.initNumber = viewStage[0, i].psdIndex + 2;
+                        }
                         break;
                     case 2:
                         viewStage[0, i].stage.transform.localScale -= viewStage[0, i].sizeChangeSpeed;
@@ -447,6 +479,14 @@ public class NewTypeSelect : MonoBehaviour
                     case 3:
                         viewStage[0, i].stage.transform.localScale += viewStage[0, i].sizeChangeSpeed;
                         sData = pData[viewStage[0, i].psdIndex].psd.sData;
+                        if (viewStage[0, i].psdIndex + 2 > allPSD[sssd.level].Length - 1)
+                        {
+                            sssd.initNumber = viewStage[0, i].psdIndex + 2 - allPSD[sssd.level].Length;
+                        }
+                        else
+                        {
+                            sssd.initNumber = viewStage[0, i].psdIndex + 2;
+                        }
                         break;
                     case 5:
                         viewStage[0, i].stage.transform.localScale += viewStage[0, i].minimamSizeChangeSpeed;
@@ -500,7 +540,7 @@ public class NewTypeSelect : MonoBehaviour
                 }
             }
 
-            if (viewStage[0, j].index == 2) { sData = pData[viewStage[0, j].psdIndex].psd.sData; }
+            if (viewStage[0, j].index == 2) { Debug.Log(viewStage[0, j].psdIndex); sData = pData[viewStage[0, j].psdIndex].psd.sData; }
 
             //縦移動の処理
             if (sel == Selection.Up)
@@ -522,7 +562,7 @@ public class NewTypeSelect : MonoBehaviour
             isVerticalMove = false;
             StageDataChange(sel);
             int initNumber = 2;
-            int le = level;
+            int le = sssd.level;
             int pDataIndex = 0;
             PrefabStageDatas[] p;
             if(sel == Selection.Up)
