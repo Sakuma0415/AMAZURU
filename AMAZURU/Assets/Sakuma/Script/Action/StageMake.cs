@@ -55,8 +55,9 @@ public class StageMake : MonoBehaviour
         Instantiate(StageMake.LoadStageData.stagePrefab);
 
         //プレイヤー生成
-        GameObject player = Instantiate(playerObj, StageMake.LoadStageData.startPos-new Vector3 (0.5f,0,0.5f),Quaternion.identity);
-        player.GetComponent<PlayerType2>().StageWater = waterObj.GetComponent<WaterHi>();
+        //GameObject player = Instantiate(playerObj, StageMake.LoadStageData.startPos-new Vector3 (0.5f,0,0.5f),Quaternion.identity);
+        playerObj.GetComponent<PlayerMaster>().SpawnPlayer(StageMake.LoadStageData.startPos - new Vector3(0.5f, 0, 0.5f), waterObj.GetComponent<WaterHi>());
+        GameObject player = playerObj.GetComponent<PlayerMaster>().Player.gameObject;
         Progress.progress.animator  = player.transform.GetChild(1) .GetComponent<Animator >();
 
         //カメラの設定
