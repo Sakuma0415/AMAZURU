@@ -8,5 +8,5 @@ using UnityEngine;
 public class Config : ScriptableObject
 {
     public CameraSpeed cameraSpeed;
-    public int stageSrectStartTarget;
+    public NewTypeSelect.SaveSelectStageData save;
 }

@@ -139,14 +139,17 @@ public class NewTypeSelect : MonoBehaviour
     private Vector3 vMoveSpeed = Vector3.zero;
     public ViewStage[] vStage = new ViewStage[6];
 
-    private struct SaveSelectStageData
+    [System.Serializable]
+    public struct SaveSelectStageData
     {
         public bool doRetention;
         public int initNumber;
         public int level;
     }
 
-    private static SaveSelectStageData sssd;
+    private SaveSelectStageData sssd;
+    [SerializeField]
+    Config config;
 
     private void Start()
     {
@@ -159,6 +162,8 @@ public class NewTypeSelect : MonoBehaviour
         if (!increasedWaterVolume) { increasedWaterVolume = new TextMeshProUGUI(); }
         if (referenceImage.Length == 0) { referenceImage = new Sprite[1]; }
 
+
+        sssd = config.save;
         vMoveSpeed = new Vector3(0, speed * 2, 0);
         Init();
     }
@@ -217,12 +222,14 @@ public class NewTypeSelect : MonoBehaviour
             if (ControllerInput.Instance.buttonDown.circle)
             {
                 StageMake.LoadStageData = sData;
+                
                 SoundManager.soundManager.StopBgm(0.5f, 1);
                 SoundManager.soundManager.StopBgm(0.5f, 0);
                 SoundManager.soundManager.PlaySe("btn01", 0.2f);
 
                 if (!sssd.doRetention) { sssd.doRetention = true; }
 
+                config.save = sssd;
                 SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
             }
             else if (ControllerInput.Instance.buttonDown.cross)

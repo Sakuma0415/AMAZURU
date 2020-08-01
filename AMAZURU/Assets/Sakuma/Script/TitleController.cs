@@ -47,7 +47,7 @@ public class TitleController : MyAnimation
 
         //コンフィグの初期化
         config.cameraSpeed = CameraSpeed.Nomal;
-
+        config.save.doRetention = false;
         // 変数の初期化処理
         selectNum = 0;
         creditFlag = false;
