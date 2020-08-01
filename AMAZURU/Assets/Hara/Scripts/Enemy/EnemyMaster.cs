@@ -21,7 +21,7 @@ public class EnemyMaster : MonoBehaviour
     /// <summary>
     /// ゲームオーバー用のフラグ
     /// </summary>
-    public bool IsEnd { private set; get; } = false;
+    public bool IsGameOver { private set; get; } = false;
 
     /// <summary>
     /// プレイヤーとの接触フラグ
@@ -93,31 +93,25 @@ public class EnemyMaster : MonoBehaviour
     /// </summary>
     private void CheckEnemyFlag()
     {
-        // エネミーがプレイヤーと接触しているかをチェック
-        int count = 0;
+        bool isHit = false;
+        bool isGameOver = false;
         foreach(var enemy in enemies)
         {
-            if (enemy.IsHitPlayer)
+            // プレイヤーとの接触をチェック
+            if (enemy.IsHitPlayer && isHit == false)
             {
-                break;
+                isHit = true;
             }
-            count++;
+
+            // ゲームオーバーチェック
+            if (enemy.IsActonEnd && isGameOver == false)
+            {
+                isGameOver = true;
+            }
         }
 
-        IsHit = count < enemies.Length;
-
-        // エネミーのゲームオーバーフラグをチェック
-        count = 0;
-        foreach(var enemy in enemies)
-        {
-            if (enemy.IsActonEnd)
-            {
-                break;
-            }
-            count++;
-        }
-
-        IsEnd = count < enemies.Length;
+        IsHit = isHit;
+        IsGameOver = isGameOver;
     }
 
     private void Update()

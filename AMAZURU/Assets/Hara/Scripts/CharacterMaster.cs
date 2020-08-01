@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMaster : MonoBehaviour
+public class CharacterMaster : MonoBehaviour
 {
     [SerializeField, Tooltip("プレイヤーのPrefab")] private PlayerType2 playerPrefab = null;
 
@@ -11,8 +11,10 @@ public class PlayerMaster : MonoBehaviour
     /// </summary>
     public PlayerType2 Player { private set; get; } = null;
 
-    // エネミーの情報
-    private EnemyMaster enemy = null;
+    /// <summary>
+    /// エネミーの情報
+    /// </summary>
+    public EnemyMaster Enemy { private set; get; } = null;
 
     // ステージの水位情報
     private WaterHi stageWater = null;
@@ -21,11 +23,6 @@ public class PlayerMaster : MonoBehaviour
     /// ゲームオーバーフラグ
     /// </summary>
     public bool IsGameOver { private set; get; } = false;
-
-    private void Update()
-    {
-        CheckEnemyState();
-    }
 
     /// <summary>
     /// プレイヤーをスポーンさせる（ステージの読み込みが完了した後に実行）
@@ -52,14 +49,14 @@ public class PlayerMaster : MonoBehaviour
     /// </summary>
     private void GetEnemyInfo()
     {
-        enemy = FindObjectOfType<EnemyMaster>();
+        Enemy = FindObjectOfType<EnemyMaster>();
 
         // 敵情報の取得に成功した場合 (敵が配置されているステージで正常に取得出来たときのみ)
-        if(enemy != null)
+        if (Enemy != null)
         {
             // 敵のスポーン処理を開始
-            enemy.StageWater = stageWater;
-            enemy.Init();
+            Enemy.StageWater = stageWater;
+            Enemy.Init();
         }
     }
 
@@ -68,10 +65,10 @@ public class PlayerMaster : MonoBehaviour
     /// </summary>
     private void CheckEnemyState()
     {
-        if(enemy != null && Player != null)
+        if (Enemy != null && Player != null)
         {
             // プレイヤーとエネミーが接触しているなら入力を無効
-            if (enemy.IsHit)
+            if (Enemy.IsHit)
             {
                 Player.DontInput = true;
             }
@@ -80,8 +77,17 @@ public class PlayerMaster : MonoBehaviour
                 Player.DontInput = false;
             }
 
-            // ゲームオーバーフラグをチェック
-            IsGameOver = enemy.IsEnd;
+            IsGameOver = Enemy.IsGameOver;
         }
+        else
+        {
+            IsGameOver = false;
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        CheckEnemyState();
     }
 }

@@ -27,7 +27,7 @@ public class O2Controller : MonoBehaviour
     //呼吸できる状態かのフラグ
     public bool breath = true;
     //プレイヤーの情報所得用
-    public PlayerMaster player;
+    public CharacterMaster master;
 
     //private
     //呼吸できない状態の経過時間
@@ -39,7 +39,7 @@ public class O2Controller : MonoBehaviour
     {
 
         //呼吸できるかの状態を取得
-        breath = !player.Player.UnderWater;
+        breath = !master.Player.UnderWater;
 
         //プレイ中のみ処理
         if (PlayState.playState.gameMode == PlayState.GameMode.Play)
@@ -81,7 +81,7 @@ public class O2Controller : MonoBehaviour
         }
 
         //敵接触時の処理(移設予定)
-        if (player.IsGameOver)
+        if (master.IsGameOver)
         {
             PlayState.playState.gameMode = PlayState.GameMode.GameOver;
         }

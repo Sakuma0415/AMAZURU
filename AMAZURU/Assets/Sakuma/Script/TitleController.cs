@@ -96,7 +96,7 @@ public class TitleController : MyAnimation
         bool setFlag = false;
         if (flag)
         {
-            if(changeTime < 0.3f)
+            if(changeTime < 0.1f)
             {
                 changeTime += Time.deltaTime;
             }
