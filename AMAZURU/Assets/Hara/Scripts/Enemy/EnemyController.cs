@@ -17,7 +17,11 @@ namespace Enemy
         [SerializeField, Tooltip("プレイヤーのレイヤー")] private LayerMask playerLayer;
         [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
         private PlayerType2 player = null;
-        private WaterHi stageWater = null;
+
+        /// <summary>
+        /// 水位の情報を扱う変数
+        /// </summary>
+        public WaterHi StageWater { set; private get; } = null;
 
         [SerializeField, Header("開始向き")] private Vector3 enemyStartRot = Vector3.zero;
         public Vector3 EnemyStartRot { set { enemyStartRot = value; } }
@@ -92,19 +96,6 @@ namespace Enemy
             // アニメーションの速度を取得
             if (enemyAnime != null) { animationSpeed = enemyAnime.GetCurrentAnimatorStateInfo(0).speed; }
 
-            // 水面の取得
-            if (stageWater == null)
-            {
-                try
-                {
-                    stageWater = Progress.progress.waterHi;
-                }
-                catch
-                {
-                    stageWater = FindObjectOfType<WaterHi>();
-                }
-            }
-
             // 敵の開始時の向き
             transform.rotation = Quaternion.Euler(enemyStartRot);
 
@@ -123,7 +114,7 @@ namespace Enemy
             if(GetGameMode()) { mode = PlayState.playState.gameMode; }
 
             // 水中かチェックする
-            inWater = stageWater != null && transform.position.y + enemy.radius < stageWater.max;
+            inWater = StageWater != null && transform.position.y + enemy.radius < StageWater.max;
 
             if ((mode == PlayState.GameMode.Play || mode == PlayState.GameMode.Rain))
             {
