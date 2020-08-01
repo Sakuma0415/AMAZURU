@@ -6,15 +6,18 @@ using Enemy;
 public class DryEnemy : MonoBehaviour
 {
     [SerializeField, Tooltip("地面を取得する用のレイヤーマスク")] private LayerMask groundLayer;
-    [SerializeField, Tooltip("水面を取得する用のレイヤーマスク")] private LayerMask waterLayer;
     public bool ReturnDryMode { set; private get; } = true;
 
     public float BlockSize { set; private get; } = 1.0f;
     public float BlockCenterY { set; private get; } = 0;
     private Vector3 spawnPos = Vector3.zero;  // スポーン地点はこのスクリプト上で設定する
 
+    /// <summary>
+    /// 水位情報を扱う変数
+    /// </summary>
+    public WaterHi StageWater { set; private get; } = null;
+
     // このオブジェクトに必要なデータ
-    private WaterHi stageWater = null;
     public EnemyController EnemyObject { set; private get; } = null;
     private BoxCollider box = null;
     private bool spawnFlag = false;
@@ -43,25 +46,6 @@ public class DryEnemy : MonoBehaviour
     {
         spawnFlag = false;
         firstTime = true;
-        
-
-        // 水面の情報を取得する
-        if (stageWater == null)
-        {
-            try
-            {
-                stageWater = Progress.progress.waterHi;
-            }
-            catch
-            {
-                Ray ray = new Ray(transform.position, Vector3.down);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, 200, waterLayer) && stageWater == null)
-                {
-                    stageWater = hit.transform.gameObject.GetComponent<WaterHi>();
-                }
-            }
-        }
 
         // このオブジェクトに必要なデータを取得する
         if(box == null)
@@ -87,9 +71,9 @@ public class DryEnemy : MonoBehaviour
     /// </summary>
     private void CheckWaterHeight()
     {
-        if (EnemyObject == null || stageWater == null || box == null) { return; }
+        if (EnemyObject == null || StageWater == null || box == null) { return; }
 
-        if(stageWater.max > (firstTime ? transform.position.y + box.center.y : blockPos.y))
+        if(StageWater.max > (firstTime ? transform.position.y + box.center.y : blockPos.y))
         {
             if(spawnFlag == false)
             {

@@ -32,6 +32,7 @@ public class EnemyDataEditor : Editor
             if (enemyData.Type == EnemyData.EnemyType.Dry)
             {
                 enemyData.BlockSetPosY = Mathf.Max(0, EditorGUILayout.IntField("ブロックの設置位置", enemyData.BlockSetPosY));
+                enemyData.ReturnBlock = EditorGUILayout.Toggle("ブロック状態に戻す", enemyData.ReturnBlock);
             }
         }
 

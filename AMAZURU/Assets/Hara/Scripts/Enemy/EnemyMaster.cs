@@ -11,17 +11,15 @@ public class EnemyMaster : MonoBehaviour
 
     [SerializeField, Header("エネミーデータ")] private EnemyData[] enemyData = null;
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        Init();
-    }
+    /// <summary>
+    /// 水位情報を扱う変数
+    /// </summary>
+    public WaterHi StageWater { set; private get; } = null;
 
     /// <summary>
     /// 初期化、生成処理
     /// </summary>
-    private void Init()
+    public void Init()
     {
         transform.position = Vector3.zero;
 
@@ -56,6 +54,7 @@ public class EnemyMaster : MonoBehaviour
                 enemyObject.EnemySpeed = enemy.NomalSpeed;
                 enemyObject.EnemyWaterSpeed = enemy.WaterSpeed;
             }
+            enemyObject.StageWater = StageWater;
             enemyObject.EnemyInit();
 
             if(enemy.Type == EnemyData.EnemyType.Dry)
@@ -65,6 +64,8 @@ public class EnemyMaster : MonoBehaviour
                 block.EnemyObject = enemyObject;
                 block.BlockSize = enemy.Size;
                 block.BlockCenterY = enemy.BlockSetPosY;
+                block.ReturnDryMode = enemy.ReturnBlock;
+                block.StageWater = StageWater;
                 enemyObject.gameObject.SetActive(false);
                 block.DryEnemyInit();
             }
