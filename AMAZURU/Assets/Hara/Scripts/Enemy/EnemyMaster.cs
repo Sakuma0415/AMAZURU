@@ -11,10 +11,22 @@ public class EnemyMaster : MonoBehaviour
 
     [SerializeField, Header("エネミーデータ")] private EnemyData[] enemyData = null;
 
+    private EnemyController[] enemies = null;
+
     /// <summary>
     /// 水位情報を扱う変数
     /// </summary>
     public WaterHi StageWater { set; private get; } = null;
+
+    /// <summary>
+    /// ゲームオーバー用のフラグ
+    /// </summary>
+    public bool IsEnd { private set; get; } = false;
+
+    /// <summary>
+    /// プレイヤーとの接触フラグ
+    /// </summary>
+    public bool IsHit { private set; get; } = false;
 
     /// <summary>
     /// 初期化、生成処理
@@ -22,13 +34,15 @@ public class EnemyMaster : MonoBehaviour
     public void Init()
     {
         transform.position = Vector3.zero;
+        enemies = new EnemyController[enemyData.Length];
 
-        foreach(var enemy in enemyData)
+        int count = 0;
+        foreach(var data in enemyData)
         {
             // 敵のインスタンスを作成
-            var enemyObject = Instantiate(enemyPrefab, enemy.MovePlan[0], Quaternion.identity, gameObject.transform);
+            enemies[count] = Instantiate(enemyPrefab, data.MovePlan[0], Quaternion.identity, gameObject.transform);
             Vector3 startRot;
-            switch (enemy.StartRotate)
+            switch (data.StartRotate)
             {
                 case EnemyData.RotateDirection.Forward:
                     startRot = Vector3.zero;
@@ -45,30 +59,69 @@ public class EnemyMaster : MonoBehaviour
                 default:
                     return;
             }
-            enemyObject.EnemyStartRot = startRot;
-            enemyObject.EnemySize = enemy.Size;
-            enemyObject.MovePlan = enemy.MovePlan;
-            enemyObject.MoveType = enemy.MoveType;
-            if(enemy.UseDefaultSetting == false)
+            enemies[count].EnemyStartRot = startRot;
+            enemies[count].EnemySize = data.Size;
+            enemies[count].MovePlan = data.MovePlan;
+            enemies[count].MoveType = data.MoveType;
+            if(data.UseDefaultSetting == false)
             {
-                enemyObject.EnemySpeed = enemy.NomalSpeed;
-                enemyObject.EnemyWaterSpeed = enemy.WaterSpeed;
+                enemies[count].EnemySpeed = data.NomalSpeed;
+                enemies[count].EnemyWaterSpeed = data.WaterSpeed;
             }
-            enemyObject.StageWater = StageWater;
-            enemyObject.EnemyInit();
+            enemies[count].StageWater = StageWater;
+            enemies[count].EnemyInit();
 
-            if(enemy.Type == EnemyData.EnemyType.Dry)
+            if(data.Type == EnemyData.EnemyType.Dry)
             {
                 // 乾燥ブロックのインスタンスを作成
-                var block = Instantiate(dryEnemyPrefab, enemy.MovePlan[0], Quaternion.identity, gameObject.transform);
-                block.EnemyObject = enemyObject;
-                block.BlockSize = enemy.Size;
-                block.BlockCenterY = enemy.BlockSetPosY;
-                block.ReturnDryMode = enemy.ReturnBlock;
+                var block = Instantiate(dryEnemyPrefab, data.MovePlan[0], Quaternion.identity, gameObject.transform);
+                block.EnemyObject = enemies[count];
+                block.BlockSize = data.Size;
+                block.BlockCenterY = data.BlockSetPosY;
+                block.ReturnDryMode = data.ReturnBlock;
                 block.StageWater = StageWater;
-                enemyObject.gameObject.SetActive(false);
+                enemies[count].gameObject.SetActive(false);
                 block.DryEnemyInit();
             }
+
+            count++;
         }
+    }
+
+    /// <summary>
+    /// エネミーのフラグをチェックする
+    /// </summary>
+    private void CheckEnemyFlag()
+    {
+        // エネミーがプレイヤーと接触しているかをチェック
+        int count = 0;
+        foreach(var enemy in enemies)
+        {
+            if (enemy.IsHitPlayer)
+            {
+                break;
+            }
+            count++;
+        }
+
+        IsHit = count < enemies.Length;
+
+        // エネミーのゲームオーバーフラグをチェック
+        count = 0;
+        foreach(var enemy in enemies)
+        {
+            if (enemy.IsActonEnd)
+            {
+                break;
+            }
+            count++;
+        }
+
+        IsEnd = count < enemies.Length;
+    }
+
+    private void Update()
+    {
+        CheckEnemyFlag();
     }
 }

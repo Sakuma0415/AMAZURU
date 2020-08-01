@@ -19,7 +19,7 @@ public class StageMake : MonoBehaviour
     private GameObject water;
     //プレイヤーのプレハブ
     [SerializeField]
-    private GameObject playerObj;
+    private PlayerMaster playerMaster;
     //カメラのクラス
     [SerializeField]
     private CameraPos cameraPos;
@@ -56,17 +56,16 @@ public class StageMake : MonoBehaviour
 
         //プレイヤー生成
         //GameObject player = Instantiate(playerObj, StageMake.LoadStageData.startPos-new Vector3 (0.5f,0,0.5f),Quaternion.identity);
-        playerObj.GetComponent<PlayerMaster>().SpawnPlayer(StageMake.LoadStageData.startPos - new Vector3(0.5f, 0, 0.5f), waterObj.GetComponent<WaterHi>());
-        GameObject player = playerObj.GetComponent<PlayerMaster>().Player.gameObject;
-        Progress.progress.animator  = player.transform.GetChild(1) .GetComponent<Animator >();
+        playerMaster.SpawnPlayer(StageMake.LoadStageData.startPos - new Vector3(0.5f, 0, 0.5f), waterObj.GetComponent<WaterHi>());
+        Progress.progress.animator  = playerMaster.Player.transform.GetChild(1) .GetComponent<Animator >();
 
         //カメラの設定
         cameraPos.lookPos = new Vector3(StageMake.LoadStageData.stageSize.x/2, StageMake.LoadStageData.stageSize.y / 2, StageMake.LoadStageData.stageSize.z/2);
-        cameraPos.PlayerTransform = player.GetComponent<Transform >();
-        vewPos.PlayerTransform = player.transform;
+        cameraPos.PlayerTransform = playerMaster.Player.transform;
+        vewPos.PlayerTransform = playerMaster.Player.transform;
 
         //酸素管理の設定
-        o2Controller.playerType2 = player.GetComponent<PlayerType2>();
+        o2Controller.player = playerMaster;
 
         //アメフラシの設定
         amehurashiManager.waterHi = waterObj.GetComponent<WaterHi>();

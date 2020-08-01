@@ -16,7 +16,11 @@ public class PlayerType2 : MyAnimation
     // コントローラーの入力
     private float inputX = 0;
     private float inputZ = 0;
-    private bool dontInput = false; // 操作入力を無効にするフラグ
+
+    /// <summary>
+    /// 入力操作を無効にするフラグ
+    /// </summary>
+    public bool DontInput { set; private get; } = false;
 
     [SerializeField, Header("プレイヤーの移動速度"), Range(0, 10)] private float playerSpeed = 5;
     [SerializeField, Header("プレイヤーの水中移動速度"), Range(0, 10)] private float playerWaterSpeed = 2.5f;
@@ -46,11 +50,6 @@ public class PlayerType2 : MyAnimation
     /// プレイヤーが水没したことを検知するフラグ
     /// </summary>
     public bool UnderWater { private set; get; } = false;
-
-    /// <summary>
-    /// 敵と接触した時のフラグ
-    /// </summary>
-    public bool ContactEnemy { private set; get; } = false;
 
     /// <summary>
     /// 一方通行の崖を検知する用のフラグ
@@ -148,7 +147,7 @@ public class PlayerType2 : MyAnimation
                 float inputMin = 0.1f;
 
                 // 入力を検知したかチェック
-                input = (Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin) && mode == PlayState.GameMode.Play && dontInput == false;
+                input = (Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin) && mode == PlayState.GameMode.Play && DontInput == false;
 
                 if (input)
                 {
@@ -381,24 +380,6 @@ public class PlayerType2 : MyAnimation
                 // 透明な壁を無効化する
                 hiddenWalls[i].enabled = false;
             }
-        }
-    }
-
-    /// <summary>
-    /// 敵と接触しているときに呼び出す処理
-    /// </summary>
-    /// <param name="flag">条件式</param>
-    public void HitEnemy(bool flag)
-    {
-        if (flag)
-        {
-            // ゲームオーバー処理
-            ContactEnemy = true;
-        }
-        else
-        {
-            // 敵と接触中は操作ができないようにする
-            dontInput = true;
         }
     }
 

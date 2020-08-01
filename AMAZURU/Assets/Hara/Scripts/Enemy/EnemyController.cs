@@ -15,8 +15,7 @@ namespace Enemy
         private SphereCollider enemy = null;
         [SerializeField, Tooltip("敵のAnimator")] private Animator enemyAnime = null;
         [SerializeField, Tooltip("プレイヤーのレイヤー")] private LayerMask playerLayer;
-        [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
-        private PlayerType2 player = null;
+        private PlayState.GameMode mode = PlayState.GameMode.Play;
 
         /// <summary>
         /// 水位の情報を扱う変数
@@ -56,6 +55,16 @@ namespace Enemy
         // 足音再生用の変数
         private float animationSpeed = 0;
         private float animationTime = 0;
+
+        /// <summary>
+        /// プレイヤーと接触した際のアクション処理が完了したことを検知するフラグ
+        /// </summary>
+        public bool IsActonEnd { private set; get; } = false;
+
+        /// <summary>
+        /// プレイヤーとの接触を検知するフラグ
+        /// </summary>
+        public bool IsHitPlayer { private set; get; } = false;
 
 
         // Start is called before the first frame update
@@ -134,14 +143,11 @@ namespace Enemy
                 Vector3 forward = (nextPos - nowPos).normalized;
 
                 // プレイヤーと接触しているかをチェック
-                RaycastHit hit;
-                if (Physics.BoxCast(new Vector3(transform.position.x, transform.position.y - enemy.radius * enemySize, transform.position.z), new Vector3(enemy.radius * enemySize * 1.25f, enemy.radius * enemySize, enemy.radius * enemySize * 1.25f), Vector3.up, out hit, Quaternion.Euler(Vector3.zero), 1.0f, playerLayer))
+                IsHitPlayer = Physics.BoxCast(new Vector3(transform.position.x, transform.position.y - enemy.radius * enemySize, transform.position.z), new Vector3(enemy.radius * enemySize * 1.25f, enemy.radius * enemySize, enemy.radius * enemySize * 1.25f), Vector3.up, out RaycastHit hit, Quaternion.Euler(Vector3.zero), 1.0f, playerLayer);
+                if (IsHitPlayer)
                 {
                     // プレイヤーと接触している場合はプレイヤーの方向を向く処理を実行
-                    if (player == null) { player = hit.transform.gameObject.GetComponent<PlayerType2>(); }
-                    bool complete = RotateAnimation(transform.gameObject, (new Vector3(hit.transform.position.x, 0, hit.transform.position.z) - new Vector3(transform.position.x, 0, transform.position.z)).normalized, rotatePower * delta * 2.5f, false);
-
-                    if (player != null) { player.HitEnemy(complete); }
+                    IsActonEnd = RotateAnimation(transform.gameObject, (new Vector3(hit.transform.position.x, 0, hit.transform.position.z) - new Vector3(transform.position.x, 0, transform.position.z)).normalized, rotatePower * delta * 2.5f, false);
                 }
                 else
                 {

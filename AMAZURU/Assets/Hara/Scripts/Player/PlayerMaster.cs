@@ -18,6 +18,16 @@ public class PlayerMaster : MonoBehaviour
     private WaterHi stageWater = null;
 
     /// <summary>
+    /// ゲームオーバーフラグ
+    /// </summary>
+    public bool IsGameOver { private set; get; } = false;
+
+    private void Update()
+    {
+        CheckEnemyState();
+    }
+
+    /// <summary>
     /// プレイヤーをスポーンさせる（ステージの読み込みが完了した後に実行）
     /// </summary>
     /// <param name="spawnPosition">スポーン座標</param>
@@ -47,9 +57,31 @@ public class PlayerMaster : MonoBehaviour
         // 敵情報の取得に成功した場合 (敵が配置されているステージで正常に取得出来たときのみ)
         if(enemy != null)
         {
-            Debug.Log("正常に敵の読み込みが完了しました");
+            // 敵のスポーン処理を開始
             enemy.StageWater = stageWater;
             enemy.Init();
+        }
+    }
+
+    /// <summary>
+    /// エネミー情報を確認する
+    /// </summary>
+    private void CheckEnemyState()
+    {
+        if(enemy != null && Player != null)
+        {
+            // プレイヤーとエネミーが接触しているなら入力を無効
+            if (enemy.IsHit)
+            {
+                Player.DontInput = true;
+            }
+            else
+            {
+                Player.DontInput = false;
+            }
+
+            // ゲームオーバーフラグをチェック
+            IsGameOver = enemy.IsEnd;
         }
     }
 }
