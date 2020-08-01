@@ -324,8 +324,6 @@ public class Select : MonoBehaviour
             if(x > z) { magni = scaleAdjust.x / x; }
             else { magni = scaleAdjust.y / z; }
 
-            Debug.Log(magni);
-
             Vector2 reSize = new Vector2((x * magni) / scale.x, (z * magni) / scale.y);
             viewStage[i,j].defScale = new Vector3(reSize.x, 1, reSize.y);
         }
@@ -376,7 +374,7 @@ public class Select : MonoBehaviour
                 {
                     case 1:
                         viewStage[0, i].stage.transform.localScale += viewStage[0, i].reSizeSpeed;
-                        sData = psd[viewStage[i, i].psdIndex].psd.sData;
+                        sData = psd[viewStage[0, i].psdIndex].psd.sData;
                         break;
                     case 2:
                         viewStage[0, i].stage.transform.localScale -= viewStage[0, i].reSizeSpeed;
@@ -391,7 +389,6 @@ public class Select : MonoBehaviour
             }
             else
             {
-                Debug.Log(viewStage[0, i].index);
                 switch (viewStage[0, i].index)
                 {
                     case 0:
@@ -402,7 +399,7 @@ public class Select : MonoBehaviour
                         break;
                     case 3:
                         viewStage[0, i].stage.transform.localScale += viewStage[0, i].reSizeSpeed;
-                        sData = psd[viewStage[i, i].psdIndex].psd.sData;
+                        sData = psd[viewStage[0, i].psdIndex].psd.sData;
                         break;
                     case 5:
                         viewStage[0, i].stage.transform.localScale += viewStage[0, i].zeroSizeChangeSpeed;
