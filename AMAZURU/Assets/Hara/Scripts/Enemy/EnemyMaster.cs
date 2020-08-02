@@ -12,6 +12,8 @@ public class EnemyMaster : MonoBehaviour
     [SerializeField, Header("エネミーデータ")] private EnemyData[] enemyData = null;
 
     private EnemyController[] enemies = null;
+    private EnemyType[] enemyTypes = null;
+    private List<DryEnemy> dryEnemies = null;
 
     /// <summary>
     /// 水位情報を扱う変数
@@ -29,12 +31,29 @@ public class EnemyMaster : MonoBehaviour
     public bool IsHit { private set; get; } = false;
 
     /// <summary>
+    /// ゲーム停止中のフラグ
+    /// </summary>
+    public bool IsGameStop { set; private get; } = false;
+
+    /// <summary>
+    /// ゲーム待機中のフラグ
+    /// </summary>
+    public bool IsStandby { set; private get; } = false;
+
+    /// <summary>
+    /// ステージが感電状態になったフラグ
+    /// </summary>
+    public bool IsStageElectric { private set; get; } = false;
+
+    /// <summary>
     /// 初期化、生成処理
     /// </summary>
     public void Init()
     {
         transform.position = Vector3.zero;
         enemies = new EnemyController[enemyData.Length];
+        enemyTypes = new EnemyType[enemyData.Length];
+        dryEnemies = new List<DryEnemy>();
 
         int count = 0;
         foreach(var data in enemyData)
@@ -59,6 +78,7 @@ public class EnemyMaster : MonoBehaviour
                 default:
                     return;
             }
+            enemyTypes[count] = data.Type;
             enemies[count].EnemyStartRot = startRot;
             enemies[count].EnemySize = data.Size;
             enemies[count].MovePlan = data.MovePlan;
@@ -71,7 +91,7 @@ public class EnemyMaster : MonoBehaviour
             enemies[count].StageWater = StageWater;
             enemies[count].EnemyInit();
 
-            if(data.Type == EnemyData.EnemyType.Dry)
+            if(enemyTypes[count] == EnemyType.Dry)
             {
                 // 乾燥ブロックのインスタンスを作成
                 var block = Instantiate(dryEnemyPrefab, data.MovePlan[0], Quaternion.identity, gameObject.transform);
@@ -80,8 +100,11 @@ public class EnemyMaster : MonoBehaviour
                 block.BlockCenterY = data.BlockSetPosY;
                 block.ReturnDryMode = data.ReturnBlock;
                 block.StageWater = StageWater;
-                enemies[count].gameObject.SetActive(false);
+                block.EnemyObject.gameObject.SetActive(false);
                 block.DryEnemyInit();
+
+                // 管理用のリストに追加
+                dryEnemies.Add(block);
             }
 
             count++;
@@ -114,8 +137,37 @@ public class EnemyMaster : MonoBehaviour
         IsGameOver = isGameOver;
     }
 
+    /// <summary>
+    /// エネミーにゲームステートに応じたフラグをセットする
+    /// </summary>
+    private void SetState()
+    {
+        for(int i = 0; i < enemies.Length; i++)
+        {
+            // ポーズ中は処理を停止
+            enemies[i].IsAllStop = IsGameStop;
+
+            if(enemyTypes[i] == EnemyType.Normal)
+            {
+                // エネミーの種類がノーマルならばスタンバイフラグを通常で設定
+                enemies[i].IsMoveStop = IsStandby;
+            }
+        }
+
+        foreach(var dry in dryEnemies)
+        {
+            // ポーズ中は処理を停止
+            dry.IsStop = IsGameStop;
+
+            // ゲームステートがプレイ及びアメフラシ起動時以外またはアニメーションが実行中の場合は移動処理を停止
+            dry.EnemyObject.IsMoveStop = IsStandby || dry.IsDoingAnimation;
+        }
+    }
+
     private void Update()
     {
+        SetState();
+
         CheckEnemyFlag();
     }
 }

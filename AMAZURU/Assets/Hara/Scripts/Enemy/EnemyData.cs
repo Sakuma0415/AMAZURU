@@ -7,12 +7,7 @@ using Enemy;
 public class EnemyData : ScriptableObject
 {
     // 敵の種類
-    public enum EnemyType
-    {
-        Nomal,
-        Dry
-    }
-    public EnemyType Type = EnemyType.Nomal;
+    public EnemyType Type = EnemyType.Normal;
 
     // スタート向き
     public enum RotateDirection
