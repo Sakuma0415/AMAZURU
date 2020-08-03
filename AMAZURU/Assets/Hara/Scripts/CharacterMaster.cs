@@ -31,7 +31,7 @@ public class CharacterMaster : MonoBehaviour
     private bool isElectric = false;
     [SerializeField, Header("デバッグ用のフラグ(感電モード)")] private bool debugFlag = false;
     private float time = 0;
-    private bool flag = false;
+    private bool isElectricInterval = false;
 
     /// <summary>
     /// プレイヤーをスポーンさせる（ステージの読み込みが完了した後に実行）
@@ -175,17 +175,21 @@ public class CharacterMaster : MonoBehaviour
     /// </summary>
     private void CheckElectricDamage()
     {
-        if(debugFlag == false) { return; }
+        if(debugFlag == false) { time = 0; return; }
+
+        // タイマー設定が0以下にならないように修正
+        electricTimer = Mathf.Max(0, electricTimer);
+        electricInterval = Mathf.Max(0, electricInterval);
 
         if(Enemy != null && Player != null && GetGameMode() == PlayState.GameMode.Play)
         {
-            if (Player.InWater && isElectric == false && flag == false)
+            if (Player.InWater && isElectric == false && isElectricInterval == false)
             {
                 // プレイヤーが水中かつ感電状態でないとき感電状態にする
                 isElectric = true;
                 time = 0;
             }
-            else if(isElectric && flag == false)
+            else if(isElectric && isElectricInterval == false)
             {
                 // 指定の時間が経過したら感電状態を解除
                 if(time < electricTimer)
@@ -196,7 +200,7 @@ public class CharacterMaster : MonoBehaviour
                 {
                     time = 0;
                     isElectric = false;
-                    flag = true;
+                    isElectricInterval = true;
                 }
             }
             else
@@ -209,7 +213,7 @@ public class CharacterMaster : MonoBehaviour
                 else
                 {
                     time = 0;
-                    flag = false;
+                    isElectricInterval = false;
                 }
             }
         }
@@ -217,13 +221,6 @@ public class CharacterMaster : MonoBehaviour
         {
             isElectric = false;
         }
-    }
-
-    private void Start()
-    {
-        // タイマーが0以下に設定されていた場合は修正
-        electricTimer = Mathf.Max(0, electricTimer);
-        electricInterval = Mathf.Max(0, electricInterval);
     }
 
     // Update is called once per frame
