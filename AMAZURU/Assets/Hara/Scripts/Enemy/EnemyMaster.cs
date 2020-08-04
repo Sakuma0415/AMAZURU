@@ -11,9 +11,21 @@ public class EnemyMaster : MonoBehaviour
 
     [SerializeField, Header("エネミーデータ")] private EnemyData[] enemyData = null;
 
-    private EnemyController[] enemies = null;
+    /// <summary>
+    /// ステージ上のナマコ(エネミー)の情報を格納する
+    /// </summary>
+    public EnemyController[] Enemies { private set; get; } = null;
     private EnemyType[] enemyTypes = null;
-    private List<DryEnemy> dryEnemies = null;
+
+    /// <summary>
+    /// ステージ上の乾燥ナマコの情報を格納する
+    /// </summary>
+    public List<DryEnemy> DryEnemies { private set; get; } = null;
+
+    /// <summary>
+    /// ステージ上の帯電ナマコの情報を格納する
+    /// </summary>
+    public List<ElectricEnemy> ElectricEnemies { private set; get; } = null;
 
     /// <summary>
     /// 水位情報を扱う変数
@@ -51,15 +63,16 @@ public class EnemyMaster : MonoBehaviour
     public void Init()
     {
         transform.position = Vector3.zero;
-        enemies = new EnemyController[enemyData.Length];
+        Enemies = new EnemyController[enemyData.Length];
         enemyTypes = new EnemyType[enemyData.Length];
-        dryEnemies = new List<DryEnemy>();
+        DryEnemies = new List<DryEnemy>();
+        ElectricEnemies = new List<ElectricEnemy>();
 
         int count = 0;
         foreach(var data in enemyData)
         {
             // 敵のインスタンスを作成
-            enemies[count] = Instantiate(enemyPrefab, data.MovePlan[0], Quaternion.identity, gameObject.transform);
+            Enemies[count] = Instantiate(enemyPrefab, data.MovePlan[0], Quaternion.identity, gameObject.transform);
             Vector3 startRot;
             switch (data.StartRotate)
             {
@@ -79,23 +92,23 @@ public class EnemyMaster : MonoBehaviour
                     return;
             }
             enemyTypes[count] = data.Type;
-            enemies[count].EnemyStartRot = startRot;
-            enemies[count].EnemySize = data.Size;
-            enemies[count].MovePlan = data.MovePlan;
-            enemies[count].MoveType = data.MoveType;
+            Enemies[count].EnemyStartRot = startRot;
+            Enemies[count].EnemySize = data.Size;
+            Enemies[count].MovePlan = data.MovePlan;
+            Enemies[count].MoveType = data.MoveType;
             if(data.UseDefaultSetting == false)
             {
-                enemies[count].EnemySpeed = data.NomalSpeed;
-                enemies[count].EnemyWaterSpeed = data.WaterSpeed;
+                Enemies[count].EnemySpeed = data.NomalSpeed;
+                Enemies[count].EnemyWaterSpeed = data.WaterSpeed;
             }
-            enemies[count].StageWater = StageWater;
-            enemies[count].EnemyInit();
+            Enemies[count].StageWater = StageWater;
+            Enemies[count].EnemyInit();
 
             if(enemyTypes[count] == EnemyType.Dry)
             {
                 // 乾燥ブロックのインスタンスを作成
                 var block = Instantiate(dryEnemyPrefab, data.MovePlan[0], Quaternion.identity, gameObject.transform);
-                block.EnemyObject = enemies[count];
+                block.EnemyObject = Enemies[count];
                 block.BlockSize = data.Size;
                 block.BlockCenterY = data.BlockSetPosY;
                 block.ReturnDryMode = data.ReturnBlock;
@@ -104,7 +117,17 @@ public class EnemyMaster : MonoBehaviour
                 block.DryEnemyInit();
 
                 // 管理用のリストに追加
-                dryEnemies.Add(block);
+                DryEnemies.Add(block);
+            }
+
+            if(enemyTypes[count] == EnemyType.Electric)
+            {
+                // 帯電ナマコの情報を設定
+                var electric = Enemies[count].gameObject.AddComponent<ElectricEnemy>();
+                electric.EnemyObject = Enemies[count];
+
+                // 管理用のリストに追加
+                ElectricEnemies.Add(electric);
             }
 
             count++;
@@ -118,7 +141,7 @@ public class EnemyMaster : MonoBehaviour
     {
         bool isHit = false;
         bool isGameOver = false;
-        foreach(var enemy in enemies)
+        foreach(var enemy in Enemies)
         {
             // プレイヤーとの接触をチェック
             if (enemy.IsHitPlayer && isHit == false)
@@ -142,19 +165,19 @@ public class EnemyMaster : MonoBehaviour
     /// </summary>
     private void SetState()
     {
-        for(int i = 0; i < enemies.Length; i++)
+        for(int i = 0; i < Enemies.Length; i++)
         {
             // ポーズ中は処理を停止
-            enemies[i].IsAllStop = IsGameStop;
+            Enemies[i].IsAllStop = IsGameStop;
 
-            if(enemyTypes[i] == EnemyType.Normal)
+            if(enemyTypes[i] != EnemyType.Dry)
             {
-                // エネミーの種類がノーマルならばスタンバイフラグを通常で設定
-                enemies[i].IsMoveStop = IsStandby;
+                // エネミーの種類が乾燥タイプ以外ならばゲームステートがプレイ及びアメフラシ起動時以外は移動処理を停止
+                Enemies[i].IsMoveStop = IsStandby;
             }
         }
 
-        foreach(var dry in dryEnemies)
+        foreach(var dry in DryEnemies)
         {
             // ポーズ中は処理を停止
             dry.IsStop = IsGameStop;

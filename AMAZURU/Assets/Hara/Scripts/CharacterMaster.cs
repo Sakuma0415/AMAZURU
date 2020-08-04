@@ -27,9 +27,13 @@ public class CharacterMaster : MonoBehaviour
     /// </summary>
     public bool IsGameOver { private set; get; } = false;
 
+    /// <summary>
+    /// 落雷を発生できる状態か
+    /// </summary>
+    public bool IsCanLightningStrike { private set; get; } = false;
+
     // 感電状態のフラグ
     private bool isElectric = false;
-    [SerializeField, Header("デバッグ用のフラグ(感電モード)")] private bool debugFlag = false;
     private float time = 0;
     private bool isElectricInterval = false;
 
@@ -175,15 +179,24 @@ public class CharacterMaster : MonoBehaviour
     /// </summary>
     private void CheckElectricDamage()
     {
-        if(debugFlag == false) { time = 0; return; }
-
         // タイマー設定が0以下にならないように修正
         electricTimer = Mathf.Max(0, electricTimer);
         electricInterval = Mathf.Max(0, electricInterval);
 
-        if(Enemy != null && Player != null && GetGameMode() == PlayState.GameMode.Play)
+        if(IsCanLightningStrike && Player != null && GetGameMode() == PlayState.GameMode.Play)
         {
-            if (Player.InWater && isElectric == false && isElectricInterval == false)
+            // 帯電ナマコが水中にいるかチェック
+            bool electricFlag = false;
+            foreach(var electric in Enemy.ElectricEnemies)
+            {
+                if (electric.IsStageElectric)
+                {
+                    electricFlag = true;
+                    break;
+                }
+            }
+
+            if (Player.InWater && isElectric == false && isElectricInterval == false && electricFlag)
             {
                 // プレイヤーが水中かつ感電状態でないとき感電状態にする
                 isElectric = true;
@@ -223,6 +236,14 @@ public class CharacterMaster : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 落雷時に呼び出す処理
+    /// </summary>
+    public void LightningStrike()
+    {
+        
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -231,6 +252,9 @@ public class CharacterMaster : MonoBehaviour
         SetEnemyGameState();
 
         CheckEnemyState();
+
+        // 落雷できるかチェック
+        IsCanLightningStrike = Enemy != null && Enemy.ElectricEnemies.Count > 0;
 
         CheckElectricDamage();
     }
