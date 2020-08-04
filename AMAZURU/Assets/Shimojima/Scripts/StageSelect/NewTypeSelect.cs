@@ -137,7 +137,6 @@ public class NewTypeSelect : MonoBehaviour
 
     public ViewStage[,] viewStage = new ViewStage[3, 6];
     private Vector3 vMoveSpeed = Vector3.zero;
-    public ViewStage[] vStage = new ViewStage[6];
 
     [System.Serializable]
     public struct SaveSelectStageData
@@ -148,6 +147,7 @@ public class NewTypeSelect : MonoBehaviour
     }
 
     private SaveSelectStageData sssd;
+    public int level;
     [SerializeField]
     Config config;
 
@@ -172,6 +172,8 @@ public class NewTypeSelect : MonoBehaviour
     {
         if (!SceneLoadManager.Instance.SceneLoadFlg)
         {
+            level = sssd.level;
+
             h = ControllerInput.Instance.stick.LStickHorizontal;
             h2 = ControllerInput.Instance.stick.crossHorizontal;
             v = ControllerInput.Instance.stick.LStickVertical;
@@ -239,13 +241,6 @@ public class NewTypeSelect : MonoBehaviour
                 SoundManager.soundManager.PlaySe("btn01", 0.3f);
                 SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Title, false);
             }
-
-            vStage[0] = viewStage[0,0];
-            vStage[1] = viewStage[0,1];
-            vStage[2] = viewStage[0,2];
-            vStage[3] = viewStage[0,3];
-            vStage[4] = viewStage[0,4];
-            vStage[5] = viewStage[0,5];
         }
     }
 
@@ -290,6 +285,7 @@ public class NewTypeSelect : MonoBehaviour
             //上下に配置するための処理
             if (i == 1) { dPos = new Vector3(defPos.x, defPos.y + 72, defPos.z); }
             else if (i == 2) { dPos = new Vector3(defPos.x, defPos.y - 72, defPos.z); }
+
             //ビューステージの生成とデータの格納
             for (int j = 0; j < 5; j++)
             {
@@ -323,13 +319,20 @@ public class NewTypeSelect : MonoBehaviour
                 sssd.initNumber--;
                 if (sssd.initNumber == -1) { sssd.initNumber = pData.Length - 1; }
             }
-
-            sssd.level++;
-            if (sssd.level == allPSD.Count) { sssd.level = 0; }
+            sssd.initNumber = 2;
+            if(i == 0) 
+            { 
+                sssd.level++; 
+                if (sssd.level == allPSD.Count) { sssd.level = allPSD.Count - 1; } 
+            }
+            else if (i == 1)
+            {
+                sssd.level = allPSD.Count - 1;
+            }
         }
 
         pData = allPSD[0];
-        sssd.level = 0;
+        sssd.level = config.save.level;
         dPos = defPos;
     }
 
@@ -547,7 +550,7 @@ public class NewTypeSelect : MonoBehaviour
                 }
             }
 
-            if (viewStage[0, j].index == 2) { Debug.Log(viewStage[0, j].psdIndex); sData = pData[viewStage[0, j].psdIndex].psd.sData; }
+            if (viewStage[0, j].index == 2) { sData = pData[viewStage[0, j].psdIndex].psd.sData; }
 
             //縦移動の処理
             if (sel == Selection.Up)
