@@ -21,6 +21,8 @@ namespace Enemy
     {
         private SphereCollider enemy = null;
         [SerializeField, Tooltip("敵のAnimator")] private Animator enemyAnime = null;
+        public Animator EnemyAnime { set { enemyAnime = value; } }
+
         [SerializeField, Tooltip("プレイヤーのレイヤー")] private LayerMask playerLayer;
 
         /// <summary>

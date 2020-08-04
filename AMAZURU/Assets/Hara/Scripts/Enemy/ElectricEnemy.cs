@@ -11,11 +11,17 @@ public class ElectricEnemy : MonoBehaviour
     public EnemyController EnemyObject { set; get; } = null;
 
     /// <summary>
-    /// ステージの帯電状態フラグ
+    /// エネミーの帯電状態フラグ
     /// </summary>
-    public bool IsStageElectric { private set; get; } = false;
+    public bool IsElectric { private set; get; } = false;
 
-    [SerializeField] private bool isElectric = false;
+    /// <summary>
+    /// 落雷時の移動停止フラグ
+    /// </summary>
+    public bool IsStop { private set; get; } = false;
+
+    private GameObject[] enemyModels = null;
+    private Animator[] enemyAnimators = null;
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +32,22 @@ public class ElectricEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckState();
+        
+    }
+
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    public void Init()
+    {
+        enemyModels = new GameObject[transform.childCount];
+        enemyAnimators = new Animator[transform.childCount];
+
+        for(int i = 0; i < transform.childCount; i++)
+        {
+            enemyModels[i] = transform.GetChild(i).gameObject;
+            enemyAnimators[i] = enemyModels[i].GetComponent<Animator>();
+        }
     }
 
     /// <summary>
@@ -35,21 +56,15 @@ public class ElectricEnemy : MonoBehaviour
     /// <param name="active">trueなら帯電化、falseなら帯電解除</param>
     public void ElectricMode(bool active)
     {
-        isElectric = active;
-    }
+        IsElectric = active;
 
-    /// <summary>
-    /// 帯電状態のナマコが水中にいるかをチェック
-    /// </summary>
-    private void CheckState()
-    {
-        if (isElectric && EnemyObject != null)
+        for(int i = 0; i < enemyModels.Length; i++)
         {
-            IsStageElectric = EnemyObject.InWater;
-        }
-        else
-        {
-            IsStageElectric = false;
+            enemyModels[i].SetActive(!enemyModels[i].activeSelf);
+            if (enemyModels[i].activeSelf)
+            {
+                EnemyObject.EnemyAnime = enemyAnimators[i];
+            }
         }
     }
 }

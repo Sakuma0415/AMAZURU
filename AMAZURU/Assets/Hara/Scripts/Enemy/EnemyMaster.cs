@@ -8,6 +8,7 @@ public class EnemyMaster : MonoBehaviour
 {
     [SerializeField, Tooltip("エネミーのPrefab")] private EnemyController enemyPrefab = null;
     [SerializeField, Tooltip("乾燥ナマコブロックのPrefab")] private DryEnemy dryEnemyPrefab = null;
+    [SerializeField, Tooltip("帯電ナマコのモデルPrefab")] private GameObject electricEnemyPrefab = null;
 
     [SerializeField, Header("エネミーデータ")] private EnemyData[] enemyData = null;
 
@@ -56,6 +57,11 @@ public class EnemyMaster : MonoBehaviour
     /// ステージが感電状態になったフラグ
     /// </summary>
     public bool IsStageElectric { private set; get; } = false;
+
+    /// <summary>
+    /// 落雷地点となる帯電ナマコの情報
+    /// </summary>
+    public ElectricEnemy TargetElectricEnemy { private set; get; } = null;
 
     /// <summary>
     /// 初期化、生成処理
@@ -124,7 +130,13 @@ public class EnemyMaster : MonoBehaviour
             {
                 // 帯電ナマコの情報を設定
                 var electric = Enemies[count].gameObject.AddComponent<ElectricEnemy>();
+                if(electricEnemyPrefab != null)
+                {
+                    var obj = Instantiate(electricEnemyPrefab, Enemies[count].transform);
+                    obj.SetActive(false);
+                }
                 electric.EnemyObject = Enemies[count];
+                electric.Init();
 
                 // 管理用のリストに追加
                 ElectricEnemies.Add(electric);
@@ -156,8 +168,20 @@ public class EnemyMaster : MonoBehaviour
             }
         }
 
+        // 帯電状態のナマコが水中にいるかチェック
+        bool isStageElectric = false;
+        foreach(var electric in ElectricEnemies)
+        {
+            if(electric.IsElectric && electric.EnemyObject.InWater)
+            {
+                isStageElectric = true;
+                break;
+            }
+        }
+
         IsHit = isHit;
         IsGameOver = isGameOver;
+        IsStageElectric = isStageElectric;
     }
 
     /// <summary>
@@ -170,13 +194,14 @@ public class EnemyMaster : MonoBehaviour
             // ポーズ中は処理を停止
             Enemies[i].IsAllStop = IsGameStop;
 
-            if(enemyTypes[i] != EnemyType.Dry)
+            if(enemyTypes[i] == EnemyType.Normal)
             {
-                // エネミーの種類が乾燥タイプ以外ならばゲームステートがプレイ及びアメフラシ起動時以外は移動処理を停止
+                // エネミーの種類がノーマルならばゲームステートがプレイ及びアメフラシ起動時以外は移動処理を停止
                 Enemies[i].IsMoveStop = IsStandby;
             }
         }
 
+        // エネミーの種類が乾燥タイプのとき
         foreach(var dry in DryEnemies)
         {
             // ポーズ中は処理を停止
@@ -185,6 +210,52 @@ public class EnemyMaster : MonoBehaviour
             // ゲームステートがプレイ及びアメフラシ起動時以外またはアニメーションが実行中の場合は移動処理を停止
             dry.EnemyObject.IsMoveStop = IsStandby || dry.IsDoingAnimation;
         }
+
+        // エネミーの種類が帯電タイプのとき
+        foreach(var electric in ElectricEnemies)
+        {
+            // ゲームステートがプレイ及びアメフラシ起動時以外または落雷処理が実行中の場合は移動処理を停止
+            electric.EnemyObject.IsMoveStop = IsStandby || electric.IsStop;
+        }
+    }
+
+    /// <summary>
+    /// 落雷地点となる帯電ナマコをランダムに取得
+    /// </summary>
+    private void GetTargetElectricEnemy()
+    {
+        if(TargetElectricEnemy != null) { return; }
+        // 帯電ナマコの中から帯電状態でないナマコのIDを取得
+        List<int> index = new List<int>();
+        int count = 0;
+        foreach(var electric in ElectricEnemies)
+        {
+            if(electric.IsElectric == false)
+            {
+                index.Add(count);
+            }
+            count++;
+        }
+
+        // 全ての帯電ナマコが帯電化しているなら処理を終了
+        if(index.Count < 1)
+        {
+            TargetElectricEnemy = null;
+            return;
+        }
+
+        // 帯電化していないナマコをランダムに選定
+        int rand = Random.Range(0, index.Count);
+        TargetElectricEnemy = ElectricEnemies[index[rand]];
+    }
+
+    /// <summary>
+    /// 帯電ナマコを帯電化させる
+    /// </summary>
+    public void ChangeElectricMode()
+    {
+        if(TargetElectricEnemy == null) { return; }
+        TargetElectricEnemy.ElectricMode(true);
     }
 
     private void Update()
@@ -192,5 +263,7 @@ public class EnemyMaster : MonoBehaviour
         SetState();
 
         CheckEnemyFlag();
+
+        GetTargetElectricEnemy();
     }
 }

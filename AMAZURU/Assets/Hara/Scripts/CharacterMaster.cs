@@ -14,13 +14,8 @@ public class CharacterMaster : MonoBehaviour
     /// </summary>
     public PlayerType2 Player { private set; get; } = null;
 
-    /// <summary>
-    /// エネミーの情報
-    /// </summary>
-    public EnemyMaster Enemy { private set; get; } = null;
-
-    // ステージの水位情報
-    private WaterHi stageWater = null;
+    // エネミーの情報
+    private EnemyMaster enemy = null;
 
     /// <summary>
     /// ゲームオーバーフラグ
@@ -31,6 +26,16 @@ public class CharacterMaster : MonoBehaviour
     /// 落雷を発生できる状態か
     /// </summary>
     public bool IsCanLightningStrike { private set; get; } = false;
+
+    /// <summary>
+    /// 落雷地点オブジェクト
+    /// </summary>
+    public GameObject LightningStrikePoint { private set; get; } = null;
+
+    /// <summary>
+    /// ステージの感電状態フラグ
+    /// </summary>
+    public bool IsStageElectric { private set; get; } = false;
 
     // 感電状態のフラグ
     private bool isElectric = false;
@@ -52,29 +57,27 @@ public class CharacterMaster : MonoBehaviour
         Vector3 rot = startRotation ?? Vector3.zero;
         Player.transform.localRotation = Quaternion.Euler(rot);
 
-        // ステージの水位情報を取得
-        stageWater = water;
-
         // プレイヤーに水位情報を渡す
-        Player.StageWater = stageWater;
+        Player.StageWater = water;
 
         // 敵情報を取得
-        GetEnemyInfo();
+        GetEnemyInfo(water);
     }
 
     /// <summary>
     /// エネミーの情報を取得する
     /// </summary>
-    private void GetEnemyInfo()
+    /// <param name="water">ステージの水位情報</param>
+    private void GetEnemyInfo(WaterHi water)
     {
-        Enemy = FindObjectOfType<EnemyMaster>();
+        enemy = FindObjectOfType<EnemyMaster>();
 
         // 敵情報の取得に成功した場合 (敵が配置されているステージで正常に取得出来たときのみ)
-        if (Enemy != null)
+        if (enemy != null)
         {
             // 敵のスポーン処理を開始
-            Enemy.StageWater = stageWater;
-            Enemy.Init();
+            enemy.StageWater = water;
+            enemy.Init();
         }
     }
 
@@ -83,10 +86,10 @@ public class CharacterMaster : MonoBehaviour
     /// </summary>
     private void CheckEnemyState()
     {
-        if (Enemy != null && Player != null)
+        if (enemy != null && Player != null)
         {
             // エネミー側のゲームオーバーフラグを取得する
-            IsGameOver = Enemy.IsGameOver;
+            IsGameOver = enemy.IsGameOver;
         }
         else
         {
@@ -132,9 +135,9 @@ public class CharacterMaster : MonoBehaviour
             else
             {
                 // ステートがプレイのときは敵と接触または感電状態のときのみ入力不可にする
-                if(Enemy != null)
+                if(enemy != null)
                 {
-                    Player.DontInput = Enemy.IsHit || isElectric;
+                    Player.DontInput = enemy.IsHit || isElectric;
                 }
                 else
                 {
@@ -162,15 +165,15 @@ public class CharacterMaster : MonoBehaviour
     /// </summary>
     private void SetEnemyGameState()
     {
-        if(Enemy != null)
+        if(enemy != null)
         {
             PlayState.GameMode mode = GetGameMode();
 
             // ポーズ中は移動処理とアニメーションを停止
-            Enemy.IsGameStop = mode == PlayState.GameMode.Pause;
+            enemy.IsGameStop = mode == PlayState.GameMode.Pause;
 
             // プレイ中とアメフラシ起動時以外のときはスタンバイ状態にする
-            Enemy.IsStandby = mode != PlayState.GameMode.Play && mode != PlayState.GameMode.Rain;
+            enemy.IsStandby = mode != PlayState.GameMode.Play && mode != PlayState.GameMode.Rain;
         }
     }
 
@@ -185,18 +188,9 @@ public class CharacterMaster : MonoBehaviour
 
         if(IsCanLightningStrike && Player != null && GetGameMode() == PlayState.GameMode.Play)
         {
-            // 帯電ナマコが水中にいるかチェック
-            bool electricFlag = false;
-            foreach(var electric in Enemy.ElectricEnemies)
-            {
-                if (electric.IsStageElectric)
-                {
-                    electricFlag = true;
-                    break;
-                }
-            }
+            IsStageElectric = enemy.IsStageElectric;
 
-            if (Player.InWater && isElectric == false && isElectricInterval == false && electricFlag)
+            if (Player.InWater && isElectric == false && isElectricInterval == false && IsStageElectric)
             {
                 // プレイヤーが水中かつ感電状態でないとき感電状態にする
                 isElectric = true;
@@ -233,15 +227,51 @@ public class CharacterMaster : MonoBehaviour
         else
         {
             isElectric = false;
+            IsStageElectric = false;
+        }
+    }
+
+    /// <summary>
+    /// 落雷地点を取得
+    /// </summary>
+    private void GetLightningStrikePoint()
+    {
+        if (IsCanLightningStrike == false || enemy.TargetElectricEnemy == null)
+        {
+            LightningStrikePoint = null;
+        }
+        else
+        {
+            LightningStrikePoint = enemy.TargetElectricEnemy.gameObject;
         }
     }
 
     /// <summary>
     /// 落雷時に呼び出す処理
     /// </summary>
-    public void LightningStrike()
+    public void LightningStrikeAction()
     {
-        
+        if(IsCanLightningStrike == false || LightningStrikePoint == null) { return; }
+        enemy.ChangeElectricMode();
+    }
+
+    /// <summary>
+    /// デバッグ処理(後に削除します)
+    /// </summary>
+    private void DebugAction()
+    {
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            if(LightningStrikePoint != null)
+            {
+                Debug.Log(LightningStrikePoint.transform.position);
+                LightningStrikeAction();
+            }
+            else
+            {
+                Debug.Log("NULL");
+            }
+        }
     }
 
     // Update is called once per frame
@@ -254,8 +284,13 @@ public class CharacterMaster : MonoBehaviour
         CheckEnemyState();
 
         // 落雷できるかチェック
-        IsCanLightningStrike = Enemy != null && Enemy.ElectricEnemies.Count > 0;
+        IsCanLightningStrike = enemy != null && enemy.ElectricEnemies.Count > 0;
+
+        GetLightningStrikePoint();
 
         CheckElectricDamage();
+
+        // デバッグ
+        DebugAction();
     }
 }
