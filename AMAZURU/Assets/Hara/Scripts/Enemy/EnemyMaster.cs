@@ -257,6 +257,7 @@ public class EnemyMaster : MonoBehaviour
     {
         if(TargetElectricEnemy == null) { return; }
         TargetElectricEnemy.ElectricMode(true);
+        TargetElectricEnemy = null;
     }
 
     private void Update()
