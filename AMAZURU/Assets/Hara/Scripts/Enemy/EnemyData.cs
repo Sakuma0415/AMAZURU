@@ -22,6 +22,12 @@ public class EnemyData : ScriptableObject
     // サイズ倍率
     public float Size = 1.0f;
 
+    // スタート時の位置を設定するか
+    public bool UseStartPosSetting = false;
+
+    // スタート時の座標
+    public Vector3 StartPosition = Vector3.zero;
+
     // 行動計画
     [Header("行動計画")]
     public Vector3[] MovePlan = null;

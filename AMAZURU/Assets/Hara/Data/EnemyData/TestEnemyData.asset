@@ -15,6 +15,8 @@ MonoBehaviour:
   Type: 2
   StartRotate: 0
   Size: 1
+  UseStartPosSetting: 1
+  StartPosition: {x: 5.5, y: 1, z: 5.5}
   MovePlan:
   - {x: 8.5, y: 1, z: 2.5}
   - {x: 8.5, y: 1, z: 8.5}
@@ -22,7 +24,7 @@ MonoBehaviour:
   - {x: 5.5, y: 1, z: 2.5}
   MoveType: 0
   NomalSpeed: 1
-  WaterSpeed: 1
+  WaterSpeed: 20
   UseDefaultSetting: 1
   BlockSetPosY: 0
   ReturnBlock: 1

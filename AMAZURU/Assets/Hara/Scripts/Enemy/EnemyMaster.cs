@@ -80,7 +80,8 @@ public class EnemyMaster : MonoBehaviour
         foreach(var data in enemyData)
         {
             // 敵のインスタンスを作成
-            Enemies[count] = Instantiate(enemyPrefab, data.MovePlan[0], Quaternion.identity, gameObject.transform);
+            Vector3 startPos = data.UseStartPosSetting ? data.StartPosition : data.MovePlan[0];
+            Enemies[count] = Instantiate(enemyPrefab, startPos, Quaternion.identity, gameObject.transform);
             Vector3 startRot;
             switch (data.StartRotate)
             {
@@ -109,13 +110,14 @@ public class EnemyMaster : MonoBehaviour
                 Enemies[count].EnemySpeed = data.NomalSpeed;
                 Enemies[count].EnemyWaterSpeed = data.WaterSpeed;
             }
+            Enemies[count].StartPosFlag = data.UseStartPosSetting;
             Enemies[count].StageWater = StageWater;
             Enemies[count].EnemyInit();
 
             if(enemyTypes[count] == EnemyType.Dry)
             {
                 // 乾燥ブロックのインスタンスを作成
-                var block = Instantiate(dryEnemyPrefab, data.MovePlan[0], Quaternion.identity, gameObject.transform);
+                var block = Instantiate(dryEnemyPrefab, startPos, Quaternion.identity, gameObject.transform);
                 block.EnemyObject = Enemies[count];
                 block.BlockSize = data.Size;
                 block.BlockCenterY = data.BlockSetPosY;

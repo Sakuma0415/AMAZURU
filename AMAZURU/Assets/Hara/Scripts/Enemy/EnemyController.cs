@@ -87,6 +87,11 @@ namespace Enemy
         /// </summary>
         public bool IsMoveStop { set; private get; } = false;
 
+        /// <summary>
+        /// スタート地点を別の座標にするフラグ
+        /// </summary>
+        public bool StartPosFlag { set; private get; } = false;
+
         private void FixedUpdate()
         {
             if(IsAllStop == false)
@@ -152,15 +157,23 @@ namespace Enemy
             if (IsMoveStop == false)
             {
                 int nextLocation;
-                if (finishOneLoop)
+                if (StartPosFlag)
                 {
-                    nextLocation = location - 1 < 0 ? moveType == EnemyMoveType.Lap ? movePlan.Length - 1 : location + 1 : location - 1;
+                    nextLocation = location;
                 }
                 else
                 {
-                    nextLocation = location + 1 >= movePlan.Length ? moveType == EnemyMoveType.Lap ? 0 : location - 1 : location + 1;
+                    if (finishOneLoop)
+                    {
+                        nextLocation = location - 1 < 0 ? moveType == EnemyMoveType.Lap ? movePlan.Length - 1 : location + 1 : location - 1;
+                    }
+                    else
+                    {
+                        nextLocation = location + 1 >= movePlan.Length ? moveType == EnemyMoveType.Lap ? 0 : location - 1 : location + 1;
+                    }
                 }
-                Vector3 nowPos = movePlan[location];
+
+                Vector3 nowPos = transform.position;
                 Vector3 nextPos = movePlan[nextLocation];
                 Vector3 forward = (nextPos - nowPos).normalized;
 
@@ -199,30 +212,34 @@ namespace Enemy
                             }
                             break;
                         case 3:
-                            if (finishOneLoop)
+                            if(StartPosFlag == false)
                             {
-                                location--;
-                                if (moveType == EnemyMoveType.Lap)
+                                if (finishOneLoop)
                                 {
-                                    if (location < 0) { location = movePlan.Length - 1; }
+                                    location--;
+                                    if (moveType == EnemyMoveType.Lap)
+                                    {
+                                        if (location < 0) { location = movePlan.Length - 1; }
+                                    }
+                                    else
+                                    {
+                                        if (location < 1) { finishOneLoop = false; }
+                                    }
                                 }
                                 else
                                 {
-                                    if (location < 1) { finishOneLoop = false; }
+                                    location++;
+                                    if (moveType == EnemyMoveType.Lap)
+                                    {
+                                        if (location >= movePlan.Length) { location = 0; }
+                                    }
+                                    else
+                                    {
+                                        if (location >= movePlan.Length - 1) { finishOneLoop = true; }
+                                    }
                                 }
                             }
-                            else
-                            {
-                                location++;
-                                if (moveType == EnemyMoveType.Lap)
-                                {
-                                    if (location >= movePlan.Length) { location = 0; }
-                                }
-                                else
-                                {
-                                    if (location >= movePlan.Length - 1) { finishOneLoop = true; }
-                                }
-                            }
+                            StartPosFlag = false;
                             stepEnd = true;
                             break;
                         default:
