@@ -12,6 +12,8 @@ public class EnemyMaster : MonoBehaviour
 
     [SerializeField, Header("エネミーデータ")] private EnemyData[] enemyData = null;
 
+    private bool startOperation = false;
+
     /// <summary>
     /// ステージ上のナマコ(エネミー)の情報を格納する
     /// </summary>
@@ -144,6 +146,8 @@ public class EnemyMaster : MonoBehaviour
 
             count++;
         }
+
+        startOperation = true;
     }
 
     /// <summary>
@@ -189,16 +193,18 @@ public class EnemyMaster : MonoBehaviour
     /// </summary>
     private void SetState()
     {
-        for(int i = 0; i < Enemies.Length; i++)
+        int count = 0;
+        foreach(var enemy in Enemies)
         {
             // ポーズ中は処理を停止
-            Enemies[i].IsAllStop = IsGameStop;
+            enemy.IsAllStop = IsGameStop;
 
-            if(enemyTypes[i] == EnemyType.Normal)
+            if (enemyTypes[count] != EnemyType.Dry)
             {
-                // エネミーの種類がノーマルならばゲームステートがプレイ及びアメフラシ起動時以外は移動処理を停止
-                Enemies[i].IsMoveStop = IsStandby;
+                // エネミーの種類が乾燥タイプ以外ならばゲームステートがプレイ及びアメフラシ起動時以外は移動処理を停止
+                enemy.IsMoveStop = IsStandby;
             }
+            count++;
         }
 
         // エネミーの種類が乾燥タイプのとき
@@ -209,13 +215,6 @@ public class EnemyMaster : MonoBehaviour
 
             // ゲームステートがプレイ及びアメフラシ起動時以外またはアニメーションが実行中の場合は移動処理を停止
             dry.EnemyObject.IsMoveStop = IsStandby || dry.IsDoingAnimation;
-        }
-
-        // エネミーの種類が帯電タイプのとき
-        foreach(var electric in ElectricEnemies)
-        {
-            // ゲームステートがプレイ及びアメフラシ起動時以外または落雷処理が実行中の場合は移動処理を停止
-            electric.EnemyObject.IsMoveStop = IsStandby || electric.IsStop;
         }
     }
 
@@ -260,6 +259,8 @@ public class EnemyMaster : MonoBehaviour
 
     private void Update()
     {
+        if(startOperation == false) { return; }
+
         SetState();
 
         CheckEnemyFlag();

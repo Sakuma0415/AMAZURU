@@ -15,11 +15,6 @@ public class ElectricEnemy : MonoBehaviour
     /// </summary>
     public bool IsElectric { private set; get; } = false;
 
-    /// <summary>
-    /// 落雷時の移動停止フラグ
-    /// </summary>
-    public bool IsStop { private set; get; } = false;
-
     private GameObject[] enemyModels = null;
     private Animator[] enemyAnimators = null;
 
