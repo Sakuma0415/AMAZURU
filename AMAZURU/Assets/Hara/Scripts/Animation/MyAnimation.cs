@@ -101,6 +101,7 @@ public class MyAnimation : MonoBehaviour
 
         if(Vector3.Distance(vecFrom, vecTo) < 1.0f)
         {
+            _ = local ? obj.transform.localRotation = to : obj.transform.rotation = to;
             return true;
         }
         else
