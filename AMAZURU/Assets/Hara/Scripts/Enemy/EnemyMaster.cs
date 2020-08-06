@@ -70,6 +70,7 @@ public class EnemyMaster : MonoBehaviour
     /// </summary>
     public void Init()
     {
+        if(enemyData.Length < 1) { return; }
         transform.position = Vector3.zero;
         Enemies = new EnemyController[enemyData.Length];
         enemyTypes = new EnemyType[enemyData.Length];
