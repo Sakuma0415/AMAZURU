@@ -204,7 +204,11 @@ namespace Enemy
                             {
                                 float speed = InWater ? enemyWaterSpeed : enemySpeed;
                                 transform.position = Vector3.MoveTowards(transform.position, movePlan[nextLocation], speed * delta);
-                                stepEnd = transform.position == movePlan[nextLocation];
+                                if(Vector3.Distance(transform.position, movePlan[nextLocation]) < 0.1f)
+                                {
+                                    transform.position = movePlan[nextLocation];
+                                    stepEnd = true;
+                                }
                             }
                             else
                             {
