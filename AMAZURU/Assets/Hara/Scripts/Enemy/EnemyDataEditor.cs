@@ -39,7 +39,7 @@ public class EnemyDataEditor : Editor
             EditorGUILayout.LabelField("-----以下、特殊設定-----", myStyle);
             if (enemyData.Type == EnemyType.Dry)
             {
-                enemyData.BlockSetPosY = Mathf.Max(0, EditorGUILayout.IntField("ブロックの設置位置", enemyData.BlockSetPosY));
+                enemyData.BlockSetPosY = Mathf.Max(0, EditorGUILayout.IntField("ブロックの設置位置 + n", enemyData.BlockSetPosY));
                 enemyData.ReturnBlock = EditorGUILayout.Toggle("ブロック状態に戻す", enemyData.ReturnBlock);
             }
         }

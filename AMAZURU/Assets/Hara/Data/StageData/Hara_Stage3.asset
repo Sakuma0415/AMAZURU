@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: Hara_Stage3
   m_EditorClassIdentifier: 
   stageName: 
-  stageSize: {x: 20, y: 21, z: 20}
+  stageSize: {x: 20, y: 15, z: 20}
   startPos: {x: 9.5, y: 1, z: 1.5}
   waterStep: 1
   stagePrefab: {fileID: 7168763282634297021, guid: 252b27ba9ae34a24ebc8590d044b7a8f,
     type: 3}
-  AmehurashiQuantity: 4
+  AmehurashiQuantity: 9
   startAngle: -90
-  CameraDisS: 30
-  CameraDisP: 5
+  CameraDisS: 25
+  CameraDisP: 4
   TutorialFlg: 0
   TutorialObjs: []
   IsThunder: 0
