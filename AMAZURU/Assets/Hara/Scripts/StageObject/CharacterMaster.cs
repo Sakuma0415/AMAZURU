@@ -255,25 +255,6 @@ public class CharacterMaster : MonoBehaviour
         enemy.ChangeElectricMode();
     }
 
-    /// <summary>
-    /// デバッグ処理(後に削除します)
-    /// </summary>
-    private void DebugAction()
-    {
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            if(LightningStrikePoint != null)
-            {
-                Debug.Log(LightningStrikePoint.transform.position);
-                LightningStrikeAction();
-            }
-            else
-            {
-                Debug.Log("NULL");
-            }
-        }
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -289,8 +270,5 @@ public class CharacterMaster : MonoBehaviour
         GetLightningStrikePoint();
 
         CheckElectricDamage();
-
-        // デバッグ
-        DebugAction();
     }
 }
