@@ -10,21 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a499892a3387a645ae55361087d074f, type: 3}
-  m_Name: Hara0807-02
+  m_Name: New Enemy Data
   m_EditorClassIdentifier: 
-  Type: 1
-  StartRotate: 3
+  Type: 0
+  StartRotate: 0
   Size: 1
-  UseStartPosSetting: 1
-  StartPosition: {x: 16.5, y: 2, z: 13.5}
-  MovePlan:
-  - {x: 13.5, y: 2, z: 13.5}
-  - {x: 13.5, y: 2, z: 6.5}
-  - {x: 19.5, y: 2, z: 6.5}
-  - {x: 19.5, y: 2, z: 13.5}
+  UseStartPosSetting: 0
+  StartPosition: {x: 0, y: 0, z: 0}
+  MovePlan: []
   MoveType: 0
   NomalSpeed: 1
   WaterSpeed: 1
   UseDefaultSetting: 1
-  BlockSetPosY: 0
-  ReturnBlock: 0
+  BlockSetPosY: 1
+  ReturnBlock: 1
