@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageName: Shimojima_Beta1
   stageSize: {x: 15, y: 10, z: 15}
-  startPos: {x: 6, y: 4, z: 1}
+  startPos: {x: 7, y: 4, z: 1}
   waterStep: 1
   stagePrefab: {fileID: 4762488391176883356, guid: 155d508e9d4e82a4a9949fd40ee5828e,
     type: 3}
-  AmehurashiQuantity: 3
+  AmehurashiQuantity: 4
   startAngle: 0
   CameraDisS: 21
   CameraDisP: 5
