@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageName: 
   stageSize: {x: 20, y: 21, z: 20}
-  startPos: {x: 10.5, y: 1, z: 1.5}
+  startPos: {x: 9.5, y: 1, z: 1.5}
   waterStep: 1
   stagePrefab: {fileID: 7168763282634297021, guid: 252b27ba9ae34a24ebc8590d044b7a8f,
     type: 3}
@@ -25,3 +25,4 @@ MonoBehaviour:
   TutorialFlg: 0
   TutorialObjs: []
   IsThunder: 0
+  DoThunder: 0
