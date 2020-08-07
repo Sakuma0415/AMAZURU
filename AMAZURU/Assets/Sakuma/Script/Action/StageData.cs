@@ -30,5 +30,9 @@ public class StageData : ScriptableObject
     //チュートリアルがあるかどうかのフラグ
     public bool TutorialFlg=false ;
     //チュートリアルに表示するオブジェ
-    public GameObject[] TutorialObjs; 
+    public GameObject[] TutorialObjs;
+    //雷が降るかどうかのフラグ
+    public bool IsThunder = false;
+    //雷を降らせる個数
+    public int DoThunder;
 }
