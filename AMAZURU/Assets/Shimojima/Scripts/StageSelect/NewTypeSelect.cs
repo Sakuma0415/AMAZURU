@@ -323,11 +323,12 @@ public class NewTypeSelect : MonoBehaviour
             if(i == 0) 
             { 
                 sssd.level++; 
-                if (sssd.level == allPSD.Count) { sssd.level = allPSD.Count - 1; } 
+                if (sssd.level == allPSD.Count) { sssd.level = 0; } 
             }
             else if (i == 1)
             {
-                sssd.level = allPSD.Count - 1;
+                sssd.level = config.save.level - 1;
+                if(sssd.level == -1) { sssd.level = allPSD.Count - 1; }
             }
         }
 
