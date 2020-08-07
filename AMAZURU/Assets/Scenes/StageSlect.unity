@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.5490756, g: 0.78048354, b: 0.7766962, a: 1}
+  m_IndirectSpecularColor: {r: 0.549257, g: 0.78058803, b: 0.77652794, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2374,73 +2374,7 @@ MonoBehaviour:
   scaleAdjust: {x: 8, y: 8}
   speed: 1
   rotateAngle: 36
-  vStage:
-  - name: 
-    difficulity: 0
-    amehurashiNum: 0
-    increasedWaterVolume: 0
-    stage: {fileID: 0}
-    defScale: {x: 0, y: 0, z: 0}
-    sizeChangeSpeed: {x: 0, y: 0, z: 0}
-    minimamSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    verticalMoveSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    index: 0
-    psdIndex: 0
-  - name: 
-    difficulity: 0
-    amehurashiNum: 0
-    increasedWaterVolume: 0
-    stage: {fileID: 0}
-    defScale: {x: 0, y: 0, z: 0}
-    sizeChangeSpeed: {x: 0, y: 0, z: 0}
-    minimamSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    verticalMoveSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    index: 0
-    psdIndex: 0
-  - name: 
-    difficulity: 0
-    amehurashiNum: 0
-    increasedWaterVolume: 0
-    stage: {fileID: 0}
-    defScale: {x: 0, y: 0, z: 0}
-    sizeChangeSpeed: {x: 0, y: 0, z: 0}
-    minimamSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    verticalMoveSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    index: 0
-    psdIndex: 0
-  - name: 
-    difficulity: 0
-    amehurashiNum: 0
-    increasedWaterVolume: 0
-    stage: {fileID: 0}
-    defScale: {x: 0, y: 0, z: 0}
-    sizeChangeSpeed: {x: 0, y: 0, z: 0}
-    minimamSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    verticalMoveSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    index: 0
-    psdIndex: 0
-  - name: 
-    difficulity: 0
-    amehurashiNum: 0
-    increasedWaterVolume: 0
-    stage: {fileID: 0}
-    defScale: {x: 0, y: 0, z: 0}
-    sizeChangeSpeed: {x: 0, y: 0, z: 0}
-    minimamSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    verticalMoveSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    index: 0
-    psdIndex: 0
-  - name: 
-    difficulity: 0
-    amehurashiNum: 0
-    increasedWaterVolume: 0
-    stage: {fileID: 0}
-    defScale: {x: 0, y: 0, z: 0}
-    sizeChangeSpeed: {x: 0, y: 0, z: 0}
-    minimamSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    verticalMoveSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    index: 0
-    psdIndex: 0
+  level: 0
   config: {fileID: 11400000, guid: 6595b502da4dec449942f729c30d55f4, type: 2}
 --- !u!222 &3730866607375924417
 CanvasRenderer:
