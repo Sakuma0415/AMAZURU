@@ -22,6 +22,8 @@ public class Progress : MonoBehaviour
     AnimationClip[] animation;
 
     public Animator animator;
+    bool IsThunder = false;
+
         //初期化
     void SetState()
     {
@@ -33,6 +35,8 @@ public class Progress : MonoBehaviour
         SetState();
         progress = this;
         SoundManager.soundManager.PlayBgm("PerituneMaterial_Wonder3_loop", 0.5f, 0.1f, 1);
+
+        IsThunder = false;
         //謎
         //SoundManager.soundManager.StopBgm(1f,0);
     }
@@ -56,6 +60,11 @@ public class Progress : MonoBehaviour
                 PlayState.playState.gameMode = PlayState.GameMode.Play;
             }
         }
+
+
+
+
+
     }
 
     //result画面を呼び出す関数
