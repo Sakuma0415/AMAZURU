@@ -97,12 +97,11 @@ public class DryEnemy : MonoBehaviour
         }
         else
         {
-            if (spawnFlag)
+            // 水位が下回り、ブロックに戻すフラグがtrueのときのみ実行する
+            if (ReturnDryMode)
             {
                 spawnFlag = false;
-
-                // 敵をブロックの状態に戻す
-                if (ReturnDryMode) { ReturnBlock(); }
+                ReturnBlock();
             }
         }
     }
