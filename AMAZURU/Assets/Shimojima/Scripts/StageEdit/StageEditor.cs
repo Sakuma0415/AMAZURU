@@ -71,6 +71,7 @@ public class StageEditor : MonoBehaviour
 
     private bool IsInputAnyKey { get; set; } = false;
     private float horizontal, vertical = 0;
+    private bool deleteComponent = false;
 
     private void Start()
     {
@@ -300,6 +301,7 @@ public class StageEditor : MonoBehaviour
                 GameObject s_obj = Instantiate(floorRefObj[x], gridPos[i,0,j].transform.position, Quaternion.identity);
                 s_obj.name = referenceObject[0].name;
                 s_obj.AddComponent<MyCellIndex>().cellIndex = new Vector3Int(i, 0, j);
+                Destroy(s_obj.GetComponent<BoxCollider>());
                 s_obj.transform.parent = stageRoot.transform;
                 _StageObjects[i, 0, j] = s_obj;
             }
@@ -395,6 +397,7 @@ public class StageEditor : MonoBehaviour
         o.transform.localEulerAngles += objAngle;
         o.transform.parent = stageRoot.transform;
         o.AddComponent<MyCellIndex>().cellIndex = cellIndex;
+        if (deleteComponent && o.name == "SandFloor") { Destroy(o.GetComponent<BoxCollider>()); }
         
         _StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] = o;
         gridPos[cellIndex.x, cellIndex.y, cellIndex.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
@@ -575,6 +578,11 @@ public class StageEditor : MonoBehaviour
         GameObject obj = Instantiate(_StageObjects[i, j, k]);
         obj.transform.parent = _obj.transform;
         _StageObjects[i, j, k] = obj;
+    }
+
+    public void SwitchComponent()
+    {
+        deleteComponent = !deleteComponent;
     }
 }
 
