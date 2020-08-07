@@ -17,8 +17,18 @@ public class DryEnemy : MonoBehaviour
     /// </summary>
     public WaterHi StageWater { set; private get; } = null;
 
+    /// <summary>
+    /// アニメーション実行中のフラグ
+    /// </summary>
+    public bool IsDoingAnimation { private set; get; } = false;
+
+    /// <summary>
+    /// ゲーム停止中のフラグ
+    /// </summary>
+    public bool IsStop { set; private get; } = false;
+
     // このオブジェクトに必要なデータ
-    public EnemyController EnemyObject { set; private get; } = null;
+    public EnemyController EnemyObject { set; get; } = null;
     private BoxCollider box = null;
     private bool spawnFlag = false;
     private GameObject blockObject = null;
@@ -135,12 +145,21 @@ public class DryEnemy : MonoBehaviour
         float duration = 1.0f;
 
         EnemyObject.transform.position = transform.position;
-        EnemyObject.gameObject.SetActive(true);
         EnemyObject.transform.localScale = Vector3.zero;
-        EnemyObject.DontMove = true;
+        IsDoingAnimation = true;
 
-        while(time < duration)
+        // 1フレーム遅延させてから敵を表示させる
+        yield return null;
+        EnemyObject.gameObject.SetActive(true);
+
+        while (time < duration)
         {
+            // ポーズ中は待機処理をループ
+            while (IsStop)
+            {
+                yield return null;
+            }
+
             float diff = time / duration;
             float sub = 1.0f - diff;
 
@@ -161,10 +180,16 @@ public class DryEnemy : MonoBehaviour
         // 生成された敵をゆっくり地面に降下させる
         while (EnemyObject.transform.position != spawnPos)
         {
+            // ポーズ中は待機処理をループ
+            while (IsStop)
+            {
+                yield return null;
+            }
+
             EnemyObject.transform.position = Vector3.MoveTowards(EnemyObject.transform.position, spawnPos, 2.0f * Time.deltaTime);
             yield return null;
         }
-        EnemyObject.DontMove = false;
+        IsDoingAnimation = false;
 
         // ブロックの判定を無効にする
         transform.position = transform.position + Vector3.down * blockPos.y;
@@ -186,12 +211,18 @@ public class DryEnemy : MonoBehaviour
         blockPos = FixedPosition(EnemyObject.transform.position);
         transform.position = blockPos;
         transform.localScale = Vector3.zero;
-        EnemyObject.DontMove = true;
+        IsDoingAnimation = true;
         blockObject.SetActive(true);
         spawnPos = new Vector3(blockPos.x, EnemyObject.transform.position.y, blockPos.z);
 
         while (time < duration)
         {
+            // ポーズ中は待機処理をループ
+            while (IsStop)
+            {
+                yield return null;
+            }
+
             float diff = time / duration;
             float sub = 1.0f - diff;
 

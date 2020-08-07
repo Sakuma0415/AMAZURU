@@ -10,12 +10,20 @@ namespace Enemy
         Wrap
     }
 
+    public enum EnemyType
+    {
+        Normal,
+        Dry,
+        Electric
+    }
+
     public class EnemyController : MyAnimation
     {
         private SphereCollider enemy = null;
         [SerializeField, Tooltip("敵のAnimator")] private Animator enemyAnime = null;
+        public Animator EnemyAnime { set { enemyAnime = value; } }
+
         [SerializeField, Tooltip("プレイヤーのレイヤー")] private LayerMask playerLayer;
-        private PlayState.GameMode mode = PlayState.GameMode.Play;
 
         /// <summary>
         /// 水位の情報を扱う変数
@@ -44,13 +52,16 @@ namespace Enemy
 
         [SerializeField, Header("回転力")] private float rotatePower = 50f;
         [SerializeField, Header("敵のコライダーの大きさ"), Range(0.1f, 1.0f)] private float colliderSize = 0.5f;
-        public bool DontMove { set; private get; } = false;
 
         private int location = 0;
         private int step = 0;
         private bool stepEnd = false;
         private bool finishOneLoop = false;
-        private bool inWater = false;
+
+        /// <summary>
+        /// 水中フラグ
+        /// </summary>
+        public bool InWater { private set; get; } = false;
 
         // 足音再生用の変数
         private float animationSpeed = 0;
@@ -66,16 +77,36 @@ namespace Enemy
         /// </summary>
         public bool IsHitPlayer { private set; get; } = false;
 
+        /// <summary>
+        /// 移動処理とアニメーションを完全に停止するフラグ
+        /// </summary>
+        public bool IsAllStop { set; private get; } = false;
 
-        // Start is called before the first frame update
-        void Start()
-        {
-            
-        }
+        /// <summary>
+        /// 移動処理のみを停止するフラグ
+        /// </summary>
+        public bool IsMoveStop { set; private get; } = false;
+
+        /// <summary>
+        /// スタート地点を別の座標にするフラグ
+        /// </summary>
+        public bool StartPosFlag { set; private get; } = false;
 
         private void FixedUpdate()
         {
-            EnemyMove(true);
+            if(IsAllStop == false)
+            {
+                // エネミーの移動処理
+                EnemyMove(true);
+            }
+            else
+            {
+                // アニメーションの停止
+                if (enemyAnime != null)
+                {
+                    enemyAnime.enabled = false;
+                }
+            }
         }
 
         private void Reset()
@@ -120,25 +151,29 @@ namespace Enemy
         {
             float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
 
-            if(GetGameMode()) { mode = PlayState.playState.gameMode; }
-
             // 水中かチェックする
-            inWater = StageWater != null && transform.position.y + enemy.radius < StageWater.max;
+            InWater = StageWater != null && transform.position.y + enemy.radius < StageWater.max;
 
-            if ((mode == PlayState.GameMode.Play || mode == PlayState.GameMode.Rain))
+            if (IsMoveStop == false)
             {
-                if (DontMove) { return; }
-
                 int nextLocation;
-                if (finishOneLoop)
+                if (StartPosFlag)
                 {
-                    nextLocation = location - 1 < 0 ? moveType == EnemyMoveType.Lap ? movePlan.Length - 1 : location + 1 : location - 1;
+                    nextLocation = location;
                 }
                 else
                 {
-                    nextLocation = location + 1 >= movePlan.Length ? moveType == EnemyMoveType.Lap ? 0 : location - 1 : location + 1;
+                    if (finishOneLoop)
+                    {
+                        nextLocation = location - 1 < 0 ? moveType == EnemyMoveType.Lap ? movePlan.Length - 1 : location + 1 : location - 1;
+                    }
+                    else
+                    {
+                        nextLocation = location + 1 >= movePlan.Length ? moveType == EnemyMoveType.Lap ? 0 : location - 1 : location + 1;
+                    }
                 }
-                Vector3 nowPos = movePlan[location];
+
+                Vector3 nowPos = transform.position;
                 Vector3 nextPos = movePlan[nextLocation];
                 Vector3 forward = (nextPos - nowPos).normalized;
 
@@ -167,41 +202,52 @@ namespace Enemy
                         case 2:
                             if (transform.rotation == Quaternion.LookRotation(forward))
                             {
-                                float speed = inWater ? enemyWaterSpeed : enemySpeed;
+                                float speed = InWater ? enemyWaterSpeed : enemySpeed;
                                 transform.position = Vector3.MoveTowards(transform.position, movePlan[nextLocation], speed * delta);
-                                stepEnd = transform.position == movePlan[nextLocation];
+                                if(Vector3.Distance(transform.position, movePlan[nextLocation]) < 0.1f)
+                                {
+                                    transform.position = movePlan[nextLocation];
+                                    stepEnd = true;
+                                }
                             }
                             else
                             {
                                 step = 1;
                             }
                             break;
+                        case 3:
+                            if(StartPosFlag == false)
+                            {
+                                if (finishOneLoop)
+                                {
+                                    location--;
+                                    if (moveType == EnemyMoveType.Lap)
+                                    {
+                                        if (location < 0) { location = movePlan.Length - 1; }
+                                    }
+                                    else
+                                    {
+                                        if (location < 1) { finishOneLoop = false; }
+                                    }
+                                }
+                                else
+                                {
+                                    location++;
+                                    if (moveType == EnemyMoveType.Lap)
+                                    {
+                                        if (location >= movePlan.Length) { location = 0; }
+                                    }
+                                    else
+                                    {
+                                        if (location >= movePlan.Length - 1) { finishOneLoop = true; }
+                                    }
+                                }
+                            }
+                            StartPosFlag = false;
+                            stepEnd = true;
+                            break;
                         default:
                             step = 0;
-                            if (finishOneLoop)
-                            {
-                                location--;
-                                if (moveType == EnemyMoveType.Lap)
-                                {
-                                    if (location < 0) { location = movePlan.Length - 1; }
-                                }
-                                else
-                                {
-                                    if (location < 1) { finishOneLoop = false; }
-                                }
-                            }
-                            else
-                            {
-                                location++;
-                                if (moveType == EnemyMoveType.Lap)
-                                {
-                                    if (location >= movePlan.Length) { location = 0; }
-                                }
-                                else
-                                {
-                                    if (location >= movePlan.Length - 1) { finishOneLoop = true; }
-                                }
-                            }
                             return;
                     }
 
@@ -223,38 +269,6 @@ namespace Enemy
                         SoundManager.soundManager.PlaySe3D("EnemyMove", transform.position, 0.3f);
                     }
                 }
-            }
-            else
-            {
-                // アニメーションの停止
-                if (enemyAnime != null)
-                {
-                    if (mode == PlayState.GameMode.StartEf || mode == PlayState.GameMode.Stop)
-                    {
-                        enemyAnime.enabled = true;
-                    }
-                    else
-                    {
-                        enemyAnime.enabled = false;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// ゲームステートの取得
-        /// </summary>
-        /// <returns></returns>
-        public bool GetGameMode()
-        {
-            try
-            {
-                var get = PlayState.playState.gameMode;
-                return true;
-            }
-            catch
-            {
-                return false;
             }
         }
     }
