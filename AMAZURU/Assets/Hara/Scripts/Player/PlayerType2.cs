@@ -10,13 +10,16 @@ public class PlayerType2 : MyAnimation
     [SerializeField, Tooltip("Playerの傘のAnimator")] private Animator umbrellaAnimator = null;
     [SerializeField, Tooltip("透明な壁")] private BoxCollider hiddenWallPrefab = null;
     [SerializeField, Tooltip("地面のLayerMask")] private LayerMask groundLayer;
-    [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
     [SerializeField, Tooltip("AnimationEventスクリプト")] private PlayerAnimeEvent animeEvent = null;
 
     // コントローラーの入力
     private float inputX = 0;
     private float inputZ = 0;
-    private bool dontInput = false; // 操作入力を無効にするフラグ
+
+    /// <summary>
+    /// 入力操作を無効にするフラグ
+    /// </summary>
+    public bool DontInput { set; private get; } = false;
 
     [SerializeField, Header("プレイヤーの移動速度"), Range(0, 10)] private float playerSpeed = 5;
     [SerializeField, Header("プレイヤーの水中移動速度"), Range(0, 10)] private float playerWaterSpeed = 2.5f;
@@ -39,8 +42,10 @@ public class PlayerType2 : MyAnimation
     private Vector3[] rayPosition = new Vector3[4] { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
     private BoxCollider[] hiddenWalls = null;
 
-    // 水が腰の高さになったか
-    private bool inWater = false;
+    /// <summary>
+    /// プレイヤーの水中フラグ
+    /// </summary>
+    public bool InWater { private set; get; } = false;
 
     /// <summary>
     /// プレイヤーが水没したことを検知するフラグ
@@ -48,14 +53,34 @@ public class PlayerType2 : MyAnimation
     public bool UnderWater { private set; get; } = false;
 
     /// <summary>
-    /// 敵と接触した時のフラグ
-    /// </summary>
-    public bool ContactEnemy { private set; get; } = false;
-
-    /// <summary>
     /// 一方通行の崖を検知する用のフラグ
     /// </summary>
     public bool CliffFlag { set; private get; } = false;
+
+    /// <summary>
+    /// ゲーム停止中のフラグ
+    /// </summary>
+    public bool IsGameStop { set; private get; } = false;
+
+    /// <summary>
+    /// アメフラシの起動フラグ
+    /// </summary>
+    public bool IsRain { set; private get; } = false;
+
+    /// <summary>
+    /// ゲームクリア時のフラグ
+    /// </summary>
+    public bool IsGameClear { set; private get; } = false;
+
+    /// <summary>
+    /// ゲームオーバー時のフラグ
+    /// </summary>
+    public bool IsGameOver { set; private get; } = false;
+
+    /// <summary>
+    /// 感電時のフラグ
+    /// </summary>
+    public bool IsElectric { set; private get; } = false;
 
     // プレイヤーが動き始めてからの経過時間
     private float speedTime = 0;
@@ -74,7 +99,20 @@ public class PlayerType2 : MyAnimation
 
     private void FixedUpdate()
     {
-        PlayerMove(true);
+        if (IsGameStop == false)
+        {
+            // プレイヤーの移動処理
+            PlayerMove(true);
+        }
+        else
+        {
+            if (playerAnimator != null)
+            {
+                // ポーズ中のみアニメーションを停止
+                playerAnimator.enabled = false;
+                if (umbrellaAnimator != null) { umbrellaAnimator.enabled = false; }
+            }
+        }
     }
 
     private void Reset()
@@ -88,7 +126,6 @@ public class PlayerType2 : MyAnimation
     public void PlayerInit()
     {
         if (PlayerCamera == null) { PlayerCamera = Camera.main; }
-
         CreateHiddenWall();
     }
 
@@ -115,15 +152,6 @@ public class PlayerType2 : MyAnimation
     /// </summary>
     private void PlayerMove(bool fixedUpdate)
     {
-        try
-        {
-            mode = PlayState.playState.gameMode;
-        }
-        catch (System.NullReferenceException)
-        {
-
-        }
-
         // カメラの向いている方向を取得
         Vector3 cameraForward = Vector3.Scale(PlayerCamera.transform.forward == Vector3.up ? -PlayerCamera.transform.up : PlayerCamera.transform.forward == Vector3.down ? PlayerCamera.transform.up : PlayerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
 
@@ -132,154 +160,142 @@ public class PlayerType2 : MyAnimation
 
         float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
 
-        if (mode != PlayState.GameMode.Pause)
+        bool input;
+        float inputSpeed = Mathf.Sqrt((inputX * inputX) + (inputZ * inputZ));
+
+        // 一方通行の崖を利用する際に実行
+        if (CliffFlag)
         {
-            bool input;
-            float inputSpeed = Mathf.Sqrt((inputX * inputX) + (inputZ * inputZ));
-
-            // 一方通行の崖を利用する際に実行
-            if (CliffFlag)
+            foreach (var wall in hiddenWalls)
             {
-                foreach (var wall in hiddenWalls)
-                {
-                    wall.enabled = false;
-                }
-                input = false;
+                wall.enabled = false;
             }
-            else
-            {
-                // 移動方向
-                Vector3 moveDirection = Vector3.zero;
-
-                // 入力の最低許容値
-                float inputMin = 0.1f;
-
-                // 入力を検知したかチェック
-                input = (Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin) && mode == PlayState.GameMode.Play && dontInput == false;
-
-                if (input)
-                {
-                    // 入力方向を向く処理
-                    Quaternion rot = Quaternion.LookRotation(direction, Vector3.up);
-                    rot = Quaternion.Slerp(transform.rotation, rot, 7.5f * delta);
-                    transform.rotation = rot;
-
-                    // 水中かどうかをチェックし、加速度グラフに基づいた移動速度を計算
-                    float speed = inWater ? playerWaterSpeed : playerSpeed;
-                    if (speedTime < maxSpeedTime)
-                    {
-                        speedTime += delta;
-                    }
-                    else
-                    {
-                        speedTime = maxSpeedTime;
-                    }
-
-                    // 地面にRayを飛ばす
-                    Ray ground = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z), Vector3.down);
-                    float hitNomalY = 1.0f;
-                    if(Physics.Raycast(ground, out RaycastHit hit, rayLength, groundLayer))
-                    {
-                        // 地面の傾斜を取得
-                        hitNomalY = hit.normal.y;
-                    }
-
-                    // 斜め入力時の移動量を修正
-                    moveDirection = direction.normalized;
-
-                    // 坂を移動する際の傾斜を考慮した移動量に修正
-                    if (hitNomalY != 1.0f)
-                    {
-                        var nomal = hit.normal;
-                        Vector3 dir = moveDirection - Vector3.Dot(moveDirection, nomal) * nomal;
-                        moveDirection = dir.normalized;
-                    }
-
-                    // 移動量にスピード値を乗算
-                    moveDirection *= speed * inputSpeed * curve.Evaluate(speedTime / maxSpeedTime);
-                }
-                else
-                {
-                    speedTime = 0;
-                }
-
-                // 重力を反映
-                moveDirection.y -= 10.0f;
-
-                // 実際にキャラクターを動かす
-                character.Move(moveDirection * delta);
-
-                // 透明な壁の設置
-                if (input) { SetHiddenWall(); }
-
-                // 水中フラグの設定
-                if (StageWater != null)
-                {
-                    inWater = (transform.position.y + character.center.y) - (character.height * 0.25f) < StageWater.max;
-                    UnderWater = transform.position.y + character.center.y + character.height * 0.25f < StageWater.max;
-                }
-                else
-                {
-                    inWater = false;
-                    UnderWater = false;
-                }
-
-                // AnimationEventの設定
-                if (animeEvent != null)
-                {
-                    if (UnderWater)
-                    {
-                        animeEvent.PlayerStepMode = StepMode.UnderWater;
-                    }
-                    else if (inWater)
-                    {
-                        animeEvent.PlayerStepMode = StepMode.InWater;
-                    }
-                    else
-                    {
-                        animeEvent.PlayerStepMode = StepMode.Nomal;
-                    }
-                    animeEvent.PlayerPosition = transform.position;
-                }
-            }
-
-            // アニメーション実行
-            if (playerAnimator != null)
-            {
-                playerAnimator.enabled = true;
-                if (umbrellaAnimator != null) { umbrellaAnimator.enabled = true; }
-
-                // 走るアニメーション
-                playerAnimator.SetBool("Run", input);
-                playerAnimator.SetFloat("Speed", inWater ? (inputSpeed * curve.Evaluate(speedTime / maxSpeedTime)) / (playerSpeed / playerWaterSpeed) : inputSpeed * curve.Evaluate(speedTime / maxSpeedTime));
-
-                // アメフラシを起動するアニメーション
-                playerAnimator.SetBool("Switch", mode == PlayState.GameMode.Rain);
-
-                // 崖から降りるアニメーション
-                playerAnimator.SetBool("Jump", CliffFlag);
-
-                // ゲームオーバー時のアニメーション
-                playerAnimator.SetBool("GameOver", mode == PlayState.GameMode.GameOver);
-
-                // クリア時のアニメーションを再生
-                if (mode == PlayState.GameMode.Clear)
-                {
-                    if (RotateAnimation(transform.gameObject, cameraForward * -1, 360 * delta, true))
-                    {
-                        playerAnimator.SetBool("Run", false);
-                        playerAnimator.SetBool("StageClear", true);
-                    }
-                }
-            }
+            input = false;
         }
         else
         {
-            if(playerAnimator != null)
+            // 移動方向
+            Vector3 moveDirection = Vector3.zero;
+
+            // 入力の最低許容値
+            float inputMin = 0.1f;
+
+            // 入力を検知したかチェック
+            input = (Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin) && DontInput == false;
+
+            if (input)
             {
-                // ポーズ中のみアニメーションを停止
-                playerAnimator.enabled = false;
-                if (umbrellaAnimator != null) { umbrellaAnimator.enabled = false; }
+                // 入力方向を向く処理
+                Quaternion rot = Quaternion.LookRotation(direction, Vector3.up);
+                rot = Quaternion.Slerp(transform.rotation, rot, 7.5f * delta);
+                transform.rotation = rot;
+
+                // 水中かどうかをチェックし、加速度グラフに基づいた移動速度を計算
+                float speed = InWater ? playerWaterSpeed : playerSpeed;
+                if (speedTime < maxSpeedTime)
+                {
+                    speedTime += delta;
+                }
+                else
+                {
+                    speedTime = maxSpeedTime;
+                }
+
+                // 地面にRayを飛ばす
+                Ray ground = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z), Vector3.down);
+                float hitNomalY = 1.0f;
+                if (Physics.Raycast(ground, out RaycastHit hit, rayLength, groundLayer))
+                {
+                    // 地面の傾斜を取得
+                    hitNomalY = hit.normal.y;
+                }
+
+                // 斜め入力時の移動量を修正
+                moveDirection = direction.normalized;
+
+                // 坂を移動する際の傾斜を考慮した移動量に修正
+                if (hitNomalY != 1.0f)
+                {
+                    var nomal = hit.normal;
+                    Vector3 dir = moveDirection - Vector3.Dot(moveDirection, nomal) * nomal;
+                    moveDirection = dir.normalized;
+                }
+
+                // 移動量にスピード値を乗算
+                moveDirection *= speed * inputSpeed * curve.Evaluate(speedTime / maxSpeedTime);
+            }
+            else
+            {
+                speedTime = 0;
+            }
+
+            // 重力を反映
+            moveDirection.y -= 10.0f;
+
+            // 実際にキャラクターを動かす
+            character.Move(moveDirection * delta);
+
+            // 透明な壁の設置
+            if (input) { SetHiddenWall(); }
+
+            // 水中フラグの設定
+            if (StageWater != null)
+            {
+                InWater = (transform.position.y + character.center.y) - (character.height * 0.25f) < StageWater.max;
+                UnderWater = transform.position.y + character.center.y + character.height * 0.25f < StageWater.max;
+            }
+            else
+            {
+                InWater = false;
+                UnderWater = false;
+            }
+
+            // AnimationEventの設定
+            if (animeEvent != null)
+            {
+                if (UnderWater)
+                {
+                    animeEvent.PlayerStepMode = StepMode.UnderWater;
+                }
+                else if (InWater)
+                {
+                    animeEvent.PlayerStepMode = StepMode.InWater;
+                }
+                else
+                {
+                    animeEvent.PlayerStepMode = StepMode.Nomal;
+                }
+                animeEvent.PlayerPosition = transform.position;
+            }
+        }
+
+        // アニメーション実行
+        if (playerAnimator != null)
+        {
+            playerAnimator.enabled = true;
+            if (umbrellaAnimator != null) { umbrellaAnimator.enabled = true; }
+
+            // 走るアニメーション
+            playerAnimator.SetBool("Run", input);
+            playerAnimator.SetFloat("Speed", InWater ? (inputSpeed * curve.Evaluate(speedTime / maxSpeedTime)) / (playerSpeed / playerWaterSpeed) : inputSpeed * curve.Evaluate(speedTime / maxSpeedTime));
+
+            // アメフラシを起動するアニメーション
+            playerAnimator.SetBool("Switch", IsRain);
+
+            // 崖から降りるアニメーション
+            playerAnimator.SetBool("Jump", CliffFlag);
+
+            // ゲームオーバー時のアニメーション
+            playerAnimator.SetBool("GameOver", IsGameOver);
+
+            // クリア時のアニメーションを再生
+            if (IsGameClear)
+            {
+                if (RotateAnimation(transform.gameObject, cameraForward * -1, 360 * delta, true))
+                {
+                    playerAnimator.SetBool("Run", false);
+                    playerAnimator.SetBool("StageClear", true);
+                }
             }
         }
     }
@@ -319,7 +335,7 @@ public class PlayerType2 : MyAnimation
                 for (int j = 0; j < index.Length; j++)
                 {
                     subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
-                    if (Physics.Raycast(subRay, out hit, 2.0f, groundLayer))
+                    if (Physics.Raycast(subRay, out hit, character.radius * 7.0f, groundLayer))
                     {
                         if(hit.normal.y != 0)
                         {
@@ -388,24 +404,6 @@ public class PlayerType2 : MyAnimation
                 // 透明な壁を無効化する
                 hiddenWalls[i].enabled = false;
             }
-        }
-    }
-
-    /// <summary>
-    /// 敵と接触しているときに呼び出す処理
-    /// </summary>
-    /// <param name="flag">条件式</param>
-    public void HitEnemy(bool flag)
-    {
-        if (flag)
-        {
-            // ゲームオーバー処理
-            ContactEnemy = true;
-        }
-        else
-        {
-            // 敵と接触中は操作ができないようにする
-            dontInput = true;
         }
     }
 }

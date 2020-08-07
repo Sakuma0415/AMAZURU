@@ -267,7 +267,7 @@ public class ResultControl : MyAnimation
         }
         else if(key != 0 && keyDown)
         {
-            if (selectChangeTime > 0.3f)
+            if (selectChangeTime > 0.15f)
             {
                 animationObject[selectButtonNum].transform.localScale = Vector3.one;
                 selectButtonNum += key;

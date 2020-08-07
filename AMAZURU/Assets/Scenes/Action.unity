@@ -371,6 +371,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &252210680 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 600607528893478669, guid: 47ff39c4a812db64985a89ee84f3f059,
+    type: 3}
+  m_PrefabInstance: {fileID: 6551975906095816450}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2305c2c4085461459693b28ffeee52d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &258239468
 GameObject:
   m_ObjectHideFlags: 0
@@ -2929,8 +2941,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SLoadStageData: {fileID: 11400000, guid: 23040f52ddc76e94d87feb9249869759, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
-  playerObj: {fileID: 2001958938084469648, guid: cda06fb60842246498bade9539daf016,
-    type: 3}
+  master: {fileID: 252210680}
   cameraPos: {fileID: 721732558}
   waterMaterial: {fileID: 2100000, guid: 433e8abaf684fc2498fc6c0db370e826, type: 2}
   o2Controller: {fileID: 1956414880}
@@ -4297,7 +4308,7 @@ MonoBehaviour:
   fatAnimeTimeLimit: 0.5
   breathLimitTime: 10
   breath: 1
-  playerType2: {fileID: 0}
+  master: {fileID: 0}
 --- !u!114 &1971748816 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 557910765403537232, guid: 9d5848febb5604b4ea1f788e75a0f88d,
@@ -4725,3 +4736,72 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1001 &6551975906095816450
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2178992691797090689, guid: 47ff39c4a812db64985a89ee84f3f059,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2178992691797090689, guid: 47ff39c4a812db64985a89ee84f3f059,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2178992691797090689, guid: 47ff39c4a812db64985a89ee84f3f059,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2178992691797090689, guid: 47ff39c4a812db64985a89ee84f3f059,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2178992691797090689, guid: 47ff39c4a812db64985a89ee84f3f059,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2178992691797090689, guid: 47ff39c4a812db64985a89ee84f3f059,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2178992691797090689, guid: 47ff39c4a812db64985a89ee84f3f059,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2178992691797090689, guid: 47ff39c4a812db64985a89ee84f3f059,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 2178992691797090689, guid: 47ff39c4a812db64985a89ee84f3f059,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2178992691797090689, guid: 47ff39c4a812db64985a89ee84f3f059,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2178992691797090689, guid: 47ff39c4a812db64985a89ee84f3f059,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3187094080360521023, guid: 47ff39c4a812db64985a89ee84f3f059,
+        type: 3}
+      propertyPath: m_Name
+      value: CharacterMaster
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 47ff39c4a812db64985a89ee84f3f059, type: 3}

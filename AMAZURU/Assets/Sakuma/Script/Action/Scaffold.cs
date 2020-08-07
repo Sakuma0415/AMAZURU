@@ -20,12 +20,18 @@ public class Scaffold : MonoBehaviour
         // コンポーネント取得
         rb = GetComponent<Rigidbody>();
         boxCollider = GetComponent<BoxCollider>();
-
-        Ray ray = new Ray(transform.position ,transform.TransformDirection(Vector3.down));
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit,200, layerMask))
+        try
         {
-            waterHi = hit.collider.gameObject.GetComponent<WaterHi>();
+            waterHi = Progress.progress.waterHi;
+        }
+        catch
+        {
+            Ray ray = new Ray(transform.position, transform.TransformDirection(Vector3.down));
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 200, layerMask))
+            {
+                waterHi = hit.collider.gameObject.GetComponent<WaterHi>();
+            }
         }
 
         SetMaxPos();

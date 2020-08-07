@@ -27785,7 +27785,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 660958574596241266}
-  - component: {fileID: 7169569205632261256}
   m_Layer: 12
   m_Name: AMF
   m_TagString: Untagged
@@ -27809,25 +27808,6 @@ Transform:
   m_Father: {fileID: 7377990955495922266}
   m_RootOrder: 708
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &7169569205632261256
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4503855942456546806}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 3115945acfde31948a3dad363cc43764, type: 3}
-  m_Controller: {fileID: 9100000, guid: 6770ca7fb10271448b3cab5de3ef7465, type: 2}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 1
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &4508054980872161940
 GameObject:
   m_ObjectHideFlags: 0
@@ -34330,7 +34310,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9184236407949650642}
-  - component: {fileID: 2001271206427436887}
   m_Layer: 12
   m_Name: AMF
   m_TagString: Untagged
@@ -34354,25 +34333,6 @@ Transform:
   m_Father: {fileID: 7377990955495922266}
   m_RootOrder: 707
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &2001271206427436887
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5525994714259814118}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 3115945acfde31948a3dad363cc43764, type: 3}
-  m_Controller: {fileID: 9100000, guid: 6770ca7fb10271448b3cab5de3ef7465, type: 2}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 1
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5533905842347083233
 GameObject:
   m_ObjectHideFlags: 0
@@ -41436,7 +41396,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6796381831673396729}
-  - component: {fileID: 3483723927910166086}
   m_Layer: 12
   m_Name: AMF
   m_TagString: Untagged
@@ -41460,25 +41419,6 @@ Transform:
   m_Father: {fileID: 7377990955495922266}
   m_RootOrder: 706
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &3483723927910166086
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6593613503730992042}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 3115945acfde31948a3dad363cc43764, type: 3}
-  m_Controller: {fileID: 9100000, guid: 6770ca7fb10271448b3cab5de3ef7465, type: 2}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 1
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &6602394140052271799
 GameObject:
   m_ObjectHideFlags: 0
@@ -43897,7 +43837,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4050698219527242984}
-  - component: {fileID: 2010752576523013493}
   m_Layer: 12
   m_Name: AMF
   m_TagString: Untagged
@@ -43921,25 +43860,6 @@ Transform:
   m_Father: {fileID: 7377990955495922266}
   m_RootOrder: 709
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &2010752576523013493
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6974113847888279390}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 3115945acfde31948a3dad363cc43764, type: 3}
-  m_Controller: {fileID: 9100000, guid: 6770ca7fb10271448b3cab5de3ef7465, type: 2}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 1
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &6975022302166120284
 GameObject:
   m_ObjectHideFlags: 0

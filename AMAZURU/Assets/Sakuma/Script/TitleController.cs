@@ -47,7 +47,7 @@ public class TitleController : MyAnimation
 
         //コンフィグの初期化
         config.cameraSpeed = CameraSpeed.Nomal;
-
+        config.save.doRetention = false;
         // 変数の初期化処理
         selectNum = 0;
         creditFlag = false;
@@ -96,7 +96,7 @@ public class TitleController : MyAnimation
         bool setFlag = false;
         if (flag)
         {
-            if(changeTime < 0.3f)
+            if(changeTime < 0.15f)
             {
                 changeTime += Time.deltaTime;
             }
@@ -109,6 +109,7 @@ public class TitleController : MyAnimation
         else
         {
             setFlag = true;
+            changeTime = 0;
         }
 
         if (setFlag)

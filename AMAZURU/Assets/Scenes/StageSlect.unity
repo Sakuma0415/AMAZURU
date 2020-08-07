@@ -551,6 +551,50 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1203394919
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1203394921}
+  - component: {fileID: 1203394920}
+  m_Layer: 0
+  m_Name: TestStageObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1203394920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203394919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c15b8f8da8af29a469dee6e31c889a2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  testStageData: {fileID: 11400000, guid: a6669a9a78e95524ebd7cbdc06b871e2, type: 2}
+--- !u!4 &1203394921
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203394919}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1654839745
 GameObject:
   m_ObjectHideFlags: 0
@@ -2332,7 +2376,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6920850881507952018}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a1a6b595b2476e498b34d5fbda9cccd, type: 3}
   m_Name: 
@@ -2370,79 +2414,12 @@ MonoBehaviour:
     stageNumber: 0
   - psd: {fileID: 11400000, guid: 5086b1d93f845784e87ec17b9efba1a0, type: 2}
     stageNumber: 1
-  pData: []
-  vStage:
-  - name: 
-    difficulity: 0
-    amehurashiNum: 0
-    increasedWaterVolume: 0
-    stage: {fileID: 0}
-    defScale: {x: 0, y: 0, z: 0}
-    sizeChangeSpeed: {x: 0, y: 0, z: 0}
-    minimamSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    verticalMoveSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    index: 0
-    psdIndex: 0
-  - name: 
-    difficulity: 0
-    amehurashiNum: 0
-    increasedWaterVolume: 0
-    stage: {fileID: 0}
-    defScale: {x: 0, y: 0, z: 0}
-    sizeChangeSpeed: {x: 0, y: 0, z: 0}
-    minimamSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    verticalMoveSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    index: 0
-    psdIndex: 0
-  - name: 
-    difficulity: 0
-    amehurashiNum: 0
-    increasedWaterVolume: 0
-    stage: {fileID: 0}
-    defScale: {x: 0, y: 0, z: 0}
-    sizeChangeSpeed: {x: 0, y: 0, z: 0}
-    minimamSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    verticalMoveSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    index: 0
-    psdIndex: 0
-  - name: 
-    difficulity: 0
-    amehurashiNum: 0
-    increasedWaterVolume: 0
-    stage: {fileID: 0}
-    defScale: {x: 0, y: 0, z: 0}
-    sizeChangeSpeed: {x: 0, y: 0, z: 0}
-    minimamSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    verticalMoveSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    index: 0
-    psdIndex: 0
-  - name: 
-    difficulity: 0
-    amehurashiNum: 0
-    increasedWaterVolume: 0
-    stage: {fileID: 0}
-    defScale: {x: 0, y: 0, z: 0}
-    sizeChangeSpeed: {x: 0, y: 0, z: 0}
-    minimamSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    verticalMoveSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    index: 0
-    psdIndex: 0
-  - name: 
-    difficulity: 0
-    amehurashiNum: 0
-    increasedWaterVolume: 0
-    stage: {fileID: 0}
-    defScale: {x: 0, y: 0, z: 0}
-    sizeChangeSpeed: {x: 0, y: 0, z: 0}
-    minimamSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    verticalMoveSizeChangeSpeed: {x: 0, y: 0, z: 0}
-    index: 0
-    psdIndex: 0
-  level: 0
   defPos: {x: -6, y: -0.2, z: 0}
   scaleAdjust: {x: 8, y: 8}
   speed: 1
   rotateAngle: 36
+  level: 0
+  config: {fileID: 11400000, guid: 6595b502da4dec449942f729c30d55f4, type: 2}
 --- !u!222 &3730866607375924417
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2993,7 +2970,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6920850881507952018}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d032bf00972652498ae933e3e8b173e, type: 3}
   m_Name: 

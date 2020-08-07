@@ -120,14 +120,18 @@ public class PlayerControllerNav : MyAnimation
     /// </summary>
     private void PlayerMove(bool fixedUpdate)
     {
+        bool isAccess;
         try
         {
             mode = PlayState.playState.gameMode;
+            isAccess = true;
         }
-        catch (System.NullReferenceException)
+        catch
         {
-
+            isAccess = false;
         }
+
+        if (isAccess) { mode = PlayState.playState.gameMode; }
 
         // カメラの向いている方向を取得
         Vector3 cameraForward = Vector3.Scale(PlayerCamera.transform.forward == Vector3.up ? -PlayerCamera.transform.up : PlayerCamera.transform.forward == Vector3.down ? PlayerCamera.transform.up : PlayerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
