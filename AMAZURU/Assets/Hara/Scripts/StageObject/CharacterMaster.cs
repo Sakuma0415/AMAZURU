@@ -265,7 +265,14 @@ public class CharacterMaster : MonoBehaviour
         CheckEnemyState();
 
         // 落雷できるかチェック
-        IsCanLightningStrike = enemy != null && enemy.ElectricEnemies.Count > 0;
+        if(enemy != null)
+        {
+            IsCanLightningStrike = enemy.ElectricEnemies != null && enemy.ElectricEnemies.Count > 0;
+        }
+        else
+        {
+            IsCanLightningStrike = false;
+        }
 
         GetLightningStrikePoint();
 
