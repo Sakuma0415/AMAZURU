@@ -261,6 +261,22 @@ public class EnemyMaster : MonoBehaviour
         TargetElectricEnemy = null;
     }
 
+    /// <summary>
+    /// 帯電ナマコの帯電化を解除する
+    /// </summary>
+    public void CancelElectricMode()
+    {
+        if(ElectricEnemies == null) { return; }
+        // 帯電状態のナマコ(敵)を取得して帯電状態を解除する
+        foreach(var electric in ElectricEnemies)
+        {
+            if (electric.IsElectric)
+            {
+                electric.ElectricMode(false);
+            }
+        }
+    }
+
     private void Update()
     {
         if(startOperation == false) { return; }
