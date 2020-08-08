@@ -28,6 +28,9 @@ public class RainPot : MonoBehaviour
     LookForCamera look;
     [SerializeField]
     Animator animator;
+
+    bool set = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -49,28 +52,36 @@ public class RainPot : MonoBehaviour
     void Update()
     {
         Obj.SetActive(sw);
-        
+        if(set&& ControllerInput.Instance.buttonDown.circle && PlayState.playState.gameMode == PlayState.GameMode.Play)
+        {
+            if (Camera.main.gameObject.GetComponent<CameraPos>().lookAnimeTime <= 0)
+            {
+                SoundManager.soundManager.PlaySe("btn09", 0.5f);
+                look.RainFall = sw;
+                sw = !sw;
+                animator.SetBool("Bool", sw);
+                AmehurashiManager.amehurashi.amehurashiTrueCont += sw ? 1 : -1;
+                Progress.progress.waterHi.HiChange((AmehurashiManager.amehurashi.waterStep * AmehurashiManager.amehurashi.amehurashiTrueCont) + 1);
+                Camera.main.gameObject.GetComponent<CameraPos>().RainPotChange();
+                //UI選択時の奴
+                //AmehurashiManager.amehurashi.rainPot = this;
+                //AmehurashiManager.amehurashi.hi = transform.position.y - 0.5f;
+            }
+        }
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (LayerMask.LayerToName(other.gameObject.layer) == "Player")
         {
-            if (ControllerInput .Instance .buttonDown .circle  && PlayState.playState.gameMode == PlayState.GameMode.Play )
-            {
-                if (Camera.main.gameObject.GetComponent<CameraPos>().lookAnimeTime<=0) {
-                    SoundManager.soundManager.PlaySe("btn09", 0.5f);
-                    look.RainFall = sw;
-                    sw = !sw;
-                    animator.SetBool("Bool", sw);
-                    AmehurashiManager.amehurashi.amehurashiTrueCont += sw ? 1 : -1;
-                    Progress.progress . waterHi.HiChange((AmehurashiManager.amehurashi.waterStep * AmehurashiManager.amehurashi.amehurashiTrueCont) + 1);
-                    Camera.main.gameObject.GetComponent<CameraPos>().RainPotChange();
-                    //UI選択時の奴
-                    //AmehurashiManager.amehurashi.rainPot = this;
-                    //AmehurashiManager.amehurashi.hi = transform.position.y - 0.5f;
-                }
-            }
+            set = true;
+        }
+        }
+    private void OnTriggerExit(Collider other)
+    {
+        if (LayerMask.LayerToName(other.gameObject.layer) == "Player")
+        {
+            set = false ;
         }
     }
 

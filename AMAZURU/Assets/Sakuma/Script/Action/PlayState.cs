@@ -25,6 +25,7 @@ public class PlayState : MonoBehaviour
         Clear,
         GameOver,
         Pause,
+        Thunder,
     }
     //ゲームモードの変化を検知するシーケンサー用の変数
     GameMode backGameMode;
@@ -37,12 +38,19 @@ public class PlayState : MonoBehaviour
 
     [SerializeField]
     TutorialUI tutorialUI;
+    [SerializeField ]
+    public  float ThunderTime=0;
+    //
+    bool IsThunder = false;
+    [SerializeField]
+    CharacterMaster ChaMs;
 
     // 初期化
     void Start()
     {
         playState = new PlayState();
         playState.gameMode =gameMode;
+        playState.ChaMs = ChaMs;
         playState.Tutorial = StageMake.LoadStageData.TutorialFlg;
         if (playState.Tutorial) { tutorialUI.TutorialStart(); }
         if (!PlayState.copyFlg)
@@ -72,6 +80,9 @@ public class PlayState : MonoBehaviour
                     break;
                 case GameMode.Rain:
                     break;
+                case GameMode.Thunder:
+                    playState.ThunderTime = 5;
+                    break;
             }
         }
         playState.backGameMode = playState.gameMode;
@@ -82,8 +93,11 @@ public class PlayState : MonoBehaviour
             case GameMode.Rain:
                 playState.RainUpDate();
                 break;
+            case GameMode.Thunder:
+                playState.ThunderUpDate();
+                break;
         }
-
+        //Debug.Log(playState.gameMode);
     }
 
     //アメフラシ演出中の処理
@@ -92,8 +106,26 @@ public class PlayState : MonoBehaviour
         playState.rainTime -= Time.deltaTime;
         if (playState.rainTime <= 0)
         {
+            if ((AmehurashiManager.amehurashi.amehurashiTrueCont == StageMake.LoadStageData.DoThunder && !IsThunder && StageMake.LoadStageData.IsThunder))
+            {
+                IsThunder = true;
+                PlayState.playState.gameMode = PlayState.GameMode.Thunder;
+
+               
+            }
+            else
+            {
+                playState.gameMode = GameMode.Play;
+
+            }
+        }
+    }
+    void ThunderUpDate()
+    {
+        ThunderTime = (ThunderTime - Time.deltaTime < 0) ? 0 : ThunderTime - Time.deltaTime;
+        if (ThunderTime == 0)
+        {
             playState.gameMode = GameMode.Play;
         }
     }
-
 }
