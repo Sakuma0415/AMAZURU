@@ -12,15 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a499892a3387a645ae55361087d074f, type: 3}
   m_Name: Shimojima_Beta1-06
   m_EditorClassIdentifier: 
-  Type: 0
-  StartRotate: 0
+  Type: 1
+  StartRotate: 3
   Size: 1
   UseStartPosSetting: 0
   StartPosition: {x: 0, y: 0, z: 0}
-  MovePlan: []
+  MovePlan:
+  - {x: 12.5, y: 4, z: 1.5}
+  - {x: 6.5, y: 4, z: 1.5}
   MoveType: 0
   NomalSpeed: 1
   WaterSpeed: 1
   UseDefaultSetting: 1
-  BlockSetPosY: 1
-  ReturnBlock: 1
+  BlockSetPosY: 0
+  ReturnBlock: 0
