@@ -18,18 +18,6 @@ public class ElectricEnemy : MonoBehaviour
     private GameObject[] enemyModels = null;
     private Animator[] enemyAnimators = null;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     /// <summary>
     /// 初期化
     /// </summary>

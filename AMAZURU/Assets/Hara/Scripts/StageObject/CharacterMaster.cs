@@ -255,6 +255,15 @@ public class CharacterMaster : MonoBehaviour
         enemy.ChangeElectricMode();
     }
 
+    /// <summary>
+    /// 落雷の効果を無効にする際に呼び出す処理
+    /// </summary>
+    public void CancelLightningEffect()
+    {
+        if(IsCanLightningStrike == false) { return; }
+        enemy.CancelElectricMode();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -277,5 +286,10 @@ public class CharacterMaster : MonoBehaviour
         GetLightningStrikePoint();
 
         CheckElectricDamage();
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            CancelLightningEffect();
+        }
     }
 }
