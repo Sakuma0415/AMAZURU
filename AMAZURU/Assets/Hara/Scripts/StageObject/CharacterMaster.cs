@@ -286,10 +286,5 @@ public class CharacterMaster : MonoBehaviour
         GetLightningStrikePoint();
 
         CheckElectricDamage();
-
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            CancelLightningEffect();
-        }
     }
 }
