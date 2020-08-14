@@ -357,7 +357,6 @@ MonoBehaviour:
   waterStep: 1
   AmehurashiQuantity: 0
   amehurashiTrueCont: 0
-  ChaMs: {fileID: 252210680}
 --- !u!4 &218085792
 Transform:
   m_ObjectHideFlags: 0
@@ -906,6 +905,8 @@ MonoBehaviour:
   rainTime: 0
   Tutorial: 0
   tutorialUI: {fileID: 1814943980}
+  ThunderTime: 0
+  ChaMs: {fileID: 252210680}
 --- !u!4 &363166042
 Transform:
   m_ObjectHideFlags: 0
@@ -1527,6 +1528,8 @@ MonoBehaviour:
   GameEndDis: 2.5
   GameEndEfSpan: 0.5
   config: {fileID: 11400000, guid: 6595b502da4dec449942f729c30d55f4, type: 2}
+  ChaMs: {fileID: 252210680}
+  Tdis: 2
   CameraDisS: 20
   CameraDisP: 8
   lookPos: {x: 4, y: 4, z: 4}
@@ -2940,7 +2943,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2911a5758a6359a4095e00ddd31c7630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SLoadStageData: {fileID: 11400000, guid: 23040f52ddc76e94d87feb9249869759, type: 2}
+  SLoadStageData: {fileID: 11400000, guid: a6669a9a78e95524ebd7cbdc06b871e2, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
   master: {fileID: 252210680}
   cameraPos: {fileID: 721732558}

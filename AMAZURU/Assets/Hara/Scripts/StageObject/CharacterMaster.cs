@@ -256,22 +256,12 @@ public class CharacterMaster : MonoBehaviour
     }
 
     /// <summary>
-    /// デバッグ処理(後に削除します)
+    /// 落雷の効果を無効にする際に呼び出す処理
     /// </summary>
-    private void DebugAction()
+    public void CancelLightningEffect()
     {
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            if(LightningStrikePoint != null)
-            {
-                Debug.Log(LightningStrikePoint.transform.position);
-                LightningStrikeAction();
-            }
-            else
-            {
-                Debug.Log("NULL");
-            }
-        }
+        if(IsCanLightningStrike == false) { return; }
+        enemy.CancelElectricMode();
     }
 
     // Update is called once per frame
@@ -284,13 +274,17 @@ public class CharacterMaster : MonoBehaviour
         CheckEnemyState();
 
         // 落雷できるかチェック
-        IsCanLightningStrike = enemy != null && enemy.ElectricEnemies.Count > 0;
+        if(enemy != null)
+        {
+            IsCanLightningStrike = enemy.ElectricEnemies != null && enemy.ElectricEnemies.Count > 0;
+        }
+        else
+        {
+            IsCanLightningStrike = false;
+        }
 
         GetLightningStrikePoint();
 
         CheckElectricDamage();
-
-        // デバッグ
-        DebugAction();
     }
 }

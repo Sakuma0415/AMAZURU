@@ -243,10 +243,10 @@ namespace Enemy
                                     }
                                 }
                             }
-                            StartPosFlag = false;
                             stepEnd = true;
                             break;
                         default:
+                            StartPosFlag = false;
                             step = 0;
                             return;
                     }

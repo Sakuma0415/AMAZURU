@@ -5,7 +5,6 @@ using Enemy;
 
 public class DryEnemy : MonoBehaviour
 {
-    [SerializeField, Tooltip("地面を取得する用のレイヤーマスク")] private LayerMask groundLayer;
     public bool ReturnDryMode { set; private get; } = true;
 
     public float BlockSize { set; private get; } = 1.0f;
@@ -97,12 +96,11 @@ public class DryEnemy : MonoBehaviour
         }
         else
         {
-            if (spawnFlag)
+            // 水位が下回り、ブロックに戻すフラグがtrueのときのみ実行する
+            if (spawnFlag && ReturnDryMode)
             {
                 spawnFlag = false;
-
-                // 敵をブロックの状態に戻す
-                if (ReturnDryMode) { ReturnBlock(); }
+                ReturnBlock();
             }
         }
     }

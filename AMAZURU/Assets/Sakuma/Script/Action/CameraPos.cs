@@ -49,6 +49,10 @@ public class CameraPos : MonoBehaviour
     //コンフィグ取得
     [SerializeField]
     Config config;
+    [SerializeField]
+    CharacterMaster ChaMs;
+    [SerializeField]
+    float Tdis = 5;
 
     [Header("以下変更不可")]
     //ステージ注視時のカメラ、ステージ間の距離
@@ -115,7 +119,11 @@ public class CameraPos : MonoBehaviour
     float disToGameEnd = 0;
     //ゲーム終了時の注視点の座標
     Vector3 transformToGameEnd = Vector3.zero;
-    
+    float lotDis = 0;
+    Vector3 lotPos;
+    float lotYAn = 0;
+    Vector3 LightningStrikeAction = Vector3.zero;
+    bool kari = false;
     void Start()
     {
         //初期化
@@ -192,8 +200,10 @@ public class CameraPos : MonoBehaviour
 
         }
 
+        
+
         //ゲームの終了を検知するシーケンサー
-        if(gameMode != PlayState.playState.gameMode)
+        if (gameMode != PlayState.playState.gameMode)
         {
             if (PlayState.playState.gameMode==PlayState.GameMode.GameOver || PlayState.playState.gameMode == PlayState.GameMode.Clear )
             {
@@ -210,9 +220,73 @@ public class CameraPos : MonoBehaviour
                     disToGameEnd = endCameraPos;
                 }
             }
+            if(PlayState.playState.gameMode == PlayState.GameMode.Thunder)
+            {
+                kari = false;
+                lotDis = endCameraPos;
+                lotPos = PlayerTransform.position;
+                lotYAn = Yangle;
+                Debug.Log(lotPos);
+                LightningStrikeAction = ChaMs.LightningStrikePoint.transform.position;
+                
+            }
             gameMode = PlayState.playState.gameMode;
         }
+        if (PlayState.playState.gameMode == PlayState.GameMode.Thunder)
+        {
+            float dis = 0;
+            float Ttime = PlayState.playState.ThunderTime;
+            int brea;
+            float neoY=0;
+            Vector3 trg = Vector3.zero;
+            if (Ttime > 4f)
+            {
+                brea = 1;
+            }
+            else if (Ttime > 1f)
+            {
+                brea = 2;
+            }
+            else
+            {
+                brea = 3;
+            }
 
+            switch (brea)
+            {
+                case 1:
+                    trg = Vector3.Lerp(lotPos, LightningStrikeAction, (5 - Ttime));
+                    dis = Mathf.Lerp(lotDis, Tdis, (5 - Ttime));
+                    neoY= Mathf.Lerp(lotYAn, 30, (5 - Ttime));
+                    break;
+
+                case 2:
+                    if (!kari)
+                    {
+                        kari = true;
+                        ChaMs.LightningStrikeAction();
+                    }
+                    trg = Vector3.Lerp(lotPos, LightningStrikeAction, 1);
+                    dis = Mathf.Lerp(lotDis, Tdis, 1);
+                    neoY = Mathf.Lerp(lotYAn, 30, 1);
+                    break;
+                case 3:
+                    trg = Vector3.Lerp(LightningStrikeAction, lotPos, (1 - Ttime));
+                    dis = Mathf.Lerp(Tdis, lotDis, 1 - Ttime);
+                    neoY = Mathf.Lerp( 30, lotYAn, (1 - Ttime));
+                    break;
+            }
+
+            //Debug.Log(neoY);
+            transform.position = (
+                new Vector3
+                (Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(neoY * Mathf.Deg2Rad),
+                Mathf.Sin(neoY * Mathf.Deg2Rad) + newLookHi,
+                Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(neoY * Mathf.Deg2Rad))
+                * dis) + trg + new Vector3(0, LookHiSet, 0);
+            transform.localEulerAngles = new Vector3(neoY , -XZangle - 90, 0);
+
+        }
 
     }
     
@@ -456,6 +530,7 @@ public class CameraPos : MonoBehaviour
     {
         potAnimeTime = 0;
         outflg = true;
+
     }
 
 }
