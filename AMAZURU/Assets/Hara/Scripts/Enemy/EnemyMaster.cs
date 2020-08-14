@@ -11,6 +11,7 @@ public class EnemyMaster : MonoBehaviour
     [SerializeField, Tooltip("帯電ナマコのモデルPrefab")] private GameObject electricEnemyPrefab = null;
 
     [SerializeField, Header("エネミーデータ")] private EnemyData[] enemyData = null;
+    public EnemyData[] SetEnemyData { set { enemyData = value; } }
 
     private bool startOperation = false;
 
@@ -18,6 +19,8 @@ public class EnemyMaster : MonoBehaviour
     /// ステージ上のナマコ(エネミー)の情報を格納する
     /// </summary>
     public EnemyController[] Enemies { private set; get; } = null;
+
+    // エネミーの種類情報を格納する
     private EnemyType[] enemyTypes = null;
 
     /// <summary>
@@ -70,7 +73,7 @@ public class EnemyMaster : MonoBehaviour
     /// </summary>
     public void Init()
     {
-        if(enemyData.Length < 1) { return; }
+        if(enemyData == null && enemyData.Length < 1) { return; }
         transform.position = Vector3.zero;
         Enemies = new EnemyController[enemyData.Length];
         enemyTypes = new EnemyType[enemyData.Length];
@@ -267,6 +270,7 @@ public class EnemyMaster : MonoBehaviour
     public void CancelElectricMode()
     {
         if(ElectricEnemies == null) { return; }
+
         // 帯電状態のナマコ(敵)を取得して帯電状態を解除する
         foreach(var electric in ElectricEnemies)
         {
