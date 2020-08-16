@@ -22,13 +22,14 @@ public class StageEditor : MonoBehaviour
 
     public PrefabStageData Data { get; set; }
 
-    public bool underFloor = false;
     [HideInInspector]
     public bool loadStage;
     [HideInInspector]
     public bool isSave;
     [HideInInspector]
     public bool isCreateStage;
+
+    private bool isOnMenu = true;
 
     [SerializeField]
     private string objName;
@@ -45,15 +46,14 @@ public class StageEditor : MonoBehaviour
     private Vector3Int _tempIndex;
 
     [Header("-以下変更禁止-")]
-
+    public GameObject[] uiObj;
     public Canvas menuCanvas;
     public InputField stageNameInputField;
+    public Toggle isGenerateFloor;
     [SerializeField, Tooltip("参照するGridObject")]
     private GameObject gridObj;
     [SerializeField,Tooltip("配置場所を視認し易くするためのオブジェクト")]
     private GameObject guideObj;
-    [SerializeField, Tooltip("FixedRangeSelectに使用するInputField")]
-    private InputField[] cell;
     [Tooltip("シーン内のオブジェクトを削除するためのルートオブジェクト")]
     private GameObject gridRoot;
 
@@ -77,7 +77,6 @@ public class StageEditor : MonoBehaviour
         //Warningつぶし
         if (!gridObj) { gridObj = new GameObject(); }
         if (!guideObj) { guideObj = new GameObject(); }
-        if (cell.Length == 0) { cell = new InputField[1]; }
         if(referenceObject.Length == 0) { referenceObject = new GameObject[1]; }
         if(floorRefObj.Length == 0) { floorRefObj = new GameObject[1]; }
         if(prismRefObj.Length == 0) { prismRefObj = new GameObject[1]; }
@@ -106,10 +105,13 @@ public class StageEditor : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.I))
         {
+            isOnMenu = !isOnMenu;
             menuCanvas.enabled = !menuCanvas.enabled;
+            uiObj[0].SetActive(!uiObj[0].activeSelf);
+            uiObj[1].SetActive(!uiObj[1].activeSelf);
         }
 
-        if (!isCreateStage) { return; }
+        if (!isCreateStage || isOnMenu) { return; }
 
         CheakKeyDownForMoveKey();
         SetOrDeleteStageObject();
@@ -171,39 +173,6 @@ public class StageEditor : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftShift)) { rangeSelectionState = RangeSelectionState.ON; }
         if (Input.GetKeyUp(KeyCode.LeftShift)) { rangeSelectionState = RangeSelectionState.Stay; }
-    }
-
-    /// <summary>
-    /// 指定範囲選択
-    /// </summary>
-    public void FixedRangeSelection()
-    {
-        for (int i = 0; i < cell.Length; i++)
-        {
-            if (cell[i].text == "") { Debug.Log("必要な数値が入力されていません"); return; }
-            if (i > 2)
-            {
-                if (cell[i].text == "0") { Debug.Log("0以上の数値を入力してください"); return; }
-            }
-        }
-
-        Vector3Int _gridIndex1 = new Vector3Int(int.Parse(cell[0].text),int.Parse(cell[1].text),int.Parse(cell[2].text));
-        Vector3Int _gridIndex2 = new Vector3Int(int.Parse(cell[3].text),int.Parse(cell[4].text),int.Parse(cell[5].text));
-
-        if (_gridIndex1.x > cells.x || _gridIndex2.x > cells.x) { Debug.Log("Xグリッドの範囲外の値です"); return; }
-        if (_gridIndex1.y > cells.y || _gridIndex2.y > cells.y) { Debug.Log("Yグリッドの範囲外の値です"); return; }
-        if (_gridIndex1.z > cells.z || _gridIndex2.z > cells.z) { Debug.Log("Zグリッドの範囲外の値です"); return; }
-
-        rangeSelectionState = RangeSelectionState.Stay;
-        gridPos[tempCnum.x, tempCnum.y, tempCnum.z].GetComponent<HighlightObject>().IsSelect = false;
-        cellNum = new Vector3Int(_gridIndex2.x - 1, _gridIndex2.y - 1, _gridIndex2.z - 1);
-        guideObj.transform.position = gridPos[cellNum.x, cellNum.y, cellNum.z].transform.position;
-        Array3DForLoop(_gridIndex1, _gridIndex2, 4);
-
-        for (int i = 0; i < cell.Length; i++)
-        {
-            cell[i].text = "";
-        }
     }
 
     /// <summary>
@@ -297,7 +266,7 @@ public class StageEditor : MonoBehaviour
         Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, referenceObject[0], gridPos[cellNum.x,cellNum.y,cellNum.z]);
         guideObj.transform.localPosition = new Vector3(posAdjust, posAdjust, posAdjust);
 
-        if (!underFloor) { return; }
+        if (!isGenerateFloor.isOn) { return; }
         for (int i = 0; i < cells.x; i++)
         {
             for (int j = 0; j < cells.z; j++)
@@ -640,7 +609,7 @@ public class StageEditorCustom : Editor
             if (child.GetComponent<MyCellIndex>())
             {
                 v = child.GetComponent<MyCellIndex>().cellIndex;
-                if(v.y != stageEditor.cells.y && stageEditor.underFloor)
+                if(v.y != stageEditor.cells.y && stageEditor.isGenerateFloor)
                 {
                     v = new Vector3Int(v.x, v.y + 1, v.z);
                 }
