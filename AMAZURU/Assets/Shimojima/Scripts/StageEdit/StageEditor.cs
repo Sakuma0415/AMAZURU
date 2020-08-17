@@ -29,11 +29,13 @@ public class StageEditor : MonoBehaviour
     [HideInInspector]
     public bool isCreateStage;
 
-    private bool isOnMenu = true;
+    [HideInInspector]
+    public bool isOnMenu = true;
 
     [SerializeField]
-    private string objName;
-    [Tooltip("グリッドの数　X * Y * Z")]
+    private InputField changeObjectName;
+
+    [HideInInspector,Tooltip("グリッドの数　X * Y * Z")]
     public Vector3Int cells;
     private float posAdjust = 0.5f;
     [HideInInspector]
@@ -45,9 +47,9 @@ public class StageEditor : MonoBehaviour
     public GameObject[,,] _StageObjects;
     private Vector3Int _tempIndex;
 
-    [Header("-以下変更禁止-")]
-    public GameObject[] uiObj;
-    public Canvas menuCanvas;
+    public GameObject menuCanvas;
+    public GameObject editCanvas;
+    public InputField[] stageSizeInputField;
     public InputField stageNameInputField;
     public Toggle isGenerateFloor;
     [SerializeField, Tooltip("参照するGridObject")]
@@ -80,15 +82,23 @@ public class StageEditor : MonoBehaviour
         if(referenceObject.Length == 0) { referenceObject = new GameObject[1]; }
         if(floorRefObj.Length == 0) { floorRefObj = new GameObject[1]; }
         if(prismRefObj.Length == 0) { prismRefObj = new GameObject[1]; }
-        if(objName == "") { objName = ""; }
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        if (isCreateStage)
         {
-            SelectObjectAllChange();
+            if (stageSizeInputField[0].interactable)
+            {
+                for (int i = 0; i < stageSizeInputField.Length; i++)
+                {
+                    stageSizeInputField[i].interactable = false;
+                }
+
+                isGenerateFloor.interactable = false;
+            }
         }
+
 
         if(Data != null && Data.editName != stageNameInputField.text)
         {
@@ -103,12 +113,16 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     private void EditorInput()
     {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            SelectObjectAllChange();
+        }
+
         if (Input.GetKeyDown(KeyCode.I))
         {
             isOnMenu = !isOnMenu;
-            menuCanvas.enabled = !menuCanvas.enabled;
-            uiObj[0].SetActive(!uiObj[0].activeSelf);
-            uiObj[1].SetActive(!uiObj[1].activeSelf);
+            menuCanvas.SetActive(!menuCanvas.activeSelf);
+            editCanvas.SetActive(!editCanvas.activeSelf);
         }
 
         if (!isCreateStage || isOnMenu) { return; }
@@ -249,7 +263,7 @@ public class StageEditor : MonoBehaviour
         stageRoot.name = "Stage";
         gridRoot = new GameObject();
         gridRoot.name = "GridRootObj";
-        cells = new Vector3Int(cells.x, cells.y + 1, cells.z);
+        cells = new Vector3Int(int.Parse(stageSizeInputField[0].text), int.Parse(stageSizeInputField[1].text) + 1, int.Parse(stageSizeInputField[2].text));
         cellNum = new Vector3Int(0, 1, 0);
         tempCnum = new Vector3Int(0, 1, 0);
 
@@ -398,7 +412,7 @@ public class StageEditor : MonoBehaviour
         foreach (GameObject obj in _StageObjects)
         {
             if(obj == null) { continue; }
-            if (obj.name == objName)
+            if (obj.name == changeObjectName.text)
             {
                 GameObject o;
                 int x = Random.Range(0, 6);
