@@ -5,6 +5,9 @@ using UnityEngine;
 public class PlayerInputAction : MonoBehaviour
 {
     [SerializeField]
+    private StageEditor se;
+
+    [SerializeField]
     private Transform target;
     [Range(3, 10)]
     public float rotateSpeed;
@@ -18,6 +21,7 @@ public class PlayerInputAction : MonoBehaviour
 
     void Update()
     {
+        if (!se.isCreateStage || se.isOnMenu) { return; }
         if (Input.GetMouseButton(0))
         {
             mouseLeftButtonDown = true;
