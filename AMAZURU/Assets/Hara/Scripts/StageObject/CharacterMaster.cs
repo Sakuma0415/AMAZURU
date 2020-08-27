@@ -173,7 +173,7 @@ public class CharacterMaster : MonoBehaviour
             enemy.IsGameStop = mode == PlayState.GameMode.Pause;
 
             // プレイ中とアメフラシ起動時以外のときはスタンバイ状態にする
-            enemy.IsStandby = mode != PlayState.GameMode.Play && mode != PlayState.GameMode.Rain;
+            enemy.IsStandby = mode != PlayState.GameMode.Play;
         }
     }
 

@@ -332,8 +332,8 @@ public class NewTypeSelect : MonoBehaviour
             }
         }
 
-        pData = allPSD[0];
         sssd.level = config.save.level;
+        pData = allPSD[sssd.level];
         dPos = defPos;
     }
 
