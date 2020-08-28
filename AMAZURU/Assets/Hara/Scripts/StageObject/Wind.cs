@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class Wind : MonoBehaviour
 {
-    [SerializeField, Tooltip("風の最大有効範囲(マス)")] private int windMaxArea = 1;
+    [SerializeField, Tooltip("判定用のLayerMask")] private LayerMask layerMask;
+
+    [SerializeField, Header("風の有効範囲(マス)"), Range(1, 5)] private int windMaxArea = 1;
+    [SerializeField, Header("風の発生する間隔(秒)"), Range(1, 10)] private float windInterval = 1.0f;
+    [SerializeField, Header("風の持続時間(秒)"), Range(1, 10)] private float windDuration = 1.0f;
+    [SerializeField, Header("風圧"), Range(1, 10)] private float windPower = 1.0f;
 
     [SerializeField, Header("正面")] private bool forward = true;
     [SerializeField, Header("背面")] private bool back = false;
@@ -22,7 +27,10 @@ public class Wind : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ShotWind();
+        if(PlayState.playState.gameMode == PlayState.GameMode.Play && coroutine == null)
+        {
+            ShotWind();
+        }
     }
 
     /// <summary>
@@ -41,61 +49,65 @@ public class Wind : MonoBehaviour
         // 対象オブジェクトに風が当たったかをチェック
         if (forward)
         {
-            CreateWind(transform.forward);
+            CreateWind(Vector3.forward);
         }
 
         if (back)
         {
-            CreateWind(-transform.forward);
+            CreateWind(Vector3.back);
         }
 
         if (right)
         {
-            CreateWind(transform.right);
+            CreateWind(Vector3.right);
         }
 
         if (left)
         {
-            CreateWind(-transform.right);
+            CreateWind(Vector3.left);
         }
         
+    }
+
+    
+    private void HitWind(Vector3 direction)
+    {
+        if(coroutine != null)
+        {
+            StopCoroutine(coroutine);
+        }
+        coroutine = StartCoroutine(WindActionCoroutine(direction));
     }
 
     /// <summary>
-    /// 風に当たった時の処理
+    /// 風を生成
     /// </summary>
-    private void HitWind()
-    {
-        
-    }
-
+    /// <param name="direction">風向き</param>
     private void CreateWind(Vector3 direction)
     {
-        float length = 1.0f;
-        RaycastHit hit;
-        for(int i = 0; i < windMaxArea; i++)
-        {
-            Vector3 rayPosition = transform.localPosition + direction * (i + 1);
-            Ray ray = new Ray(rayPosition, direction);
-
-            if(Physics.Raycast(ray, 1.3f) == false)
-            {
-                ray = new Ray(rayPosition, -transform.up);
-                if(Physics.Raycast(ray, out hit, 1.3f))
-                {
-
-                }
-            }
-        }
-
-
-        if (Physics.BoxCast(transform.localPosition, Vector3.one * 0.25f, direction, out hit, transform.localRotation, length))
+        if (Physics.BoxCast(transform.position, Vector3.one * 0.25f, direction, out RaycastHit hit, transform.rotation, windMaxArea))
         {
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
                 // プレイヤーに当たった場合
-                HitWind();
+                HitWind(direction);
             }
         }
+    }
+
+    private IEnumerator WindActionCoroutine(Vector3 direction)
+    {
+        CharacterMaster.Instance.Player.IsWind = true;
+        CharacterMaster.Instance.Player.SpecialMoveDirection = direction * windPower;
+
+        float time = 0;
+        while(time < windDuration)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        CharacterMaster.Instance.Player.IsWind = false;
+        coroutine = null;
     }
 }

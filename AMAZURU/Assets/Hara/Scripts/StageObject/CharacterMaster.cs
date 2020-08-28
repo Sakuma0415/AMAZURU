@@ -37,8 +37,6 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
     /// </summary>
     public bool IsStageElectric { private set; get; } = false;
 
-    public bool IsWind { set; private get; } = false;
-
     // 感電状態のフラグ
     private bool isElectric = false;
     private float time = 0;
@@ -136,8 +134,8 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
             }
             else
             {
-                // ステートがプレイのときは敵と接触、感電状態または風の効果を受けたときのみ入力不可にする
-                Player.DontInput = (enemy != null && (enemy.IsHit || isElectric)) || IsWind;
+                // ステートがプレイのときは敵と接触または感電状態時のみ入力不可にする
+                Player.DontInput = enemy != null && (enemy.IsHit || isElectric);
             }
 
             // アメフラシ起動時

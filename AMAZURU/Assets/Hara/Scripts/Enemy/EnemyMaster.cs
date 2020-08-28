@@ -11,7 +11,7 @@ public class EnemyMaster : MonoBehaviour
     [SerializeField, Tooltip("帯電ナマコのモデルPrefab")] private GameObject electricEnemyPrefab = null;
 
     [SerializeField, Header("エネミーデータ")] private EnemyData[] enemyData = null;
-    public EnemyData[] SetEnemyData { set { enemyData = value; } }
+    public EnemyData[] EnemyDataArray { set { enemyData = value; } get { return enemyData; } }
 
     private bool startOperation = false;
 

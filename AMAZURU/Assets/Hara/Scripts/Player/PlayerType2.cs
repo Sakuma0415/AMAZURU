@@ -17,6 +17,11 @@ public class PlayerType2 : MyAnimation
     private float inputZ = 0;
 
     /// <summary>
+    /// 風状態の移動方向
+    /// </summary>
+    public Vector3 WindMoveDirection { set; private get; } = Vector3.zero;
+
+    /// <summary>
     /// 入力操作を無効にするフラグ
     /// </summary>
     public bool DontInput { set; private get; } = false;
@@ -81,6 +86,16 @@ public class PlayerType2 : MyAnimation
     /// 感電時のフラグ
     /// </summary>
     public bool IsElectric { set; private get; } = false;
+
+    /// <summary>
+    /// 風フラグ
+    /// </summary>
+    public bool IsWind { set; get; } = false;
+
+    /// <summary>
+    /// 特殊移動座標
+    /// </summary>
+    public Vector3 SpecialMoveDirection { set; private get; } = Vector3.zero;
 
     // プレイヤーが動き始めてからの経過時間
     private float speedTime = 0;
@@ -175,13 +190,23 @@ public class PlayerType2 : MyAnimation
         else
         {
             // 移動方向
-            Vector3 moveDirection = Vector3.zero;
+            Vector3 moveDirection;
+
+            if (IsWind)
+            {
+                moveDirection = SpecialMoveDirection;
+            }
+            else
+            {
+                moveDirection = Vector3.zero;
+                SpecialMoveDirection = Vector3.zero;
+            }
 
             // 入力の最低許容値
             float inputMin = 0.1f;
 
             // 入力を検知したかチェック
-            input = (Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin) && DontInput == false;
+            input = (Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin) && DontInput == false && IsWind == false;
 
             if (input)
             {
@@ -236,7 +261,7 @@ public class PlayerType2 : MyAnimation
             character.Move(moveDirection * delta);
 
             // 透明な壁の設置
-            if (input) { SetHiddenWall(); }
+            SetHiddenWall();
 
             // 水中フラグの設定
             if (StageWater != null)
