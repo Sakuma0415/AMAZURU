@@ -608,6 +608,7 @@ public class StageEditor : MonoBehaviour
     {
         if (_StageObjects[i, j, k] == null) { return; }
         GameObject obj = Instantiate(_StageObjects[i, j, k]);
+        obj.name = _StageObjects[i, j, k].name;
         obj.transform.parent = _obj.transform;
         _StageObjects[i, j, k] = obj;
     }
@@ -617,6 +618,9 @@ public class StageEditor : MonoBehaviour
         deleteComponent = !deleteComponent;
     }
 
+    /// <summary>
+    /// ステージの初期化とデータのセット
+    /// </summary>
     public void NewStageCreate()
     {
         EditStageInit();
@@ -628,6 +632,9 @@ public class StageEditor : MonoBehaviour
         lStageB.interactable = false;
     }
 
+    /// <summary>
+    /// 既存ステージの読み込み
+    /// </summary>
     public void LoadStage()
     {
         loadStage = true;
