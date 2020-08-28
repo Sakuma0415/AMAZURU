@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterMaster : MonoBehaviour
+public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
 {
     [SerializeField, Tooltip("プレイヤーのPrefab")] private PlayerType2 playerPrefab = null;
 
@@ -36,6 +36,8 @@ public class CharacterMaster : MonoBehaviour
     /// ステージの感電状態フラグ
     /// </summary>
     public bool IsStageElectric { private set; get; } = false;
+
+    public bool IsWind { set; private get; } = false;
 
     // 感電状態のフラグ
     private bool isElectric = false;
@@ -134,16 +136,8 @@ public class CharacterMaster : MonoBehaviour
             }
             else
             {
-                // ステートがプレイのときは敵と接触または感電状態のときのみ入力不可にする
-                if(enemy != null)
-                {
-                    Player.DontInput = enemy.IsHit || isElectric;
-                }
-                else
-                {
-                    // 敵がいなければ入力無効にしない
-                    Player.DontInput = false;
-                }
+                // ステートがプレイのときは敵と接触、感電状態または風の効果を受けたときのみ入力不可にする
+                Player.DontInput = (enemy != null && (enemy.IsHit || isElectric)) || IsWind;
             }
 
             // アメフラシ起動時
