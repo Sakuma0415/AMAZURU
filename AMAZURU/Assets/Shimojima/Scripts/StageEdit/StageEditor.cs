@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -34,6 +35,8 @@ public class StageEditor : MonoBehaviour
 
     [SerializeField]
     private InputField changeObjectName;
+    [SerializeField]
+    private Dropdown biomeSelect;
 
     [HideInInspector,Tooltip("グリッドの数　X * Y * Z")]
     public Vector3Int cells;
@@ -41,6 +44,7 @@ public class StageEditor : MonoBehaviour
     [HideInInspector]
     public Vector3Int cellNum;
     private Vector3Int tempCnum = Vector3Int.zero;
+    private string biome = "";
 
     [Tooltip("Gridオブジェクトの参照管理")]
     public GameObject[,,] gridPos;
@@ -82,6 +86,7 @@ public class StageEditor : MonoBehaviour
         if(referenceObject.Length == 0) { referenceObject = new GameObject[1]; }
         if(floorRefObj.Length == 0) { floorRefObj = new GameObject[1]; }
         if(prismRefObj.Length == 0) { prismRefObj = new GameObject[1]; }
+        GetBiomeName();
     }
 
     void Update()
@@ -247,6 +252,29 @@ public class StageEditor : MonoBehaviour
     }
     #endregion
 
+    #region UI関連
+
+    public void BiomeSelectOnMove()
+    {
+        biome = biomeSelect.captionText.text;
+    }
+
+    private void GetBiomeName()
+    {
+        Object[] direcorys = Resources.LoadAll("Assets/Shimojima/Resources/EditData", typeof(Directory));
+        List<string> bName = new List<string>();
+        foreach (Object d in direcorys)
+        {
+            bName.Add(d.name);
+        }
+
+        biomeSelect.AddOptions(bName);
+
+        BiomeSelectOnMove();
+    }
+
+    #endregion
+
     /// <summary>
     /// 編集するステージの初期化
     /// </summary>
@@ -311,11 +339,11 @@ public class StageEditor : MonoBehaviour
         Data.editName = stageNameInputField.text;
         if (isSave || loadStage)
         {
-            AssetDatabase.DeleteAsset("Assets/Shimojima/Resources/EditData/EditData_" + stageNameInputField.text + ".asset");
+            AssetDatabase.DeleteAsset("Assets/Shimojima/Resources/EditData/" + biome + "/EditData_" + stageNameInputField.text + ".asset");
             AssetDatabase.SaveAssets();
         }
-        Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Resources/Prefabs/Stage/" + stageNameInputField.text + ".prefab", InteractionMode.UserAction);
-        AssetDatabase.CreateAsset(Data, "Assets/Shimojima/Resources/EditData/EditData_" + stageNameInputField.text + ".asset");
+        Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Resources/Prefabs/Stage/" + biome + "/" + stageNameInputField.text + ".prefab", InteractionMode.UserAction);
+        AssetDatabase.CreateAsset(Data, "Assets/Shimojima/Resources/EditData/" + biome + "/EditData_" + stageNameInputField.text + ".asset");
         Array3DForLoop(Vector3Int.zero, cells, 1);
 #endif
     }
