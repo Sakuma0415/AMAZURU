@@ -18,7 +18,7 @@ public class NewTypeSelect : MonoBehaviour
     [SerializeField]
     private Vector3 pivotCubeSize;
     [SerializeField]
-    private TextMeshProUGUI stageName, amehurashiNum, increasedWaterVolume;
+    private TextMeshProUGUI stageName, amehurashiNum, increasedWaterVolume, clearPercentage;
 
     [System.Serializable]
     public struct PrefabStageDatas
@@ -69,6 +69,7 @@ public class NewTypeSelect : MonoBehaviour
         public int difficulity;
         public int amehurashiNum;
         public int increasedWaterVolume;
+        public int clearPercentage;
         public GameObject stage;
         public Vector3 defScale;
         public Vector3 sizeChangeSpeed;
@@ -86,6 +87,7 @@ public class NewTypeSelect : MonoBehaviour
             difficulity = 0;
             amehurashiNum = 0;
             increasedWaterVolume = 0;
+            clearPercentage = 0;
             stage = null;
             defScale = Vector3.zero;
             sizeChangeSpeed = Vector3.zero;
@@ -105,6 +107,7 @@ public class NewTypeSelect : MonoBehaviour
             difficulity = v.difficulity;
             amehurashiNum = v.amehurashiNum;
             increasedWaterVolume = v.increasedWaterVolume;
+            clearPercentage = v.clearPercentage;
             stage = v.stage;
             defScale = v.defScale;
             sizeChangeSpeed = v.sizeChangeSpeed;
@@ -311,6 +314,7 @@ public class NewTypeSelect : MonoBehaviour
                     stageName.text = viewStage[i, j].name;
                     amehurashiNum.text = viewStage[i, j].amehurashiNum.ToString();
                     increasedWaterVolume.text = viewStage[i, j].increasedWaterVolume.ToString();
+                    clearPercentage.text = viewStage[i, j].clearPercentage.ToString();
                     sData = pData[sssd.initNumber].psd.sData;
                 }
 
@@ -632,10 +636,11 @@ public class NewTypeSelect : MonoBehaviour
     /// <param name="select"></param>
     private void StageDataChange(Selection select)
     {
-        string n, ame, iwv;
+        string n, ame, iwv, cp;
         n = "";
         ame = "";
         iwv = "";
+        cp = "";
 
         for (int i = 0; i < viewStage.GetLength(1); i++)
         {
@@ -670,12 +675,14 @@ public class NewTypeSelect : MonoBehaviour
                 n = viewStage[0, i].name;
                 ame = viewStage[0, i].amehurashiNum.ToString();
                 iwv = viewStage[0, i].increasedWaterVolume.ToString();
+                cp = viewStage[0, i].clearPercentage.ToString();
             }
         }
 
         stageName.text = n;
         amehurashiNum.text = ame;
         increasedWaterVolume.text = iwv;
+        clearPercentage.text = cp;
     }
 
     /// <summary>
@@ -817,6 +824,7 @@ public class NewTypeSelect : MonoBehaviour
         viewStage[i, j].difficulity = p[number].psd.diificulty;
         viewStage[i, j].amehurashiNum = p[number].psd.amehurashiNum;
         viewStage[i, j].increasedWaterVolume = p[number].psd.increasedWaterVolume;
+        viewStage[i, j].clearPercentage = p[number].psd.clearPercentage;
         StageReSize(p[number].psd, i, j);
         viewStage[i, j].psdIndex = p[number].stageNumber;
         viewStage[i, j].stage.transform.localScale = viewStage[i, j].defScale;
