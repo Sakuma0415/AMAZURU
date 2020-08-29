@@ -26,6 +26,7 @@ public class PlayState : MonoBehaviour
         GameOver,
         Pause,
         Thunder,
+        RotationPot,
     }
     //ゲームモードの変化を検知するシーケンサー用の変数
     GameMode backGameMode;
@@ -40,10 +41,25 @@ public class PlayState : MonoBehaviour
     TutorialUI tutorialUI;
     [SerializeField ]
     public  float ThunderTime=0;
+    public float RotationPotTime = 0;
+    public bool RotationPotTimech;
     //
     bool IsThunder = false;
     [SerializeField]
     CharacterMaster ChaMs;
+
+
+
+    public GameObject stageObj=null;
+    public CharacterController character;
+
+    bool timelot = false ;
+
+    public Vector3 PayerPos = Vector3.zero;
+
+
+
+
 
     // 初期化
     void Start()
@@ -96,6 +112,9 @@ public class PlayState : MonoBehaviour
             case GameMode.Thunder:
                 playState.ThunderUpDate();
                 break;
+            case GameMode.RotationPot:
+                playState.RotationPotUpDate();
+                break;
         }
         //Debug.Log(playState.gameMode);
     }
@@ -110,7 +129,7 @@ public class PlayState : MonoBehaviour
             {
                 IsThunder = true;
                 PlayState.playState.gameMode = PlayState.GameMode.Thunder;
-
+                
                
             }
             else
@@ -127,5 +146,53 @@ public class PlayState : MonoBehaviour
         {
             playState.gameMode = GameMode.Play;
         }
+    }
+    void RotationPotUpDate()
+    {
+        RotationPotTime = (RotationPotTime - Time.deltaTime < 0) ? 0 : RotationPotTime - Time.deltaTime;
+
+        if(RotationPotTime<0.75&&!RotationPotTimech)
+        {
+            RotationPotTimech = true;
+            Camera.main.gameObject.GetComponent<CameraPos>().RainPotChangeOut();
+        }
+        
+
+
+
+
+        if (5-RotationPotTime>1&&5- RotationPotTime < 2.75f)
+        {
+            timelot = true;
+            float lotTime = ((5-RotationPotTime) - 1f) / 1.75f;
+            //Debug.Log(Mathf.Lerp(0f, -90f, lotTime));
+            stageObj.transform.eulerAngles = new Vector3 (0, 0, Mathf.Lerp(0f, -90f, lotTime));
+            character.gameObject .transform.eulerAngles= new Vector3(0, character.gameObject.transform.eulerAngles.y, 0);
+            character.gameObject.transform.localPosition = PayerPos+ new Vector3(0, Mathf.Lerp(0f, 0.5f, lotTime), 0);
+        }
+
+        if(timelot && 5 - RotationPotTime > 2.75f)
+        {
+            timelot = false;
+            stageObj.transform.eulerAngles = new Vector3(0, 0, Mathf.Lerp(0f, -90f, 1));
+
+            character.enabled = true;
+        }
+
+
+
+        if (RotationPotTime == 0)
+        {
+            playState.gameMode = GameMode.Play;
+        }
+    }
+    public void RotationPotStart()
+    {
+        character.enabled = false ;
+        PlayState.playState.gameMode = PlayState.GameMode.RotationPot;
+        PlayState.playState.RotationPotTime = 5;
+        PlayState.playState.RotationPotTimech = false;
+        Camera.main.gameObject.GetComponent<CameraPos>().RainPotChange();
+        PayerPos = character.gameObject.transform.localPosition;
     }
 }

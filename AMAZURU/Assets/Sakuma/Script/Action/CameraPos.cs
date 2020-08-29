@@ -293,10 +293,11 @@ public class CameraPos : MonoBehaviour
 
     void Update()
     {
+        Debug.Log(lookObj);
         //ゲーム開始時の定点カメラの特殊挙動時のステータス更新
         if (startCameraFlg )
         {
-            lookObj = lookMode ? PlayerTransform.position+new Vector3 (0,LookHiSet,0)  : lookPos;
+            
             XZangle += Time.deltaTime*3;
 
             //通常のカメラ処理に戻る
@@ -530,7 +531,7 @@ public class CameraPos : MonoBehaviour
     {
         potAnimeTime = 0;
         outflg = true;
-
+        lookObj = PlayerTransform.position + new Vector3(0, LookHiSet, 0);
     }
 
 }
