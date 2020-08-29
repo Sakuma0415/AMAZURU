@@ -17,28 +17,38 @@ public class Wind : MonoBehaviour
     [SerializeField, Header("左")] private bool left = false;
 
     private Coroutine coroutine = null;
+    private float startTimer = 0;
+    private float endTimer = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-        WindInit();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(PlayState.playState.gameMode == PlayState.GameMode.Play && coroutine == null)
+        if(PlayState.playState.gameMode == PlayState.GameMode.Play)
         {
-            ShotWind();
+            if(startTimer < windInterval)
+            {
+                startTimer += Time.deltaTime;
+            }
+            else
+            {
+                if(endTimer < windDuration)
+                {
+                    ShotWind();
+                    endTimer += Time.deltaTime;
+                }
+                else
+                {
+                    startTimer = 0;
+                    endTimer = 0;
+                }
+            }
         }
-    }
-
-    /// <summary>
-    /// 初期化と風を飛ばせる範囲を設定する
-    /// </summary>
-    private void WindInit()
-    {
-        windMaxArea = Mathf.Min(Mathf.Max(1, windMaxArea), 5);
     }
 
     /// <summary>
@@ -74,7 +84,7 @@ public class Wind : MonoBehaviour
     {
         if(coroutine != null)
         {
-            StopCoroutine(coroutine);
+            return;
         }
         coroutine = StartCoroutine(WindActionCoroutine(direction));
     }
@@ -103,10 +113,14 @@ public class Wind : MonoBehaviour
         float time = 0;
         while(time < windDuration)
         {
-            time += Time.deltaTime;
+            if(PlayState.playState.gameMode == PlayState.GameMode.Play)
+            {
+                time += Time.deltaTime;
+            }
+
+            CharacterMaster.Instance.Player.transform.Rotate(new Vector3(0, 10, 0));
             yield return null;
         }
-
         CharacterMaster.Instance.Player.IsWind = false;
         coroutine = null;
     }

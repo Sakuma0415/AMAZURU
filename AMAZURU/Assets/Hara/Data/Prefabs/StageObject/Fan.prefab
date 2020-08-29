@@ -110,9 +110,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 36865
   windMaxArea: 3
-  windInterval: 1
+  windInterval: 5
   windDuration: 1.5
-  windPower: 2.5
+  windPower: 2
   forward: 1
   back: 1
   right: 1
