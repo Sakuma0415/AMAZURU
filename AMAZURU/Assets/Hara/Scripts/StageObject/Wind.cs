@@ -61,42 +61,36 @@ public class Wind : MonoBehaviour
             waterPos = 0;
         }
 
-        if(waterPos > transform.position.y)
-        {
-            // 水中に存在する場合は風を出さない
-            return;
-        }
+        bool inWater = waterPos > transform.position.y;
 
         upHeight = 0;
         downHeight = 0;
 
-        // 対象オブジェクトに風が当たったかをチェック
-        if (forward)
+        if (inWater == false)
         {
-            CreateWind(transform.forward, 0);
+            // 対象オブジェクトに風が当たったかをチェック
+            if (forward)
+            {
+                CreateWind(transform.forward, 0);
+            }
+
+            if (back)
+            {
+                CreateWind(-transform.forward, 1);
+            }
+
+            if (right)
+            {
+                CreateWind(transform.right, 2);
+            }
+
+            if (left)
+            {
+                CreateWind(-transform.right, 3);
+            }
         }
 
-        if (back)
-        {
-            CreateWind(-transform.forward, 1);
-        }
-
-        if (right)
-        {
-            CreateWind(transform.right, 2);
-        }
-
-        if (left)
-        {
-            CreateWind(-transform.right, 3);
-        }
-
-        if(upHeight == 0 && downHeight == 0)
-        {
-            boxCollider.center = Vector3.zero;
-            boxCollider.size = Vector3.one;
-        }
-        else
+        if((upHeight > 0 || downHeight > 0) && inWater == false)
         {
             float center = (upHeight - downHeight) * 0.5f;
             float totalHeight = upHeight + downHeight;
@@ -104,6 +98,11 @@ public class Wind : MonoBehaviour
 
             boxCollider.center = localUp * center;
             boxCollider.size = Vector3.one + localUp * totalHeight;
+        }
+        else
+        {
+            boxCollider.center = Vector3.zero;
+            boxCollider.size = Vector3.one;
         }
     }
 

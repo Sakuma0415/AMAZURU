@@ -454,7 +454,7 @@ public class PlayerType2 : MyAnimation
                 yield break;
             }
 
-            transform.Rotate(new Vector3(0, 10, 0));
+            transform.Rotate(new Vector3(0, 15, 0));
             yield return null;
         }
         isWind = false;

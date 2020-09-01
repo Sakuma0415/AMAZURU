@@ -109,9 +109,9 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 36865
-  windMaxArea: 3
-  windPower: 2
-  dontInputDuration: 1
+  windMaxArea: 2
+  windPower: 2.5
+  dontInputDuration: 1.5
   forward: 1
   back: 1
   right: 1
