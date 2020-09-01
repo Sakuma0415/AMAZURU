@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +17,9 @@ public class Wind : MonoBehaviour
     [SerializeField, Header("左")] private bool left = false;
 
     private Coroutine[] coroutines = null;
+    private BoxCollider boxCollider = null;
+    private float upHeight = 0;
+    private float downHeight = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +42,7 @@ public class Wind : MonoBehaviour
     private void WindInit()
     {
         coroutines = new Coroutine[4];
+        boxCollider = GetComponent<BoxCollider>();
     }
 
     /// <summary>
@@ -62,6 +67,9 @@ public class Wind : MonoBehaviour
             return;
         }
 
+        upHeight = 0;
+        downHeight = 0;
+
         // 対象オブジェクトに風が当たったかをチェック
         if (forward)
         {
@@ -82,7 +90,21 @@ public class Wind : MonoBehaviour
         {
             CreateWind(-transform.right, 3);
         }
-        
+
+        if(upHeight == 0 && downHeight == 0)
+        {
+            boxCollider.center = Vector3.zero;
+            boxCollider.size = Vector3.one;
+        }
+        else
+        {
+            float center = (upHeight - downHeight) * 0.5f;
+            float totalHeight = upHeight + downHeight;
+            Vector3 localUp = transform.InverseTransformDirection(Vector3.up);
+
+            boxCollider.center = localUp * center;
+            boxCollider.size = Vector3.one + localUp * totalHeight;
+        }
     }
 
     /// <summary>
@@ -92,15 +114,42 @@ public class Wind : MonoBehaviour
     /// <param name="windID">チェック用のID番号</param>
     private void CreateWind(Vector3 direction, int windID)
     {
-        if(coroutines[windID] != null) { return; }
-
-        if (Physics.BoxCast(transform.position, Vector3.one * 0.3f, direction, out RaycastHit hit, Quaternion.identity, windMaxArea))
+        RaycastHit hit;
+        if(direction == Vector3.up || direction == Vector3.down)
         {
-            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player"))
+            float hitDistance;
+            Ray ray = new Ray(transform.position, direction);
+
+            if(Physics.Raycast(ray, out hit, windMaxArea, layerMask))
             {
-                // プレイヤーに当たった場合
-                CharacterMaster.Instance.Player.WindAction(direction * windPower, dontInputDuration);
-                coroutines[windID] = StartCoroutine(IntervalCoroutine(windID));
+                hitDistance = Mathf.Floor(hit.distance - 0.5f);
+            }
+            else
+            {
+                hitDistance = windMaxArea;
+            }
+
+            if (direction == Vector3.up)
+            {
+                upHeight = hitDistance;
+            }
+            else
+            {
+                downHeight = hitDistance;
+            }
+        }
+        else
+        {
+            if (coroutines[windID] != null) { return; }
+
+            if (Physics.BoxCast(transform.position, Vector3.one * 0.3f, direction, out hit, Quaternion.identity, windMaxArea))
+            {
+                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player"))
+                {
+                    // プレイヤーに当たった場合
+                    CharacterMaster.Instance.Player.WindAction(direction * windPower, dontInputDuration);
+                    coroutines[windID] = StartCoroutine(IntervalCoroutine(windID));
+                }
             }
         }
     }
