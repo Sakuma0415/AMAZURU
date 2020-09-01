@@ -7,23 +7,20 @@ public class Wind : MonoBehaviour
     [SerializeField, Tooltip("判定用のLayerMask")] private LayerMask layerMask;
 
     [SerializeField, Header("風の有効範囲(マス)"), Range(1, 5)] private int windMaxArea = 1;
-    [SerializeField, Header("風の発生する間隔(秒)"), Range(1, 10)] private float windInterval = 1.0f;
-    [SerializeField, Header("風の持続時間(秒)"), Range(1, 10)] private float windDuration = 1.0f;
     [SerializeField, Header("風圧"), Range(1, 10)] private float windPower = 1.0f;
+    [SerializeField, Header("操作無効時間"), Range(1, 10)] private float dontInputDuration = 1.0f;
 
     [SerializeField, Header("正面")] private bool forward = true;
     [SerializeField, Header("背面")] private bool back = false;
     [SerializeField, Header("右")] private bool right = false;
     [SerializeField, Header("左")] private bool left = false;
 
-    private Coroutine coroutine = null;
-    private float startTimer = 0;
-    private float endTimer = 0;
+    private Coroutine[] coroutines = null;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        WindInit();
     }
 
     // Update is called once per frame
@@ -31,24 +28,16 @@ public class Wind : MonoBehaviour
     {
         if(PlayState.playState.gameMode == PlayState.GameMode.Play)
         {
-            if(startTimer < windInterval)
-            {
-                startTimer += Time.deltaTime;
-            }
-            else
-            {
-                if(endTimer < windDuration)
-                {
-                    ShotWind();
-                    endTimer += Time.deltaTime;
-                }
-                else
-                {
-                    startTimer = 0;
-                    endTimer = 0;
-                }
-            }
+            ShotWind();
         }
+    }
+
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    private void WindInit()
+    {
+        coroutines = new Coroutine[4];
     }
 
     /// <summary>
@@ -56,72 +45,84 @@ public class Wind : MonoBehaviour
     /// </summary>
     private void ShotWind()
     {
+        // このオブジェクトが水中に存在するかをチェック
+        float waterPos;
+        try
+        {
+            waterPos = Progress.progress.waterHi.max;
+        }
+        catch
+        {
+            waterPos = 0;
+        }
+
+        if(waterPos > transform.position.y)
+        {
+            // 水中に存在する場合は風を出さない
+            return;
+        }
+
         // 対象オブジェクトに風が当たったかをチェック
         if (forward)
         {
-            CreateWind(Vector3.forward);
+            CreateWind(transform.forward, 0);
         }
 
         if (back)
         {
-            CreateWind(Vector3.back);
+            CreateWind(-transform.forward, 1);
         }
 
         if (right)
         {
-            CreateWind(Vector3.right);
+            CreateWind(transform.right, 2);
         }
 
         if (left)
         {
-            CreateWind(Vector3.left);
+            CreateWind(-transform.right, 3);
         }
         
     }
 
-    
-    private void HitWind(Vector3 direction)
-    {
-        if(coroutine != null)
-        {
-            return;
-        }
-        coroutine = StartCoroutine(WindActionCoroutine(direction));
-    }
-
     /// <summary>
-    /// 風を生成
+    /// 風の生成
     /// </summary>
     /// <param name="direction">風向き</param>
-    private void CreateWind(Vector3 direction)
+    /// <param name="windID">チェック用のID番号</param>
+    private void CreateWind(Vector3 direction, int windID)
     {
-        if (Physics.BoxCast(transform.position, Vector3.one * 0.25f, direction, out RaycastHit hit, transform.rotation, windMaxArea))
+        if(coroutines[windID] != null) { return; }
+
+        if (Physics.BoxCast(transform.position, Vector3.one * 0.3f, direction, out RaycastHit hit, Quaternion.identity, windMaxArea))
         {
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
                 // プレイヤーに当たった場合
-                HitWind(direction);
+                CharacterMaster.Instance.Player.WindAction(direction * windPower, dontInputDuration);
+                coroutines[windID] = StartCoroutine(IntervalCoroutine(windID));
             }
         }
     }
 
-    private IEnumerator WindActionCoroutine(Vector3 direction)
+    /// <summary>
+    /// 風のインターバルコルーチン
+    /// </summary>
+    /// <param name="id">ID番号</param>
+    /// <returns></returns>
+    private IEnumerator IntervalCoroutine(int id)
     {
-        CharacterMaster.Instance.Player.IsWind = true;
-        CharacterMaster.Instance.Player.SpecialMoveDirection = direction * windPower;
-
         float time = 0;
-        while(time < windDuration)
+
+        while(time < dontInputDuration * 2)
         {
             if(PlayState.playState.gameMode == PlayState.GameMode.Play)
             {
                 time += Time.deltaTime;
             }
-
-            CharacterMaster.Instance.Player.transform.Rotate(new Vector3(0, 10, 0));
             yield return null;
         }
-        CharacterMaster.Instance.Player.IsWind = false;
-        coroutine = null;
+
+        coroutines[id] = null;
     }
 }
