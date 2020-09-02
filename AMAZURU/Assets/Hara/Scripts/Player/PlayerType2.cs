@@ -17,11 +17,6 @@ public class PlayerType2 : MyAnimation
     private float inputZ = 0;
 
     /// <summary>
-    /// 風状態の移動方向
-    /// </summary>
-    public Vector3 WindMoveDirection { set; private get; } = Vector3.zero;
-
-    /// <summary>
     /// 入力操作を無効にするフラグ
     /// </summary>
     public bool DontInput { set; private get; } = false;
@@ -81,6 +76,11 @@ public class PlayerType2 : MyAnimation
     /// ゲームオーバー時のフラグ
     /// </summary>
     public bool IsGameOver { set; private get; } = false;
+
+    /// <summary>
+    /// エネミーとの接触フラグ
+    /// </summary>
+    public bool IsHitEnemy { set; get; } = false;
 
     /// <summary>
     /// 感電時のフラグ
@@ -264,7 +264,7 @@ public class PlayerType2 : MyAnimation
             // 水中フラグの設定
             if (StageWater != null)
             {
-                InWater = (transform.position.y + character.center.y) - (character.height * 0.25f) < StageWater.max;
+                InWater = transform.position.y + character.center.y - character.height * 0.25f < StageWater.max;
                 UnderWater = transform.position.y + character.center.y + character.height * 0.25f < StageWater.max;
             }
             else
@@ -449,8 +449,9 @@ public class PlayerType2 : MyAnimation
                 time += Time.deltaTime;
             }
 
-            if(IsGameClear || IsGameOver)
+            if(IsGameClear || IsGameOver || IsHitEnemy)
             {
+                isWind = false;
                 yield break;
             }
 

@@ -127,6 +127,9 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
             // ポーズ中は移動処理とアニメーションを停止させる
             Player.IsGameStop = mode == PlayState.GameMode.Pause;
 
+            // 敵との接触フラグ
+            Player.IsHitEnemy = enemy != null && enemy.IsHit;
+
             if(mode != PlayState.GameMode.Play)
             {
                 // ステートがプレイ以外のときは入力を受け付けない
@@ -135,7 +138,7 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
             else
             {
                 // ステートがプレイのときは敵と接触または感電状態時のみ入力不可にする
-                Player.DontInput = enemy != null && (enemy.IsHit || isElectric);
+                Player.DontInput = Player.IsHitEnemy || isElectric;
             }
 
             // アメフラシ起動時
