@@ -31,9 +31,6 @@ public class CameraPos : MonoBehaviour
     //カメラ捜査の速度
     [SerializeField]
     float stickSpead = 0;
-    //カメラの速度取得用
-    [SerializeField]
-    ResultControl resultControl;
     //カメラの速度ステージ注視時
     [SerializeField]
     float[] cameraSpS;
@@ -336,7 +333,7 @@ public class CameraPos : MonoBehaviour
                             case CameraSpeed.Slow:
                                 stickSpead = cameraSpS[0];
                                 break;
-                            case CameraSpeed.Nomal:
+                            case CameraSpeed.Normal:
                                 stickSpead = cameraSpS[1];
                                 break;
                             case CameraSpeed.Quick:
@@ -351,7 +348,7 @@ public class CameraPos : MonoBehaviour
                             case CameraSpeed.Slow:
                                 stickSpead = cameraSpP[0];
                                 break;
-                            case CameraSpeed.Nomal:
+                            case CameraSpeed.Normal:
                                 stickSpead = cameraSpP[1];
                                 break;
                             case CameraSpeed.Quick:
