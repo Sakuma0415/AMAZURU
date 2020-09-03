@@ -45,8 +45,7 @@ public class MenuMaster : MonoBehaviour
     private void ResultWindow(bool state)
     {
         // 他のメニューウィンドウを非表示
-        pauseMenu.gameObject.SetActive(false);
-        cameraOption.gameObject.SetActive(false);
+        Pause(false);
 
         // ウィンドウの表示
         resultMenu.gameObject.SetActive(true);

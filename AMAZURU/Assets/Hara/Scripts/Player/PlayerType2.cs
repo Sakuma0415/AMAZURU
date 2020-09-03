@@ -444,18 +444,21 @@ public class PlayerType2 : MyAnimation
         float time = 0;
         while (time < duration)
         {
-            if (IsGameStop == false)
+            if(IsGameStop == false)
             {
-                time += Time.deltaTime;
-            }
+                if (IsGameStop == false)
+                {
+                    time += Time.deltaTime;
+                }
 
-            if(IsGameClear || IsGameOver || IsHitEnemy)
-            {
-                isWind = false;
-                yield break;
-            }
+                if (IsGameClear || IsGameOver || IsHitEnemy)
+                {
+                    isWind = false;
+                    yield break;
+                }
 
-            transform.Rotate(new Vector3(0, 15, 0));
+                transform.Rotate(new Vector3(0, 15, 0));
+            }
             yield return null;
         }
         isWind = false;
