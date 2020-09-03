@@ -232,7 +232,7 @@ public class PlayerType2 : MyAnimation
                     }
 
                     // 地面にRayを飛ばす
-                    Ray ground = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z), Vector3.down);
+                    Ray ground = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y - character.height * 0.4f, transform.position.z), Vector3.down);
                     float hitNomalY = 1.0f;
                     if (Physics.Raycast(ground, out RaycastHit hit, rayLength, groundLayer))
                     {
@@ -360,7 +360,8 @@ public class PlayerType2 : MyAnimation
             RaycastHit hit;
             bool set;
             int[] index = new int[2] { 0, 0 };
-            mainRay = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
+            mainRay = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y - character.height * 0.4f, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
+            Debug.Log(mainRay.origin.y);
             if(Physics.Raycast(mainRay, out hit, rayLength, groundLayer))
             {
                 float hitDistance = hit.distance;
@@ -370,7 +371,7 @@ public class PlayerType2 : MyAnimation
                 for (int j = 0; j < index.Length; j++)
                 {
                     subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
-                    if (Physics.Raycast(subRay, out hit, character.radius * 7.0f, groundLayer))
+                    if (Physics.Raycast(subRay, out hit, rayLength, groundLayer))
                     {
                         if(hit.normal.y != 0)
                         {
