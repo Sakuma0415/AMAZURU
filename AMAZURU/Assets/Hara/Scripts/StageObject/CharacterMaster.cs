@@ -127,6 +127,9 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
             // ポーズ中は移動処理とアニメーションを停止させる
             Player.IsGameStop = mode == PlayState.GameMode.Pause;
 
+            // ステージ回転時は移動処理のみを無効にする
+            Player.IsDontCharacterMove = mode == PlayState.GameMode.RotationPot;
+
             // 敵との接触フラグ
             Player.IsHitEnemy = enemy != null && enemy.IsHit;
 

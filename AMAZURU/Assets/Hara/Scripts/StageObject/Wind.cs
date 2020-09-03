@@ -93,11 +93,14 @@ public class Wind : MonoBehaviour
         if((upHeight > 0 || downHeight > 0) && inWater == false)
         {
             float center = (upHeight - downHeight) * 0.5f;
-            float totalHeight = upHeight + downHeight;
-            Vector3 localUp = transform.InverseTransformDirection(Vector3.up);
+            float totalHeight = upHeight + downHeight + 1;
+            Vector3 localUp = transform.InverseTransformDirection(Vector3.up).normalized;
 
-            boxCollider.center = localUp * center;
-            boxCollider.size = Vector3.one + localUp * totalHeight;
+            Vector3 boxSize = new Vector3(Mathf.Abs(localUp.x) < 1 ? 1 : totalHeight, Mathf.Abs(localUp.y) < 1 ? 1 : totalHeight, Mathf.Abs(localUp.z) < 1 ? 1 : totalHeight);
+            Vector3 boxCenter = new Vector3(Mathf.Abs(localUp.x) < 1 ? 0 : localUp.x * center, Mathf.Abs(localUp.y) < 1 ? 0 : localUp.y * center, Mathf.Abs(localUp.z) < 1 ? 0 : localUp.z * center);
+
+            boxCollider.center = boxCenter;
+            boxCollider.size = boxSize;
         }
         else
         {
@@ -121,7 +124,7 @@ public class Wind : MonoBehaviour
 
             if(Physics.Raycast(ray, out hit, windMaxArea, layerMask))
             {
-                hitDistance = Mathf.Floor(hit.distance - 0.5f);
+                hitDistance = Mathf.Floor(hit.distance);
             }
             else
             {
