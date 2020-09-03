@@ -122,9 +122,9 @@ public class Wind : MonoBehaviour
             float hitDistance;
             Ray ray = new Ray(transform.position, direction);
 
-            if(Physics.Raycast(ray, out hit, windMaxArea, layerMask))
+            if(Physics.Raycast(ray, out hit, windMaxArea + 0.5f, layerMask))
             {
-                hitDistance = Mathf.Floor(hit.distance);
+                hitDistance = Mathf.Floor(Mathf.Abs(hit.distance - 0.5f));
             }
             else
             {
