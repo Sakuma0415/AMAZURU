@@ -361,7 +361,6 @@ public class PlayerType2 : MyAnimation
             bool set;
             int[] index = new int[2] { 0, 0 };
             mainRay = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y - character.height * 0.4f, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
-            Debug.Log(mainRay.origin.y);
             if(Physics.Raycast(mainRay, out hit, rayLength, groundLayer))
             {
                 float hitDistance = hit.distance;
