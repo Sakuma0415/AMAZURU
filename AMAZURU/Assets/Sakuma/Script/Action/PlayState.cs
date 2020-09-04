@@ -154,7 +154,7 @@ public class PlayState : MonoBehaviour
         if(RotationPotTime<0.75&&!RotationPotTimech)
         {
             RotationPotTimech = true;
-            Camera.main.gameObject.GetComponent<CameraPos>().RainPotChangeOut();
+            Camera.main.gameObject.GetComponent<CameraPos>().RainPotChangeOut(true);
         }
         
 
