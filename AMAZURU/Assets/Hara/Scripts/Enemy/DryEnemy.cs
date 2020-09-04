@@ -67,12 +67,12 @@ public class DryEnemy : MonoBehaviour
         }
 
         // 敵のスポーン地点を設定
-        spawnPos = transform.position;
+        spawnPos = transform.localPosition;
 
         // ブロックの座標データ及び、スケールデータを更新
         transform.localScale = Vector3.one * BlockSize;
-        blockPos = FixedPosition(transform.position + Vector3.up * box.center.y);
-        transform.position = blockPos + Vector3.up * BlockCenterY;
+        blockPos = FixedPosition(transform.localPosition + transform.up * box.center.y);
+        transform.localPosition = blockPos + transform.up * BlockCenterY;
     }
 
     /// <summary>
@@ -142,7 +142,7 @@ public class DryEnemy : MonoBehaviour
         float time = 0;
         float duration = 1.0f;
 
-        EnemyObject.transform.position = transform.position;
+        EnemyObject.transform.localPosition = transform.localPosition;
         EnemyObject.transform.localScale = Vector3.zero;
         IsDoingAnimation = true;
 
@@ -176,7 +176,7 @@ public class DryEnemy : MonoBehaviour
         blockObject.SetActive(false);
 
         // 生成された敵をゆっくり地面に降下させる
-        while (EnemyObject.transform.position != spawnPos)
+        while (EnemyObject.transform.localPosition != spawnPos)
         {
             // ポーズ中は待機処理をループ
             while (IsStop)
@@ -184,13 +184,13 @@ public class DryEnemy : MonoBehaviour
                 yield return null;
             }
 
-            EnemyObject.transform.position = Vector3.MoveTowards(EnemyObject.transform.position, spawnPos, 2.0f * Time.deltaTime);
+            EnemyObject.transform.localPosition = Vector3.MoveTowards(EnemyObject.transform.localPosition, spawnPos, 2.0f * Time.deltaTime);
             yield return null;
         }
         IsDoingAnimation = false;
 
         // ブロックの判定を無効にする
-        transform.position = transform.position + Vector3.down * blockPos.y;
+        transform.localPosition = transform.localPosition - transform.up * blockPos.y;
         box.enabled = false;
 
         // 処理完了
@@ -206,12 +206,12 @@ public class DryEnemy : MonoBehaviour
         float time = 0;
         float duration = 1.0f;
 
-        blockPos = FixedPosition(EnemyObject.transform.position);
-        transform.position = blockPos;
+        blockPos = FixedPosition(EnemyObject.transform.localPosition);
+        transform.localPosition = blockPos;
         transform.localScale = Vector3.zero;
         IsDoingAnimation = true;
         blockObject.SetActive(true);
-        spawnPos = new Vector3(blockPos.x, EnemyObject.transform.position.y, blockPos.z);
+        spawnPos = new Vector3(blockPos.x, EnemyObject.transform.localPosition.y, blockPos.z);
 
         while (time < duration)
         {
@@ -240,7 +240,7 @@ public class DryEnemy : MonoBehaviour
         // 表示・非表示の管理
         box.enabled = true;
         EnemyObject.gameObject.SetActive(false);
-        EnemyObject.transform.position = blockPos + Vector3.down * box.size.y * 0.5f * BlockSize;
+        EnemyObject.transform.localPosition = blockPos - transform.up * box.size.y * 0.5f * BlockSize;
 
         // 処理完了
         coroutine = null;

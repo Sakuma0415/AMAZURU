@@ -85,7 +85,7 @@ public class EnemyMaster : MonoBehaviour
         {
             // 敵のインスタンスを作成
             Vector3 startPos = data.UseStartPosSetting ? data.StartPosition : data.MovePlan[0];
-            Enemies[count] = Instantiate(enemyPrefab, startPos, Quaternion.identity, gameObject.transform);
+            Enemies[count] = Instantiate(enemyPrefab, gameObject.transform);
             Vector3 startRot;
             switch (data.StartRotate)
             {
@@ -116,6 +116,7 @@ public class EnemyMaster : MonoBehaviour
             }
             Enemies[count].StartPosFlag = data.UseStartPosSetting;
             Enemies[count].StageWater = StageWater;
+            Enemies[count].StartPosition = startPos;
             Enemies[count].EnemyInit();
 
             if(enemyTypes[count] == EnemyType.Dry)

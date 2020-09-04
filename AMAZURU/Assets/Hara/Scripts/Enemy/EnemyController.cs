@@ -53,6 +53,16 @@ namespace Enemy
         [SerializeField, Header("回転力")] private float rotatePower = 50f;
         [SerializeField, Header("敵のコライダーの大きさ"), Range(0.1f, 1.0f)] private float colliderSize = 0.5f;
 
+        /// <summary>
+        /// ローカル座標に変換するための基点
+        /// </summary>
+        public Transform MasterTransform { set; private get; } = null;
+
+        /// <summary>
+        /// 開始時の座標
+        /// </summary>
+        public Vector3 StartPosition { set; private get; } = Vector3.zero;
+
         private int location = 0;
         private int step = 0;
         private bool stepEnd = false;
@@ -136,8 +146,11 @@ namespace Enemy
             // アニメーションの速度を取得
             if (enemyAnime != null) { animationSpeed = enemyAnime.GetCurrentAnimatorStateInfo(0).speed; }
 
+            // 敵を開始時の座標に配置
+            transform.localPosition = StartPosition;
+
             // 敵の開始時の向き
-            transform.rotation = Quaternion.Euler(enemyStartRot);
+            transform.localRotation = Quaternion.Euler(enemyStartRot);
 
             // 敵の開始時のサイズを設定
             transform.localScale = Vector3.one * enemySize;
@@ -173,40 +186,38 @@ namespace Enemy
                     }
                 }
 
-                Vector3 nowPos = transform.position;
                 Vector3 nextPos = movePlan[nextLocation];
-                Vector3 forward = (nextPos - nowPos).normalized;
+                Vector3 forward = (nextPos - transform.localPosition).normalized;
 
                 // プレイヤーと接触しているかをチェック
-                IsHitPlayer = Physics.BoxCast(new Vector3(transform.position.x, transform.position.y - enemy.radius * enemySize, transform.position.z), new Vector3(enemy.radius * enemySize * 1.25f, enemy.radius * enemySize, enemy.radius * enemySize * 1.25f), Vector3.up, out RaycastHit hit, Quaternion.Euler(Vector3.zero), 1.0f, playerLayer);
+                IsHitPlayer = Physics.BoxCast(new Vector3(transform.localPosition.x, transform.localPosition.y - enemy.radius * enemySize, transform.localPosition.z), new Vector3(enemy.radius * enemySize * 1.25f, enemy.radius * enemySize, enemy.radius * enemySize * 1.25f), transform.up, out RaycastHit hit, Quaternion.Euler(Vector3.zero), 1.0f, playerLayer);
                 if (IsHitPlayer)
                 {
                     // プレイヤーと接触している場合はプレイヤーの方向を向く処理を実行
-                    IsActonEnd = RotateAnimation(transform.gameObject, (new Vector3(hit.transform.position.x, 0, hit.transform.position.z) - new Vector3(transform.position.x, 0, transform.position.z)).normalized, rotatePower * delta * 2.5f, false);
+                    IsActonEnd = RotateAnimation(transform.gameObject, (new Vector3(hit.transform.localPosition.x, 0, hit.transform.localPosition.z) - new Vector3(transform.localPosition.x, 0, transform.localPosition.z)).normalized, rotatePower * delta * 2.5f, true);
                 }
                 else
                 {
                     switch (step)
                     {
                         case 0:
-                            transform.position = nowPos;
-                            if (Vector3.Distance(transform.position, movePlan[nextLocation]) < 0.1f)
+                            if (Vector3.Distance(transform.localPosition, nextPos) < 0.1f)
                             {
                                 step = -5;
                             }
                             stepEnd = true;
                             break;
                         case 1:
-                            stepEnd = RotateAnimation(transform.gameObject, forward, rotatePower * delta, false);
+                            stepEnd = RotateAnimation(transform.gameObject, forward, rotatePower * delta, true);
                             break;
                         case 2:
-                            if (transform.rotation == Quaternion.LookRotation(forward))
+                            if (transform.localRotation == Quaternion.LookRotation(forward))
                             {
                                 float speed = InWater ? enemyWaterSpeed : enemySpeed;
-                                transform.position = Vector3.MoveTowards(transform.position, movePlan[nextLocation], speed * delta);
-                                if(Vector3.Distance(transform.position, movePlan[nextLocation]) < 0.1f)
+                                transform.localPosition = Vector3.MoveTowards(transform.localPosition, nextPos, speed * delta);
+                                if(Vector3.Distance(transform.localPosition, nextPos) < 0.1f)
                                 {
-                                    transform.position = movePlan[nextLocation];
+                                    transform.localPosition = nextPos;
                                     stepEnd = true;
                                 }
                             }
