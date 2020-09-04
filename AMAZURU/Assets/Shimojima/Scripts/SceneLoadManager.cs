@@ -24,7 +24,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
     }
 
     private bool IsLoadScene = false;
-    public GameObject loadImage;
+    public GameObject[] loadingImages;
     public Image fadeImage;
     [SerializeField]
     private Shader shader;
@@ -93,7 +93,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
         StartCoroutine(Fade(1, FadeMode.OUT));
         yield return new WaitForSeconds(1);
         AsyncOperation async = SceneManager.LoadSceneAsync(sceneName.ToString());
-        loadImage.SetActive(DoKeyPress);
+        loadingImages[0].SetActive(DoKeyPress);
         Animator animator = anounceText.GetComponent<Animator>();
         async.allowSceneActivation = false;
         bool DoOnce = false;
@@ -102,14 +102,12 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
         {
             if (DoKeyPress)
             {
-                if (async.progress >= 0.9f && !DoOnce && fadeEnd) { DoOnce = true; animator.SetTrigger("FadeIn"); }
-                if (Input.GetButtonDown("Circle") && fadeEnd&& !cha)
+                if (async.progress >= 0.9f && !DoOnce && fadeEnd) { DoOnce = true; }
+                if (ControllerInput.Instance.buttonDown.circle && fadeEnd&& !cha)
                 {
                     async.allowSceneActivation = true;
-                    loadImage.GetComponent<LoadImage>().WaveReSet();
-                    loadImage.SetActive(false);
-                    animator.ResetTrigger("FadeIn");
-                    animator.SetTrigger("FadeOut");
+                    loadingImages[0].GetComponent<LoadImage>().WaveReSet();
+                    loadingImages[0].SetActive(false);
                     cha = true;
                 }
             }
@@ -122,9 +120,18 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
             }
             yield return null;
         }
-        yield return new WaitForSeconds(1f);
         StartCoroutine(Fade(1, FadeMode.IN));
+        yield return new WaitForSeconds(1f);
+        loadingImages[1].GetComponent<Animator>().SetTrigger("Start");
+        yield return new WaitForSeconds(1.5f);
         IsLoadScene = false;
+        SceneLoadFlg = false;
+        loadingImages[1].GetComponent<Animator>().SetTrigger("End");
+        yield return null;
+        loadingImages[1].SetActive(false);
+        Color c = loadingImages[1].transform.GetChild(1).GetComponent<Image>().color;
+        loadingImages[1].transform.GetChild(1).GetComponent<Image>().color = new Color(c.r, c.g, c.b, 1);
+        loadingImages[1].transform.GetChild(0).GetComponent<LoadEnd>().Up = 1;
         yield return null;
     }
 
@@ -147,9 +154,9 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
             {
                 alphaCut -= Time.deltaTime / sec; ;
                 fadeImage.material.SetFloat("_Alpha", alphaCut);
-                if(alphaCut <= 0) { fadeEnd = true; }
+                if (alphaCut <= 0) { fadeEnd = true; }
             }
-            else if(fadeMode == FadeMode.OUT)
+            else if (fadeMode == FadeMode.OUT)
             {
                 alphaCut += Time.deltaTime / sec; ;
                 fadeImage.material.SetFloat("_Alpha", alphaCut);
@@ -158,7 +165,10 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
 
             yield return null;
         }
-        if (fadeMode == FadeMode.IN) { SceneLoadFlg = false; }
+        //if (fadeMode == FadeMode.IN) { SceneLoadFlg = false; }
+
+        if (!loadingImages[1].activeSelf){ loadingImages[1].SetActive(true); }
+
         yield return null;
     }
 }

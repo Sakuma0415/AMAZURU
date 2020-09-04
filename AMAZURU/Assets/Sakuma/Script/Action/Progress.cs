@@ -11,9 +11,10 @@ public class Progress : MonoBehaviour
     static public Progress progress;
     //水中呼吸アイテム取得のフラグ
     public bool key;
+    public WaterHi waterHi;
     //Clear時に呼び出すresult
     [SerializeField]
-    ResultControl resultControl;
+    MenuMaster gameMenu = null;
     //resultを描画し始めるまでの時間
     [SerializeField]
     float ResultDelayTime;
@@ -21,6 +22,8 @@ public class Progress : MonoBehaviour
     AnimationClip[] animation;
 
     public Animator animator;
+    bool IsThunder = false;
+
         //初期化
     void SetState()
     {
@@ -31,7 +34,9 @@ public class Progress : MonoBehaviour
     {
         SetState();
         progress = this;
-        SoundManager.soundManager.PlayBgm("PerituneMaterial_Wonder3_loop", 0.5f, 0.4f, 1);
+        SoundManager.soundManager.PlayBgm("PerituneMaterial_Wonder3_loop", 0.5f, 0.1f, 1);
+
+        IsThunder = false;
         //謎
         //SoundManager.soundManager.StopBgm(1f,0);
     }
@@ -41,20 +46,25 @@ public class Progress : MonoBehaviour
 
 
         //ポーズ画面の開閉
-        if (Input.GetButtonDown("Option"))
+        if (ControllerInput .Instance .buttonDown .option )
         {
             if (PlayState.playState.gameMode == PlayState.GameMode.Play)
             {
-                resultControl.GamePause(true);
+                gameMenu.Pause(true);
                 PlayState.playState.gameMode = PlayState.GameMode.Pause;
             }
             else
             if (PlayState.playState.gameMode == PlayState.GameMode.Pause)
             {
-                resultControl.GamePause(false);
+                gameMenu.Pause(false);
                 PlayState.playState.gameMode = PlayState.GameMode.Play;
             }
         }
+
+
+
+
+
     }
 
     //result画面を呼び出す関数
@@ -73,10 +83,12 @@ public class Progress : MonoBehaviour
     {
         SoundManager.soundManager.VolFadeBgm(1,0.1f,0);
         SoundManager.soundManager.StopBgm(1, 1);
+        float timeob = 0;
         if (GameOver)
         {
-            while (!animator.GetBool("StageClear"))
+            while (!animator.GetBool("StageClear")||timeob >2f)
             {
+                timeob += Time.deltaTime;
                 yield return null;
             }
         }
@@ -91,7 +103,7 @@ public class Progress : MonoBehaviour
         yield return new WaitForSeconds(animation[GameOver?0:1].length+ResultDelayTime);
 
 
-        resultControl.StartResult(GameOver);
+        gameMenu.StartResult(GameOver);
     }
 
 }

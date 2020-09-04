@@ -31,9 +31,6 @@ public class CameraPos : MonoBehaviour
     //カメラ捜査の速度
     [SerializeField]
     float stickSpead = 0;
-    //カメラの速度取得用
-    [SerializeField]
-    ResultControl resultControl;
     //カメラの速度ステージ注視時
     [SerializeField]
     float[] cameraSpS;
@@ -46,6 +43,13 @@ public class CameraPos : MonoBehaviour
     //ゲーム終了時の演出にかかる時間
     [SerializeField]
     float GameEndEfSpan = 0;
+    //コンフィグ取得
+    [SerializeField]
+    Config config;
+    [SerializeField]
+    CharacterMaster ChaMs;
+    [SerializeField]
+    float Tdis = 5;
 
     [Header("以下変更不可")]
     //ステージ注視時のカメラ、ステージ間の距離
@@ -60,6 +64,8 @@ public class CameraPos : MonoBehaviour
     public float fAngle;
     //アメフラシの演出のカメラが移動する時間
     public float rainPotChangeAnimeTimeSpead;
+    //注視点　true=プレイヤー：false=ステージ
+    public bool lookMode = false;
 
     //private変数
     //現在のカメラ、注視点間の距離
@@ -68,10 +74,8 @@ public class CameraPos : MonoBehaviour
     Vector3 lookObj;
     //X-Z平面上の注視点から見たカメラの角度
     float XZangle = 0;
-    //注視点　true=プレイヤー：false=ステージ
-    bool lookMode = false;
     //注視点変更アニメーションの経過時間
-    float lookAnimeTime = 0;
+    public float lookAnimeTime = 0;
     //注視点変更アニメーションの開始地点の座標
     Vector3 animePos;
     //マウスを固定＆透明化させるかのフラグ
@@ -112,7 +116,11 @@ public class CameraPos : MonoBehaviour
     float disToGameEnd = 0;
     //ゲーム終了時の注視点の座標
     Vector3 transformToGameEnd = Vector3.zero;
-
+    float lotDis = 0;
+    Vector3 lotPos;
+    float lotYAn = 0;
+    Vector3 LightningStrikeAction = Vector3.zero;
+    bool kari = false;
     void Start()
     {
         //初期化
@@ -189,8 +197,10 @@ public class CameraPos : MonoBehaviour
 
         }
 
+        
+
         //ゲームの終了を検知するシーケンサー
-        if(gameMode != PlayState.playState.gameMode)
+        if (gameMode != PlayState.playState.gameMode)
         {
             if (PlayState.playState.gameMode==PlayState.GameMode.GameOver || PlayState.playState.gameMode == PlayState.GameMode.Clear )
             {
@@ -207,23 +217,88 @@ public class CameraPos : MonoBehaviour
                     disToGameEnd = endCameraPos;
                 }
             }
+            if(PlayState.playState.gameMode == PlayState.GameMode.Thunder)
+            {
+                kari = false;
+                lotDis = endCameraPos;
+                lotPos = PlayerTransform.position;
+                lotYAn = Yangle;
+                Debug.Log(lotPos);
+                LightningStrikeAction = ChaMs.LightningStrikePoint.transform.position;
+                
+            }
             gameMode = PlayState.playState.gameMode;
         }
+        if (PlayState.playState.gameMode == PlayState.GameMode.Thunder)
+        {
+            float dis = 0;
+            float Ttime = PlayState.playState.ThunderTime;
+            int brea;
+            float neoY=0;
+            Vector3 trg = Vector3.zero;
+            if (Ttime > 4f)
+            {
+                brea = 1;
+            }
+            else if (Ttime > 1f)
+            {
+                brea = 2;
+            }
+            else
+            {
+                brea = 3;
+            }
 
+            switch (brea)
+            {
+                case 1:
+                    trg = Vector3.Lerp(lotPos, LightningStrikeAction, (5 - Ttime));
+                    dis = Mathf.Lerp(lotDis, Tdis, (5 - Ttime));
+                    neoY= Mathf.Lerp(lotYAn, 30, (5 - Ttime));
+                    break;
+
+                case 2:
+                    if (!kari)
+                    {
+                        kari = true;
+                        ChaMs.LightningStrikeAction();
+                    }
+                    trg = Vector3.Lerp(lotPos, LightningStrikeAction, 1);
+                    dis = Mathf.Lerp(lotDis, Tdis, 1);
+                    neoY = Mathf.Lerp(lotYAn, 30, 1);
+                    break;
+                case 3:
+                    trg = Vector3.Lerp(LightningStrikeAction, lotPos, (1 - Ttime));
+                    dis = Mathf.Lerp(Tdis, lotDis, 1 - Ttime);
+                    neoY = Mathf.Lerp( 30, lotYAn, (1 - Ttime));
+                    break;
+            }
+
+            //Debug.Log(neoY);
+            transform.position = (
+                new Vector3
+                (Mathf.Cos(XZangle * Mathf.Deg2Rad) * Mathf.Cos(neoY * Mathf.Deg2Rad),
+                Mathf.Sin(neoY * Mathf.Deg2Rad) + newLookHi,
+                Mathf.Sin(XZangle * Mathf.Deg2Rad) * Mathf.Cos(neoY * Mathf.Deg2Rad))
+                * dis) + trg + new Vector3(0, LookHiSet, 0);
+            transform.localEulerAngles = new Vector3(neoY , -XZangle - 90, 0);
+
+        }
 
     }
     
 
     void Update()
     {
+        Debug.Log(lookObj);
         //ゲーム開始時の定点カメラの特殊挙動時のステータス更新
         if (startCameraFlg )
         {
-            lookObj = lookMode ? PlayerTransform.position+new Vector3 (0,LookHiSet,0)  : lookPos;
+            
             XZangle += Time.deltaTime*3;
 
             //通常のカメラ処理に戻る
-            if (Input.GetButtonDown("Circle") && !SceneLoadManager.Instance.SceneLoadFlg && !PlayState.playState.Tutorial)
+            if (ControllerInput .Instance.buttonDown.circle && !SceneLoadManager.Instance.SceneLoadFlg && !PlayState.playState.Tutorial)
             {
                 startCameraAngleResetBf = XZangle;
                 startCameraFlg = false;
@@ -253,12 +328,12 @@ public class CameraPos : MonoBehaviour
                 {
                     if (!lookMode)
                     {
-                        switch (resultControl.SpeedType)
+                        switch (config.cameraSpeed )
                         {
                             case CameraSpeed.Slow:
                                 stickSpead = cameraSpS[0];
                                 break;
-                            case CameraSpeed.Nomal:
+                            case CameraSpeed.Normal:
                                 stickSpead = cameraSpS[1];
                                 break;
                             case CameraSpeed.Quick:
@@ -268,12 +343,12 @@ public class CameraPos : MonoBehaviour
                     }
                     else
                     {
-                        switch (resultControl.SpeedType)
+                        switch (config.cameraSpeed)
                         {
                             case CameraSpeed.Slow:
                                 stickSpead = cameraSpP[0];
                                 break;
-                            case CameraSpeed.Nomal:
+                            case CameraSpeed.Normal:
                                 stickSpead = cameraSpP[1];
                                 break;
                             case CameraSpeed.Quick:
@@ -288,8 +363,8 @@ public class CameraPos : MonoBehaviour
 
 
                     //マウスの移動情報を角度の変更量に変換
-                    float mouse_x_delta = Mathf.Abs(Input.GetAxis("Horizontal2"))<0.1f?0: Input.GetAxis("Horizontal2") * stickSpead * Time.deltaTime ;
-                    float mouse_y_delta = Mathf.Abs( Input.GetAxis("Vertical2")) < 0.1f ? 0 : Input.GetAxis("Vertical2") * stickSpead * Time.deltaTime;
+                    float mouse_x_delta = Mathf.Abs(ControllerInput .Instance .stick .RStickHorizontal )<0.1f?0: ControllerInput.Instance.stick.RStickHorizontal * stickSpead * Time.deltaTime ;
+                    float mouse_y_delta = Mathf.Abs(ControllerInput.Instance.stick.RStickVertical ) < 0.1f ? 0 : ControllerInput.Instance.stick.RStickVertical * stickSpead * Time.deltaTime;
 
                     XZangle -= mouse_x_delta ;
                     Yangle -= mouse_y_delta ;
@@ -306,7 +381,7 @@ public class CameraPos : MonoBehaviour
             }
             
             //注視点変更
-            if (Input.GetButtonDown("Triangle") && lookAnimeTime == 0&&!startCameraFlg )
+            if (ControllerInput .Instance .buttonDown .triangle  && lookAnimeTime == 0&&!startCameraFlg )
             {
                 lookMode = !lookMode;
                 lookAnimeTime = changeTime;
@@ -453,6 +528,7 @@ public class CameraPos : MonoBehaviour
     {
         potAnimeTime = 0;
         outflg = true;
+        beforePos = PlayerTransform.position + new Vector3(0, LookHiSet, 0);
     }
 
 }

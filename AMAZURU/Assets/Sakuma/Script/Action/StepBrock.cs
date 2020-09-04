@@ -82,7 +82,7 @@ public class StepBrock : MonoBehaviour
             StepTrueText.textFlg = true;
             
             //段差アニメ開始時の初期化
-            if (Input.GetButtonDown("Circle"))
+            if (ControllerInput.Instance.buttonDown .circle)
             {
                 //Debug.Log(playerTransform.position);
                 onStep = false;

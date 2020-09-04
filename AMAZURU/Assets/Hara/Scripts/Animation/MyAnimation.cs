@@ -87,8 +87,21 @@ public class MyAnimation : MonoBehaviour
         Quaternion rotation = Quaternion.RotateTowards(from, to, time);
         _ = local ? obj.transform.localRotation = rotation : obj.transform.rotation = rotation;
 
-        if(from == to)
+        // fromをVector型に変換して正の値に修正
+        Vector3 vecFrom = from.eulerAngles;
+        vecFrom.x = Mathf.Abs(vecFrom.x);
+        vecFrom.y = Mathf.Abs(vecFrom.y);
+        vecFrom.z = Mathf.Abs(vecFrom.z);
+
+        // toをVector型に変換して正の値に修正
+        Vector3 vecTo = to.eulerAngles;
+        vecTo.x = Mathf.Abs(vecTo.x);
+        vecTo.y = Mathf.Abs(vecTo.y);
+        vecTo.z = Mathf.Abs(vecTo.z);
+
+        if(Vector3.Distance(vecFrom, vecTo) < 1.0f)
         {
+            _ = local ? obj.transform.localRotation = to : obj.transform.rotation = to;
             return true;
         }
         else

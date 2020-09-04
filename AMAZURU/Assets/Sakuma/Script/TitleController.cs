@@ -8,6 +8,7 @@ public class TitleController : MyAnimation
     [SerializeField, Tooltip("タイトル画面の項目")] private GameObject titleMenu = null;
     [SerializeField, Tooltip("クレジット")] private GameObject creditObject = null;
     [SerializeField, Tooltip("カーソルオブジェクト")] private GameObject cursor = null;
+    [SerializeField, Tooltip("コンフィグ")] private Config config = null;
 
     private GameObject[] buttonObject = null;
     private Coroutine coroutine = null;
@@ -44,6 +45,9 @@ public class TitleController : MyAnimation
         SoundManager.soundManager.PlayBgm("MusMus-BGM-043", 0.1f, 0.5f, 0);
         SoundManager.soundManager.PlayBgm("rain_loop", 0.1f, 0.3f, 1);
 
+        //コンフィグの初期化
+        config.cameraSpeed = CameraSpeed.Normal;
+        config.save.doRetention = false;
         // 変数の初期化処理
         selectNum = 0;
         creditFlag = false;
@@ -92,7 +96,7 @@ public class TitleController : MyAnimation
         bool setFlag = false;
         if (flag)
         {
-            if(changeTime < 0.3f)
+            if(changeTime < 0.15f)
             {
                 changeTime += Time.deltaTime;
             }
@@ -105,6 +109,7 @@ public class TitleController : MyAnimation
         else
         {
             setFlag = true;
+            changeTime = 0;
         }
 
         if (setFlag)
@@ -197,12 +202,12 @@ public class TitleController : MyAnimation
     /// </summary>
     private void InputKey()
     {
-        if (Input.GetButtonDown("Circle") && SceneLoadManager.Instance.SceneLoadFlg == false && dontInput == false)
+        if (ControllerInput.Instance.buttonDown.circle && SceneLoadManager.Instance.SceneLoadFlg == false && dontInput == false)
         {
             ButtonAction(selectNum);
         }
 
-        if(Input.GetButtonDown("Cross") && creditFlag)
+        if(ControllerInput.Instance.buttonDown.cross && creditFlag)
         {
             // ボタンSEの再生
             SoundManager.soundManager.PlaySe("btn01", 0.2f);
@@ -211,7 +216,7 @@ public class TitleController : MyAnimation
             OpenCredit(false);
         }
 
-        float input = dontInput == false && SceneLoadManager.Instance.SceneLoadFlg == false ? Input.GetAxis("Vertical3") : 0;
+        float input = dontInput == false && SceneLoadManager.Instance.SceneLoadFlg == false ? ControllerInput.Instance.stick.crossVertical : 0;
         if(Mathf.Abs(input) > 0.1f)
         {
             ChangeSelectId(input > 0, keyDown);

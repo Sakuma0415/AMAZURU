@@ -37,7 +37,7 @@ public class TutorialUI : MonoBehaviour
             }
 
 
-            if (Input.GetButtonDown("Circle"))
+            if (ControllerInput.Instance .buttonDown .circle)
             {
                 num++;
                 if(num== UIObjs.Length)
@@ -48,7 +48,7 @@ public class TutorialUI : MonoBehaviour
                 }
             }
 
-            float h2 = Input.GetAxis("Horizontal3");
+            float h2 = ControllerInput.Instance.stick.crossHorizontal;
             if (h2 > 0.2f) { leftT += 1; } else { leftT = 0; }
             if (h2 < -0.2f) { rightT += 1; } else { rightT = 0; }
 

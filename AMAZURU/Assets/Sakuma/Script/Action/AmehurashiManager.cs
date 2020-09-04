@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.Playables;
 
 /// <summary>
 /// アメフラシ全体で共有する情報のクラス
@@ -24,6 +25,7 @@ public class AmehurashiManager : MonoBehaviour
     private int amehurashiBackTrueCont = 0;
     //雨のBGMの連続性を検知するための変数
     private int backRainBGM = -1;
+
     //+　初期化
 
     public void ManagerSet()
@@ -38,7 +40,10 @@ public class AmehurashiManager : MonoBehaviour
         //アメフラシの起動数変更時BGM更新
         if(amehurashiBackTrueCont != amehurashiTrueCont)
         {
-            
+
+
+
+
             if((float)amehurashiTrueCont / (float)AmehurashiQuantity > 0.5f)
             {
                 if (backRainBGM != 2)
