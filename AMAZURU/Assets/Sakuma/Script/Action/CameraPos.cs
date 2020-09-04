@@ -528,7 +528,7 @@ public class CameraPos : MonoBehaviour
     {
         potAnimeTime = 0;
         outflg = true;
-        lookObj = PlayerTransform.position + new Vector3(0, LookHiSet, 0);
+        beforePos = PlayerTransform.position + new Vector3(0, LookHiSet, 0);
     }
 
 }
