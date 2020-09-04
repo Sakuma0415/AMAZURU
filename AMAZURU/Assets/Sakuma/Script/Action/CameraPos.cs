@@ -31,9 +31,6 @@ public class CameraPos : MonoBehaviour
     //カメラ捜査の速度
     [SerializeField]
     float stickSpead = 0;
-    //カメラの速度取得用
-    [SerializeField]
-    ResultControl resultControl;
     //カメラの速度ステージ注視時
     [SerializeField]
     float[] cameraSpS;
@@ -293,10 +290,11 @@ public class CameraPos : MonoBehaviour
 
     void Update()
     {
+        Debug.Log(lookObj);
         //ゲーム開始時の定点カメラの特殊挙動時のステータス更新
         if (startCameraFlg )
         {
-            lookObj = lookMode ? PlayerTransform.position+new Vector3 (0,LookHiSet,0)  : lookPos;
+            
             XZangle += Time.deltaTime*3;
 
             //通常のカメラ処理に戻る
@@ -335,7 +333,7 @@ public class CameraPos : MonoBehaviour
                             case CameraSpeed.Slow:
                                 stickSpead = cameraSpS[0];
                                 break;
-                            case CameraSpeed.Nomal:
+                            case CameraSpeed.Normal:
                                 stickSpead = cameraSpS[1];
                                 break;
                             case CameraSpeed.Quick:
@@ -350,7 +348,7 @@ public class CameraPos : MonoBehaviour
                             case CameraSpeed.Slow:
                                 stickSpead = cameraSpP[0];
                                 break;
-                            case CameraSpeed.Nomal:
+                            case CameraSpeed.Normal:
                                 stickSpead = cameraSpP[1];
                                 break;
                             case CameraSpeed.Quick:
@@ -530,7 +528,7 @@ public class CameraPos : MonoBehaviour
     {
         potAnimeTime = 0;
         outflg = true;
-
+        beforePos = PlayerTransform.position + new Vector3(0, LookHiSet, 0);
     }
 
 }

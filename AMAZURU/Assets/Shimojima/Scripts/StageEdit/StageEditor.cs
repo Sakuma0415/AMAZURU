@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
+using UnityEngine.XR.WSA.Input;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -34,6 +36,10 @@ public class StageEditor : MonoBehaviour
 
     [SerializeField]
     private InputField changeObjectName;
+    [SerializeField]
+    private Dropdown biomeSelect, stageSelect_d;
+    [SerializeField]
+    private Button nStageB, lStageB;
 
     [HideInInspector,Tooltip("グリッドの数　X * Y * Z")]
     public Vector3Int cells;
@@ -41,6 +47,7 @@ public class StageEditor : MonoBehaviour
     [HideInInspector]
     public Vector3Int cellNum;
     private Vector3Int tempCnum = Vector3Int.zero;
+    private string biome = "";
 
     [Tooltip("Gridオブジェクトの参照管理")]
     public GameObject[,,] gridPos;
@@ -82,6 +89,7 @@ public class StageEditor : MonoBehaviour
         if(referenceObject.Length == 0) { referenceObject = new GameObject[1]; }
         if(floorRefObj.Length == 0) { floorRefObj = new GameObject[1]; }
         if(prismRefObj.Length == 0) { prismRefObj = new GameObject[1]; }
+        GetBiomeName();
     }
 
     void Update()
@@ -247,6 +255,42 @@ public class StageEditor : MonoBehaviour
     }
     #endregion
 
+    #region UI関連
+
+    public void BiomeSelectOnMove()
+    {
+        biome = biomeSelect.captionText.text;
+        GetStageName();
+    }
+
+    private void GetBiomeName()
+    {
+        List<string> bName = new List<string>();
+        string[] s = System.IO.Directory.GetDirectories(UnityEngine.Application.dataPath + "/Shimojima/Resources/EditData", "*", System.IO.SearchOption.AllDirectories);
+        foreach (string path in s)
+        {
+            FileInfo f = new FileInfo(path);
+            bName.Add(f.Name);
+        }
+        biomeSelect.AddOptions(bName);
+        BiomeSelectOnMove();
+    }
+
+    private void GetStageName()
+    {
+        stageSelect_d.ClearOptions();
+        List<string> sName = new List<string>();
+        Object[] o = Resources.LoadAll("EditData/" + biome + "/", typeof(PrefabStageData));
+        foreach(Object _o in o)
+        {
+            sName.Add(_o.name);
+        }
+
+        stageSelect_d.AddOptions(sName);
+    }
+
+    #endregion
+
     /// <summary>
     /// 編集するステージの初期化
     /// </summary>
@@ -311,11 +355,11 @@ public class StageEditor : MonoBehaviour
         Data.editName = stageNameInputField.text;
         if (isSave || loadStage)
         {
-            AssetDatabase.DeleteAsset("Assets/Shimojima/Resources/EditData/EditData_" + stageNameInputField.text + ".asset");
+            AssetDatabase.DeleteAsset("Assets/Shimojima/Resources/EditData/" + biome + "/EditData_" + stageNameInputField.text + ".asset");
             AssetDatabase.SaveAssets();
         }
-        Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Resources/Prefabs/Stage/" + stageNameInputField.text + ".prefab", InteractionMode.UserAction);
-        AssetDatabase.CreateAsset(Data, "Assets/Shimojima/Resources/EditData/EditData_" + stageNameInputField.text + ".asset");
+        Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Resources/Prefabs/Stage/" + biome + "/" + stageNameInputField.text + ".prefab", InteractionMode.UserAction);
+        AssetDatabase.CreateAsset(Data, "Assets/Shimojima/Resources/EditData/" + biome + "/EditData_" + stageNameInputField.text + ".asset");
         Array3DForLoop(Vector3Int.zero, cells, 1);
 #endif
     }
@@ -564,6 +608,7 @@ public class StageEditor : MonoBehaviour
     {
         if (_StageObjects[i, j, k] == null) { return; }
         GameObject obj = Instantiate(_StageObjects[i, j, k]);
+        obj.name = _StageObjects[i, j, k].name;
         obj.transform.parent = _obj.transform;
         _StageObjects[i, j, k] = obj;
     }
@@ -572,69 +617,63 @@ public class StageEditor : MonoBehaviour
     {
         deleteComponent = !deleteComponent;
     }
-}
 
-#if UNITY_EDITOR
-[CustomEditor(typeof(StageEditor))]
-public class StageEditorCustom : Editor
-{
-    PrefabStageData pre;
-    public override void OnInspectorGUI()
+    /// <summary>
+    /// ステージの初期化とデータのセット
+    /// </summary>
+    public void NewStageCreate()
     {
-        StageEditor stageEditor = target as StageEditor;
-        base.OnInspectorGUI();
-        GUILayout.Label("-以下変更可-");
-        pre = (PrefabStageData)EditorGUILayout.ObjectField("読み込むステージ", pre, typeof(ScriptableObject), false);
-        if (GUILayout.Button("NewStage"))
-        {
-            if (!EditorApplication.isPlaying) { return; }
-            stageEditor.EditStageInit();
-            stageEditor.isCreateStage = true;
-        }
-
-        if (GUILayout.Button("LoadStage"))
-        {
-            if (!EditorApplication.isPlaying) { return; }
-            LoadStage(stageEditor);
-            stageEditor.isCreateStage = true;
-        }
+        EditStageInit();
+        isCreateStage = true;
+        
+        biomeSelect.interactable = false;
+        stageSelect_d.interactable = false;
+        nStageB.interactable = false;
+        lStageB.interactable = false;
     }
 
     /// <summary>
-    /// ステージの読み込み
+    /// 既存ステージの読み込み
     /// </summary>
-    /// <param name="stageEditor">ベースクラス</param>
-    private void LoadStage(StageEditor stageEditor)
+    public void LoadStage()
     {
-        stageEditor.loadStage = true;
-        stageEditor.Data = Instantiate(pre);
-        stageEditor.stageNameInputField.text = stageEditor.Data.editName;
-        GameObject o = Instantiate(pre.stage);
-        stageEditor.cells = new Vector3Int(pre.gridCells.x, pre.gridCells.y, pre.gridCells.z);
-        stageEditor.gridPos = new GameObject[stageEditor.cells.x, stageEditor.cells.y + 1, stageEditor.cells.z];
-        stageEditor._StageObjects = new GameObject[stageEditor.cells.x, stageEditor.cells.y + 1, stageEditor.cells.z];
-        stageEditor.EditStageInit();
+        loadStage = true;
+        biomeSelect.interactable = false;
+        stageSelect_d.interactable = false;
+        nStageB.interactable = false;
+        lStageB.interactable = false;
+
+        Data = Resources.Load<PrefabStageData>("EditData/" + biome + "/" + stageSelect_d.captionText.text);
+        stageNameInputField.text = Data.editName;
+        GameObject o = Instantiate(Data.stage);
+        stageSizeInputField[0].text = Data.gridCells.x.ToString();
+        stageSizeInputField[1].text = Data.gridCells.y.ToString();
+        stageSizeInputField[2].text = Data.gridCells.z.ToString();
+        cells = new Vector3Int(Data.gridCells.x, Data.gridCells.y, Data.gridCells.z);
+        gridPos = new GameObject[Data.gridCells.x, Data.gridCells.y + 1, Data.gridCells.z];
+        _StageObjects = new GameObject[Data.gridCells.x, Data.gridCells.y + 1, Data.gridCells.z];
+        EditStageInit();
+        isCreateStage = true;
 
     ReStart:
         foreach (Transform child in o.transform)
         {
-            child.gameObject.transform.parent = stageEditor.stageRoot.transform;
+            child.gameObject.transform.parent = stageRoot.transform;
             Vector3Int v = Vector3Int.zero;
             if (child.GetComponent<MyCellIndex>())
             {
                 v = child.GetComponent<MyCellIndex>().cellIndex;
-                if(v.y != stageEditor.cells.y && stageEditor.isGenerateFloor)
+                if(v.y != cells.y && isGenerateFloor.isOn)
                 {
                     v = new Vector3Int(v.x, v.y + 1, v.z);
                 }
                 child.GetComponent<MyCellIndex>().cellIndex = v;
             }
-            stageEditor.gridPos[v.x, v.y, v.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true ;
-            stageEditor._StageObjects[v.x, v.y, v.z] = child.gameObject;
-        }
 
+            gridPos[v.x, v.y, v.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
+            _StageObjects[v.x, v.y, v.z] = child.gameObject;
+        }
         if (o.transform.childCount != 0) { goto ReStart; }
         Destroy(o);
     }
 }
-#endif

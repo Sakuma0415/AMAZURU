@@ -52,12 +52,19 @@ public class StageMake : MonoBehaviour
     {
 
         //ステージ生成
-        Instantiate(StageMake.LoadStageData.stagePrefab);
+        GameObject StageObj = Instantiate(StageMake.LoadStageData.stagePrefab);
+        GameObject StageCenter = new GameObject();
+        StageCenter.transform.position = StageMake.LoadStageData.stageSize/2;
+        StageCenter.name = "StageCenter";
+        StageObj.transform.parent= StageCenter.transform;
+        master.gameObject.transform.parent = StageCenter.transform;
+        PlayState.playState.stageObj = StageCenter;
 
         //プレイヤー生成
         //GameObject player = Instantiate(playerObj, StageMake.LoadStageData.startPos-new Vector3 (0.5f,0,0.5f),Quaternion.identity);
         master.SpawnPlayer(StageMake.LoadStageData.startPos - new Vector3(0.5f, 0, 0.5f), waterObj.GetComponent<WaterHi>());
         Progress.progress.animator  = master.Player.transform.GetChild(1) .GetComponent<Animator >();
+        PlayState.playState.character = master.Player.GetComponent<CharacterController>();
 
         //カメラの設定
         cameraPos.lookPos = new Vector3(StageMake.LoadStageData.stageSize.x/2, StageMake.LoadStageData.stageSize.y / 2, StageMake.LoadStageData.stageSize.z/2);
