@@ -20559,6 +20559,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5769432615685974641}
     m_Modifications:
+    - target: {fileID: 4055822668284307084, guid: e55bec884d31bc442b10635e25a871bf,
+        type: 3}
+      propertyPath: goAngle
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055822668284307084, guid: e55bec884d31bc442b10635e25a871bf,
+        type: 3}
+      propertyPath: lotAngle.z
+      value: -90
+      objectReference: {fileID: 0}
     - target: {fileID: 6485752160331910818, guid: e55bec884d31bc442b10635e25a871bf,
         type: 3}
       propertyPath: m_Name

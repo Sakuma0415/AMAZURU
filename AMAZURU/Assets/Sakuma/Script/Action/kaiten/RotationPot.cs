@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class RotationPot : MonoBehaviour
 {
+    [SerializeField]
+    float goAngle = 0;
+    [SerializeField]
+    Vector3 lotAngle = Vector3.zero;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,14 +19,13 @@ public class RotationPot : MonoBehaviour
     {
         if (set && ControllerInput.Instance.buttonDown.circle && PlayState.playState.gameMode == PlayState.GameMode.Play)
         {
-            PlayState .playState . RotationPotStart();
+            Debug.Log(goAngle);
+            PlayState .playState . RotationPotStart(lotAngle,goAngle, true);
 
         }
     }
 
 
-
-    [SerializeField]
     bool set=false ;
 
     private void OnTriggerEnter(Collider other)

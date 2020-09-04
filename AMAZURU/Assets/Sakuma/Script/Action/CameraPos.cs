@@ -290,7 +290,7 @@ public class CameraPos : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(lookObj);
+        //Debug.Log(lookObj);
         //ゲーム開始時の定点カメラの特殊挙動時のステータス更新
         if (startCameraFlg )
         {
@@ -481,7 +481,7 @@ public class CameraPos : MonoBehaviour
     }
 
     //カメラをアメフラシ起動の状態にする
-    public void RainPotChange()
+    public void RainPotChange(float goAngle= 0,bool angleSet=false )
     {
         //  ステータスを初期化
         beforeHi = lookHi;
@@ -494,32 +494,40 @@ public class CameraPos : MonoBehaviour
         potAnimeTime = 0;
         float bfAngle = XZangle;
 
-        //角度を0-360に
-        while (bfAngle > 360)
+        if (!angleSet)
         {
-            bfAngle -= 360;
-        }
-        while (bfAngle < 0)
-        {
-            bfAngle += 360;
-        }
+            //角度を0-360に
+            while (bfAngle > 360)
+            {
+                bfAngle -= 360;
+            }
+            while (bfAngle < 0)
+            {
+                bfAngle += 360;
+            }
 
-        //アメフラシ起動中に向かう角度設定
-        if(bfAngle < 90)
-        {
-            lotAngle = 45;
-        }
-        else if(bfAngle < 180)
-        {
-            lotAngle = 135;
-        }
-        else if (bfAngle < 270)
-        {
-            lotAngle = 225;
+            //アメフラシ起動中に向かう角度設定
+            if (bfAngle < 90)
+            {
+                lotAngle = 45;
+            }
+            else if (bfAngle < 180)
+            {
+                lotAngle = 135;
+            }
+            else if (bfAngle < 270)
+            {
+                lotAngle = 225;
+            }
+            else
+            {
+                lotAngle = 315;
+            }
         }
         else
         {
-            lotAngle = 315;
+            Debug.Log(goAngle);
+            lotAngle = goAngle;
         }
     }
 
