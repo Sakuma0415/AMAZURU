@@ -14,7 +14,7 @@ public class Progress : MonoBehaviour
     public WaterHi waterHi;
     //Clear時に呼び出すresult
     [SerializeField]
-    ResultControl resultControl;
+    MenuMaster gameMenu = null;
     //resultを描画し始めるまでの時間
     [SerializeField]
     float ResultDelayTime;
@@ -50,13 +50,13 @@ public class Progress : MonoBehaviour
         {
             if (PlayState.playState.gameMode == PlayState.GameMode.Play)
             {
-                resultControl.GamePause(true);
+                gameMenu.Pause(true);
                 PlayState.playState.gameMode = PlayState.GameMode.Pause;
             }
             else
             if (PlayState.playState.gameMode == PlayState.GameMode.Pause)
             {
-                resultControl.GamePause(false);
+                gameMenu.Pause(false);
                 PlayState.playState.gameMode = PlayState.GameMode.Play;
             }
         }
@@ -103,7 +103,7 @@ public class Progress : MonoBehaviour
         yield return new WaitForSeconds(animation[GameOver?0:1].length+ResultDelayTime);
 
 
-        resultControl.StartResult(GameOver);
+        gameMenu.StartResult(GameOver);
     }
 
 }

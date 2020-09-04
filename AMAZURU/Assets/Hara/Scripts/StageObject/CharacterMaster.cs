@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterMaster : MonoBehaviour
+public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
 {
     [SerializeField, Tooltip("プレイヤーのPrefab")] private PlayerType2 playerPrefab = null;
 
@@ -127,6 +127,9 @@ public class CharacterMaster : MonoBehaviour
             // ポーズ中は移動処理とアニメーションを停止させる
             Player.IsGameStop = mode == PlayState.GameMode.Pause;
 
+            // 敵との接触フラグ
+            Player.IsHitEnemy = enemy != null && enemy.IsHit;
+
             if(mode != PlayState.GameMode.Play)
             {
                 // ステートがプレイ以外のときは入力を受け付けない
@@ -134,16 +137,8 @@ public class CharacterMaster : MonoBehaviour
             }
             else
             {
-                // ステートがプレイのときは敵と接触または感電状態のときのみ入力不可にする
-                if(enemy != null)
-                {
-                    Player.DontInput = enemy.IsHit || isElectric;
-                }
-                else
-                {
-                    // 敵がいなければ入力無効にしない
-                    Player.DontInput = false;
-                }
+                // ステートがプレイのときは敵と接触または感電状態時のみ入力不可にする
+                Player.DontInput = Player.IsHitEnemy || isElectric;
             }
 
             // アメフラシ起動時
@@ -173,7 +168,7 @@ public class CharacterMaster : MonoBehaviour
             enemy.IsGameStop = mode == PlayState.GameMode.Pause;
 
             // プレイ中とアメフラシ起動時以外のときはスタンバイ状態にする
-            enemy.IsStandby = mode != PlayState.GameMode.Play && mode != PlayState.GameMode.Rain;
+            enemy.IsStandby = mode != PlayState.GameMode.Play;
         }
     }
 
