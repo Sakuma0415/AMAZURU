@@ -56,8 +56,8 @@ public class PlayState : MonoBehaviour
     bool timelot = false ;
 
     public Vector3 PayerPos = Vector3.zero;
-
-
+    Vector3 afterAngle = Vector3.zero;
+    Vector3 startAngle = Vector3.zero;
 
 
 
@@ -154,7 +154,7 @@ public class PlayState : MonoBehaviour
         if(RotationPotTime<0.75&&!RotationPotTimech)
         {
             RotationPotTimech = true;
-            Camera.main.gameObject.GetComponent<CameraPos>().RainPotChangeOut();
+            Camera.main.gameObject.GetComponent<CameraPos>().RainPotChangeOut(true);
         }
         
 
@@ -166,17 +166,17 @@ public class PlayState : MonoBehaviour
             timelot = true;
             float lotTime = ((5-RotationPotTime) - 1f) / 1.75f;
             //Debug.Log(Mathf.Lerp(0f, -90f, lotTime));
-            stageObj.transform.eulerAngles = new Vector3 (0, 0, Mathf.Lerp(0f, -90f, lotTime));
+            stageObj.transform.eulerAngles = Vector3.Lerp(startAngle,afterAngle, lotTime);
+
             character.gameObject .transform.eulerAngles= new Vector3(0, character.gameObject.transform.eulerAngles.y, 0);
-            character.gameObject.transform.localPosition = PayerPos+ new Vector3(0, Mathf.Lerp(0f, 0.5f, lotTime), 0);
+            //character.gameObject.transform.localPosition = PayerPos+ new Vector3(0, Mathf.Lerp(0f, 0.5f, lotTime), 0);
         }
 
         if(timelot && 5 - RotationPotTime > 2.75f)
         {
             timelot = false;
-            stageObj.transform.eulerAngles = new Vector3(0, 0, Mathf.Lerp(0f, -90f, 1));
-
-            character.enabled = true;
+            stageObj.transform.eulerAngles = Vector3.Lerp(startAngle, afterAngle, 1);
+            character.GetComponent<PlayerType2>().IsDontCharacterMove = false;
         }
 
 
@@ -184,15 +184,21 @@ public class PlayState : MonoBehaviour
         if (RotationPotTime == 0)
         {
             playState.gameMode = GameMode.Play;
+            character.GetComponent<PlayerType2>().IsDontShield = false;
+            
         }
     }
-    public void RotationPotStart()
+    public void RotationPotStart(Vector3 lotAngle ,float goAngle=0,bool SetAngle=false)
     {
-        character.enabled = false ;
+        character.GetComponent<PlayerType2>().IsDontShield = true;
+        character.GetComponent<PlayerType2>().IsDontCharacterMove  = true;
+
         PlayState.playState.gameMode = PlayState.GameMode.RotationPot;
         PlayState.playState.RotationPotTime = 5;
         PlayState.playState.RotationPotTimech = false;
-        Camera.main.gameObject.GetComponent<CameraPos>().RainPotChange();
+        Camera.main.gameObject.GetComponent<CameraPos>().RainPotChange(goAngle, SetAngle);
         PayerPos = character.gameObject.transform.localPosition;
+        afterAngle = lotAngle+ stageObj.transform.eulerAngles;
+        startAngle = stageObj.transform.eulerAngles;
     }
 }
