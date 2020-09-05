@@ -911,6 +911,8 @@ MonoBehaviour:
   ChaMs: {fileID: 252210680}
   stageObj: {fileID: 0}
   character: {fileID: 0}
+  WaterObj: {fileID: 0}
+  WaveEf: {fileID: 6395762070186815068, guid: ec9003a72dc21d7428722801963ae6fd, type: 3}
   PayerPos: {x: 0, y: 0, z: 0}
 --- !u!4 &363166042
 Transform:
@@ -4210,6 +4212,7 @@ MonoBehaviour:
   breathLimitTime: 10
   breath: 1
   master: {fileID: 0}
+  WaterDeth: 0
 --- !u!1 &2002146573
 GameObject:
   m_ObjectHideFlags: 0

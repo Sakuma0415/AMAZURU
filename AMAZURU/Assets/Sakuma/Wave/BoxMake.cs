@@ -26,7 +26,7 @@ public class BoxMake : MonoBehaviour
 
     void Start()
     {
-        Init();
+        //Init();
     }
     
     void Update()
@@ -194,17 +194,16 @@ public class BoxMake : MonoBehaviour
         Hi = hi;
     }
 
-    void Init()
+    public void Init()
     {
         for (int i=0; i < meshFilter.Length; i++)
         {
             GameObject plane = new GameObject();
-
             plane.transform.parent = transform;
+            plane.transform.localScale = new Vector3(1, 1, 1);
 
             meshFilter[i] = plane.AddComponent<MeshFilter>();
             MeshRenderer meshRenderer = plane.AddComponent<MeshRenderer>();
-            MeshCollider meshCollider = plane.AddComponent<MeshCollider>();
 
             meshRenderer.material = material;
 
