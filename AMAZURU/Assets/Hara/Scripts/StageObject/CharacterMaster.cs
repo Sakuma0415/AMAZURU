@@ -18,6 +18,16 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
     private EnemyMaster enemy = null;
 
     /// <summary>
+    /// 酸素ゲージの管理スクリプト
+    /// </summary>
+    public O2Controller OxygenGauge { private set; get; } = null;
+
+    /// <summary>
+    /// 読み込まれたステージのデータ
+    /// </summary>
+    public StageData LoadStageData { private set; get; } = null;
+
+    /// <summary>
     /// ゲームオーバーフラグ
     /// </summary>
     public bool IsGameOver { private set; get; } = false;

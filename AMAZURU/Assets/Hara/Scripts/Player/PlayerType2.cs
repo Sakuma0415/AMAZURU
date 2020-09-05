@@ -321,7 +321,24 @@ public class PlayerType2 : MyAnimation
             playerAnimator.SetBool("Jump", CliffFlag);
 
             // ゲームオーバー時のアニメーション
-            playerAnimator.SetBool("GameOver", IsGameOver);
+            if (IsGameOver)
+            {
+                if (IsHitEnemy)
+                {
+                    playerAnimator.SetBool("GameOver", true);
+                }
+                else
+                {
+                    if (UnderWater)
+                    {
+                        playerAnimator.SetBool("GameOverInWater", true);
+                    }
+                    else
+                    {
+                        playerAnimator.SetBool("GameOver", true);
+                    }
+                }
+            }
 
             // クリア時のアニメーションを再生
             if (IsGameClear)
