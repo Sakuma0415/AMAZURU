@@ -93,6 +93,19 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
         // 敵情報の取得に成功した場合 (敵が配置されているステージで正常に取得出来たときのみ)
         if (enemy != null)
         {
+            // ステージの中心座標を取得
+            Vector3 stageCenter;
+            if(LoadStageData != null)
+            {
+                stageCenter = LoadStageData.stageSize * 0.5f;
+            }
+            else
+            {
+                stageCenter = Vector3.zero;
+            }
+
+            enemy.StageCenter = stageCenter;
+
             // 敵のスポーン処理を開始
             enemy.StageWater = water;
             enemy.Init();

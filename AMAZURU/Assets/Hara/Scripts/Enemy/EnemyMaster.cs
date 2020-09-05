@@ -16,6 +16,11 @@ public class EnemyMaster : MonoBehaviour
     private bool startOperation = false;
 
     /// <summary>
+    /// ステージの中心座標
+    /// </summary>
+    public Vector3 StageCenter { set; private get; } = Vector3.zero;
+
+    /// <summary>
     /// ステージ上のナマコ(エネミー)の情報を格納する
     /// </summary>
     public EnemyController[] Enemies { private set; get; } = null;
@@ -79,6 +84,8 @@ public class EnemyMaster : MonoBehaviour
         enemyTypes = new EnemyType[enemyData.Length];
         DryEnemies = new List<DryEnemy>();
         ElectricEnemies = new List<ElectricEnemy>();
+
+        MasterParent(Vector3.left);
 
         int count = 0;
         foreach(var data in enemyData)
@@ -280,6 +287,21 @@ public class EnemyMaster : MonoBehaviour
                 electric.ElectricMode(false);
             }
         }
+    }
+
+    private Transform MasterParent(Vector3 up)
+    {
+        GameObject obj = new GameObject();
+        obj.transform.SetParent(gameObject.transform);
+        obj.transform.position = StageCenter;
+        obj.transform.up = up;
+        obj.name = "Center";
+
+        GameObject master = new GameObject();
+        master.transform.SetParent(obj.transform);
+        master.transform.localRotation = Quaternion.Euler(Vector3.zero);
+        master.transform.localPosition = obj.transform.InverseTransformPoint(Vector3.zero);
+        return obj.transform;
     }
 
     private void Update()
