@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a499892a3387a645ae55361087d074f, type: 3}
   m_Name: TestEnemyData-02
   m_EditorClassIdentifier: 
-  Type: 2
+  Type: 1
   StartRotate: 0
+  EnemyUpDirection: 2
   Size: 1
   UseStartPosSetting: 0
   StartPosition: {x: 5.5, y: 1, z: 5.5}
