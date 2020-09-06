@@ -202,9 +202,9 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
             PlayState.GameMode mode = GetGameMode();
 
             // ポーズ中は移動処理とアニメーションを停止
-            enemy.IsGameStop = mode == PlayState.GameMode.Pause;
+            enemy.IsGameStop = mode == PlayState.GameMode.Pause && mode != PlayState.GameMode.Clear && mode != PlayState.GameMode.GameOver;
 
-            // プレイ中とアメフラシ起動時以外のときはスタンバイ状態にする
+            // プレイ中以外のときはスタンバイ状態にする
             enemy.IsStandby = mode != PlayState.GameMode.Play;
         }
     }

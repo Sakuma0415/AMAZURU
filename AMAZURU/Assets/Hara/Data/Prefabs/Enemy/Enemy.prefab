@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1023837329241061402}
-  - component: {fileID: 5138938301351096660}
   - component: {fileID: 1023837329241061405}
   - component: {fileID: 1531546374721261317}
   m_Layer: 13
@@ -34,19 +33,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &5138938301351096660
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1023837329241063398}
-  m_Material: {fileID: 13400000, guid: d9d93f02f789e294686ffc1710b7ab4f, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.45
-  m_Center: {x: 0, y: 0.45, z: 0}
 --- !u!114 &1023837329241061405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,19 +45,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f124011ae1e04db429be9b646083fc7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 5138938301351096660}
   enemyAnime: {fileID: 5057943146665393849}
   playerLayer:
     serializedVersion: 2
     m_Bits: 512
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 1
-  waterLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  stageWater: {fileID: 0}
-  mode: 1
+  enemyStartRot: {x: 0, y: 0, z: 0}
   enemySize: 1
   movePlan: []
   moveType: 0
@@ -79,8 +57,6 @@ MonoBehaviour:
   enemySpeed: 1.5
   enemyWaterSpeed: 4
   rotatePower: 125
-  colliderSize: 0.45
-  inspectorUpdate: 0
 --- !u!114 &1531546374721261317
 MonoBehaviour:
   m_ObjectHideFlags: 0

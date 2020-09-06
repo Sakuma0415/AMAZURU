@@ -26,6 +26,8 @@ public class DryEnemy : MonoBehaviour
     /// </summary>
     public bool IsStop { set; private get; } = false;
 
+    public Vector3 StartPosition { set; private get; } = Vector3.zero;
+
     // このオブジェクトに必要なデータ
     public EnemyController EnemyObject { set; get; } = null;
     private BoxCollider box = null;
@@ -34,6 +36,9 @@ public class DryEnemy : MonoBehaviour
     private Coroutine coroutine = null;
     private Vector3 blockPos = Vector3.zero;
     private bool firstTime = true;
+
+    // 処理開始のフラグ
+    private bool isStartAction = false;
 
     // Start is called before the first frame update
     void Start()
@@ -44,6 +49,8 @@ public class DryEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(isStartAction == false) { return; }
+
         // 水面の高さをチェックする
         CheckWaterHeight();
     }
@@ -67,12 +74,14 @@ public class DryEnemy : MonoBehaviour
         }
 
         // 敵のスポーン地点を設定
-        spawnPos = transform.localPosition;
+        spawnPos = StartPosition;
 
         // ブロックの座標データ及び、スケールデータを更新
         transform.localScale = Vector3.one * BlockSize;
-        blockPos = FixedPosition(transform.localPosition + transform.up * box.center.y);
-        transform.localPosition = blockPos + transform.up * BlockCenterY;
+        blockPos = FixedPosition(StartPosition + transform.up * box.center.y);
+        transform.localPosition =  blockPos + transform.up * BlockCenterY;
+
+        isStartAction = true;
     }
 
     /// <summary>
