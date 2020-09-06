@@ -35,7 +35,6 @@ public class DryEnemy : MonoBehaviour
     private GameObject blockObject = null;
     private Coroutine coroutine = null;
     private Vector3 blockPos = Vector3.zero;
-    private bool firstTime = true;
 
     // 処理開始のフラグ
     private bool isStartAction = false;
@@ -61,7 +60,6 @@ public class DryEnemy : MonoBehaviour
     public void DryEnemyInit()
     {
         spawnFlag = false;
-        firstTime = true;
 
         // このオブジェクトに必要なデータを取得する
         if(box == null)
@@ -79,7 +77,7 @@ public class DryEnemy : MonoBehaviour
         // ブロックの座標データ及び、スケールデータを更新
         transform.localScale = Vector3.one * BlockSize;
         blockPos = FixedPosition(StartPosition + transform.up * box.center.y);
-        transform.localPosition =  blockPos + transform.up * BlockCenterY;
+        transform.localPosition =  blockPos + Vector3.up * BlockCenterY;
 
         isStartAction = true;
     }
@@ -91,26 +89,19 @@ public class DryEnemy : MonoBehaviour
     {
         if (EnemyObject == null || StageWater == null || box == null) { return; }
 
-        if(StageWater.max > (firstTime ? transform.position.y + box.center.y : blockPos.y))
+        if(StageWater.max > transform.position.y + box.center.y && spawnFlag == false)
         {
-            if(spawnFlag == false)
-            {
-                spawnFlag = true;
+            spawnFlag = true;
 
-                firstTime = false;
-
-                // 敵をスポーンさせる
-                SpawnEnemy();
-            }
+            // 敵をスポーンさせる
+            SpawnEnemy();
         }
-        else
+
+        if(EnemyObject.InWater == false && spawnFlag && ReturnDryMode && coroutine == null)
         {
             // 水位が下回り、ブロックに戻すフラグがtrueのときのみ実行する
-            if (spawnFlag && ReturnDryMode)
-            {
-                spawnFlag = false;
-                ReturnBlock();
-            }
+            spawnFlag = false;
+            ReturnBlock();
         }
     }
 
