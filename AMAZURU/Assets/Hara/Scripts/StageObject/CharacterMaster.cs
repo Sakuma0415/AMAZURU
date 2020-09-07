@@ -93,6 +93,19 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
         // 敵情報の取得に成功した場合 (敵が配置されているステージで正常に取得出来たときのみ)
         if (enemy != null)
         {
+            // ステージの中心座標を取得
+            Vector3 stageCenter;
+            if(LoadStageData != null)
+            {
+                stageCenter = LoadStageData.stageSize * 0.5f;
+            }
+            else
+            {
+                stageCenter = Vector3.zero;
+            }
+
+            enemy.StageCenter = stageCenter;
+
             // 敵のスポーン処理を開始
             enemy.StageWater = water;
             enemy.Init();
@@ -189,9 +202,9 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
             PlayState.GameMode mode = GetGameMode();
 
             // ポーズ中は移動処理とアニメーションを停止
-            enemy.IsGameStop = mode == PlayState.GameMode.Pause;
+            enemy.IsGameStop = mode == PlayState.GameMode.Pause && mode != PlayState.GameMode.Clear && mode != PlayState.GameMode.GameOver;
 
-            // プレイ中とアメフラシ起動時以外のときはスタンバイ状態にする
+            // プレイ中以外のときはスタンバイ状態にする
             enemy.IsStandby = mode != PlayState.GameMode.Play;
         }
     }
