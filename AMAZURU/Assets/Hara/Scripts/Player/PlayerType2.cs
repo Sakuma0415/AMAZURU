@@ -42,6 +42,10 @@ public class PlayerType2 : MyAnimation
     private Vector3[] rayPosition = new Vector3[4] { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
     private BoxCollider[] hiddenWalls = null;
 
+    // プレイヤーが坂道に立っているときのフラグ
+    private bool isOnSlope = false;
+    private Vector3 slopeRight = Vector3.zero;
+
     /// <summary>
     /// プレイヤーの水中フラグ
     /// </summary>
@@ -235,12 +239,26 @@ public class PlayerType2 : MyAnimation
                 }
 
                 // 地面にRayを飛ばす
-                Ray ground = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y - character.height * 0.4f, transform.position.z), Vector3.down);
+                Ray ground = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y - character.height * 0.45f, transform.position.z), Vector3.down);
                 float hitNomalY = 1.0f;
+                slopeRight = Vector3.zero;
                 if (Physics.Raycast(ground, out RaycastHit hit, rayLength, groundLayer))
                 {
                     // 地面の傾斜を取得
                     hitNomalY = hit.normal.y;
+                    isOnSlope = hitNomalY < 1.0f;
+
+                    if (isOnSlope)
+                    {
+                        slopeRight = hit.transform.right;
+                        slopeRight.x = Mathf.Floor(Mathf.Abs(slopeRight.x) * 10) != 0 ? 1 : 0;
+                        slopeRight.y = 0;
+                        slopeRight.z = Mathf.Floor(Mathf.Abs(slopeRight.z) * 10) != 0 ? 1 : 0;
+                    }
+                }
+                else
+                {
+                    isOnSlope = false;
                 }
 
                 // 斜め入力時の移動量を修正
@@ -366,56 +384,58 @@ public class PlayerType2 : MyAnimation
             // 床があるかチェック
             Ray mainRay;
             RaycastHit hit;
-            bool set;
-            int[] index = new int[2] { 0, 0 };
-            mainRay = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y - character.height * 0.4f, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
-            if(Physics.Raycast(mainRay, out hit, rayLength, groundLayer))
+            bool set = false;
+            float rayRange = isOnSlope && (rayPosition[i] == slopeRight || rayPosition[i] == -slopeRight) ? rayLength - 0.15f : rayLength;
+            Vector3 baseRayPosition = new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z) + rayPosition[i] * character.radius;
+            mainRay = new Ray(baseRayPosition + Vector3.down * character.height * 0.45f, Vector3.down);
+            if(Physics.Raycast(mainRay, out hit, rayRange, groundLayer))
             {
                 float hitDistance = hit.distance;
                 // プレイヤーの当たり判定の両端からRayを飛ばして進めるかをチェック
                 Ray subRay;
-                bool check = false;
-                for (int j = 0; j < index.Length; j++)
+                int count = 0;
+                for (int j = 0; j < 2; j++)
                 {
-                    subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
-                    if (Physics.Raycast(subRay, out hit, rayLength, groundLayer))
+                    subRay = new Ray(baseRayPosition + Vector3.down * character.height * 0.5f + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
+                    if (Physics.Raycast(subRay, character.radius * 1.5f, groundLayer))
                     {
-                        if(hit.normal.y != 0)
-                        {
-                            check = true;
-                            break;
-                        }
+                        count++;
                     }
                 }
 
-                if (check)
+                if (count == 1)
                 {
-                    for (int j = 0; j < index.Length; j++)
+                    count = 0;
+                    int index = 0;
+                    for (int j = 0; j < 2; j++)
                     {
-                        subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), mainRay.direction);
-                        if (Physics.Raycast(subRay, out hit, rayLength, groundLayer))
+                        subRay = new Ray(baseRayPosition + Vector3.down * character.height * 0.5f + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), mainRay.direction);
+                        if (Physics.Raycast(subRay, out hit, rayRange, groundLayer))
                         {
                             float disA = Mathf.Ceil(Mathf.Floor(hit.distance * 1000) / 10);
                             float disB = Mathf.Ceil(Mathf.Floor(hitDistance * 1000) / 10);
                             if (disA < disB)
                             {
-                                index[j] = 1;
+                                index += 1;
                             }
                             else
                             {
-                                index[j] = 2;
+                                index += 2;
                             }
+                            Debug.Log(i + " " + j + " " + index);
+                            count++;
                         }
                     }
-                }
 
-                int sum = 0;
-                foreach (int k in index)
-                {
-                    sum += k;
+                    if(count == 2)
+                    {
+                        set = true;
+                    }
+                    else
+                    {
+                        set = index == 3;
+                    }
                 }
-
-                set = sum == 3;
             }
             else
             {
