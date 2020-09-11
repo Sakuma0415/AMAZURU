@@ -131,6 +131,7 @@ public class EnemyDataSet : MonoBehaviour
 
     public void SaveEnemyMaster() 
     {
+        if (!createEnemy) { return; }
         e.GetComponent<EnemyMaster>().EnemyDataArray = new EnemyData[enemyCount];
 
         if(!System.IO.Directory.Exists(Application.dataPath + "/Hara/Data/EnemyData/" + sName))
