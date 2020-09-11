@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8973490109118811033}
   - component: {fileID: 5926058146361704484}
   - component: {fileID: 3597216679283194597}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 6670280097676221257}
   - component: {fileID: 1155425440125802850}
   - component: {fileID: 4055822668284307084}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: RotationPot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -186,3 +186,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee49ac11e96c89d4e940c1fe4942e5e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  goAngle: 0
+  lotAngle: {x: 0, y: 0, z: 0}
