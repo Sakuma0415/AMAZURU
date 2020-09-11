@@ -52,19 +52,27 @@ public class PlayState : MonoBehaviour
 
     public GameObject stageObj=null;
     public CharacterController character;
+    public GameObject WaterObj = null;
+    [SerializeField]
+    public GameObject WaveEf;
 
     bool timelot = false ;
+    bool rotSet = false;
 
     public Vector3 PayerPos = Vector3.zero;
     Vector3 afterAngle = Vector3.zero;
     Vector3 startAngle = Vector3.zero;
 
+     GameObject WaveObj = null;
 
+    WaterHi waterHi = null;
 
     // 初期化
     void Start()
     {
+        
         playState = new PlayState();
+        playState.WaveEf = WaveEf;
         playState.gameMode =gameMode;
         playState.ChaMs = ChaMs;
         playState.Tutorial = StageMake.LoadStageData.TutorialFlg;
@@ -155,11 +163,17 @@ public class PlayState : MonoBehaviour
         {
             RotationPotTimech = true;
             Camera.main.gameObject.GetComponent<CameraPos>().RainPotChangeOut(true);
+
         }
         
 
 
-
+        if(rotSet&& RotationPotTime < 4)
+        {
+            WaterObj.SetActive(false);
+            rotSet = false ;
+            WaveObj.GetComponent<BoxMake>().MoveStart(waterHi.max /StageMake.LoadStageData .stageSize .x );
+        }
 
         if (5-RotationPotTime>1&&5- RotationPotTime < 2.75f)
         {
@@ -177,6 +191,10 @@ public class PlayState : MonoBehaviour
             timelot = false;
             stageObj.transform.eulerAngles = Vector3.Lerp(startAngle, afterAngle, 1);
             character.GetComponent<PlayerType2>().IsDontCharacterMove = false;
+            WaterObj.SetActive(true);
+            WaterObj.transform.eulerAngles=Vector3 .zero ;
+            WaterObj.transform.position = new Vector3(0.01f, 0, 0.01f);
+            Destroy(WaveObj);
         }
 
 
@@ -185,10 +203,10 @@ public class PlayState : MonoBehaviour
         {
             playState.gameMode = GameMode.Play;
             character.GetComponent<PlayerType2>().IsDontShield = false;
-            
+             
         }
     }
-    public void RotationPotStart(Vector3 lotAngle ,float goAngle=0,bool SetAngle=false)
+    public void RotationPotStart(Vector3 lotAngle ,Vector3 Weve,float goAngle=0,bool SetAngle=false)
     {
         character.GetComponent<PlayerType2>().IsDontShield = true;
         character.GetComponent<PlayerType2>().IsDontCharacterMove  = true;
@@ -200,5 +218,16 @@ public class PlayState : MonoBehaviour
         PayerPos = character.gameObject.transform.localPosition;
         afterAngle = lotAngle+ stageObj.transform.eulerAngles;
         startAngle = stageObj.transform.eulerAngles;
+        waterHi = WaterObj.GetComponent<WaterHi>();
+        
+        WaveObj=Instantiate(WaveEf, stageObj.transform);
+        WaveObj.transform.localScale = StageMake.LoadStageData.stageSize- new Vector3(0.1f, 0.1f, 0.1f);
+        WaveObj.transform.localPosition = Vector3.zero;
+        WaveObj.transform.localEulerAngles  = -lotAngle;
+        WaveObj.GetComponent<BoxMake>().sethi  = waterHi.max / StageMake.LoadStageData.stageSize.x;
+        WaveObj.GetComponent<BoxMake>().Init();
+        WaveObj.transform.eulerAngles = Weve;
+
+        rotSet = true;
     }
 }

@@ -19,6 +19,18 @@ public class EnemyData : ScriptableObject
     }
     public RotateDirection StartRotate = RotateDirection.Forward;
 
+    // エネミーの上方向のベクトル
+    public enum UpDirection
+    {
+        Forward,
+        Back,
+        Up,
+        Down,
+        Right,
+        Left
+    }
+    public UpDirection EnemyUpDirection = UpDirection.Up;
+
     // サイズ倍率
     public float Size = 1.0f;
 

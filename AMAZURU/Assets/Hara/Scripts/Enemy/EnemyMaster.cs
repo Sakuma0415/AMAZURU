@@ -1,6 +1,7 @@
 ﻿using Enemy;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
@@ -14,6 +15,14 @@ public class EnemyMaster : MonoBehaviour
     public EnemyData[] EnemyDataArray { set { enemyData = value; } get { return enemyData; } }
 
     private bool startOperation = false;
+
+    // 敵を格納するオブジェクトのリスト
+    private List<GameObject> parentObjects = null;
+
+    /// <summary>
+    /// ステージの中心座標
+    /// </summary>
+    public Vector3 StageCenter { set; private get; } = Vector3.zero;
 
     /// <summary>
     /// ステージ上のナマコ(エネミー)の情報を格納する
@@ -73,19 +82,32 @@ public class EnemyMaster : MonoBehaviour
     /// </summary>
     public void Init()
     {
-        if(enemyData == null && enemyData.Length < 1) { return; }
+        if (enemyData == null && enemyData.Length < 1) { return; }
         transform.position = Vector3.zero;
         Enemies = new EnemyController[enemyData.Length];
         enemyTypes = new EnemyType[enemyData.Length];
         DryEnemies = new List<DryEnemy>();
         ElectricEnemies = new List<ElectricEnemy>();
+        parentObjects = new List<GameObject>();
 
         int count = 0;
-        foreach(var data in enemyData)
+        foreach (var data in enemyData)
         {
             // 敵のインスタンスを作成
+            Transform parent = GetParent(data.EnemyUpDirection, parentObjects);
+
             Vector3 startPos = data.UseStartPosSetting ? data.StartPosition : data.MovePlan[0];
-            Enemies[count] = Instantiate(enemyPrefab, startPos, Quaternion.identity, gameObject.transform);
+            startPos = parent.InverseTransformPoint(startPos);
+
+            Vector3[] movePlanLocal = new Vector3[data.MovePlan.Length];
+            for(int i = 0; i < movePlanLocal.Length; i++)
+            {
+                Vector3 before = data.MovePlan[i];
+                Vector3 after = parent.InverseTransformPoint(before);
+                movePlanLocal[i] = after;
+            }
+
+            Enemies[count] = Instantiate(enemyPrefab, parent);
             Vector3 startRot;
             switch (data.StartRotate)
             {
@@ -107,7 +129,7 @@ public class EnemyMaster : MonoBehaviour
             enemyTypes[count] = data.Type;
             Enemies[count].EnemyStartRot = startRot;
             Enemies[count].EnemySize = data.Size;
-            Enemies[count].MovePlan = data.MovePlan;
+            Enemies[count].MovePlan = movePlanLocal;
             Enemies[count].MoveType = data.MoveType;
             if(data.UseDefaultSetting == false)
             {
@@ -116,17 +138,19 @@ public class EnemyMaster : MonoBehaviour
             }
             Enemies[count].StartPosFlag = data.UseStartPosSetting;
             Enemies[count].StageWater = StageWater;
+            Enemies[count].StartPosition = startPos;
             Enemies[count].EnemyInit();
 
             if(enemyTypes[count] == EnemyType.Dry)
             {
                 // 乾燥ブロックのインスタンスを作成
-                var block = Instantiate(dryEnemyPrefab, startPos, Quaternion.identity, gameObject.transform);
+                var block = Instantiate(dryEnemyPrefab, parent);
                 block.EnemyObject = Enemies[count];
                 block.BlockSize = data.Size;
                 block.BlockCenterY = data.BlockSetPosY;
                 block.ReturnDryMode = data.ReturnBlock;
                 block.StageWater = StageWater;
+                block.StartPosition = startPos;
                 block.EnemyObject.gameObject.SetActive(false);
                 block.DryEnemyInit();
 
@@ -207,7 +231,7 @@ public class EnemyMaster : MonoBehaviour
 
             if (enemyTypes[count] != EnemyType.Dry)
             {
-                // エネミーの種類が乾燥タイプ以外ならばゲームステートがプレイ及びアメフラシ起動時以外は移動処理を停止
+                // エネミーの種類が乾燥タイプ以外ならばゲームステートがプレイ以外は移動処理を停止
                 enemy.IsMoveStop = IsStandby;
             }
             count++;
@@ -219,7 +243,7 @@ public class EnemyMaster : MonoBehaviour
             // ポーズ中は処理を停止
             dry.IsStop = IsGameStop;
 
-            // ゲームステートがプレイ及びアメフラシ起動時以外またはアニメーションが実行中の場合は移動処理を停止
+            // ゲームステートがプレイ以外またはアニメーションが実行中の場合は移動処理を停止
             dry.EnemyObject.IsMoveStop = IsStandby || dry.IsDoingAnimation;
         }
     }
@@ -279,6 +303,71 @@ public class EnemyMaster : MonoBehaviour
                 electric.ElectricMode(false);
             }
         }
+    }
+
+    /// <summary>
+    /// 敵を格納する親オブジェクトのTransformを取得
+    /// </summary>
+    /// <param name="up"></param>
+    /// <param name="parentList"></param>
+    /// <returns></returns>
+    private Transform GetParent(EnemyData.UpDirection up, List<GameObject> parentList)
+    {
+        Vector3 upDirection;
+        string objName;
+        switch (up)
+        {
+            case EnemyData.UpDirection.Forward:
+                upDirection = Vector3.forward;
+                objName = "Forward";
+                break;
+            case EnemyData.UpDirection.Back:
+                upDirection = Vector3.back;
+                objName = "Back";
+                break;
+            case EnemyData.UpDirection.Up:
+                upDirection = Vector3.up;
+                objName = "Up";
+                break;
+            case EnemyData.UpDirection.Down:
+                upDirection = Vector3.down;
+                objName = "Down";
+                break;
+            case EnemyData.UpDirection.Right:
+                upDirection = Vector3.right;
+                objName = "Right";
+                break;
+            default:
+                upDirection = Vector3.left;
+                objName = "Left";
+                break;
+        }
+
+        int index = -1;
+        for(int i = 0; i < parentList.Count; i++)
+        {
+            if(parentList[i].name == objName)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        GameObject parent;
+        if(index < 0)
+        {
+            parent = new GameObject();
+            parent.transform.SetParent(gameObject.transform);
+            parent.transform.up = upDirection;
+            parent.name = objName;
+            parentList.Add(parent);
+        }
+        else
+        {
+            parent = parentList[index];
+        }
+
+        return parent.transform;
     }
 
     private void Update()

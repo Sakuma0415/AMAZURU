@@ -78,6 +78,11 @@ public class PlayerType2 : MyAnimation
     public bool IsGameOver { set; private get; } = false;
 
     /// <summary>
+    /// 水中時のゲームオーバーフラグ
+    /// </summary>
+    public bool IsGameOverInWater { set; private get; } = false;
+
+    /// <summary>
     /// エネミーとの接触フラグ
     /// </summary>
     public bool IsHitEnemy { set; get; } = false;
@@ -322,6 +327,9 @@ public class PlayerType2 : MyAnimation
 
             // ゲームオーバー時のアニメーション
             playerAnimator.SetBool("GameOver", IsGameOver);
+
+            // 水中時のゲームオーバーアニメーション
+            playerAnimator.SetBool("GameOverInWater", IsGameOverInWater);
 
             // クリア時のアニメーションを再生
             if (IsGameClear)

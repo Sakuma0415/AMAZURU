@@ -14,6 +14,7 @@ public class EnemyDataEditor : Editor
 
         // 共通の設定項目
         enemyData.Type = (EnemyType)EditorGUILayout.EnumPopup("敵の種類", enemyData.Type);
+        enemyData.EnemyUpDirection = (EnemyData.UpDirection)EditorGUILayout.EnumPopup("敵の移動軸(敵の上方向)", enemyData.EnemyUpDirection);
         enemyData.StartRotate = (EnemyData.RotateDirection)EditorGUILayout.EnumPopup("スタート時の向き", enemyData.StartRotate);
         enemyData.Size = Mathf.Max(1.0f, EditorGUILayout.FloatField("サイズ倍率", Mathf.Min(5.0f, enemyData.Size)));
         SerializedProperty property = serializedObject.FindProperty("MovePlan");

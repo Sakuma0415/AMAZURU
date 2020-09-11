@@ -69,6 +69,9 @@
 			float _Y;
 
 			float _Intensity;
+
+			float BackTime;
+
 			v2f vert (appdata v)
 			{
 				v2f o;
@@ -94,8 +97,8 @@
 
 			fixed4 frag (v2f i) : SV_Target
 			{
-				float2 bumpUv=float2(i.uv.x+((_Time.x)-(int)(_Time.x)),i.uv.y);
-				float3 bump = UnpackNormal(tex2D(_BumpTex, i.uv+ half2(0, _Time.x * 1.5f)/*float2( bumpUv.x>1?1-bumpUv.x:bumpUv.x,i.uv.y)*/));
+				float2 bumpUv=float2(i.uv.x+((BackTime)-(int)(BackTime)),i.uv.y);
+				float3 bump = UnpackNormal(tex2D(_BumpTex, i.uv+ half2(0, BackTime * 1.5f)/*float2( bumpUv.x>1?1-bumpUv.x:bumpUv.x,i.uv.y)*/));
 				float4 depthUV = i.grabPos;
 				depthUV.xy = i.grabPos.xy + (bump.xy * _Distortion);
 				
@@ -131,12 +134,12 @@
 
                 // ノーマルマップから法線情報を取得する
 				float2 bumpUv2=i.uv2;
-				bumpUv2.x=((bumpUv2.x+_Time.x/1.5)*_X)-(int)((bumpUv2.x+_Time.x/1.5)*_X);
+				bumpUv2.x=((bumpUv2.x+BackTime/1.5)*_X)-(int)((bumpUv2.x+BackTime/1.5)*_X);
 				bumpUv2.y=((bumpUv2.y)*_Y)-(int)((bumpUv2.y)*_Y);
                 half3 normal3 = UnpackNormal(tex2D(_BumpTex, bumpUv2));
 				bumpUv2=i.uv2;
 				bumpUv2.x=((bumpUv2.x)*_X)-(int)((bumpUv2.x)*_X);
-				bumpUv2.y=((bumpUv2.y+_Time.x/1.5)*_Y)-(int)((bumpUv2.y+_Time.x/1.5)*_Y);
+				bumpUv2.y=((bumpUv2.y+BackTime/1.5)*_Y)-(int)((bumpUv2.y+BackTime/1.5)*_Y);
                 half3 normal2 = UnpackNormal(tex2D(_BumpTex, bumpUv2));
 				half3 normal=(normal2*5+normal3*2)/7;
 				float data=0.7f;
@@ -146,7 +149,7 @@
                 half3 spec = pow(max(0, dot(normal, halfDir)), _Shininess * 64.0) * _LightColor0.rgb * tex.rgb;
 
                 fixed4 color;
-                color.rgb  = tex.rgb * diff + spec;
+				color.rgb = tex.rgb * diff +spec;
 
 				//color.r=bumpUv2.x;
 
@@ -154,7 +157,7 @@
 				float3 R = normalize( - i.lightDir + 2.0 * normal * NdotL );
 				float3 spec2 = pow(max(0, dot(R, i.viewDir)), 40.0);
 				half4 c;
-				c.rgb = color * _LightColor0.rgb * NdotL/1.2 + (_Intensity*spec2) +  fixed4(0.1f, 0.1f, 0.1f, 1);
+				c.rgb = color* _LightColor0.rgb /**NdotL / 1.2*/ + (_Intensity * spec2) + fixed4(0.1f, 0.1f, 0.1f, 1);
 				c.a=_Color.a;
 				//c.rgb=(_Color*9+c.rgb)/10;
 				return c;//color;

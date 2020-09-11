@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class PlaneReflection : MonoBehaviour
 {
-
     private Transform trfMainCamera, trfRefCamera;
-    private RenderTexture refTexture;
+    public RenderTexture refTexture;
     private GameObject objRefCamera;
     private Camera mainCamera, refCamera;
     private Material matRefPalne;
-
     // Use this for initialization
     void Start()
     {
@@ -18,7 +16,7 @@ public class PlaneReflection : MonoBehaviour
 
         mainCamera = Camera.main;
         trfMainCamera = Camera.main.transform;
-
+        
         objRefCamera = new GameObject();
         objRefCamera.name = "Reflection Camera";
         refCamera = objRefCamera.AddComponent<Camera>();

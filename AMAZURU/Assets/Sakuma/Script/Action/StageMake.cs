@@ -60,9 +60,12 @@ public class StageMake : MonoBehaviour
         master.gameObject.transform.parent = StageCenter.transform;
         PlayState.playState.stageObj = StageCenter;
         waterObj.transform.parent = StageCenter.transform;
+        PlayState.playState .WaterObj = waterObj;
+
+
         //プレイヤー生成
         //GameObject player = Instantiate(playerObj, StageMake.LoadStageData.startPos-new Vector3 (0.5f,0,0.5f),Quaternion.identity);
-        master.SpawnPlayer(StageMake.LoadStageData.startPos - new Vector3(0.5f, 0, 0.5f), waterObj.GetComponent<WaterHi>());
+        master.SpawnPlayer(StageMake.LoadStageData.startPos - new Vector3(0.5f, 0, 0.5f), waterObj.GetComponent<WaterHi>(), o2Controller, LoadStageData);
         Progress.progress.animator  = master.Player.transform.GetChild(1) .GetComponent<Animator >();
         PlayState.playState.character = master.Player.GetComponent<CharacterController>();
 
