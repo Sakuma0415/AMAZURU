@@ -22,17 +22,21 @@ public class PlayerInputAction : MonoBehaviour
     void Update()
     {
         if (!se.isCreateStage || se.isOnMenu) { return; }
-        if (Input.GetMouseButton(0))
+
+        if (Input.GetMouseButton(1))
         {
             mouseLeftButtonDown = true;
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(1))
         {
             mouseLeftButtonDown = false;
         }
 
-        PitchChange();
+        if (Input.GetKey(KeyCode.LeftAlt))
+        {
+            PitchChange();
+        }
     }
 
     private void FixedUpdate()
