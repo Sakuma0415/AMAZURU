@@ -69,9 +69,9 @@ public class StageEditor : MonoBehaviour
 
     [HideInInspector, Tooltip("保存するステージのルートオブジェクト")]
     public GameObject stageRoot;
-    
-    [SerializeField,Tooltip("ステージに使う参照オブジェクト")]
-    private GameObject[] referenceObject, floorRefObj, prismRefObj;
+
+    [SerializeField, Tooltip("ステージに使う参照オブジェクト")]
+    private GameObject[] referenceObject, floorRefObj, prismRefObj, ruinsFloorRefObj, ruinsPrismRefObj;
     private int refObjIndex = 0;
     [Tooltip("配置するオブジェクト")]
     private GameObject stageObj;
@@ -367,7 +367,17 @@ public class StageEditor : MonoBehaviour
             for (int j = 0; j < cells.z; j++)
             {
                 int x = Random.Range(0, 6);
-                GameObject s_obj = Instantiate(floorRefObj[x], gridPos[i,0,j].transform.position, Quaternion.identity);
+                GameObject s_obj;
+
+                if (biome == "Forest")
+                {
+                     s_obj = Instantiate(floorRefObj[x], gridPos[i, 0, j].transform.position, Quaternion.identity);
+                }
+                else
+                {
+                    s_obj = Instantiate(ruinsFloorRefObj[x], gridPos[i, 0, j].transform.position, Quaternion.identity);
+                }
+                
                 s_obj.name = referenceObject[0].name;
                 s_obj.AddComponent<MyCellIndex>().cellIndex = new Vector3Int(i, 0, j);
                 Destroy(s_obj.GetComponent<BoxCollider>());
@@ -460,6 +470,14 @@ public class StageEditor : MonoBehaviour
         {
             o = Instantiate(prismRefObj[x]);
         }
+        else if (referenceObject[refObjIndex].name == "RuinsFloor")
+        {
+            o = Instantiate(ruinsFloorRefObj[x]);
+        }
+        else if (referenceObject[refObjIndex].name == "Ruinsprism")
+        {
+            o = Instantiate(ruinsPrismRefObj[x]);
+        }
         else { o = Instantiate(obj); }
         o.name = obj.name;
         o.transform.localPosition = gridPos[cellIndex.x,cellIndex.y,cellIndex.z].transform.localPosition;
@@ -504,6 +522,14 @@ public class StageEditor : MonoBehaviour
                 else if (referenceObject[refObjIndex].name == "prism")
                 {
                     o = Instantiate(prismRefObj[x]);
+                }
+                else if (referenceObject[refObjIndex].name == "RuinsFloor")
+                {
+                    o = Instantiate(ruinsFloorRefObj[x]);
+                }
+                else if (referenceObject[refObjIndex].name == "Ruinsprism")
+                {
+                    o = Instantiate(ruinsPrismRefObj[x]);
                 }
                 else { o = Instantiate(referenceObject[refObjIndex]); }
                 
