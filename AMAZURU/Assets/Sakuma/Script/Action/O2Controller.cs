@@ -28,12 +28,19 @@ public class O2Controller : MonoBehaviour
     public bool breath = true;
     //プレイヤーの情報所得用
     public CharacterMaster master;
+    //水中死亡のフラグ
+    public bool WaterDeth = false;
 
     //private
     //呼吸できない状態の経過時間
     float breathTime = 0;
     //酸素ゲージ変更中にゲージを拡大している時間
     float fatAnimeTime = 0;
+
+    private void Start()
+    {
+        WaterDeth = false;
+    }
 
     void Update()
     {
@@ -77,6 +84,7 @@ public class O2Controller : MonoBehaviour
         //酸素なくなった時の処理
         if(breathTime>= breathLimitTime)
         {
+            WaterDeth = true;
             PlayState.playState.gameMode = PlayState.GameMode.GameOver;
         }
 

@@ -19,7 +19,6 @@ namespace Enemy
 
     public class EnemyController : MyAnimation
     {
-        private SphereCollider enemy = null;
         [SerializeField, Tooltip("敵のAnimator")] private Animator enemyAnime = null;
         public Animator EnemyAnime { set { enemyAnime = value; } }
 
@@ -51,12 +50,24 @@ namespace Enemy
         public float EnemyWaterSpeed { set { enemyWaterSpeed = value; } }
 
         [SerializeField, Header("回転力")] private float rotatePower = 50f;
-        [SerializeField, Header("敵のコライダーの大きさ"), Range(0.1f, 1.0f)] private float colliderSize = 0.5f;
+
+        /// <summary>
+        /// ローカル座標に変換するための基点
+        /// </summary>
+        public Transform MasterTransform { set; private get; } = null;
+
+        /// <summary>
+        /// 開始時の座標
+        /// </summary>
+        public Vector3 StartPosition { set; private get; } = Vector3.zero;
 
         private int location = 0;
         private int step = 0;
         private bool stepEnd = false;
         private bool finishOneLoop = false;
+
+        // 処理開始のフラグ
+        private bool isStartAction = false;
 
         /// <summary>
         /// 水中フラグ
@@ -96,6 +107,7 @@ namespace Enemy
         {
             if(IsAllStop == false)
             {
+                if(isStartAction == false) { return; }
                 // エネミーの移動処理
                 EnemyMove(true);
             }
@@ -109,11 +121,6 @@ namespace Enemy
             }
         }
 
-        private void Reset()
-        {
-            enemy = GetComponent<SphereCollider>();
-        }
-
         /// <summary>
         /// 敵の初期化
         /// </summary>
@@ -124,23 +131,19 @@ namespace Enemy
             location = 0;
             finishOneLoop = false;
 
-            if(enemy == null)
-            {
-                enemy = GetComponent<SphereCollider>();
-            }
-
-            // コライダーの設定
-            enemy.radius = colliderSize;
-            enemy.center = new Vector3(0, colliderSize, 0);
-
             // アニメーションの速度を取得
             if (enemyAnime != null) { animationSpeed = enemyAnime.GetCurrentAnimatorStateInfo(0).speed; }
 
+            // 敵を開始時の座標に配置
+            transform.localPosition = StartPosition;
+
             // 敵の開始時の向き
-            transform.rotation = Quaternion.Euler(enemyStartRot);
+            transform.localRotation = Quaternion.Euler(enemyStartRot);
 
             // 敵の開始時のサイズを設定
             transform.localScale = Vector3.one * enemySize;
+
+            isStartAction = true;
         }
 
         /// <summary>
@@ -152,61 +155,61 @@ namespace Enemy
             float delta = fixedUpdate ? Time.fixedDeltaTime : Time.deltaTime;
 
             // 水中かチェックする
-            InWater = StageWater != null && transform.position.y + enemy.radius < StageWater.max;
+            InWater = StageWater != null && transform.position.y < StageWater.max;
 
             if (IsMoveStop == false)
             {
-                int nextLocation;
-                if (StartPosFlag)
+                if(IsHitPlayer == false)
                 {
-                    nextLocation = location;
-                }
-                else
-                {
-                    if (finishOneLoop)
+                    // プレイヤーと接触しているかをチェック
+                    Vector3 up = transform.up;
+                    if (Physics.BoxCast(transform.position - up * 0.5f * enemySize, new Vector3(up.x == 0 ? enemySize * 1.25f : enemySize, up.y == 0 ? enemySize * 1.25f : enemySize, up.z == 0 ? enemySize * 1.25f : enemySize) * 0.5f, up, out RaycastHit hit, Quaternion.Euler(Vector3.zero), 0.25f, playerLayer))
                     {
-                        nextLocation = location - 1 < 0 ? moveType == EnemyMoveType.Lap ? movePlan.Length - 1 : location + 1 : location - 1;
+                        IsHitPlayer = true;
+                        StartCoroutine(HitAnimation(hit.transform.position));
+                        return;
+                    }
+
+                    int nextLocation;
+                    if (StartPosFlag)
+                    {
+                        nextLocation = location;
                     }
                     else
                     {
-                        nextLocation = location + 1 >= movePlan.Length ? moveType == EnemyMoveType.Lap ? 0 : location - 1 : location + 1;
+                        if (finishOneLoop)
+                        {
+                            nextLocation = location - 1 < 0 ? moveType == EnemyMoveType.Lap ? movePlan.Length - 1 : location + 1 : location - 1;
+                        }
+                        else
+                        {
+                            nextLocation = location + 1 >= movePlan.Length ? moveType == EnemyMoveType.Lap ? 0 : location - 1 : location + 1;
+                        }
                     }
-                }
 
-                Vector3 nowPos = transform.position;
-                Vector3 nextPos = movePlan[nextLocation];
-                Vector3 forward = (nextPos - nowPos).normalized;
+                    Vector3 nextPos = movePlan[nextLocation];
+                    Vector3 forward = (nextPos - transform.localPosition).normalized;
 
-                // プレイヤーと接触しているかをチェック
-                IsHitPlayer = Physics.BoxCast(new Vector3(transform.position.x, transform.position.y - enemy.radius * enemySize, transform.position.z), new Vector3(enemy.radius * enemySize * 1.25f, enemy.radius * enemySize, enemy.radius * enemySize * 1.25f), Vector3.up, out RaycastHit hit, Quaternion.Euler(Vector3.zero), 1.0f, playerLayer);
-                if (IsHitPlayer)
-                {
-                    // プレイヤーと接触している場合はプレイヤーの方向を向く処理を実行
-                    IsActonEnd = RotateAnimation(transform.gameObject, (new Vector3(hit.transform.position.x, 0, hit.transform.position.z) - new Vector3(transform.position.x, 0, transform.position.z)).normalized, rotatePower * delta * 2.5f, false);
-                }
-                else
-                {
                     switch (step)
                     {
                         case 0:
-                            transform.position = nowPos;
-                            if (Vector3.Distance(transform.position, movePlan[nextLocation]) < 0.1f)
+                            if (Vector3.Distance(transform.localPosition, nextPos) < 0.1f)
                             {
                                 step = -5;
                             }
                             stepEnd = true;
                             break;
                         case 1:
-                            stepEnd = RotateAnimation(transform.gameObject, forward, rotatePower * delta, false);
+                            stepEnd = RotateAnimation(transform.gameObject, forward, rotatePower * delta, true);
                             break;
                         case 2:
-                            if (transform.rotation == Quaternion.LookRotation(forward))
+                            if (transform.localRotation == Quaternion.LookRotation(forward))
                             {
                                 float speed = InWater ? enemyWaterSpeed : enemySpeed;
-                                transform.position = Vector3.MoveTowards(transform.position, movePlan[nextLocation], speed * delta);
-                                if(Vector3.Distance(transform.position, movePlan[nextLocation]) < 0.1f)
+                                transform.localPosition = Vector3.MoveTowards(transform.localPosition, nextPos, speed * delta);
+                                if (Vector3.Distance(transform.localPosition, nextPos) < 0.1f)
                                 {
-                                    transform.position = movePlan[nextLocation];
+                                    transform.localPosition = nextPos;
                                     stepEnd = true;
                                 }
                             }
@@ -216,7 +219,7 @@ namespace Enemy
                             }
                             break;
                         case 3:
-                            if(StartPosFlag == false)
+                            if (StartPosFlag == false)
                             {
                                 if (finishOneLoop)
                                 {
@@ -270,6 +273,31 @@ namespace Enemy
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// プレイヤーにヒットした時に実行するアニメーション
+        /// </summary>
+        /// <param name="playerPos">プレイヤーの座標</param>
+        /// <returns></returns>
+        private IEnumerator HitAnimation(Vector3 playerPos)
+        {
+            // プレイヤーの座標をローカル座標に変換
+            Vector3 target = transform.parent.InverseTransformPoint(playerPos);
+            target.y = 0;
+
+            // プレイヤーの方向を向く
+            while (RotateAnimation(transform.gameObject, (target - new Vector3(transform.localPosition.x, 0, transform.localPosition.z)).normalized, rotatePower * Time.deltaTime * 2.5f, true) == false)
+            {
+                while(IsMoveStop || IsAllStop)
+                {
+                    yield return null;
+                }
+                yield return null;
+            }
+
+            // 処理の完了フラグ
+            IsActonEnd = true;
         }
     }
 }

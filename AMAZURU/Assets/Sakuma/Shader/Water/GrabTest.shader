@@ -146,7 +146,7 @@
                 half3 spec = pow(max(0, dot(normal, halfDir)), _Shininess * 64.0) * _LightColor0.rgb * tex.rgb;
 
                 fixed4 color;
-                color.rgb  = tex.rgb * diff + spec;
+				color.rgb = tex.rgb * diff +spec;
 
 				//color.r=bumpUv2.x;
 
@@ -154,7 +154,7 @@
 				float3 R = normalize( - i.lightDir + 2.0 * normal * NdotL );
 				float3 spec2 = pow(max(0, dot(R, i.viewDir)), 40.0);
 				half4 c;
-				c.rgb = color * _LightColor0.rgb * NdotL/1.2 + (_Intensity*spec2) +  fixed4(0.1f, 0.1f, 0.1f, 1);
+				c.rgb = color* _LightColor0.rgb /**NdotL / 1.2*/ + (_Intensity * spec2) + fixed4(0.1f, 0.1f, 0.1f, 1);
 				c.a=_Color.a;
 				//c.rgb=(_Color*9+c.rgb)/10;
 				return c;//color;

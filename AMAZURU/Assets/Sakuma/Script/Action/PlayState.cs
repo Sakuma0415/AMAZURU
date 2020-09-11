@@ -52,6 +52,9 @@ public class PlayState : MonoBehaviour
 
     public GameObject stageObj=null;
     public CharacterController character;
+    public GameObject WaterObj = null;
+    [SerializeField]
+    public GameObject WaveEf;
 
     bool timelot = false ;
 
@@ -59,12 +62,14 @@ public class PlayState : MonoBehaviour
     Vector3 afterAngle = Vector3.zero;
     Vector3 startAngle = Vector3.zero;
 
-
+     GameObject WaveObj = null;
 
     // 初期化
     void Start()
     {
+        
         playState = new PlayState();
+        playState.WaveEf = WaveEf;
         playState.gameMode =gameMode;
         playState.ChaMs = ChaMs;
         playState.Tutorial = StageMake.LoadStageData.TutorialFlg;
@@ -154,7 +159,7 @@ public class PlayState : MonoBehaviour
         if(RotationPotTime<0.75&&!RotationPotTimech)
         {
             RotationPotTimech = true;
-            Camera.main.gameObject.GetComponent<CameraPos>().RainPotChangeOut();
+            Camera.main.gameObject.GetComponent<CameraPos>().RainPotChangeOut(true);
         }
         
 
@@ -177,6 +182,9 @@ public class PlayState : MonoBehaviour
             timelot = false;
             stageObj.transform.eulerAngles = Vector3.Lerp(startAngle, afterAngle, 1);
             character.GetComponent<PlayerType2>().IsDontCharacterMove = false;
+            WaterObj.SetActive(true);
+            WaterObj.transform.eulerAngles=Vector3 .zero ;
+            WaterObj.transform.position = new Vector3(0.01f, 0, 0.01f);
         }
 
 
@@ -185,10 +193,10 @@ public class PlayState : MonoBehaviour
         {
             playState.gameMode = GameMode.Play;
             character.GetComponent<PlayerType2>().IsDontShield = false;
-            
+             
         }
     }
-    public void RotationPotStart(Vector3 lotAngle ,float goAngle=0,bool SetAngle=false)
+    public void RotationPotStart(Vector3 lotAngle ,Vector3 Weve,float goAngle=0,bool SetAngle=false)
     {
         character.GetComponent<PlayerType2>().IsDontShield = true;
         character.GetComponent<PlayerType2>().IsDontCharacterMove  = true;
@@ -200,5 +208,12 @@ public class PlayState : MonoBehaviour
         PayerPos = character.gameObject.transform.localPosition;
         afterAngle = lotAngle+ stageObj.transform.eulerAngles;
         startAngle = stageObj.transform.eulerAngles;
+        WaterObj.SetActive(false);
+        WaveObj=Instantiate(WaveEf, stageObj.transform);
+        WaveObj.transform.localScale = StageMake.LoadStageData.stageSize- new Vector3(0.02f, 0.02f, 0.02f);
+        WaveObj.transform.localPosition  = new Vector3(0.01f, 0.01f, 0.01f);
+        WaveObj.GetComponent<BoxMake>().Init();
+        WaveObj.transform.eulerAngles = Weve;
+
     }
 }

@@ -18,6 +18,16 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
     private EnemyMaster enemy = null;
 
     /// <summary>
+    /// 酸素ゲージの管理スクリプト
+    /// </summary>
+    public O2Controller OxygenGauge { private set; get; } = null;
+
+    /// <summary>
+    /// 読み込まれたステージのデータ
+    /// </summary>
+    public StageData LoadStageData { private set; get; } = null;
+
+    /// <summary>
     /// ゲームオーバーフラグ
     /// </summary>
     public bool IsGameOver { private set; get; } = false;
@@ -47,9 +57,17 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
     /// </summary>
     /// <param name="spawnPosition">スポーン座標</param>
     /// <param name="water">ステージの水位情報</param>
+    /// <param name="oxygen">酸素ゲージスクリプト</param>
+    /// <param name="loadStage">読み込むステージの情報</param>
     /// <param name="startRotation">スポーン時の向き</param>
-    public void SpawnPlayer(Vector3 spawnPosition, WaterHi water, Vector3? startRotation = null)
+    public void SpawnPlayer(Vector3 spawnPosition, WaterHi water, O2Controller oxygen, StageData loadStage, Vector3? startRotation = null)
     {
+        // 酸素ゲージを取得
+        OxygenGauge = oxygen;
+
+        // ステージデータを取得
+        LoadStageData = loadStage;
+
         // プレイヤーをスポーン
         Player = Instantiate(playerPrefab, spawnPosition, Quaternion.identity, transform);
 
@@ -75,6 +93,19 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
         // 敵情報の取得に成功した場合 (敵が配置されているステージで正常に取得出来たときのみ)
         if (enemy != null)
         {
+            // ステージの中心座標を取得
+            Vector3 stageCenter;
+            if(LoadStageData != null)
+            {
+                stageCenter = LoadStageData.stageSize * 0.5f;
+            }
+            else
+            {
+                stageCenter = Vector3.zero;
+            }
+
+            enemy.StageCenter = stageCenter;
+
             // 敵のスポーン処理を開始
             enemy.StageWater = water;
             enemy.Init();
@@ -124,6 +155,9 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
         {
             PlayState.GameMode mode = GetGameMode();
 
+            // 酸素ゲージが0になったかをチェックする
+            bool waterDead = OxygenGauge != null && OxygenGauge.WaterDeth;
+
             // ポーズ中は移動処理とアニメーションを停止させる
             Player.IsGameStop = mode == PlayState.GameMode.Pause;
 
@@ -148,7 +182,10 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
             Player.IsGameClear = mode == PlayState.GameMode.Clear;
 
             // ゲームオーバー時
-            Player.IsGameOver = mode == PlayState.GameMode.GameOver;
+            Player.IsGameOver = mode == PlayState.GameMode.GameOver && waterDead == false;
+
+            // 溺死のフラグ
+            Player.IsGameOverInWater = mode == PlayState.GameMode.GameOver && waterDead;
 
             // 感電時
             Player.IsElectric = isElectric;
@@ -165,9 +202,9 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
             PlayState.GameMode mode = GetGameMode();
 
             // ポーズ中は移動処理とアニメーションを停止
-            enemy.IsGameStop = mode == PlayState.GameMode.Pause;
+            enemy.IsGameStop = mode == PlayState.GameMode.Pause && mode != PlayState.GameMode.Clear && mode != PlayState.GameMode.GameOver;
 
-            // プレイ中とアメフラシ起動時以外のときはスタンバイ状態にする
+            // プレイ中以外のときはスタンバイ状態にする
             enemy.IsStandby = mode != PlayState.GameMode.Play;
         }
     }
