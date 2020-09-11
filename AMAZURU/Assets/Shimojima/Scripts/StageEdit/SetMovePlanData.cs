@@ -7,6 +7,8 @@ public class SetMovePlanData : MonoBehaviour
 {
     public void SetData()
     {
+        if(GetComponent<InputField>().text == ""){ return; }
+
         EnemyDataSet e = transform.root.transform.GetChild(0).transform.GetChild(0).GetComponent<EnemyDataSet>();
         char c = name[0];
         EnemyDataSet.PositionData p; 

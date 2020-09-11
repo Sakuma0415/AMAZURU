@@ -122,11 +122,6 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     private void EditorInput()
     {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            SelectObjectAllChange();
-        }
-
         if (!isCreateStage) { return; }
 
         if (Input.GetKeyDown(KeyCode.I))
@@ -146,14 +141,20 @@ public class StageEditor : MonoBehaviour
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            SelectObjectAllChange();
+        }
 
         SetOrDeleteStageObject();
+
         RangeSelection();
-        
+
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             ChangeStageObject();
         }
+
         if (Input.GetKeyDown(KeyCode.R))
         {
             GameObject obj = guideObj.transform.GetChild(1).gameObject;
@@ -189,6 +190,8 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     private void SetOrDeleteStageObject()
     {
+        if (enemyEditCanvas.activeSelf) { return; }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Array3DForLoop(Vector3Int.zero, cells, 2);
@@ -291,6 +294,7 @@ public class StageEditor : MonoBehaviour
     {
         stageSelect_d.ClearOptions();
         List<string> sName = new List<string>();
+        sName.Add("None");
         Object[] o = Resources.LoadAll("EditData/" + biome + "/", typeof(PrefabStageData));
         foreach(Object _o in o)
         {
@@ -308,6 +312,17 @@ public class StageEditor : MonoBehaviour
     public void ShowEnemyEditor()
     {
         enemyEditCanvas.SetActive(!enemyEditCanvas.activeSelf);
+    }
+
+    public void ChangeName()
+    {
+        enemyEditCanvas.GetComponent<EnemyDataSet>().sName = stageNameInputField.text;
+    }
+
+    public void SetStageName()
+    {
+        if(stageSelect_d.captionText.text == "None") { stageNameInputField.text = ""; return; }
+        stageNameInputField.text = stageSelect_d.captionText.text;
     }
 
     #endregion
@@ -659,14 +674,16 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     public void LoadStage()
     {
+        if (stageSelect_d.captionText.text == "None") { Debug.Log("⚠ステージが選択されていません！"); return; }
         loadStage = true;
         biomeSelect.interactable = false;
         stageSelect_d.interactable = false;
         nStageB.interactable = false;
         lStageB.interactable = false;
 
-        Data = Resources.Load<PrefabStageData>("EditData/" + biome + "/" + stageSelect_d.captionText.text);
+        Data = Resources.Load<PrefabStageData>("EditData/" + biome + "/" + stageNameInputField.text);
         stageNameInputField.text = Data.editName;
+        enemyEditCanvas.GetComponent<EnemyDataSet>().sName = Data.editName;
         GameObject o = Instantiate(Data.stage);
         stageSizeInputField[0].text = Data.gridCells.x.ToString();
         stageSizeInputField[1].text = Data.gridCells.y.ToString();
@@ -680,7 +697,7 @@ public class StageEditor : MonoBehaviour
     ReStart:
         foreach (Transform child in o.transform)
         {
-            child.gameObject.transform.parent = stageRoot.transform;
+            child.gameObject.transform.SetParent(stageRoot.transform);
             Vector3Int v = Vector3Int.zero;
             if (child.GetComponent<MyCellIndex>())
             {
@@ -690,10 +707,15 @@ public class StageEditor : MonoBehaviour
                     v = new Vector3Int(v.x, v.y + 1, v.z);
                 }
                 child.GetComponent<MyCellIndex>().cellIndex = v;
-            }
 
-            gridPos[v.x, v.y, v.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
-            _StageObjects[v.x, v.y, v.z] = child.gameObject;
+                gridPos[v.x, v.y, v.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
+                _StageObjects[v.x, v.y, v.z] = child.gameObject;
+            }
+            else if (child.gameObject.name == "EnemyMaster")
+            {
+                enemyEditCanvas.GetComponent<EnemyDataSet>().createEnemy = true;
+                enemyEditCanvas.GetComponent<EnemyDataSet>().LoadEnemyData(child.gameObject);
+            }
         }
         if (o.transform.childCount != 0) { goto ReStart; }
         Destroy(o);

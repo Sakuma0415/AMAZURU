@@ -12,6 +12,7 @@ public class EnemyDataSet : MonoBehaviour
     private GameObject enemyMaster;
     private GameObject e;
 
+    public string sName;
     public GameObject stageRoot;
 
     [SerializeField]
@@ -20,7 +21,7 @@ public class EnemyDataSet : MonoBehaviour
     private int enemyCount = 0;
     public int selectDataNum;
 
-    private bool createEnemy = false;
+    public bool createEnemy = false;
 
     public struct PositionData
     {
@@ -33,7 +34,7 @@ public class EnemyDataSet : MonoBehaviour
     {
         public GameObject movePlanContent;
         public Text number;
-        public Dropdown _enemyType, rotateDirection, moveType;
+        public Dropdown _enemyType, rotateDirection, moveType, enemyVecotrUp;
         public InputField enemySize, startPosX, startPosY, startPosZ, _normalSpeed, _waterSpeed, plusHight;
         public Toggle hasStartPos, setDefaultSpeed, isViewMovePlan;
 
@@ -46,6 +47,7 @@ public class EnemyDataSet : MonoBehaviour
             _enemyType = sdi.enemyType;
             rotateDirection = sdi.rotateDirection;
             moveType = sdi.moveType;
+            enemyVecotrUp = sdi.enemyVectorUp;
             enemySize = sdi.enemySize;
             startPosX = sdi.startPosX;
             startPosY = sdi.startPosY;
@@ -59,25 +61,36 @@ public class EnemyDataSet : MonoBehaviour
             number = sdi.number;
             pData = new List<PositionData>();
         }
-    }
 
-    public List<EditEnemyData> eed = new List<EditEnemyData>();
-
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKey(KeyCode.LeftShift))
+        public void DataSet(EnemyData eData, int num)
         {
-            if (Input.GetKeyDown(KeyCode.S))
+            _enemyType.value = (int)eData.Type;
+            rotateDirection.value = (int)eData.StartRotate;
+            moveType.value = (int)eData.MoveType;
+            enemyVecotrUp.value = (int)eData.EnemyUpDirection;
+            enemySize.text = eData.Size.ToString();
+            hasStartPos.isOn = eData.UseStartPosSetting;
+            if (eData.UseStartPosSetting)
             {
-                SaveEnemyMaster();
+                startPosX.text = eData.StartPosition.x.ToString();
+                startPosY.text = eData.StartPosition.y.ToString();
+                startPosZ.text = eData.StartPosition.z.ToString();
+            }
+            setDefaultSpeed.isOn = eData.UseDefaultSetting;
+            if (!eData.UseDefaultSetting)
+            {
+                _normalSpeed.text = eData.NomalSpeed.ToString();
+                _waterSpeed.text = eData.WaterSpeed.ToString();
+            }
+            if (eData.Type == EnemyType.Dry)
+            {
+                plusHight.interactable = true;
+                plusHight.text = eData.BlockSetPosY.ToString();
             }
         }
     }
+
+    public List<EditEnemyData> eed = new List<EditEnemyData>();
 
     public void AddData()
     {
@@ -99,22 +112,31 @@ public class EnemyDataSet : MonoBehaviour
         enemyCount++;
     }
 
-    public void AddMovePlan()
+    public void AddMovePlan(int i = -1)
     {
+        if (i == -1)
+        {
+            i = selectDataNum;
+        }
         GameObject o = Instantiate(movePlanItem);
-        o.name = movePlanItem.name + ":" + eed[selectDataNum].pData.Count;
-        o.transform.SetParent(eed[selectDataNum].movePlanContent.transform, false);
-        o.transform.GetChild(0).GetComponent<Text>().text = eed[selectDataNum].pData.Count.ToString();
-        o.transform.GetChild(1).name = o.transform.GetChild(1).name + eed[selectDataNum].pData.Count;
-        o.transform.GetChild(2).name = o.transform.GetChild(2).name + eed[selectDataNum].pData.Count;
-        o.transform.GetChild(3).name = o.transform.GetChild(3).name + eed[selectDataNum].pData.Count;
+        o.name = movePlanItem.name + ":" + eed[i].pData.Count;
+        o.transform.SetParent(eed[i].movePlanContent.transform, false);
+        o.transform.GetChild(0).GetComponent<Text>().text = eed[i].pData.Count.ToString();
+        o.transform.GetChild(1).name = o.transform.GetChild(1).name + eed[i].pData.Count;
+        o.transform.GetChild(2).name = o.transform.GetChild(2).name + eed[i].pData.Count;
+        o.transform.GetChild(3).name = o.transform.GetChild(3).name + eed[i].pData.Count;
         PositionData p = new PositionData();
-        eed[selectDataNum].pData.Add(p);
+        eed[i].pData.Add(p);
     }
 
-    private void SaveEnemyMaster() 
+    public void SaveEnemyMaster() 
     {
         e.GetComponent<EnemyMaster>().EnemyDataArray = new EnemyData[enemyCount];
+
+        if(!System.IO.Directory.Exists(Application.dataPath + "/Hara/Data/EnemyData/" + sName))
+        {
+            AssetDatabase.CreateFolder("Assets/Hara/Data/EnemyData", sName);
+        }
 
         for (int i = 0; i < enemyCount; i++)
         {
@@ -122,6 +144,7 @@ public class EnemyDataSet : MonoBehaviour
             _enemyData.Type = (EnemyType)eed[i]._enemyType.value;
             _enemyData.StartRotate = (EnemyData.RotateDirection)eed[i].rotateDirection.value;
             _enemyData.MoveType = (EnemyMoveType)eed[i].moveType.value;
+            _enemyData.EnemyUpDirection = (EnemyData.UpDirection)eed[i].enemyVecotrUp.value;
             _enemyData.Size = float.Parse(eed[i].enemySize.text);
             _enemyData.UseStartPosSetting = eed[i].hasStartPos.isOn;
             if (eed[i].hasStartPos.isOn) 
@@ -146,9 +169,38 @@ public class EnemyDataSet : MonoBehaviour
                 float z = eed[i].pData[j].z;
                 _enemyData.MovePlan[j] = new Vector3(x, y, z);
             }
-            AssetDatabase.CreateAsset(_enemyData, "Assets/Shimojima/shimojima_EnemyData" + i + ".asset");
+            AssetDatabase.CreateAsset(_enemyData, "Assets/Hara/Data/EnemyData/"+ sName+ "/" + sName + "-" + i + ".asset");
             AssetDatabase.SaveAssets();
             e.GetComponent<EnemyMaster>().EnemyDataArray[i] = _enemyData;
+        }
+    }
+
+    public void LoadEnemyData(GameObject EMaster)
+    {
+        e = EMaster;
+        EnemyMaster eMaster = EMaster.GetComponent<EnemyMaster>();
+        for (int i = 0; i < eMaster.EnemyDataArray.Length; i ++)
+        {
+            AddData();
+            eed[i].DataSet(eMaster.EnemyDataArray[i], i);
+            Vector3[] v = eMaster.EnemyDataArray[i].MovePlan;
+            for (int j = 0; j < v.Length; j++)
+            {
+                AddMovePlan(i);
+                PositionData p = new PositionData();
+                p.x = v[j].x;
+                p.y = v[j].y;
+                p.z = v[j].z;
+
+                GameObject mp = eed[i].movePlanContent.transform.GetChild(j).gameObject;
+                mp.transform.GetChild(1).GetComponent<InputField>().text = p.x.ToString();
+                mp.transform.GetChild(2).GetComponent<InputField>().text = p.y.ToString();
+                mp.transform.GetChild(3).GetComponent<InputField>().text = p.z.ToString();
+
+                eed[i].pData[j] = p;
+
+                
+            }
         }
     }
 }
