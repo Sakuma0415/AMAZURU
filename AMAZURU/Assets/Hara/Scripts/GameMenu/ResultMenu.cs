@@ -25,6 +25,7 @@ public class ResultMenu : MyAnimation
     // カーソル用の変数
     private float cursorChangeTimer = 0;
     private bool inputFlag = false;
+    private int firstContentID = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -78,21 +79,13 @@ public class ResultMenu : MyAnimation
         stateImage.transform.localScale = Vector3.zero;
 
         // メニュー項目の設定
-        for(int i = 0; i < textMeshes.Length; i++)
+        int firstID = state ? 0 : 1;
+        Vector3 basePosition = state ? new Vector3(0, 140, 0) : new Vector3(0, 120, 0);
+        float distance = state ? 120 : 160;
+        textMeshes[0].gameObject.SetActive(state);
+        for(int i = firstID; i < textMeshes.Length; i++)
         {
-            if(i < 2)
-            {
-                string text;
-                if(i < 1)
-                {
-                    text = state ? "ステージせんたく" : "リトライ";
-                }
-                else
-                {
-                    text = state ? "リトライ" : "ステージせんたく";
-                }
-                textMeshes[i].text = text;
-            }
+            textMeshes[i].transform.localPosition = basePosition + Vector3.down * distance * (state ? i : i - 1);
         }
         menuObject.SetActive(false);
 
@@ -129,7 +122,7 @@ public class ResultMenu : MyAnimation
         }
 
         // 選択項目とカーソルの表示処理
-        SetCursor();
+        SetCursor(firstID);
 
         coroutine = null;
     }
@@ -137,10 +130,12 @@ public class ResultMenu : MyAnimation
     /// <summary>
     /// 項目を表示してカーソルを合わせる
     /// </summary>
-    private void SetCursor()
+    /// <param name="firstID">項目の最初の番号</param>
+    private void SetCursor(int firstID)
     {
-        selectID = 0;
-        selectedID = 0;
+        selectID = firstID;
+        selectedID = firstID;
+        firstContentID = firstID;
 
         // カーソルの位置を設定
         Vector3 pos = textMeshes[selectID].transform.position;
@@ -179,8 +174,8 @@ public class ResultMenu : MyAnimation
         if(inputFlag == false && key != 0)
         {
             selectID += key;
-            if (selectID < 0) { selectID = textMeshes.Length - 1; }
-            if (selectID > textMeshes.Length - 1) { selectID = 0; }
+            if (selectID < firstContentID) { selectID = textMeshes.Length - 1; }
+            if (selectID > textMeshes.Length - 1) { selectID = firstContentID; }
             inputFlag = true;
         }
         else
