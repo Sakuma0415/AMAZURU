@@ -460,7 +460,18 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4447792136760207931}
+        m_MethodName: IsOnStartPosInteract
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 0
 --- !u!1 &7737585807248944
 GameObject:
@@ -1679,7 +1690,18 @@ MonoBehaviour:
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4447792136760207931}
+        m_MethodName: IsOnDryEnemyTypeDataInteract
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!1 &7737586566341946
 GameObject:
@@ -2821,6 +2843,7 @@ GameObject:
   - component: {fileID: 5673244231869758785}
   - component: {fileID: 5139821507226304924}
   - component: {fileID: 6791734534894068591}
+  - component: {fileID: 1460178727735964779}
   m_Layer: 5
   m_Name: AddMovePlan
   m_TagString: Untagged
@@ -2927,6 +2950,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1460178727735964779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1001919414932790609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57807c022e98d6248aa29a21f2c8b91f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1118735885033679255
 GameObject:
   m_ObjectHideFlags: 0
@@ -6445,7 +6480,18 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4447792136760207931}
+        m_MethodName: IsOnSpeedDataInteract
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 1
 --- !u!1 &4272683990554361463
 GameObject:
@@ -6608,7 +6654,6 @@ GameObject:
   - component: {fileID: 2713438601084888871}
   - component: {fileID: 772925555124979934}
   - component: {fileID: 8355829615709700568}
-  - component: {fileID: 4371279268953882479}
   m_Layer: 5
   m_Name: Bg
   m_TagString: Untagged
@@ -6671,18 +6716,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4371279268953882479
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4955305893753148715}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57807c022e98d6248aa29a21f2c8b91f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5270399152748039781
 GameObject:
   m_ObjectHideFlags: 0

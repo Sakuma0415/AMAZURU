@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class GetNumber : MonoBehaviour
 {
-    private void OnMouseDown()
+
+    public void SetDataNum()
     {
-        transform.parent.GetComponent<EnemyDataSet>().selectDataNum = int.Parse(transform.parent.name.Replace("EnemyDataItem", ""));
+        transform.root.transform.GetChild(0).transform.GetChild(0).GetComponent<EnemyDataSet>().selectDataNum = 
+            int.Parse(transform.parent.name.Replace("EnemyDataItem:", ""));
     }
 }

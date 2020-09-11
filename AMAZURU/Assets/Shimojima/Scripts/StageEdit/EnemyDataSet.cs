@@ -10,12 +10,17 @@ public class EnemyDataSet : MonoBehaviour
 {
     [SerializeField]
     private GameObject enemyMaster;
+    private GameObject e;
+
+    public GameObject stageRoot;
 
     [SerializeField]
     private GameObject enemyContent, enemyDataItem, movePlanItem;
 
     private int enemyCount = 0;
     public int selectDataNum;
+
+    private bool createEnemy = false;
 
     public struct PositionData
     {
@@ -54,26 +59,6 @@ public class EnemyDataSet : MonoBehaviour
             number = sdi.number;
             pData = new List<PositionData>();
         }
-
-        public void Save(GameObject enemyMaster)
-        {
-            EnemyMaster e = enemyMaster.GetComponent<EnemyMaster>();
-            //movePlanContent = sdi.content;
-            //_enemyType = sdi.enemyType;
-            //rotateDirection = sdi.rotateDirection;
-            //moveType = sdi.moveType;
-            //enemySize = sdi.enemySize;
-            //startPosX = sdi.startPosX;
-            //startPosY = sdi.startPosY;
-            //startPosZ = sdi.startPosZ;
-            //_normalSpeed = sdi.normalSpeed;
-            //_waterSpeed = sdi.waterSpeed;
-            //plusHight = sdi.plusHight;
-            //hasStartPos = sdi.hasStartPos;
-            //setDefaultSpeed = sdi.setDefaultSpeed;
-            //isViewMovePlan = sdi.isViewMovePlan;
-            //number = sdi.number;
-        }
     }
 
     public List<EditEnemyData> eed = new List<EditEnemyData>();
@@ -96,10 +81,17 @@ public class EnemyDataSet : MonoBehaviour
 
     public void AddData()
     {
+        if (!createEnemy)
+        {
+            e = Instantiate(enemyMaster);
+            e.transform.SetParent(stageRoot.transform);
+            e.name = enemyMaster.name;
+            createEnemy = true;
+        }
         GameObject o = Instantiate(enemyDataItem);
+        o.name = enemyDataItem.name + ":" + enemyCount.ToString();
         o.SetActive(true);
         o.transform.SetParent(enemyContent.transform, false);
-        o.name = o.name + enemyCount.ToString();
         EditEnemyData eEnemyData = new EditEnemyData();
         eEnemyData.Init(o);
         eEnemyData.number.text = enemyCount.ToString();
@@ -110,16 +102,20 @@ public class EnemyDataSet : MonoBehaviour
     public void AddMovePlan()
     {
         GameObject o = Instantiate(movePlanItem);
+        o.name = movePlanItem.name + ":" + eed[selectDataNum].pData.Count;
         o.transform.SetParent(eed[selectDataNum].movePlanContent.transform, false);
-        o.transform.GetChild(0).name = o.transform.GetChild(0).name + eed[selectDataNum].pData.Count;
+        o.transform.GetChild(0).GetComponent<Text>().text = eed[selectDataNum].pData.Count.ToString();
         o.transform.GetChild(1).name = o.transform.GetChild(1).name + eed[selectDataNum].pData.Count;
         o.transform.GetChild(2).name = o.transform.GetChild(2).name + eed[selectDataNum].pData.Count;
+        o.transform.GetChild(3).name = o.transform.GetChild(3).name + eed[selectDataNum].pData.Count;
         PositionData p = new PositionData();
         eed[selectDataNum].pData.Add(p);
     }
 
     private void SaveEnemyMaster() 
     {
+        e.GetComponent<EnemyMaster>().EnemyDataArray = new EnemyData[enemyCount];
+
         for (int i = 0; i < enemyCount; i++)
         {
             EnemyData _enemyData = new EnemyData();
@@ -152,6 +148,7 @@ public class EnemyDataSet : MonoBehaviour
             }
             AssetDatabase.CreateAsset(_enemyData, "Assets/Shimojima/shimojima_EnemyData" + i + ".asset");
             AssetDatabase.SaveAssets();
+            e.GetComponent<EnemyMaster>().EnemyDataArray[i] = _enemyData;
         }
     }
 }

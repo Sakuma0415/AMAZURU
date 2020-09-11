@@ -55,9 +55,11 @@ public class StageEditor : MonoBehaviour
 
     public GameObject menuCanvas;
     public GameObject editCanvas;
+    public GameObject enemyEditCanvas;
     public InputField[] stageSizeInputField;
     public InputField stageNameInputField;
     public Toggle isGenerateFloor;
+    public Toggle enemyEdit;
     [SerializeField, Tooltip("参照するGridObject")]
     private GameObject gridObj;
     [SerializeField,Tooltip("配置場所を視認し易くするためのオブジェクト")]
@@ -125,16 +127,26 @@ public class StageEditor : MonoBehaviour
             SelectObjectAllChange();
         }
 
+        if (!isCreateStage) { return; }
+
         if (Input.GetKeyDown(KeyCode.I))
         {
             isOnMenu = !isOnMenu;
             menuCanvas.SetActive(!menuCanvas.activeSelf);
             editCanvas.SetActive(!editCanvas.activeSelf);
         }
-
-        if (!isCreateStage || isOnMenu) { return; }
+        if (isOnMenu) { return; }
 
         CheakKeyDownForMoveKey();
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                ChangeToggleForEnemyEdit();
+            }
+        }
+
+
         SetOrDeleteStageObject();
         RangeSelection();
         
@@ -288,6 +300,16 @@ public class StageEditor : MonoBehaviour
         stageSelect_d.AddOptions(sName);
     }
 
+    private void ChangeToggleForEnemyEdit()
+    {
+        enemyEdit.isOn = !enemyEdit.isOn;
+    }
+
+    public void ShowEnemyEditor()
+    {
+        enemyEditCanvas.SetActive(!enemyEditCanvas.activeSelf);
+    }
+
     #endregion
 
     /// <summary>
@@ -304,6 +326,7 @@ public class StageEditor : MonoBehaviour
         stageObj = referenceObject[0];
         stageRoot = new GameObject();
         stageRoot.name = "Stage";
+        enemyEditCanvas.GetComponent<EnemyDataSet>().stageRoot = stageRoot;
         gridRoot = new GameObject();
         gridRoot.name = "GridRootObj";
         cells = new Vector3Int(int.Parse(stageSizeInputField[0].text), int.Parse(stageSizeInputField[1].text) + 1, int.Parse(stageSizeInputField[2].text));

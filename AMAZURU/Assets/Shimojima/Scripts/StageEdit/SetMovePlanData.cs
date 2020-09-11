@@ -7,9 +7,9 @@ public class SetMovePlanData : MonoBehaviour
 {
     public void SetData()
     {
-        EnemyDataSet e = transform.parent.parent.parent.parent.GetComponent<EnemyDataSet>();
+        EnemyDataSet e = transform.root.transform.GetChild(0).transform.GetChild(0).GetComponent<EnemyDataSet>();
         char c = name[0];
-        EnemyDataSet.PositionData p;
+        EnemyDataSet.PositionData p; 
         switch (c)
         {
             case 'X':
@@ -19,12 +19,12 @@ public class SetMovePlanData : MonoBehaviour
                 break;
             case 'Y':
                 p = e.eed[e.selectDataNum].pData[int.Parse(name.Replace("Y", ""))];
-                p.x = float.Parse(GetComponent<InputField>().text);
+                p.y = float.Parse(GetComponent<InputField>().text);
                 e.eed[e.selectDataNum].pData[int.Parse(name.Replace("Y", ""))] = p;
                 break;
             case 'Z':
                 p = e.eed[e.selectDataNum].pData[int.Parse(name.Replace("Z", ""))];
-                p.x = float.Parse(GetComponent<InputField>().text);
+                p.z = float.Parse(GetComponent<InputField>().text);
                 e.eed[e.selectDataNum].pData[int.Parse(name.Replace("Z", ""))] = p;
                 break;
         }
