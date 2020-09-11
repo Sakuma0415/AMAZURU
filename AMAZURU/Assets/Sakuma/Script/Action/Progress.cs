@@ -44,27 +44,35 @@ public class Progress : MonoBehaviour
     private void Update()
     {
 
+        // プレイヤーと敵が接触した場合はポーズ画面を閉じる(開けないようにする)
+        bool isHitEnemy = CharacterMaster.Instance.Player.IsHitEnemy;
 
-        //ポーズ画面の開閉
-        if (ControllerInput .Instance .buttonDown .option )
+        if (isHitEnemy)
         {
-            if (PlayState.playState.gameMode == PlayState.GameMode.Play)
-            {
-                gameMenu.Pause(true);
-                PlayState.playState.gameMode = PlayState.GameMode.Pause;
-            }
-            else
             if (PlayState.playState.gameMode == PlayState.GameMode.Pause)
             {
                 gameMenu.Pause(false);
                 PlayState.playState.gameMode = PlayState.GameMode.Play;
             }
         }
-
-
-
-
-
+        else
+        {
+            //ポーズ画面の開閉
+            if (ControllerInput.Instance.buttonDown.option)
+            {
+                if (PlayState.playState.gameMode == PlayState.GameMode.Play)
+                {
+                    gameMenu.Pause(true);
+                    PlayState.playState.gameMode = PlayState.GameMode.Pause;
+                }
+                else
+                if (PlayState.playState.gameMode == PlayState.GameMode.Pause)
+                {
+                    gameMenu.Pause(false);
+                    PlayState.playState.gameMode = PlayState.GameMode.Play;
+                }
+            }
+        }
     }
 
     //result画面を呼び出す関数
