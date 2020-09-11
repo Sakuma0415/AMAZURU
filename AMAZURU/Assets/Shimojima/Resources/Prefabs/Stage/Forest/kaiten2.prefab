@@ -20740,6 +20740,11 @@ PrefabInstance:
       propertyPath: lotAngle.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 4055822668284307084, guid: e55bec884d31bc442b10635e25a871bf,
+        type: 3}
+      propertyPath: WavelotAngle.z
+      value: 90
+      objectReference: {fileID: 0}
     - target: {fileID: 6485752160331910818, guid: e55bec884d31bc442b10635e25a871bf,
         type: 3}
       propertyPath: m_Name
@@ -20823,6 +20828,16 @@ PrefabInstance:
     - target: {fileID: 4055822668284307084, guid: e55bec884d31bc442b10635e25a871bf,
         type: 3}
       propertyPath: lotAngle.z
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055822668284307084, guid: e55bec884d31bc442b10635e25a871bf,
+        type: 3}
+      propertyPath: WavelotAngle.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055822668284307084, guid: e55bec884d31bc442b10635e25a871bf,
+        type: 3}
+      propertyPath: WavelotAngle.z
       value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 6485752160331910818, guid: e55bec884d31bc442b10635e25a871bf,
