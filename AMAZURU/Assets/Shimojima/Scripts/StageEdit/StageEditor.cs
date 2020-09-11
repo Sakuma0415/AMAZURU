@@ -371,14 +371,15 @@ public class StageEditor : MonoBehaviour
 
                 if (biome == "Forest")
                 {
-                     s_obj = Instantiate(floorRefObj[x], gridPos[i, 0, j].transform.position, Quaternion.identity);
+                    s_obj = Instantiate(floorRefObj[x], gridPos[i, 0, j].transform.position, Quaternion.identity);
+                    s_obj.name = referenceObject[0].name;
                 }
                 else
                 {
                     s_obj = Instantiate(ruinsFloorRefObj[x], gridPos[i, 0, j].transform.position, Quaternion.identity);
+                    s_obj.name = referenceObject[7].name;
                 }
                 
-                s_obj.name = referenceObject[0].name;
                 s_obj.AddComponent<MyCellIndex>().cellIndex = new Vector3Int(i, 0, j);
                 Destroy(s_obj.GetComponent<BoxCollider>());
                 s_obj.transform.parent = stageRoot.transform;
