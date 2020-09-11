@@ -111,13 +111,11 @@ namespace Enemy
                 // エネミーの移動処理
                 EnemyMove(true);
             }
-            else
+
+            // アニメーションの停止管理
+            if (enemyAnime != null)
             {
-                // アニメーションの停止
-                if (enemyAnime != null)
-                {
-                    enemyAnime.enabled = false;
-                }
+                enemyAnime.enabled = !IsAllStop;
             }
         }
 
@@ -262,15 +260,11 @@ namespace Enemy
                 }
 
                 // 足音の再生
-                if (enemyAnime != null)
+                animationTime += delta;
+                if (animationTime >= animationSpeed)
                 {
-                    enemyAnime.enabled = true;
-                    animationTime += delta;
-                    if (animationTime >= animationSpeed)
-                    {
-                        animationTime = 0;
-                        SoundManager.soundManager.PlaySe3D("EnemyMove", transform.position, 0.3f);
-                    }
+                    animationTime = 0;
+                    SoundManager.soundManager.PlaySe3D("EnemyMove", transform.position, 0.3f);
                 }
             }
         }
