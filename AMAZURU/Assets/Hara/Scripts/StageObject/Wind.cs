@@ -20,6 +20,7 @@ public class Wind : MonoBehaviour
     private BoxCollider boxCollider = null;
     private float upHeight = 0;
     private float downHeight = 0;
+    private PlayState.GameMode gameMode = PlayState.GameMode.Stop;
 
     // Start is called before the first frame update
     void Start()
@@ -30,7 +31,16 @@ public class Wind : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(PlayState.playState.gameMode == PlayState.GameMode.Play)
+        try
+        {
+            gameMode = PlayState.playState.gameMode;
+        }
+        catch
+        {
+            gameMode = PlayState.GameMode.Stop;
+        }
+
+        if(gameMode == PlayState.GameMode.Play)
         {
             ShotWind();
         }
@@ -122,7 +132,7 @@ public class Wind : MonoBehaviour
             float hitDistance;
             Ray ray = new Ray(transform.position, direction);
 
-            if(Physics.Raycast(ray, out hit, windMaxArea + 0.5f, layerMask))
+            if(Physics.Raycast(ray, out hit, windMaxArea + 0.5f, layerMask) && hit.collider.isTrigger == false)
             {
                 hitDistance = Mathf.Floor(Mathf.Abs(hit.distance - 0.5f));
             }
@@ -144,7 +154,7 @@ public class Wind : MonoBehaviour
         {
             if (coroutines[windID] != null) { return; }
 
-            if (Physics.BoxCast(transform.position, Vector3.one * 0.3f, direction, out hit, Quaternion.identity, windMaxArea))
+            if (Physics.BoxCast(transform.position, Vector3.one * 0.3f, direction, out hit, Quaternion.identity, windMaxArea) && hit.collider.isTrigger == false)
             {
                 if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player"))
                 {

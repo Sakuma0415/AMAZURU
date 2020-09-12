@@ -387,7 +387,7 @@ public class PlayerType2 : MyAnimation
             float rayRange = isOnSlope && (rayPosition[i] == slopeRight || rayPosition[i] == -slopeRight) ? character.height * 0.6f : character.height;
             Vector3 baseRayPosition = new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z) + rayPosition[i] * character.radius;
             mainRay = new Ray(baseRayPosition, Vector3.down);
-            if(Physics.Raycast(mainRay, out hit, rayRange, groundLayer))
+            if(Physics.Raycast(mainRay, out hit, rayRange, groundLayer) && hit.collider.isTrigger == false)
             {
                 float hitDistance = hit.distance;
                 // プレイヤーの当たり判定の両端からRayを飛ばして進めるかをチェック
@@ -398,7 +398,7 @@ public class PlayerType2 : MyAnimation
                 for (int j = 0; j < 2; j++)
                 {
                     subRay = new Ray(mainRay.origin + Vector3.down * character.height * 0.475f + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
-                    if (Physics.Raycast(subRay, out hit, character.radius * 1.5f, groundLayer))
+                    if (Physics.Raycast(subRay, out hit, character.radius * 1.5f, groundLayer) && hit.collider.isTrigger == false)
                     {
                         count++;
                         if (hit.normal.y != 0)
@@ -415,7 +415,7 @@ public class PlayerType2 : MyAnimation
                     for (int j = 0; j < 2; j++)
                     {
                         subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), mainRay.direction);
-                        if (Physics.Raycast(subRay, out hit, character.height, groundLayer))
+                        if (Physics.Raycast(subRay, out hit, character.height, groundLayer) && hit.collider.isTrigger == false)
                         {
                             float disA = Mathf.Ceil(Mathf.Floor(hit.distance * 1000) / 10);
                             float disB = Mathf.Ceil(Mathf.Floor(hitDistance * 1000) / 10);
