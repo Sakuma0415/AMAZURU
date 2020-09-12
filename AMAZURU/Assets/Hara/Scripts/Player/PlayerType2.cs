@@ -411,27 +411,22 @@ public class PlayerType2 : MyAnimation
 
                 if (rayFlag || isHitSlope)
                 {
-                    rayRange = isHitSlope ? character.height * 0.6f : character.height;
                     count = 0;
                     for (int j = 0; j < 2; j++)
                     {
                         subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), mainRay.direction);
-                        if (Physics.Raycast(subRay, out hit, rayRange, groundLayer))
+                        if (Physics.Raycast(subRay, out hit, character.height, groundLayer))
                         {
-                            Debug.Log(isHitSlope + " : " + i + " : " + j);
                             float disA = Mathf.Ceil(Mathf.Floor(hit.distance * 1000) / 10);
                             float disB = Mathf.Ceil(Mathf.Floor(hitDistance * 1000) / 10);
-                            if (disA < disB)
+                            
+                            if(disA != disB)
                             {
-                                count += 1;
-                            }
-                            else
-                            {
-                                count += 2;
+                                count++;
                             }
                         }
                     }
-                    set = count == 3;
+                    set = count > 0 && isOnSlope == false;
                 }
                 else
                 {
