@@ -398,17 +398,29 @@ public class PlayerType2 : MyAnimation
                 bool rayFlag = false;
                 for (int j = 0; j < 2; j++)
                 {
-                    subRay = new Ray(mainRay.origin + Vector3.down * character.height * 0.475f + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
-                    if (Physics.Raycast(subRay, out hit, character.radius * 1.5f, groundLayer) && hit.collider.isTrigger == false)
+                    subRay = new Ray(mainRay.origin + Vector3.down * character.height * (isOnSlope ? 0.6f : 0.475f) + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
+                    if (Physics.Raycast(subRay, out hit, character.radius * 1.05f, groundLayer) && hit.collider.isTrigger == false)
                     {
-                        count++;
-                        if (hit.normal.y != 0)
+                        if (isOnSlope)
                         {
-                            rayFlag = true;
-                            break;
+                            if(hit.normal.y == 0)
+                            {
+                                count++;
+                            }
+                        }
+                        else
+                        {
+                            if (hit.normal.y != 0)
+                            {
+                                count++;
+                                rayFlag = true;
+                                break;
+                            }
                         }
                     }
                 }
+
+                bool isSetSlopeWall = isOnSlope && count == 2;
 
                 if (rayFlag || isHitSlope)
                 {
@@ -424,14 +436,23 @@ public class PlayerType2 : MyAnimation
                             if(disA != disB)
                             {
                                 count++;
+                                break;
                             }
                         }
                     }
-                    set = count > 0 && isOnSlope == false;
+
+                    if (isOnSlope)
+                    {
+                        set = count > 0 && isSetSlopeWall;
+                    }
+                    else
+                    {
+                        set = count > 0;
+                    }
                 }
                 else
                 {
-                    set = count > 0;
+                    set = isOnSlope ? isSetSlopeWall : count > 0;
                 }
             }
             else
