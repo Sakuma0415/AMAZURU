@@ -8,7 +8,6 @@ public class PlayerType2 : MyAnimation
     [SerializeField, Tooltip("PlayerのCharacterController")] private CharacterController character = null;
     [SerializeField, Tooltip("PlayerのAnimator")] private Animator playerAnimator = null;
     [SerializeField, Tooltip("Playerの傘のAnimator")] private Animator umbrellaAnimator = null;
-    [SerializeField, Tooltip("透明な壁")] private BoxCollider hiddenWallPrefab = null;
     [SerializeField, Tooltip("地面のLayerMask")] private LayerMask groundLayer;
     [SerializeField, Tooltip("AnimationEventスクリプト")] private PlayerAnimeEvent animeEvent = null;
 
@@ -25,7 +24,6 @@ public class PlayerType2 : MyAnimation
     [SerializeField, Header("プレイヤーの水中移動速度"), Range(0, 10)] private float playerWaterSpeed = 2.5f;
     [SerializeField, Header("プレイヤーの加速度グラフ")] private AnimationCurve curve = null;
     [SerializeField, Header("最高速度到達時間"), Range(0.1f, 2.0f)] private float maxSpeedTime = 0.5f;
-    [SerializeField, Header("透明な壁のサイズ"), Range(0.01f, 5.0f)] private float wallSize = 1.0f;
 
     /// <summary>
     /// プレイヤーカメラ
@@ -368,7 +366,10 @@ public class PlayerType2 : MyAnimation
         hiddenWalls = new BoxCollider[rayPosition.Length];
         for(int i = 0; i < hiddenWalls.Length; i++)
         {
-            hiddenWalls[i] = Instantiate(hiddenWallPrefab);
+            GameObject colObj = new GameObject();
+            hiddenWalls[i] = colObj.AddComponent<BoxCollider>();
+            hiddenWalls[i].gameObject.name = "WallObject" + i.ToString();
+            hiddenWalls[i].size = Vector3.one;
             hiddenWalls[i].enabled = false;
         }
     }
@@ -441,8 +442,7 @@ public class PlayerType2 : MyAnimation
             // 床が無ければ透明な壁を有効化する
             if (set && hiddenWalls[i].enabled == false)
             {
-                hiddenWalls[i].size = Vector3.one * wallSize;
-                hiddenWalls[i].transform.position = mainRay.origin + rayPosition[i] * wallSize * 0.5001f;
+                hiddenWalls[i].transform.position = mainRay.origin + rayPosition[i] * 0.5001f;
                 hiddenWalls[i].enabled = true;
             }
             
