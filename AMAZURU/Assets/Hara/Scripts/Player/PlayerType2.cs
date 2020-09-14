@@ -391,7 +391,7 @@ public class PlayerType2 : MyAnimation
             {
                 float hitDistance = hit.distance;
                 // プレイヤーの当たり判定の両端からRayを飛ばして進めるかをチェック
-                bool isHitSlope = Mathf.Abs(hit.normal.y) < 1;
+                bool isHitSlope = Mathf.Floor(Mathf.Abs(hit.normal.y) * 10) / 10 < 0.8f;
                 bool flag = false;
 
                 if (isHitSlope)
@@ -402,7 +402,7 @@ public class PlayerType2 : MyAnimation
                         int index = j == 0 ? (i - 1 < 0 ? rayPosition.Length - 1 : i - 1) : (i + 1 >= rayPosition.Length ? 0 : i + 1);
                         if(Physics.Raycast(new Ray(baseRayPosition + rayPosition[index] * character.radius, Vector3.down), out hit, rayRange, groundLayer) && hit.collider.isTrigger == false)
                         {
-                            if(GetSlopeVec(hit.transform.forward) != hitVec && Mathf.Floor(Mathf.Abs(hit.normal.y)) < 1)
+                            if (GetSlopeVec(hit.transform.forward) != hitVec && Mathf.Floor(Mathf.Abs(hit.normal.y) * 10) / 10 < 0.8f)
                             {
                                 flag = true;
                                 break;
