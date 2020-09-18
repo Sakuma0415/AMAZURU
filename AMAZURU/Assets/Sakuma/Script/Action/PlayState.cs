@@ -56,6 +56,9 @@ public class PlayState : MonoBehaviour
     [SerializeField]
     public GameObject WaveEf;
 
+    [SerializeField]
+    GameObject topObj;
+
     bool timelot = false ;
     bool rotSet = false;
 
@@ -75,6 +78,7 @@ public class PlayState : MonoBehaviour
         playState.WaveEf = WaveEf;
         playState.gameMode =gameMode;
         playState.ChaMs = ChaMs;
+        playState.topObj = topObj;
         playState.Tutorial = StageMake.LoadStageData.TutorialFlg;
         if (playState.Tutorial) { tutorialUI.TutorialStart(); }
         if (!PlayState.copyFlg)
@@ -86,6 +90,7 @@ public class PlayState : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        
     }
 
     private void Update()
@@ -126,6 +131,8 @@ public class PlayState : MonoBehaviour
         }
         //Debug.Log(playState.gameMode);
     }
+
+
 
     //アメフラシ演出中の処理
     void RainUpDate()
@@ -194,7 +201,7 @@ public class PlayState : MonoBehaviour
             WaterObj.SetActive(true);
             WaterObj.transform.eulerAngles=Vector3 .zero ;
             WaterObj.transform.position = new Vector3(0.01f, 0, 0.01f);
-            Destroy(WaveObj);
+            WaveObj.SetActive(false );
         }
 
 
@@ -219,15 +226,22 @@ public class PlayState : MonoBehaviour
         afterAngle = lotAngle+ stageObj.transform.eulerAngles;
         startAngle = stageObj.transform.eulerAngles;
         waterHi = WaterObj.GetComponent<WaterHi>();
-        
-        WaveObj=Instantiate(WaveEf, stageObj.transform);
+
+        WaveObj.SetActive(true);
         WaveObj.transform.localScale = StageMake.LoadStageData.stageSize- new Vector3(0.1f, 0.1f, 0.1f);
         WaveObj.transform.localPosition = Vector3.zero;
         WaveObj.transform.localEulerAngles  = -lotAngle;
         WaveObj.GetComponent<BoxMake>().sethi  = waterHi.max / StageMake.LoadStageData.stageSize.x;
-        WaveObj.GetComponent<BoxMake>().Init();
+        WaveObj.GetComponent<BoxMake>().moveTime =0;
         WaveObj.transform.eulerAngles = Weve;
 
         rotSet = true;
+    }
+
+    public void WaveMake()
+    {
+        WaveObj = Instantiate(WaveEf, stageObj.transform);
+        WaveObj.GetComponent<BoxMake>().Init(topObj);
+        WaveObj.SetActive(false);
     }
 }

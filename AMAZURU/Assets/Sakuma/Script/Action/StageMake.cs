@@ -61,7 +61,7 @@ public class StageMake : MonoBehaviour
         PlayState.playState.stageObj = StageCenter;
         waterObj.transform.parent = StageCenter.transform;
         PlayState.playState .WaterObj = waterObj;
-
+        PlayState.playState.WaveMake();
 
         //プレイヤー生成
         //GameObject player = Instantiate(playerObj, StageMake.LoadStageData.startPos-new Vector3 (0.5f,0,0.5f),Quaternion.identity);

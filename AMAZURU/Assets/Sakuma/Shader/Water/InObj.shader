@@ -83,10 +83,10 @@ Shader "Custom/InObj"
 				fixed4 finalColor2 = tex2D(_LightMap, wuv);
 				c.rbg *= (1+(pow( finalColor2.a,1)/4));
 
-				c.rgb-=_InColor.rgb*(hi/50);
-				if(hi<0.2){
-				c.rbg+=(1-(hi*5))*float3(1,1,1)/2;
-				}
+				//c.rgb-=_InColor.rgb*(hi/50);
+				//if(hi<0.2){
+				//c.rbg+=(1-(hi*5))*float3(1,1,1)/2;
+				//}
 			}
 			
 			o.Normal=UnpackNormal(tex2D(_NormalTex, IN.uv_MainTex));
