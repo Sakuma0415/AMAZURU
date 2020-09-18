@@ -57,12 +57,15 @@ public class PlayState : MonoBehaviour
     public GameObject WaveEf;
 
     bool timelot = false ;
+    bool rotSet = false;
 
     public Vector3 PayerPos = Vector3.zero;
     Vector3 afterAngle = Vector3.zero;
     Vector3 startAngle = Vector3.zero;
 
      GameObject WaveObj = null;
+
+    WaterHi waterHi = null;
 
     // 初期化
     void Start()
@@ -160,11 +163,17 @@ public class PlayState : MonoBehaviour
         {
             RotationPotTimech = true;
             Camera.main.gameObject.GetComponent<CameraPos>().RainPotChangeOut(true);
+
         }
         
 
 
-
+        if(rotSet&& RotationPotTime < 4)
+        {
+            WaterObj.SetActive(false);
+            rotSet = false ;
+            WaveObj.GetComponent<BoxMake>().MoveStart(waterHi.max /StageMake.LoadStageData .stageSize .x );
+        }
 
         if (5-RotationPotTime>1&&5- RotationPotTime < 2.75f)
         {
@@ -185,6 +194,7 @@ public class PlayState : MonoBehaviour
             WaterObj.SetActive(true);
             WaterObj.transform.eulerAngles=Vector3 .zero ;
             WaterObj.transform.position = new Vector3(0.01f, 0, 0.01f);
+            Destroy(WaveObj);
         }
 
 
@@ -208,12 +218,16 @@ public class PlayState : MonoBehaviour
         PayerPos = character.gameObject.transform.localPosition;
         afterAngle = lotAngle+ stageObj.transform.eulerAngles;
         startAngle = stageObj.transform.eulerAngles;
-        WaterObj.SetActive(false);
+        waterHi = WaterObj.GetComponent<WaterHi>();
+        
         WaveObj=Instantiate(WaveEf, stageObj.transform);
-        WaveObj.transform.localScale = StageMake.LoadStageData.stageSize- new Vector3(0.02f, 0.02f, 0.02f);
-        WaveObj.transform.localPosition  = new Vector3(0.01f, 0.01f, 0.01f);
+        WaveObj.transform.localScale = StageMake.LoadStageData.stageSize- new Vector3(0.1f, 0.1f, 0.1f);
+        WaveObj.transform.localPosition = Vector3.zero;
+        WaveObj.transform.localEulerAngles  = -lotAngle;
+        WaveObj.GetComponent<BoxMake>().sethi  = waterHi.max / StageMake.LoadStageData.stageSize.x;
         WaveObj.GetComponent<BoxMake>().Init();
         WaveObj.transform.eulerAngles = Weve;
 
+        rotSet = true;
     }
 }

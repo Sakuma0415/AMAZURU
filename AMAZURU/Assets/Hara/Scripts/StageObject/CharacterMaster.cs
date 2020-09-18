@@ -9,6 +9,8 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
     [SerializeField, Header("感電時の操作無効時間")] private float electricTimer = 1.0f;
     [SerializeField, Header("感電するインターバル")] private float electricInterval = 1.0f;
 
+    private PlayState.GameMode gameMode = PlayState.GameMode.Play;
+
     /// <summary>
     /// プレイヤーの情報
     /// </summary>
@@ -153,18 +155,16 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
     {
         if(Player != null)
         {
-            PlayState.GameMode mode = GetGameMode();
-
             // 酸素ゲージが0になったかをチェックする
             bool waterDead = OxygenGauge != null && OxygenGauge.WaterDeth;
 
             // ポーズ中は移動処理とアニメーションを停止させる
-            Player.IsGameStop = mode == PlayState.GameMode.Pause;
+            Player.IsGameStop = gameMode == PlayState.GameMode.Pause;
 
             // 敵との接触フラグ
             Player.IsHitEnemy = enemy != null && enemy.IsHit;
 
-            if(mode != PlayState.GameMode.Play)
+            if(gameMode != PlayState.GameMode.Play)
             {
                 // ステートがプレイ以外のときは入力を受け付けない
                 Player.DontInput = true;
@@ -176,16 +176,16 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
             }
 
             // アメフラシ起動時
-            Player.IsRain = mode == PlayState.GameMode.Rain;
+            Player.IsRain = gameMode == PlayState.GameMode.Rain;
 
             // ゲームクリア時
-            Player.IsGameClear = mode == PlayState.GameMode.Clear;
+            Player.IsGameClear = gameMode == PlayState.GameMode.Clear;
 
             // ゲームオーバー時
-            Player.IsGameOver = mode == PlayState.GameMode.GameOver && waterDead == false;
+            Player.IsGameOver = gameMode == PlayState.GameMode.GameOver && waterDead == false;
 
             // 溺死のフラグ
-            Player.IsGameOverInWater = mode == PlayState.GameMode.GameOver && waterDead;
+            Player.IsGameOverInWater = gameMode == PlayState.GameMode.GameOver && waterDead;
 
             // 感電時
             Player.IsElectric = isElectric;
@@ -199,13 +199,11 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
     {
         if(enemy != null)
         {
-            PlayState.GameMode mode = GetGameMode();
-
             // ポーズ中は移動処理とアニメーションを停止
-            enemy.IsGameStop = mode == PlayState.GameMode.Pause && mode != PlayState.GameMode.Clear && mode != PlayState.GameMode.GameOver;
+            enemy.IsGameStop = gameMode == PlayState.GameMode.Pause;
 
             // プレイ中以外のときはスタンバイ状態にする
-            enemy.IsStandby = mode != PlayState.GameMode.Play;
+            enemy.IsStandby = gameMode != PlayState.GameMode.Play;
         }
     }
 
@@ -299,6 +297,8 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
     // Update is called once per frame
     void Update()
     {
+        gameMode = GetGameMode();
+
         SetPlayerGameState();
 
         SetEnemyGameState();

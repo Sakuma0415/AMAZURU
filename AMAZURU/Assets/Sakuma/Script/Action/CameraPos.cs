@@ -294,7 +294,7 @@ public class CameraPos : MonoBehaviour
         //ゲーム開始時の定点カメラの特殊挙動時のステータス更新
         if (startCameraFlg )
         {
-            
+            lookObj = StageMake.LoadStageData.stageSize / 2;
             XZangle += Time.deltaTime*3;
 
             //通常のカメラ処理に戻る
