@@ -56,6 +56,9 @@ public class PlayState : MonoBehaviour
     [SerializeField]
     public GameObject WaveEf;
 
+    [SerializeField]
+    GameObject topObj;
+
     bool timelot = false ;
     bool rotSet = false;
 
@@ -75,6 +78,7 @@ public class PlayState : MonoBehaviour
         playState.WaveEf = WaveEf;
         playState.gameMode =gameMode;
         playState.ChaMs = ChaMs;
+        playState.topObj = topObj;
         playState.Tutorial = StageMake.LoadStageData.TutorialFlg;
         if (playState.Tutorial) { tutorialUI.TutorialStart(); }
         if (!PlayState.copyFlg)
@@ -225,7 +229,7 @@ public class PlayState : MonoBehaviour
         WaveObj.transform.localPosition = Vector3.zero;
         WaveObj.transform.localEulerAngles  = -lotAngle;
         WaveObj.GetComponent<BoxMake>().sethi  = waterHi.max / StageMake.LoadStageData.stageSize.x;
-        WaveObj.GetComponent<BoxMake>().Init();
+        WaveObj.GetComponent<BoxMake>().Init(topObj);
         WaveObj.transform.eulerAngles = Weve;
 
         rotSet = true;

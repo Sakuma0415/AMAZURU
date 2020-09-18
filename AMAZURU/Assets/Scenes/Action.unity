@@ -913,6 +913,7 @@ MonoBehaviour:
   character: {fileID: 0}
   WaterObj: {fileID: 0}
   WaveEf: {fileID: 6395762070186815068, guid: ec9003a72dc21d7428722801963ae6fd, type: 3}
+  topObj: {fileID: 0}
   PayerPos: {x: 0, y: 0, z: 0}
 --- !u!4 &363166042
 Transform:
@@ -3295,7 +3296,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material:
   - {fileID: 2100000, guid: 433e8abaf684fc2498fc6c0db370e826, type: 2}
-  - {fileID: 2100000, guid: a0023aed756f6574494e2538c143ed7d, type: 2}
   spead: 0.1
 --- !u!4 &1459040191
 Transform:

@@ -204,11 +204,17 @@ public class BoxMake : MonoBehaviour
         Hi = hi;
     }
 
-    public void Init()
+    public void Init(GameObject topObj) 
     {
         for (int i=0; i < meshFilter.Length; i++)
         {
             GameObject plane = new GameObject();
+            //if (i == 4)
+            //{
+            //    plane = topObj;
+            //    Destroy(plane.GetComponent<MeshFilter>());
+            //    Destroy(plane.GetComponent<MeshRenderer>());
+            //}
             plane.transform.parent = transform;
             plane.transform.localScale = new Vector3(1, 1, 1);
             plane.transform.localPosition = new Vector3(-0.5f, -0.5f, -0.5f);
@@ -218,13 +224,13 @@ public class BoxMake : MonoBehaviour
             if (i == 4)
             {
                 meshRenderer.material = topMaterial ;
-                //plane.AddComponent<PlaneReflection>();
+                plane.AddComponent<myTime >();
             }
             else
             {
                 meshRenderer.material = material;
             }
-            
+
 
 
 
