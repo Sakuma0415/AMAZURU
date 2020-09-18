@@ -12,10 +12,10 @@ public class WaterTime : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //WaterTime.time += Time.deltaTime;
+        WaterTime.time += Time.deltaTime;
         for(int i=0; i < material.Length; i++)
         {
-            material[i].SetFloat("BackTime", time * 0.1f);
+            //material[i].SetFloat("BackTime", time * 0.1f);
 
         }
     }

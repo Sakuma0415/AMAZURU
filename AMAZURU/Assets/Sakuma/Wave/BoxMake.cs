@@ -19,23 +19,16 @@ public class BoxMake : MonoBehaviour
     MeshFilter[] meshFilter=new MeshFilter[7];
 
     Vector2[] movePt = new Vector2[2];
-    float moveTime = 0;
+    public float moveTime = 0;
     public float Hi=0;
     int cont = 4;
     float lat = 0;
     float bootTime = 1.75f;
 
-    void Start()
-    {
-        //Init();
-    }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            //MoveStart(sethi);
-        }
+
         
         if (BoxCheck)
         {
@@ -54,6 +47,8 @@ public class BoxMake : MonoBehaviour
 
 
     }
+
+
 
     void planeUpdate()
     {
@@ -152,7 +147,7 @@ public class BoxMake : MonoBehaviour
                 (Vector3 )movePt[0]+new Vector3 (0,0,1),
                 movePt[0]
                 },
-            meshFilter[4], false);
+            meshFilter[4], false,true);
 
         //特殊面
         if (Hi - lat > 0)
@@ -209,12 +204,7 @@ public class BoxMake : MonoBehaviour
         for (int i=0; i < meshFilter.Length; i++)
         {
             GameObject plane = new GameObject();
-            //if (i == 4)
-            //{
-            //    plane = topObj;
-            //    Destroy(plane.GetComponent<MeshFilter>());
-            //    Destroy(plane.GetComponent<MeshRenderer>());
-            //}
+            plane.layer = LayerMask.NameToLayer("Mirror");
             plane.transform.parent = transform;
             plane.transform.localScale = new Vector3(1, 1, 1);
             plane.transform.localPosition = new Vector3(-0.5f, -0.5f, -0.5f);
@@ -223,7 +213,7 @@ public class BoxMake : MonoBehaviour
             MeshRenderer meshRenderer = plane.AddComponent<MeshRenderer>();
             if (i == 4)
             {
-                meshRenderer.material = topMaterial ;
+                meshRenderer.material = topObj.GetComponent <MeshRenderer >().material ;
                 plane.AddComponent<myTime >();
             }
             else
@@ -241,12 +231,21 @@ public class BoxMake : MonoBehaviour
         planeUpdate();
     }
 
-    Mesh MeshSet(Vector3[] vertices ,MeshFilter  meshF,bool reverse)
+    Mesh MeshSet(Vector3[] vertices ,MeshFilter  meshF,bool reverse,bool uvC=false )
     {
         var mesh = new Mesh();
 
-        mesh.vertices = vertices;
 
+        mesh.vertices = vertices;
+        if (uvC)
+        {
+            mesh.uv = new Vector2[] {
+            new Vector2 (1, 1),
+            new Vector2 (1, 0),
+            new Vector2 (0, 0),
+            new Vector2 (0, 1),
+        };
+        }
         int[] vertList = new int[(vertices.Length - 2) * 3];
 
         if (reverse)
