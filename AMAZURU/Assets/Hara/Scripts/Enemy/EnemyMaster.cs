@@ -9,7 +9,7 @@ public class EnemyMaster : MonoBehaviour
 {
     [SerializeField, Tooltip("エネミーのPrefab")] private EnemyController enemyPrefab = null;
     [SerializeField, Tooltip("乾燥ナマコブロックのPrefab")] private DryEnemy dryEnemyPrefab = null;
-    [SerializeField, Tooltip("帯電ナマコのモデルPrefab")] private GameObject electricEnemyPrefab = null;
+    [SerializeField, Tooltip("帯電ナマコのPrefab")] private ElectricEnemy electricEnemyPrefab = null;
 
     [SerializeField, Header("エネミーデータ")] private EnemyData[] enemyData = null;
     public EnemyData[] EnemyDataArray { set { enemyData = value; } get { return enemyData; } }
@@ -161,14 +161,21 @@ public class EnemyMaster : MonoBehaviour
             if(enemyTypes[count] == EnemyType.Electric)
             {
                 // 帯電ナマコの情報を設定
-                var electric = Enemies[count].gameObject.AddComponent<ElectricEnemy>();
-                if(electricEnemyPrefab != null)
-                {
-                    var obj = Instantiate(electricEnemyPrefab, Enemies[count].transform);
-                    obj.SetActive(false);
-                }
+                var electric = Instantiate(electricEnemyPrefab, Enemies[count].transform);
+                electric.gameObject.SetActive(false);
                 electric.EnemyObject = Enemies[count];
-                electric.Init();
+                int length = Enemies[count].transform.childCount;
+                GameObject[] models = new GameObject[length];
+                Animator[] animators = new Animator[length];
+                for(int i = 0; i < length; i++)
+                {
+                    Transform objTransform = Enemies[count].transform.GetChild(i);
+                    models[i] = objTransform.gameObject;
+                    animators[i] = objTransform.GetComponent<Animator>();
+                }
+
+                electric.EnemyModels = models;
+                electric.EnemyAnimators = animators;
 
                 // 管理用のリストに追加
                 ElectricEnemies.Add(electric);
@@ -245,6 +252,13 @@ public class EnemyMaster : MonoBehaviour
 
             // ゲームステートがプレイ以外またはアニメーションが実行中の場合は移動処理を停止
             dry.EnemyObject.IsMoveStop = IsStandby || dry.IsDoingAnimation;
+        }
+
+        // 帯電ナマコのフラグ管理
+        foreach(var electric in ElectricEnemies)
+        {
+            // ポーズ中はエフェクトを停止
+            electric.IsGameStop = IsGameStop;
         }
     }
 

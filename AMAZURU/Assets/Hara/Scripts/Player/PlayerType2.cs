@@ -8,7 +8,6 @@ public class PlayerType2 : MyAnimation
     [SerializeField, Tooltip("PlayerのCharacterController")] private CharacterController character = null;
     [SerializeField, Tooltip("PlayerのAnimator")] private Animator playerAnimator = null;
     [SerializeField, Tooltip("Playerの傘のAnimator")] private Animator umbrellaAnimator = null;
-    [SerializeField, Tooltip("透明な壁")] private BoxCollider hiddenWallPrefab = null;
     [SerializeField, Tooltip("地面のLayerMask")] private LayerMask groundLayer;
     [SerializeField, Tooltip("AnimationEventスクリプト")] private PlayerAnimeEvent animeEvent = null;
 
@@ -25,8 +24,6 @@ public class PlayerType2 : MyAnimation
     [SerializeField, Header("プレイヤーの水中移動速度"), Range(0, 10)] private float playerWaterSpeed = 2.5f;
     [SerializeField, Header("プレイヤーの加速度グラフ")] private AnimationCurve curve = null;
     [SerializeField, Header("最高速度到達時間"), Range(0.1f, 2.0f)] private float maxSpeedTime = 0.5f;
-    [SerializeField, Header("Rayの長さ"), Range(0, 10)] private float rayLength = 0.5f;
-    [SerializeField, Header("透明な壁のサイズ"), Range(0.01f, 5.0f)] private float wallSize = 1.0f;
 
     /// <summary>
     /// プレイヤーカメラ
@@ -41,6 +38,10 @@ public class PlayerType2 : MyAnimation
     // 透明な壁関連の変数
     private Vector3[] rayPosition = new Vector3[4] { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
     private BoxCollider[] hiddenWalls = null;
+
+    // プレイヤーが坂道に立っているときのフラグ
+    private bool isOnSlope = false;
+    private Vector3 slopeRight = Vector3.zero;
 
     /// <summary>
     /// プレイヤーの水中フラグ
@@ -235,12 +236,23 @@ public class PlayerType2 : MyAnimation
                 }
 
                 // 地面にRayを飛ばす
-                Ray ground = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y - character.height * 0.4f, transform.position.z), Vector3.down);
+                Ray ground = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z), Vector3.down);
                 float hitNomalY = 1.0f;
-                if (Physics.Raycast(ground, out RaycastHit hit, rayLength, groundLayer))
+                slopeRight = Vector3.zero;
+                if (Physics.Raycast(ground, out RaycastHit hit, character.height, groundLayer))
                 {
                     // 地面の傾斜を取得
                     hitNomalY = hit.normal.y;
+                    isOnSlope = hitNomalY < 1.0f;
+
+                    if (isOnSlope)
+                    {
+                        slopeRight = GetSlopeVec(hit.transform.right);
+                    }
+                }
+                else
+                {
+                    isOnSlope = false;
                 }
 
                 // 斜め入力時の移動量を修正
@@ -351,7 +363,11 @@ public class PlayerType2 : MyAnimation
         hiddenWalls = new BoxCollider[rayPosition.Length];
         for(int i = 0; i < hiddenWalls.Length; i++)
         {
-            hiddenWalls[i] = Instantiate(hiddenWallPrefab);
+            GameObject colObj = new GameObject();
+            hiddenWalls[i] = colObj.AddComponent<BoxCollider>();
+            hiddenWalls[i].gameObject.name = "WallObject" + i.ToString();
+            hiddenWalls[i].gameObject.layer = LayerMask.NameToLayer("Stage");
+            hiddenWalls[i].size = Vector3.one;
             hiddenWalls[i].enabled = false;
         }
     }
@@ -367,55 +383,94 @@ public class PlayerType2 : MyAnimation
             Ray mainRay;
             RaycastHit hit;
             bool set;
-            int[] index = new int[2] { 0, 0 };
-            mainRay = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y - character.height * 0.4f, transform.position.z) + rayPosition[i] * character.radius, Vector3.down);
-            if(Physics.Raycast(mainRay, out hit, rayLength, groundLayer))
+            bool rayDirectionFlag = rayPosition[i] == slopeRight || rayPosition[i] == -slopeRight;
+            float rayRange = isOnSlope && rayDirectionFlag ? character.height * 0.6f : character.height;
+            Vector3 baseRayPosition = new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z);
+            mainRay = new Ray(baseRayPosition + rayPosition[i] * character.radius, Vector3.down);
+            if(Physics.Raycast(mainRay, out hit, rayRange, groundLayer) && hit.collider.isTrigger == false)
             {
                 float hitDistance = hit.distance;
                 // プレイヤーの当たり判定の両端からRayを飛ばして進めるかをチェック
-                Ray subRay;
-                bool check = false;
-                for (int j = 0; j < index.Length; j++)
+                bool isHitSlope = Mathf.Floor(Mathf.Abs(hit.normal.y) * 10) / 10 < 0.8f;
+                bool flag = false;
+
+                if (isHitSlope)
                 {
-                    subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
-                    if (Physics.Raycast(subRay, out hit, rayLength, groundLayer))
+                    Vector3 hitVec = GetSlopeVec(hit.transform.forward);
+                    for(int j = 0; j < 2; j++)
                     {
-                        if(hit.normal.y != 0)
+                        int index = j == 0 ? (i - 1 < 0 ? rayPosition.Length - 1 : i - 1) : (i + 1 >= rayPosition.Length ? 0 : i + 1);
+                        if(Physics.Raycast(new Ray(baseRayPosition + rayPosition[index] * character.radius, Vector3.down), out hit, rayRange, groundLayer) && hit.collider.isTrigger == false)
                         {
-                            check = true;
-                            break;
+                            if (GetSlopeVec(hit.transform.forward) != hitVec && Mathf.Floor(Mathf.Abs(hit.normal.y) * 10) / 10 < 0.8f)
+                            {
+                                flag = true;
+                                break;
+                            }
                         }
                     }
                 }
 
-                if (check)
+                if(flag == false)
                 {
-                    for (int j = 0; j < index.Length; j++)
+                    Ray subRay;
+                    int count = 0;
+                    for (int j = 0; j < 2; j++)
                     {
-                        subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), mainRay.direction);
-                        if (Physics.Raycast(subRay, out hit, rayLength, groundLayer))
+                        subRay = new Ray(baseRayPosition + Vector3.down * character.height * (isOnSlope ? 0.525f : 0.475f) + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
+                        if (Physics.Raycast(subRay, out hit, character.radius * 1.5f, groundLayer) && hit.collider.isTrigger == false)
                         {
-                            float disA = Mathf.Ceil(Mathf.Floor(hit.distance * 1000) / 10);
-                            float disB = Mathf.Ceil(Mathf.Floor(hitDistance * 1000) / 10);
-                            if (disA < disB)
+                            if (isOnSlope)
                             {
-                                index[j] = 1;
+                                if (hit.normal.y == 0)
+                                {
+                                    count++;
+                                }
                             }
                             else
                             {
-                                index[j] = 2;
+                                count++;
+                                if (hit.normal.y != 0)
+                                {
+                                    flag = true;
+                                }
+                                break;
                             }
                         }
                     }
-                }
 
-                int sum = 0;
-                foreach (int k in index)
+                    bool isSetSlopeWall = isOnSlope && count == 2;
+
+                    if (flag || isHitSlope)
+                    {
+                        count = 0;
+                        for (int j = 0; j < 2; j++)
+                        {
+                            subRay = new Ray(mainRay.origin + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), mainRay.direction);
+                            if (Physics.Raycast(subRay, out hit, character.height, groundLayer) && hit.collider.isTrigger == false)
+                            {
+                                float disA = Mathf.Ceil(Mathf.Floor(hit.distance * 1000) / 10);
+                                float disB = Mathf.Ceil(Mathf.Floor(hitDistance * 1000) / 10);
+
+                                if (disA != disB)
+                                {
+                                    count++;
+                                    break;
+                                }
+                            }
+                        }
+
+                        set = isOnSlope ? isSetSlopeWall && count > 0 : count > 0;
+                    }
+                    else
+                    {
+                        set = isOnSlope ? isSetSlopeWall : count > 0;
+                    }
+                }
+                else
                 {
-                    sum += k;
+                    set = true;
                 }
-
-                set = sum == 3;
             }
             else
             {
@@ -425,8 +480,7 @@ public class PlayerType2 : MyAnimation
             // 床が無ければ透明な壁を有効化する
             if (set && hiddenWalls[i].enabled == false)
             {
-                hiddenWalls[i].size = Vector3.one * wallSize;
-                hiddenWalls[i].transform.position = mainRay.origin + rayPosition[i] * wallSize * 0.5001f;
+                hiddenWalls[i].transform.position = mainRay.origin + rayPosition[i] * 0.5001f;
                 hiddenWalls[i].enabled = true;
             }
             
@@ -508,5 +562,18 @@ public class PlayerType2 : MyAnimation
         {
             wall.enabled = false;
         }
+    }
+
+    /// <summary>
+    /// 坂のベクトルを取得
+    /// </summary>
+    /// <param name="slopeVector">坂の元ベクトル</param>
+    /// <returns></returns>
+    private Vector3 GetSlopeVec(Vector3 slopeVector)
+    {
+        slopeVector.x = Mathf.Floor(Mathf.Abs(slopeVector.x) * 10) != 0 ? 1 : 0;
+        slopeVector.y = 0;
+        slopeVector.z = Mathf.Floor(Mathf.Abs(slopeVector.z) * 10) != 0 ? 1 : 0;
+        return slopeVector;
     }
 }

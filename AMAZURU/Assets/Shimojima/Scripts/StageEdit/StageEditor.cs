@@ -55,9 +55,11 @@ public class StageEditor : MonoBehaviour
 
     public GameObject menuCanvas;
     public GameObject editCanvas;
+    public GameObject enemyEditCanvas;
     public InputField[] stageSizeInputField;
     public InputField stageNameInputField;
     public Toggle isGenerateFloor;
+    public Toggle enemyEdit;
     [SerializeField, Tooltip("参照するGridObject")]
     private GameObject gridObj;
     [SerializeField,Tooltip("配置場所を視認し易くするためのオブジェクト")]
@@ -67,9 +69,9 @@ public class StageEditor : MonoBehaviour
 
     [HideInInspector, Tooltip("保存するステージのルートオブジェクト")]
     public GameObject stageRoot;
-    
-    [SerializeField,Tooltip("ステージに使う参照オブジェクト")]
-    private GameObject[] referenceObject, floorRefObj, prismRefObj;
+
+    [SerializeField, Tooltip("ステージに使う参照オブジェクト")]
+    private GameObject[] referenceObject, floorRefObj, prismRefObj, ruinsFloorRefObj, ruinsPrismRefObj;
     private int refObjIndex = 0;
     [Tooltip("配置するオブジェクト")]
     private GameObject stageObj;
@@ -120,10 +122,7 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     private void EditorInput()
     {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            SelectObjectAllChange();
-        }
+        if (!isCreateStage) { return; }
 
         if (Input.GetKeyDown(KeyCode.I))
         {
@@ -131,17 +130,31 @@ public class StageEditor : MonoBehaviour
             menuCanvas.SetActive(!menuCanvas.activeSelf);
             editCanvas.SetActive(!editCanvas.activeSelf);
         }
-
-        if (!isCreateStage || isOnMenu) { return; }
+        if (isOnMenu) { return; }
 
         CheakKeyDownForMoveKey();
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                ChangeToggleForEnemyEdit();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            SelectObjectAllChange();
+        }
+
         SetOrDeleteStageObject();
+
         RangeSelection();
-        
+
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             ChangeStageObject();
         }
+
         if (Input.GetKeyDown(KeyCode.R))
         {
             GameObject obj = guideObj.transform.GetChild(1).gameObject;
@@ -177,6 +190,8 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     private void SetOrDeleteStageObject()
     {
+        if (enemyEditCanvas.activeSelf) { return; }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Array3DForLoop(Vector3Int.zero, cells, 2);
@@ -279,6 +294,7 @@ public class StageEditor : MonoBehaviour
     {
         stageSelect_d.ClearOptions();
         List<string> sName = new List<string>();
+        sName.Add("None");
         Object[] o = Resources.LoadAll("EditData/" + biome + "/", typeof(PrefabStageData));
         foreach(Object _o in o)
         {
@@ -286,6 +302,27 @@ public class StageEditor : MonoBehaviour
         }
 
         stageSelect_d.AddOptions(sName);
+    }
+
+    private void ChangeToggleForEnemyEdit()
+    {
+        enemyEdit.isOn = !enemyEdit.isOn;
+    }
+
+    public void ShowEnemyEditor()
+    {
+        enemyEditCanvas.SetActive(!enemyEditCanvas.activeSelf);
+    }
+
+    public void ChangeName()
+    {
+        enemyEditCanvas.GetComponent<EnemyDataSet>().sName = stageNameInputField.text;
+    }
+
+    public void SetStageName()
+    {
+        if(stageSelect_d.captionText.text == "None") { stageNameInputField.text = ""; return; }
+        stageNameInputField.text = stageSelect_d.captionText.text;
     }
 
     #endregion
@@ -304,6 +341,7 @@ public class StageEditor : MonoBehaviour
         stageObj = referenceObject[0];
         stageRoot = new GameObject();
         stageRoot.name = "Stage";
+        enemyEditCanvas.GetComponent<EnemyDataSet>().stageRoot = stageRoot;
         gridRoot = new GameObject();
         gridRoot.name = "GridRootObj";
         cells = new Vector3Int(int.Parse(stageSizeInputField[0].text), int.Parse(stageSizeInputField[1].text) + 1, int.Parse(stageSizeInputField[2].text));
@@ -329,8 +367,19 @@ public class StageEditor : MonoBehaviour
             for (int j = 0; j < cells.z; j++)
             {
                 int x = Random.Range(0, 6);
-                GameObject s_obj = Instantiate(floorRefObj[x], gridPos[i,0,j].transform.position, Quaternion.identity);
-                s_obj.name = referenceObject[0].name;
+                GameObject s_obj;
+
+                if (biome == "Forest")
+                {
+                    s_obj = Instantiate(floorRefObj[x], gridPos[i, 0, j].transform.position, Quaternion.identity);
+                    s_obj.name = referenceObject[0].name;
+                }
+                else
+                {
+                    s_obj = Instantiate(ruinsFloorRefObj[x], gridPos[i, 0, j].transform.position, Quaternion.identity);
+                    s_obj.name = referenceObject[7].name;
+                }
+                
                 s_obj.AddComponent<MyCellIndex>().cellIndex = new Vector3Int(i, 0, j);
                 Destroy(s_obj.GetComponent<BoxCollider>());
                 s_obj.transform.parent = stageRoot.transform;
@@ -422,6 +471,14 @@ public class StageEditor : MonoBehaviour
         {
             o = Instantiate(prismRefObj[x]);
         }
+        else if (referenceObject[refObjIndex].name == "RuinsFloor")
+        {
+            o = Instantiate(ruinsFloorRefObj[x]);
+        }
+        else if (referenceObject[refObjIndex].name == "Ruinsprism")
+        {
+            o = Instantiate(ruinsPrismRefObj[x]);
+        }
         else { o = Instantiate(obj); }
         o.name = obj.name;
         o.transform.localPosition = gridPos[cellIndex.x,cellIndex.y,cellIndex.z].transform.localPosition;
@@ -466,6 +523,14 @@ public class StageEditor : MonoBehaviour
                 else if (referenceObject[refObjIndex].name == "prism")
                 {
                     o = Instantiate(prismRefObj[x]);
+                }
+                else if (referenceObject[refObjIndex].name == "RuinsFloor")
+                {
+                    o = Instantiate(ruinsFloorRefObj[x]);
+                }
+                else if (referenceObject[refObjIndex].name == "Ruinsprism")
+                {
+                    o = Instantiate(ruinsPrismRefObj[x]);
                 }
                 else { o = Instantiate(referenceObject[refObjIndex]); }
                 
@@ -636,14 +701,16 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     public void LoadStage()
     {
+        if (stageSelect_d.captionText.text == "None") { Debug.Log("⚠ステージが選択されていません！"); return; }
         loadStage = true;
         biomeSelect.interactable = false;
         stageSelect_d.interactable = false;
         nStageB.interactable = false;
         lStageB.interactable = false;
 
-        Data = Resources.Load<PrefabStageData>("EditData/" + biome + "/" + stageSelect_d.captionText.text);
+        Data = Resources.Load<PrefabStageData>("EditData/" + biome + "/" + stageNameInputField.text);
         stageNameInputField.text = Data.editName;
+        enemyEditCanvas.GetComponent<EnemyDataSet>().sName = Data.editName;
         GameObject o = Instantiate(Data.stage);
         stageSizeInputField[0].text = Data.gridCells.x.ToString();
         stageSizeInputField[1].text = Data.gridCells.y.ToString();
@@ -657,7 +724,7 @@ public class StageEditor : MonoBehaviour
     ReStart:
         foreach (Transform child in o.transform)
         {
-            child.gameObject.transform.parent = stageRoot.transform;
+            child.gameObject.transform.SetParent(stageRoot.transform);
             Vector3Int v = Vector3Int.zero;
             if (child.GetComponent<MyCellIndex>())
             {
@@ -667,10 +734,15 @@ public class StageEditor : MonoBehaviour
                     v = new Vector3Int(v.x, v.y + 1, v.z);
                 }
                 child.GetComponent<MyCellIndex>().cellIndex = v;
-            }
 
-            gridPos[v.x, v.y, v.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
-            _StageObjects[v.x, v.y, v.z] = child.gameObject;
+                gridPos[v.x, v.y, v.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
+                _StageObjects[v.x, v.y, v.z] = child.gameObject;
+            }
+            else if (child.gameObject.name == "EnemyMaster")
+            {
+                enemyEditCanvas.GetComponent<EnemyDataSet>().createEnemy = true;
+                enemyEditCanvas.GetComponent<EnemyDataSet>().LoadEnemyData(child.gameObject);
+            }
         }
         if (o.transform.childCount != 0) { goto ReStart; }
         Destroy(o);

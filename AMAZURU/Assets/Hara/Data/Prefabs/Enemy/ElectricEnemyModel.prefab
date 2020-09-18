@@ -699,6 +699,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5476485074070624224}
   - component: {fileID: 2999405868838030202}
+  - component: {fileID: 5486537323732825299}
   m_Layer: 0
   m_Name: ElectricEnemyModel
   m_TagString: Untagged
@@ -719,6 +720,7 @@ Transform:
   m_Children:
   - {fileID: 4514356957526137023}
   - {fileID: 4739003951848519771}
+  - {fileID: 6297676257787602253}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -741,3 +743,97 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &5486537323732825299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8816706598260155891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e932f8ff228dd0c42940fba655bcbdc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  electricEffect: {fileID: 3685640950057110335}
+--- !u!1001 &7856076198028866171
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 5476485074070624224}
+    m_Modifications:
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504567, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_Name
+      value: Enemy_Electro_Effect
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 02816241e1c7b5745a9bc5cf9b75851d, type: 3}
+--- !u!4 &6297676257787602253 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+    type: 3}
+  m_PrefabInstance: {fileID: 7856076198028866171}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &3685640950057110335 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 6782532396217596228, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+    type: 3}
+  m_PrefabInstance: {fileID: 7856076198028866171}
+  m_PrefabAsset: {fileID: 0}
