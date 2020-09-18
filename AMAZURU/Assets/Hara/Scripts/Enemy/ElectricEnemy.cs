@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class ElectricEnemy : MonoBehaviour
 {
+    [SerializeField, Tooltip("帯電エフェクト")] private ParticleSystem electricEffect = null;
+
+    /// <summary>
+    /// ゲーム停止フラグ
+    /// </summary>
+    public bool IsGameStop { set; private get; } = false;
+
     /// <summary>
     /// 帯電化させるエネミーの情報
     /// </summary>
@@ -15,23 +22,8 @@ public class ElectricEnemy : MonoBehaviour
     /// </summary>
     public bool IsElectric { private set; get; } = false;
 
-    private GameObject[] enemyModels = null;
-    private Animator[] enemyAnimators = null;
-
-    /// <summary>
-    /// 初期化
-    /// </summary>
-    public void Init()
-    {
-        enemyModels = new GameObject[transform.childCount];
-        enemyAnimators = new Animator[transform.childCount];
-
-        for(int i = 0; i < transform.childCount; i++)
-        {
-            enemyModels[i] = transform.GetChild(i).gameObject;
-            enemyAnimators[i] = enemyModels[i].GetComponent<Animator>();
-        }
-    }
+    public GameObject[] EnemyModels { set; private get; } = null;
+    public Animator[] EnemyAnimators { set; private get; } = null;
 
     /// <summary>
     /// エネミーを帯電化させる
@@ -41,12 +33,30 @@ public class ElectricEnemy : MonoBehaviour
     {
         IsElectric = active;
 
-        for(int i = 0; i < enemyModels.Length; i++)
+        for(int i = 0; i < EnemyModels.Length; i++)
         {
-            enemyModels[i].SetActive(!enemyModels[i].activeSelf);
-            if (enemyModels[i].activeSelf)
+            EnemyModels[i].SetActive(!EnemyModels[i].activeSelf);
+            if (EnemyModels[i].activeSelf)
             {
-                EnemyObject.EnemyAnime = enemyAnimators[i];
+                EnemyObject.EnemyAnime = EnemyAnimators[i];
+            }
+        }
+    }
+
+    private void Update()
+    {
+        if (IsGameStop)
+        {
+            if (electricEffect.isPlaying)
+            {
+                electricEffect.Pause();
+            }
+        }
+        else
+        {
+            if (electricEffect.isPaused)
+            {
+                electricEffect.Play();
             }
         }
     }
