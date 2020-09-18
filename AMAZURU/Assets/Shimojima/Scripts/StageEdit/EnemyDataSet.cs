@@ -25,13 +25,55 @@ public class EnemyDataSet : MonoBehaviour
 
     public struct PositionData
     {
-        public float x;
-        public float y;
-        public float z;
+        private Vector3 pos;
+        public Vector3 Pos { get { return pos; } }
+        private float x;
+        private float y;
+        private float z;
+
+        public float X
+        {
+            set
+            {
+                x = value;
+                pos = new Vector3(x, y, z);
+            }
+            get
+            {
+                return x;
+            }
+        }
+
+        public float Y
+        {
+            set
+            {
+                y = value;
+                pos = new Vector3(x, y, z);
+            }
+            get
+            {
+                return y;
+            }
+        }
+
+        public float Z
+        {
+            set
+            {
+                z = value;
+                pos = new Vector3(x, y, z);
+            }
+            get
+            {
+                return z;
+            }
+        }
     }
 
     public struct EditEnemyData
     {
+        public GameObject obj;
         public GameObject movePlanContent;
         public Text number;
         public Dropdown _enemyType, rotateDirection, moveType, enemyVecotrUp;
@@ -43,6 +85,7 @@ public class EnemyDataSet : MonoBehaviour
         public void Init(GameObject eDataItem)
         {
             SetDataItem sdi = eDataItem.GetComponent<SetDataItem>();
+            obj = eDataItem;
             movePlanContent = sdi.content;
             _enemyType = sdi.enemyType;
             rotateDirection = sdi.rotateDirection;
@@ -92,6 +135,9 @@ public class EnemyDataSet : MonoBehaviour
 
     public List<EditEnemyData> eed = new List<EditEnemyData>();
 
+    /// <summary>
+    /// エネミーデータの追加
+    /// </summary>
     public void AddData()
     {
         if (!createEnemy)
@@ -112,6 +158,10 @@ public class EnemyDataSet : MonoBehaviour
         enemyCount++;
     }
 
+    /// <summary>
+    /// エネミーの巡回ポイントを追加
+    /// </summary>
+    /// <param name="i">エネミーインデックス</param>
     public void AddMovePlan(int i = -1)
     {
         if (i == -1)
@@ -127,6 +177,33 @@ public class EnemyDataSet : MonoBehaviour
         o.transform.GetChild(3).name = o.transform.GetChild(3).name + eed[i].pData.Count;
         PositionData p = new PositionData();
         eed[i].pData.Add(p);
+        eed[i].obj.GetComponent<LineRenderer>().positionCount++;
+    }
+
+    /// <summary>
+    /// エネミーの削除
+    /// </summary>
+    public void DeleteEnemy()
+    {
+        if (eed.Count != 0) 
+        {
+            enemyCount--;
+            Destroy(eed[eed.Count - 1].obj);
+            eed.RemoveAt(eed.Count - 1); 
+        }
+    }
+
+    /// <summary>
+    /// エネミーの巡回ルートの表示切替
+    /// </summary>
+    /// <param name="i"></param>
+    public void DrawMovePlan(int i = -1)
+    {
+        if (i == -1)
+        {
+            i = selectDataNum;
+        }
+        eed[i].obj.GetComponent<LineRenderer>().enabled = !eed[i].obj.GetComponent<LineRenderer>().enabled;
     }
 
     public void SaveEnemyMaster() 
@@ -165,10 +242,11 @@ public class EnemyDataSet : MonoBehaviour
             _enemyData.MovePlan = new Vector3[eed[i].pData.Count];
             for (int j = 0; j < _enemyData.MovePlan.Length; j++)
             {
-                float x = eed[i].pData[j].x;
-                float y = eed[i].pData[j].y;
-                float z = eed[i].pData[j].z;
-                _enemyData.MovePlan[j] = new Vector3(x, y, z);
+                Vector3 p = eed[i].pData[j].Pos;
+                //float x = eed[i].pData[j].x;
+                //float y = eed[i].pData[j].y;
+                //float z = eed[i].pData[j].z;
+                _enemyData.MovePlan[j] = p;
             }
             AssetDatabase.CreateAsset(_enemyData, "Assets/Hara/Data/EnemyData/"+ sName+ "/" + sName + "-" + i + ".asset");
             AssetDatabase.SaveAssets();
@@ -189,18 +267,16 @@ public class EnemyDataSet : MonoBehaviour
             {
                 AddMovePlan(i);
                 PositionData p = new PositionData();
-                p.x = v[j].x;
-                p.y = v[j].y;
-                p.z = v[j].z;
+                p.X = v[j].x;
+                p.Y = v[j].y;
+                p.Z = v[j].z;
 
                 GameObject mp = eed[i].movePlanContent.transform.GetChild(j).gameObject;
-                mp.transform.GetChild(1).GetComponent<InputField>().text = p.x.ToString();
-                mp.transform.GetChild(2).GetComponent<InputField>().text = p.y.ToString();
-                mp.transform.GetChild(3).GetComponent<InputField>().text = p.z.ToString();
+                mp.transform.GetChild(1).GetComponent<InputField>().text = p.X.ToString();
+                mp.transform.GetChild(2).GetComponent<InputField>().text = p.Y.ToString();
+                mp.transform.GetChild(3).GetComponent<InputField>().text = p.Z.ToString();
 
                 eed[i].pData[j] = p;
-
-                
             }
         }
     }

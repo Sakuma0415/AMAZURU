@@ -8809,6 +8809,11 @@ PrefabInstance:
       propertyPath: m_RenderMode
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2586335738882328392, guid: 0f5a131a51ad4434cbc80cfb98b81b29,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2586335738882328395, guid: 0f5a131a51ad4434cbc80cfb98b81b29,
         type: 3}
       propertyPath: m_LocalPosition.x

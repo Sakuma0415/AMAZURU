@@ -16,18 +16,21 @@ public class SetMovePlanData : MonoBehaviour
         {
             case 'X':
                 p = e.eed[e.selectDataNum].pData[int.Parse(name.Replace("X", ""))];
-                p.x = float.Parse(GetComponent<InputField>().text);
+                p.X = float.Parse(GetComponent<InputField>().text);
                 e.eed[e.selectDataNum].pData[int.Parse(name.Replace("X", ""))] = p;
+                e.eed[e.selectDataNum].obj.GetComponent<LineRenderer>().SetPosition(int.Parse(name.Replace("X", "")), p.Pos);
                 break;
             case 'Y':
                 p = e.eed[e.selectDataNum].pData[int.Parse(name.Replace("Y", ""))];
-                p.y = float.Parse(GetComponent<InputField>().text);
+                p.Y = float.Parse(GetComponent<InputField>().text);
                 e.eed[e.selectDataNum].pData[int.Parse(name.Replace("Y", ""))] = p;
+                e.eed[e.selectDataNum].obj.GetComponent<LineRenderer>().SetPosition(int.Parse(name.Replace("Y", "")), p.Pos);
                 break;
             case 'Z':
                 p = e.eed[e.selectDataNum].pData[int.Parse(name.Replace("Z", ""))];
-                p.z = float.Parse(GetComponent<InputField>().text);
+                p.Z = float.Parse(GetComponent<InputField>().text);
                 e.eed[e.selectDataNum].pData[int.Parse(name.Replace("Z", ""))] = p;
+                e.eed[e.selectDataNum].obj.GetComponent<LineRenderer>().SetPosition(int.Parse(name.Replace("Z", "")), p.Pos);
                 break;
         }
     }
