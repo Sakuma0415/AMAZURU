@@ -199,6 +199,7 @@ GameObject:
   - component: {fileID: 7812278754506581437}
   - component: {fileID: 160885384638180999}
   - component: {fileID: 5063650900370841245}
+  - component: {fileID: -88700682080238058}
   m_Layer: 0
   m_Name: prism4
   m_TagString: Untagged
@@ -272,6 +273,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &-88700682080238058
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2892930421697967662}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -3880560118318686757, guid: e893e2ff5b639d74889c7920e35b40f8, type: 3}
 --- !u!1 &5804619853540508429
 GameObject:
   m_ObjectHideFlags: 0

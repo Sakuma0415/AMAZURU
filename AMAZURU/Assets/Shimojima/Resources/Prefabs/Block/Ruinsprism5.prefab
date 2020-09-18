@@ -387,6 +387,7 @@ GameObject:
   - component: {fileID: 3099190403246111105}
   - component: {fileID: 4995572828638261947}
   - component: {fileID: 84988713721545377}
+  - component: {fileID: 2743187968513637493}
   m_Layer: 0
   m_Name: Ruinsprism5
   m_TagString: Untagged
@@ -460,6 +461,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &2743187968513637493
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8020211125469637138}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -3880560118318686757, guid: e893e2ff5b639d74889c7920e35b40f8, type: 3}
 --- !u!1 &9221950330844987226
 GameObject:
   m_ObjectHideFlags: 0
