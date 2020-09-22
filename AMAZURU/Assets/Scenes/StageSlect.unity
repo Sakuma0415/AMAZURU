@@ -736,7 +736,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c15b8f8da8af29a469dee6e31c889a2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testStageData: {fileID: 11400000, guid: a6669a9a78e95524ebd7cbdc06b871e2, type: 2}
+  testStageData:
+  - {fileID: 11400000, guid: a6669a9a78e95524ebd7cbdc06b871e2, type: 2}
+  - {fileID: 11400000, guid: 469be221468a93744b497cfbc9e12741, type: 2}
+  - {fileID: 11400000, guid: 1234dea186812d34dacee7f5252d0e34, type: 2}
+  - {fileID: 11400000, guid: 1684b2c0b24ad9d4c893682aaaa39504, type: 2}
 --- !u!4 &1203394921
 Transform:
   m_ObjectHideFlags: 0
