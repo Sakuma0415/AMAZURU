@@ -37,6 +37,8 @@ public class O2Controller : MonoBehaviour
     //酸素ゲージ変更中にゲージを拡大している時間
     float fatAnimeTime = 0;
 
+    float now = 0;
+    public  Material material;
     private void Start()
     {
         WaterDeth = false;
@@ -93,5 +95,44 @@ public class O2Controller : MonoBehaviour
         {
             PlayState.playState.gameMode = PlayState.GameMode.GameOver;
         }
+
+
+        if(breathTime/ breathLimitTime < 1f / 3f)
+        {
+            gage.color = new Color(0,1, 1f-(breathTime / (breathLimitTime/3f)));
+        }
+        else if (breathTime / breathLimitTime < 2f / 3f)
+        {
+            gage.color = new Color(((breathTime- (breathLimitTime / 3f)) / (breathLimitTime / 3)), 1, 0);
+        }
+        else
+        {
+            gage.color = new Color(1, 1-((breathTime - (2*(breathLimitTime / 3f))) / (breathLimitTime / 3)), 0);
+        }
+
+        float AMFlate = (float )AmehurashiManager.amehurashi.amehurashiTrueCont / (float)AmehurashiManager.amehurashi.AmehurashiQuantity;
+        if (now+(0.1f*Time.deltaTime )< AMFlate)
+        {
+            now += 0.1f * Time.deltaTime;
+        }
+
+        if (now - (0.1f * Time.deltaTime) > AMFlate)
+        {
+            now -= 0.1f * Time.deltaTime;
+        }
+
+
+        material.SetFloat("_Gage", now);
+
+
+
+
+
+
+
+
+
+
+
     }
 }
