@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de8ca9937970dae448c3f419008262f1, type: 3}
-  m_Name: EditData_kaiten2
+  m_Name: EditData_fn0925
   m_EditorClassIdentifier: 
-  stageName: "\u3044\u305B\u304D"
-  editName: kaiten2
-  diificulty: 1
-  amehurashiNum: 2
+  stageName: "\u30CE\u30FC\u30DE\u30EB\u30B9\u30C6\u30FC\u30B801"
+  editName: fn0511
+  diificulty: 2
+  amehurashiNum: 6
   increasedWaterVolume: 1
   clearPercentage: 0
-  stage: {fileID: 3562719294688342344, guid: 557c5951cdebe4047bdb535d58bae67d, type: 3}
-  viewStage: {fileID: 1513529122087875316, guid: f7968c57679d76c41ac5acbf806d92fb,
+  stage: {fileID: 3609791574993155963, guid: e489a9a0ca17af546a6cde81a988ffa2, type: 3}
+  viewStage: {fileID: 3609791574993155963, guid: f76c9a53d932acc499145e54d89dad33,
     type: 3}
-  sData: {fileID: 11400000, guid: 469be221468a93744b497cfbc9e12741, type: 2}
+  sData: {fileID: 11400000, guid: 36cc5f267b25be14e87764b41ff0ae31, type: 2}
   gridCells: {x: 10, y: 10, z: 10}
