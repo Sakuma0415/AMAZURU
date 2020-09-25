@@ -366,16 +366,18 @@ public class StageEditor : MonoBehaviour
         {
             for (int j = 0; j < cells.z; j++)
             {
-                int x = Random.Range(0, 6);
+                //int x = Random.Range(0, 6);
                 GameObject s_obj;
 
                 if (biome == "Forest")
                 {
+                    int x = Random.Range(0, 6);
                     s_obj = Instantiate(floorRefObj[x], gridPos[i, 0, j].transform.position, Quaternion.identity);
                     s_obj.name = referenceObject[0].name;
                 }
                 else
                 {
+                    int x = Random.Range(0, 3);
                     s_obj = Instantiate(ruinsFloorRefObj[x], gridPos[i, 0, j].transform.position, Quaternion.identity);
                     s_obj.name = referenceObject[7].name;
                 }
@@ -462,21 +464,25 @@ public class StageEditor : MonoBehaviour
     {
         if (_StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] != null) { Debug.Log("既にオブジェクトが設置されています"); return; }
         GameObject o;
-        int x = Random.Range(0, 6);
+        //int x = Random.Range(0, 6);
         if (referenceObject[refObjIndex].name == "SandFloor")
         {
+            int x = Random.Range(0, 6);
             o = Instantiate(floorRefObj[x]);
         }
         else if(referenceObject[refObjIndex].name == "Prism")
         {
+            int x = Random.Range(0, 6);
             o = Instantiate(prismRefObj[x]);
         }
         else if (referenceObject[refObjIndex].name == "RuinsFloor")
         {
+            int x = Random.Range(0, 3);
             o = Instantiate(ruinsFloorRefObj[x]);
         }
         else if (referenceObject[refObjIndex].name == "Ruinsprism")
         {
+            int x = Random.Range(0, 6);
             o = Instantiate(ruinsPrismRefObj[x]);
         }
         else { o = Instantiate(obj); }
