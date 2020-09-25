@@ -7,7 +7,7 @@ public class BoxMake : MonoBehaviour
 
     
     [SerializeField]
-    bool BoxCheck = false;
+    public bool BoxCheck = false;
     //面のマテリアル
     [SerializeField]
     Material material;
@@ -22,7 +22,7 @@ public class BoxMake : MonoBehaviour
     public float moveTime = 0;
     public float Hi=0;
     int cont = 4;
-    float lat = 0;
+    public float lat = 0;
     float bootTime = 1.75f;
 
 
@@ -30,15 +30,7 @@ public class BoxMake : MonoBehaviour
     {
 
         
-        if (BoxCheck)
-        {
-            moveTime = (moveTime + Time.deltaTime/ bootTime) > 1 ? 1 : (moveTime + Time.deltaTime/ bootTime);
-            lat = 1 - ((1 - moveTime) * (1 - moveTime));
-        }
-        else
-        {
-            Hi = sethi;
-        }
+
 
         planeUpdate();
 
@@ -50,8 +42,18 @@ public class BoxMake : MonoBehaviour
 
 
 
-    void planeUpdate()
+    public void planeUpdate()
     {
+        if (BoxCheck)
+        {
+            moveTime = (moveTime + Time.deltaTime / bootTime) > 1 ? 1 : (moveTime + Time.deltaTime / bootTime);
+            lat = 1 - ((1 - moveTime) * (1 - moveTime));
+        }
+        else
+        {
+            lat = 0;
+            Hi = sethi;
+        }
         cont = 4;
 
         if (Hi - lat > 0)

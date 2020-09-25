@@ -233,7 +233,12 @@ public class PlayState : MonoBehaviour
         WaveObj.transform.localEulerAngles  = -lotAngle;
         WaveObj.GetComponent<BoxMake>().sethi  = waterHi.max / StageMake.LoadStageData.stageSize.x;
         WaveObj.GetComponent<BoxMake>().moveTime =0;
+        WaveObj.GetComponent<BoxMake>().lat =0;
+        WaveObj.GetComponent<BoxMake>().BoxCheck = false;
         WaveObj.transform.eulerAngles = Weve;
+
+
+        WaveObj.GetComponent<BoxMake>().planeUpdate();
 
         rotSet = true;
     }
