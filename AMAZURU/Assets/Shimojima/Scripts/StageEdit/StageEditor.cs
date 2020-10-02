@@ -22,6 +22,43 @@ public class StageEditor : MonoBehaviour
 
     private RangeSelectionState rangeSelectionState = RangeSelectionState.OFF;
 
+    private enum Biome
+    {
+        Forest,
+        Ruins
+    }
+
+    private int biome = 0;
+
+    /// <summary>
+    /// バイオーム別参照Object
+    /// </summary>
+    [System.Serializable]
+    public struct ReferenceObject
+    {
+        public string name;
+        public GameObject[] objects;
+        public GameObject[] floor;
+        public GameObject[] prism;
+
+        public void SetCommonRefObj(GameObject[] commonRefObj)
+        {
+            int count = 0;
+
+            for (int i = 0; i < objects.Length; i++)
+            {
+                if(objects[i] != null) { count++; continue; }
+                objects[i] = commonRefObj[i - count];
+            }
+        }
+    }
+
+    [SerializeField]
+    private ReferenceObject[] refObjs = new ReferenceObject[2];
+
+    [SerializeField]
+    private GameObject[] commonReferenceObject;
+
     public PrefabStageData Data { get; set; }
 
     [HideInInspector]
@@ -47,7 +84,6 @@ public class StageEditor : MonoBehaviour
     [HideInInspector]
     public Vector3Int cellNum;
     private Vector3Int tempCnum = Vector3Int.zero;
-    private string biome = "";
 
     [Tooltip("Gridオブジェクトの参照管理")]
     public GameObject[,,] grid;
@@ -70,9 +106,7 @@ public class StageEditor : MonoBehaviour
 
     [HideInInspector, Tooltip("保存するステージのルートオブジェクト")]
     public GameObject stageRoot;
-
-    [SerializeField, Tooltip("ステージに使う参照オブジェクト")]
-    private GameObject[] referenceObject, floorRefObj, prismRefObj, ruinsFloorRefObj, ruinsPrismRefObj;
+    
     private int refObjIndex = 0;
     [Tooltip("配置するオブジェクト")]
     private GameObject stageObj;
@@ -87,12 +121,6 @@ public class StageEditor : MonoBehaviour
 
     private void Start()
     {
-        //Warningつぶし
-        if (!gridObj) { gridObj = new GameObject(); }
-        if (!guideObj) { guideObj = new GameObject(); }
-        if(referenceObject.Length == 0) { referenceObject = new GameObject[1]; }
-        if(floorRefObj.Length == 0) { floorRefObj = new GameObject[1]; }
-        if(prismRefObj.Length == 0) { prismRefObj = new GameObject[1]; }
         GetBiomeName();
     }
 
@@ -288,7 +316,7 @@ public class StageEditor : MonoBehaviour
 
     public void BiomeSelectOnMove()
     {
-        biome = biomeSelect.captionText.text;
+        biome = biomeSelect.value;
         GetStageName();
     }
 
@@ -310,7 +338,7 @@ public class StageEditor : MonoBehaviour
         stageSelect_d.ClearOptions();
         List<string> sName = new List<string>();
         sName.Add("None");
-        Object[] o = Resources.LoadAll("EditData/" + biome + "/", typeof(PrefabStageData));
+        Object[] o = Resources.LoadAll("EditData/" + biomeSelect.captionText.text + "/", typeof(PrefabStageData));
         foreach(Object _o in o)
         {
             sName.Add(_o.name);
@@ -353,7 +381,10 @@ public class StageEditor : MonoBehaviour
 
     CreateGrid:
 
-        stageObj = referenceObject[0];
+        //共通参照オブジェクトを配列に格納
+        refObjs[biome].SetCommonRefObj(commonReferenceObject);
+
+        stageObj = refObjs[biome].objects[0];
         stageRoot = new GameObject();
         stageRoot.name = "Stage";
         enemyEditCanvas.GetComponent<EnemyDataSet>().stageRoot = stageRoot;
@@ -373,7 +404,7 @@ public class StageEditor : MonoBehaviour
         grid[0, 1, 0].GetComponent<HighlightObject>().IsSelect = true;
         
         //GuidObjectの生成と初期化
-        Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, referenceObject[0], grid[cellNum.x,cellNum.y,cellNum.z]);
+        Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, refObjs[biome].objects[0], grid[cellNum.x,cellNum.y,cellNum.z]);
         guideObj.transform.localPosition = new Vector3(posAdjust, posAdjust, posAdjust);
 
         if (!isGenerateFloor.isOn) { return; }
@@ -384,17 +415,17 @@ public class StageEditor : MonoBehaviour
                 //int x = Random.Range(0, 6);
                 GameObject s_obj;
 
-                if (biome == "Forest")
+                if (biome == (int)Biome.Forest)
                 {
                     int x = Random.Range(0, 6);
-                    s_obj = Instantiate(floorRefObj[x], grid[i, 0, j].transform.position, Quaternion.identity);
-                    s_obj.name = referenceObject[0].name;
+                    s_obj = Instantiate(refObjs[biome].floor[x], grid[i, 0, j].transform.position, Quaternion.identity);
+                    s_obj.name = refObjs[biome].objects[0].name;
                 }
                 else
                 {
                     int x = Random.Range(0, 3);
-                    s_obj = Instantiate(ruinsFloorRefObj[x], grid[i, 0, j].transform.position, Quaternion.identity);
-                    s_obj.name = referenceObject[7].name;
+                    s_obj = Instantiate(refObjs[biome].floor[x], grid[i, 0, j].transform.position, Quaternion.identity);
+                    s_obj.name = refObjs[biome].objects[0].name;
                 }
                 
                 s_obj.AddComponent<MyCellIndex>().cellIndex = new Vector3Int(i, 0, j);
@@ -420,11 +451,11 @@ public class StageEditor : MonoBehaviour
         Data.editName = stageNameInputField.text;
         if (isSave || loadStage)
         {
-            AssetDatabase.DeleteAsset("Assets/Shimojima/Resources/EditData/" + biome + "/EditData_" + stageNameInputField.text + ".asset");
+            AssetDatabase.DeleteAsset("Assets/Shimojima/Resources/EditData/" + biomeSelect.captionText.text + "/EditData_" + stageNameInputField.text + ".asset");
             AssetDatabase.SaveAssets();
         }
-        Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Resources/Prefabs/Stage/" + biome + "/" + stageNameInputField.text + ".prefab", InteractionMode.UserAction);
-        AssetDatabase.CreateAsset(Data, "Assets/Shimojima/Resources/EditData/" + biome + "/EditData_" + stageNameInputField.text + ".asset");
+        Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Resources/Prefabs/Stage/" + biomeSelect.captionText.text + "/" + stageNameInputField.text + ".prefab", InteractionMode.UserAction);
+        AssetDatabase.CreateAsset(Data, "Assets/Shimojima/Resources/EditData/" + biomeSelect.captionText.text + "/EditData_" + stageNameInputField.text + ".asset");
         Array3DForLoop(Vector3Int.zero, cells, 1);
 #endif
     }
@@ -463,11 +494,11 @@ public class StageEditor : MonoBehaviour
     private void ChangeStageObject()
     {
         refObjIndex++;
-        if(refObjIndex == referenceObject.Length) { refObjIndex = 0; }
+        if(refObjIndex == refObjs[biome].objects.Length) { refObjIndex = 0; }
 
-        stageObj = referenceObject[refObjIndex];
+        stageObj = refObjs[biome].objects[refObjIndex];
         Destroy(guideObj.transform.GetChild(1).gameObject);
-        Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, referenceObject[refObjIndex], grid[cellNum.x, cellNum.y, cellNum.z]);
+        Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, refObjs[biome].objects[refObjIndex], grid[cellNum.x, cellNum.y, cellNum.z]);
     }
 
     /// <summary>
@@ -480,25 +511,25 @@ public class StageEditor : MonoBehaviour
         if (_StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] != null) { Debug.Log("既にオブジェクトが設置されています"); return; }
         GameObject o;
         //int x = Random.Range(0, 6);
-        if (referenceObject[refObjIndex].name == "SandFloor")
+        if (refObjs[biome].objects[refObjIndex].name == "SandFloor")
         {
             int x = Random.Range(0, 6);
-            o = Instantiate(floorRefObj[x]);
+            o = Instantiate(refObjs[biome].floor[x]);
         }
-        else if(referenceObject[refObjIndex].name == "Prism")
+        else if(refObjs[biome].objects[refObjIndex].name == "Prism")
         {
             int x = Random.Range(0, 6);
-            o = Instantiate(prismRefObj[x]);
+            o = Instantiate(refObjs[biome].prism[x]);
         }
-        else if (referenceObject[refObjIndex].name == "RuinsFloor")
+        else if (refObjs[biome].objects[refObjIndex].name == "RuinsFloor")
         {
             int x = Random.Range(0, 3);
-            o = Instantiate(ruinsFloorRefObj[x]);
+            o = Instantiate(refObjs[biome].floor[x]);
         }
-        else if (referenceObject[refObjIndex].name == "Ruinsprism")
+        else if (refObjs[biome].objects[refObjIndex].name == "Ruinsprism")
         {
             int x = Random.Range(0, 6);
-            o = Instantiate(ruinsPrismRefObj[x]);
+            o = Instantiate(refObjs[biome].prism[x]);
         }
         else { o = Instantiate(obj); }
 
@@ -538,26 +569,30 @@ public class StageEditor : MonoBehaviour
             if (obj.name == changeObjectName.text)
             {
                 GameObject o;
-                int x = Random.Range(0, 6);
-                if (referenceObject[refObjIndex].name == "SandFloor")
+                //int x = Random.Range(0, 6);
+                if (refObjs[biome].objects[refObjIndex].name == "SandFloor")
                 {
-                    o = Instantiate(floorRefObj[x]);
+                    int x = Random.Range(0, 6);
+                    o = Instantiate(refObjs[biome].floor[x]);
                 }
-                else if (referenceObject[refObjIndex].name == "prism")
+                else if (refObjs[biome].objects[refObjIndex].name == "Prism")
                 {
-                    o = Instantiate(prismRefObj[x]);
+                    int x = Random.Range(0, 6);
+                    o = Instantiate(refObjs[biome].prism[x]);
                 }
-                else if (referenceObject[refObjIndex].name == "RuinsFloor")
+                else if (refObjs[biome].objects[refObjIndex].name == "RuinsFloor")
                 {
-                    o = Instantiate(ruinsFloorRefObj[x]);
+                    int x = Random.Range(0, 3);
+                    o = Instantiate(refObjs[biome].floor[x]);
                 }
-                else if (referenceObject[refObjIndex].name == "Ruinsprism")
+                else if (refObjs[biome].objects[refObjIndex].name == "Ruinsprism")
                 {
-                    o = Instantiate(ruinsPrismRefObj[x]);
+                    int x = Random.Range(0, 6);
+                    o = Instantiate(refObjs[biome].prism[x]);
                 }
-                else { o = Instantiate(referenceObject[refObjIndex]); }
+                else { o = Instantiate(refObjs[biome].objects[refObjIndex]); }
                 
-                o.name = referenceObject[refObjIndex].name;
+                o.name = refObjs[biome].objects[refObjIndex].name;
                 o.transform.localPosition = obj.transform.localPosition;
                 o.transform.localEulerAngles += obj.transform.localEulerAngles;
                 o.transform.parent = stageRoot.transform;
@@ -730,7 +765,7 @@ public class StageEditor : MonoBehaviour
         nStageB.interactable = false;
         lStageB.interactable = false;
 
-        Data = Resources.Load<PrefabStageData>("EditData/" + biome + "/" + stageNameInputField.text);
+        Data = Resources.Load<PrefabStageData>("EditData/" + biomeSelect.captionText.text + "/" + stageNameInputField.text);
         stageNameInputField.text = Data.editName;
         enemyEditCanvas.GetComponent<EnemyDataSet>().sName = Data.editName;
         GameObject o = Instantiate(Data.stage);
