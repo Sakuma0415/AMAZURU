@@ -17,8 +17,6 @@ public class PlayerControllerNav : MyAnimation
     [SerializeField, Tooltip("地面のLayerMask")] private LayerMask groundLayer;
     [SerializeField, Tooltip("PlayStateの設定")] private PlayState.GameMode mode = PlayState.GameMode.Play;
     [SerializeField, Tooltip("AnimationEventスクリプト")] private PlayerAnimeEvent animeEvent = null;
-    private bool connectPlayState = false;
-    private bool connectControllerInput = false;
 
     // コントローラーの入力
     private float inputX = 0;
@@ -96,10 +94,6 @@ public class PlayerControllerNav : MyAnimation
     {
         if (PlayerCamera == null) { PlayerCamera = Camera.main; }
 
-        connectPlayState = GetPlayState();
-
-        connectControllerInput = GetControllerInput();
-
         BakeNavMesh();
     }
 
@@ -109,8 +103,16 @@ public class PlayerControllerNav : MyAnimation
     private void GetInputController()
     {
         // キー入力取得
-        inputX = connectControllerInput ? ControllerInput.Instance.stick.LStickHorizontal : Input.GetAxis("Horizontal");
-        inputZ = connectControllerInput ? ControllerInput.Instance.stick.LStickVertical : Input.GetAxis("Vertical");
+        try
+        {
+            inputX = ControllerInput.Instance.stick.LStickHorizontal;
+            inputZ = ControllerInput.Instance.stick.LStickVertical;
+        }
+        catch (System.NullReferenceException)
+        {
+            inputX = Input.GetAxis("Horizontal");
+            inputZ = Input.GetAxis("Vertical");
+        }
     }
 
     /// <summary>
@@ -118,10 +120,18 @@ public class PlayerControllerNav : MyAnimation
     /// </summary>
     private void PlayerMove(bool fixedUpdate)
     {
-        if (connectPlayState)
+        bool isAccess;
+        try
         {
             mode = PlayState.playState.gameMode;
+            isAccess = true;
         }
+        catch
+        {
+            isAccess = false;
+        }
+
+        if (isAccess) { mode = PlayState.playState.gameMode; }
 
         // カメラの向いている方向を取得
         Vector3 cameraForward = Vector3.Scale(PlayerCamera.transform.forward == Vector3.up ? -PlayerCamera.transform.up : PlayerCamera.transform.forward == Vector3.down ? PlayerCamera.transform.up : PlayerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
@@ -306,46 +316,11 @@ public class PlayerControllerNav : MyAnimation
     }
 
     /// <summary>
-    /// PlayStateを取得できるかチェックする
-    /// </summary>
-    private bool GetPlayState()
-    {
-        try
-        {
-            var state = PlayState.playState.gameMode;
-            return true;
-        }
-        catch (System.NullReferenceException)
-        {
-            return false;
-        }
-    }
-
-    /// <summary>
-    /// ControllerInputにアクセスできるかチェック
-    /// </summary>
-    /// <returns></returns>
-    private bool GetControllerInput()
-    {
-        try
-        {
-            var input = ControllerInput.Instance.stick;
-            return true;
-        }
-        catch (System.NullReferenceException)
-        {
-            return false;
-        }
-    }
-
-    /// <summary>
     /// 敵と接触しているときに呼び出す処理
     /// </summary>
     /// <param name="flag">条件式</param>
     public void HitEnemy(bool flag)
     {
-        if (connectPlayState == false) { return; }
-
         if (flag)
         {
             // ゲームオーバー処理

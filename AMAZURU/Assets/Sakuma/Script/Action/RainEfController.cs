@@ -12,6 +12,9 @@ public class RainEfController : MonoBehaviour
 
     //雨のエフェクト
     public DigitalRuby.RainMaker.RainScript[] rainScript;
+    //水滴のエフェクトの量
+    public ParticleSystem ps;
+    public float bas = 0;
     //雨のエフェクトの最大量
     [SerializeField]
     float rainMax;
@@ -24,6 +27,7 @@ public class RainEfController : MonoBehaviour
     //水中でカメラにエフェクトをかけるクラス
     [SerializeField]
     InCamera inCamera;
+
 
     //private
 
@@ -65,6 +69,9 @@ public class RainEfController : MonoBehaviour
             }
             simpleRain.Variables .EmissionRateMax = (int)(rainMax * def) ;
             simpleRain.Variables.EmissionRateMin = (int)(rainMax * (def / 2)) ;
+
+            var em = ps.emission;
+            em.rateOverTime =bas* def*0.75f;
         }
 
         //アメフラシの起動数を同期

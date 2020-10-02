@@ -81,7 +81,7 @@ public class ControllerInput : MonoBehaviour
                 }
             }
 
-            Debug.Log("接続しているコントローラーは " + contName + " です。");
+            //Debug.Log("接続しているコントローラーは " + contName + " です。");
             stick.Init();
             button.Init();
             buttonDown.Init();

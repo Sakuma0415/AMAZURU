@@ -13,6 +13,8 @@ public class PrefabStageData : ScriptableObject
     public int amehurashiNum;
     [Tooltip("水位が上がる量")]
     public int increasedWaterVolume;
+    [Tooltip("クリア率")]
+    public int clearPercentage;
     [Tooltip("ステージプレファブ")]
     public GameObject stage;
     [Tooltip("ステージセレクト用プレファブ")]
