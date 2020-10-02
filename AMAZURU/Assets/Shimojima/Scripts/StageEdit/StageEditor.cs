@@ -50,7 +50,7 @@ public class StageEditor : MonoBehaviour
     private string biome = "";
 
     [Tooltip("Gridオブジェクトの参照管理")]
-    public GameObject[,,] gridPos;
+    public GameObject[,,] grid;
     public GameObject[,,] _StageObjects;
     private Vector3Int _tempIndex;
 
@@ -363,17 +363,17 @@ public class StageEditor : MonoBehaviour
         cellNum = new Vector3Int(0, 1, 0);
         tempCnum = new Vector3Int(0, 1, 0);
 
-        if (!loadStage) { gridPos = new GameObject[cells.x, cells.y, cells.z];
+        if (!loadStage) { grid = new GameObject[cells.x, cells.y, cells.z];
                           _StageObjects = new GameObject[cells.x, cells.y, cells.z];
                         }
 
         float s = gridObj.transform.localScale.x;
         Array3DForLoop(Vector3Int.zero, cells, 0, s);
         
-        gridPos[0, 1, 0].GetComponent<HighlightObject>().IsSelect = true;
+        grid[0, 1, 0].GetComponent<HighlightObject>().IsSelect = true;
         
         //GuidObjectの生成と初期化
-        Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, referenceObject[0], gridPos[cellNum.x,cellNum.y,cellNum.z]);
+        Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, referenceObject[0], grid[cellNum.x,cellNum.y,cellNum.z]);
         guideObj.transform.localPosition = new Vector3(posAdjust, posAdjust, posAdjust);
 
         if (!isGenerateFloor.isOn) { return; }
@@ -387,13 +387,13 @@ public class StageEditor : MonoBehaviour
                 if (biome == "Forest")
                 {
                     int x = Random.Range(0, 6);
-                    s_obj = Instantiate(floorRefObj[x], gridPos[i, 0, j].transform.position, Quaternion.identity);
+                    s_obj = Instantiate(floorRefObj[x], grid[i, 0, j].transform.position, Quaternion.identity);
                     s_obj.name = referenceObject[0].name;
                 }
                 else
                 {
                     int x = Random.Range(0, 3);
-                    s_obj = Instantiate(ruinsFloorRefObj[x], gridPos[i, 0, j].transform.position, Quaternion.identity);
+                    s_obj = Instantiate(ruinsFloorRefObj[x], grid[i, 0, j].transform.position, Quaternion.identity);
                     s_obj.name = referenceObject[7].name;
                 }
                 
@@ -436,23 +436,23 @@ public class StageEditor : MonoBehaviour
     {
         if (rangeSelectionState == RangeSelectionState.Stay)
         {
-            rangeSelectionState = RangeSelectionState.OFF;
-            foreach(GameObject obj in gridPos)
+            HideObject();
+            foreach (GameObject obj in grid)
             {
                 obj.GetComponent<HighlightObject>().IsSelect = false;
             }
 
-            gridPos[cellNum.x, cellNum.y, cellNum.z].GetComponent<HighlightObject>().IsSelect = true;
+            grid[cellNum.x, cellNum.y, cellNum.z].GetComponent<HighlightObject>().IsSelect = true;
+            rangeSelectionState = RangeSelectionState.OFF;
         }
 
-        if(tempCnum != null && rangeSelectionState == RangeSelectionState.OFF) { gridPos[tempCnum.x, tempCnum.y, tempCnum.z].GetComponent<HighlightObject>().IsSelect = false; }
+        if(tempCnum != null && rangeSelectionState == RangeSelectionState.OFF) { grid[tempCnum.x, tempCnum.y, tempCnum.z].GetComponent<HighlightObject>().IsSelect = false; }
 
         //GuideObjectの設定
-        GameObject hObject = gridPos[cNum.x, cNum.y, cNum.z];
+        GameObject hObject = grid[cNum.x, cNum.y, cNum.z];
         hObject.GetComponent<HighlightObject>().IsSelect = true;
-        guideObj.transform.position = gridPos[cNum.x, cNum.y, cNum.z].transform.position;
-
-        MakeObjectSkeleton();
+        guideObj.transform.position = grid[cNum.x, cNum.y, cNum.z].transform.position;
+        HideObject();
         tempCnum = cNum;
         IsInputAnyKey = true;
     }
@@ -467,7 +467,7 @@ public class StageEditor : MonoBehaviour
 
         stageObj = referenceObject[refObjIndex];
         Destroy(guideObj.transform.GetChild(1).gameObject);
-        Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, referenceObject[refObjIndex], gridPos[cellNum.x, cellNum.y, cellNum.z]);
+        Instantiate(stageObj).AddComponent<GuidObjectInit>().InitGuidObject(guideObj, referenceObject[refObjIndex], grid[cellNum.x, cellNum.y, cellNum.z]);
     }
 
     /// <summary>
@@ -504,16 +504,16 @@ public class StageEditor : MonoBehaviour
 
 
         o.name = obj.name;
-        o.transform.localPosition = gridPos[cellIndex.x,cellIndex.y,cellIndex.z].transform.localPosition;
+        o.transform.localPosition = grid[cellIndex.x,cellIndex.y,cellIndex.z].transform.localPosition;
         o.transform.localEulerAngles += stageObjAngle;
         o.transform.parent = stageRoot.transform;
         o.AddComponent<MyCellIndex>().cellIndex = cellIndex;
         if (deleteComponent && o.name == "SandFloor") { Destroy(o.GetComponent<BoxCollider>()); }
         
         _StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] = o;
-        gridPos[cellIndex.x, cellIndex.y, cellIndex.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
+        grid[cellIndex.x, cellIndex.y, cellIndex.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
         if(rangeSelectionState == RangeSelectionState.Stay) { return; }
-        MakeObjectSkeleton();
+        HideObject();
     }
 
     /// <summary>
@@ -524,7 +524,7 @@ public class StageEditor : MonoBehaviour
         if (_StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] == null) { Debug.Log("削除できるオブジェクトがありません"); return; }
         Debug.Log(_StageObjects[cellIndex.x, cellIndex.y, cellIndex.z].name + "を削除しました");
         Destroy(_StageObjects[cellIndex.x, cellIndex.y, cellIndex.z]);
-        gridPos[cellIndex.x, cellIndex.y, cellIndex.z].GetComponent<HighlightObject>().IsAlreadyInstalled = false;
+        grid[cellIndex.x, cellIndex.y, cellIndex.z].GetComponent<HighlightObject>().IsAlreadyInstalled = false;
     }
 
     /// <summary>
@@ -573,22 +573,21 @@ public class StageEditor : MonoBehaviour
     /// <para>ステージオブジェクトを非表示にする</para>
     /// <para>または表示する</para>
     /// </summary>
-    private void MakeObjectSkeleton()
+    private void HideObject()
     {
-        if(rangeSelectionState == RangeSelectionState.ON) { goto Skip; }
-        else if(rangeSelectionState == RangeSelectionState.Stay)
+        if (_StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z] != null && rangeSelectionState == RangeSelectionState.OFF)
+        {
+            _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true);
+        }
+
+        if (rangeSelectionState == RangeSelectionState.Stay)
         {
             foreach (GameObject obj in _StageObjects)
             {
-                if(_StageObjects[cellNum.x, cellNum.y, cellNum.z] != null) { obj.SetActive(true); }
+                if (obj != null && !obj.activeSelf) { obj.SetActive(true); }
             }
-
-            _StageObjects[cellNum.x, cellNum.y, cellNum.z].SetActive(false);
         }
-        if (_tempIndex != cellNum && _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z] != null) 
-        { _StageObjects[_tempIndex.x, _tempIndex.y, _tempIndex.z].SetActive(true); }
 
-    Skip:
         if(_StageObjects[cellNum.x, cellNum.y, cellNum.z] != null) 
         {
             _StageObjects[cellNum.x, cellNum.y, cellNum.z].SetActive(false);
@@ -633,27 +632,27 @@ public class StageEditor : MonoBehaviour
                             AdminStageObjectArrayReInstantiate(i, j, k, _obj);
                             break;
                         case 2:
-                            if (gridPos[i, j, k].GetComponent<HighlightObject>().IsSelect)
+                            if (grid[i, j, k].GetComponent<HighlightObject>().IsSelect)
                             {
                                 SetStageObject(stageObj, new Vector3Int(i,j,k));
                             }
 
-                            if(new Vector3Int(i,j,k) != cellNum) { gridPos[i, j, k].GetComponent<HighlightObject>().IsSelect = false; }
+                            if(new Vector3Int(i,j,k) != cellNum) { grid[i, j, k].GetComponent<HighlightObject>().IsSelect = false; }
                             else if(new Vector3Int(i, j, k) == cellNum) { tempCnum = new Vector3Int(i, j, k); }
 
                             break;
                         case 3:
-                            if (gridPos[i, j, k].GetComponent<HighlightObject>().IsSelect)
+                            if (grid[i, j, k].GetComponent<HighlightObject>().IsSelect)
                             {
                                 DeleteStageObject(new Vector3Int(i, j, k));
                             }
 
-                            if (new Vector3Int(i, j, k) != cellNum) { gridPos[i, j, k].GetComponent<HighlightObject>().IsSelect = false; }
+                            if (new Vector3Int(i, j, k) != cellNum) { grid[i, j, k].GetComponent<HighlightObject>().IsSelect = false; }
                             else if (new Vector3Int(i, j, k) == cellNum) { tempCnum = new Vector3Int(i, j, k); }
 
                             break;
                         case 4:
-                            gridPos[i, j, k].GetComponent<HighlightObject>().IsSelect = true;
+                            grid[i, j, k].GetComponent<HighlightObject>().IsSelect = true;
                             break;
                     }
                 }
@@ -680,7 +679,7 @@ public class StageEditor : MonoBehaviour
     {
         GameObject obj = Instantiate(gridObj);
         obj.transform.localPosition = new Vector3((i + posAdjust) * s, (j + posAdjust - 1) * s, (k + posAdjust) * s);
-        gridPos[i, j, k] = obj;
+        grid[i, j, k] = obj;
         obj.transform.parent = gridRoot.transform;
     }
 
@@ -739,7 +738,7 @@ public class StageEditor : MonoBehaviour
         stageSizeInputField[1].text = Data.gridCells.y.ToString();
         stageSizeInputField[2].text = Data.gridCells.z.ToString();
         cells = new Vector3Int(Data.gridCells.x, Data.gridCells.y, Data.gridCells.z);
-        gridPos = new GameObject[Data.gridCells.x, Data.gridCells.y + 1, Data.gridCells.z];
+        grid = new GameObject[Data.gridCells.x, Data.gridCells.y + 1, Data.gridCells.z];
         _StageObjects = new GameObject[Data.gridCells.x, Data.gridCells.y + 1, Data.gridCells.z];
         EditStageInit();
         isCreateStage = true;
@@ -758,7 +757,7 @@ public class StageEditor : MonoBehaviour
                 }
                 child.GetComponent<MyCellIndex>().cellIndex = v;
 
-                gridPos[v.x, v.y, v.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
+                grid[v.x, v.y, v.z].GetComponent<HighlightObject>().IsAlreadyInstalled = true;
                 _StageObjects[v.x, v.y, v.z] = child.gameObject;
             }
             else if (child.gameObject.name == "EnemyMaster")
