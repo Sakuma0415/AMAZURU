@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using Shimojima.StageEditUtility;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -76,7 +77,9 @@ public class StageEditor : MonoBehaviour
     [Tooltip("配置するオブジェクト")]
     private GameObject stageObj;
 
-    private Vector3 objAngle;
+    private Vector3 stageObjAngle;
+    private bool isLeftShiftKey = false;
+
 
     private bool IsInputAnyKey { get; set; } = false;
     private float horizontal, vertical = 0;
@@ -113,7 +116,7 @@ public class StageEditor : MonoBehaviour
         {
             StageDataIncetance();
         }
-
+        CheckLeftShiftKey();
         EditorInput();
     }
 
@@ -133,12 +136,10 @@ public class StageEditor : MonoBehaviour
         if (isOnMenu) { return; }
 
         CheakKeyDownForMoveKey();
-        if (Input.GetKey(KeyCode.LeftShift))
+
+        if (isLeftShiftKey && Input.GetKeyDown(KeyCode.E))
         {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                ChangeToggleForEnemyEdit();
-            }
+            ChangeToggleForEnemyEdit();
         }
 
         if (Input.GetKeyDown(KeyCode.L))
@@ -158,12 +159,14 @@ public class StageEditor : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             GameObject obj = guideObj.transform.GetChild(1).gameObject;
-            Camera.main.transform.parent = null;
-            objAngle.y += -90;
-            guideObj.transform.localEulerAngles = objAngle;
-            obj.transform.parent = null;
-            Camera.main.transform.parent = guideObj.transform;
-            obj.transform.parent = guideObj.transform;
+            if (isLeftShiftKey)
+            {
+                (guideObj, stageObjAngle) = StageEditUtility.RotationX(obj, guideObj, stageObjAngle);
+            }
+            else 
+            {
+                (guideObj, stageObjAngle) = StageEditUtility.RotationY(obj, guideObj, stageObjAngle);
+            }
         }
 
         if (IsInputAnyKey) { return; }
@@ -185,6 +188,18 @@ public class StageEditor : MonoBehaviour
             !Input.GetKey(KeyCode.Z) && !Input.GetKey(KeyCode.X)) { IsInputAnyKey = false; }
     }
 
+    private void CheckLeftShiftKey()
+    {
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            isLeftShiftKey = true;
+        }
+        else if(!Input.GetKey(KeyCode.LeftShift))
+        {
+            isLeftShiftKey = false;
+        }
+    }
+
     /// <summary>
     /// ステージオブジェクトの設置削除の入力が行われた時の処理
     /// </summary>
@@ -196,7 +211,7 @@ public class StageEditor : MonoBehaviour
         {
             Array3DForLoop(Vector3Int.zero, cells, 2);
         }
-        if (Input.GetKeyDown(KeyCode.E))
+        if (!isLeftShiftKey && Input.GetKeyDown(KeyCode.E))
         {
             Array3DForLoop(Vector3Int.zero, cells, 3);
         }
@@ -235,13 +250,13 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     private void InputHorizontal()
     {
-        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        if (StageEditUtility.GetRightKeyDown())
         {
             cellNum.x++;
             if (cellNum.x == cells.x) { cellNum.x = 0; }
             SelectGridObject(cellNum);
         }
-        else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (StageEditUtility.GetLeftKeyDown())
         {
             cellNum.x--;
             if (cellNum.x == -1) { cellNum.x = cells.x - 1; }
@@ -254,13 +269,13 @@ public class StageEditor : MonoBehaviour
     /// </summary>
     private void InputVertical()
     {
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        if (StageEditUtility.GetUpKeyDown())
         {
             cellNum.y++;
             if (cellNum.y == cells.y) { cellNum.y = 1; }
             SelectGridObject(cellNum);
         }
-        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        else if (StageEditUtility.GetDownKeyDown())
         {
             cellNum.y--;
             if (cellNum.y == 0) { cellNum.y = cells.y - 1; }
@@ -486,9 +501,11 @@ public class StageEditor : MonoBehaviour
             o = Instantiate(ruinsPrismRefObj[x]);
         }
         else { o = Instantiate(obj); }
+
+
         o.name = obj.name;
         o.transform.localPosition = gridPos[cellIndex.x,cellIndex.y,cellIndex.z].transform.localPosition;
-        o.transform.localEulerAngles += objAngle;
+        o.transform.localEulerAngles += stageObjAngle;
         o.transform.parent = stageRoot.transform;
         o.AddComponent<MyCellIndex>().cellIndex = cellIndex;
         if (deleteComponent && o.name == "SandFloor") { Destroy(o.GetComponent<BoxCollider>()); }
