@@ -1,10 +1,12 @@
 ﻿using Enemy;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class EnemyDataSet : MonoBehaviour
 {
@@ -208,12 +210,13 @@ public class EnemyDataSet : MonoBehaviour
 
     public void SaveEnemyMaster() 
     {
+#if UNITY_EDITOR
         if (!createEnemy) { return; }
         e.GetComponent<EnemyMaster>().EnemyDataArray = new EnemyData[enemyCount];
 
         if(!System.IO.Directory.Exists(Application.dataPath + "/Hara/Data/EnemyData/" + sName))
         {
-            //AssetDatabase.CreateFolder("Assets/Hara/Data/EnemyData", sName);
+            AssetDatabase.CreateFolder("Assets/Hara/Data/EnemyData", sName);
         }
 
         for (int i = 0; i < enemyCount; i++)
@@ -248,10 +251,11 @@ public class EnemyDataSet : MonoBehaviour
                 //float z = eed[i].pData[j].z;
                 _enemyData.MovePlan[j] = p;
             }
-            //AssetDatabase.CreateAsset(_enemyData, "Assets/Hara/Data/EnemyData/"+ sName+ "/" + sName + "-" + i + ".asset");
-            //AssetDatabase.SaveAssets();
+            AssetDatabase.CreateAsset(_enemyData, "Assets/Hara/Data/EnemyData/"+ sName+ "/" + sName + "-" + i + ".asset");
+            AssetDatabase.SaveAssets();
             e.GetComponent<EnemyMaster>().EnemyDataArray[i] = _enemyData;
         }
+#endif
     }
 
     public void LoadEnemyData(GameObject EMaster)
