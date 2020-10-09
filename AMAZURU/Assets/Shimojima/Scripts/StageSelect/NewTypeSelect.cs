@@ -19,6 +19,8 @@ public class NewTypeSelect : MonoBehaviour
     private Vector3 pivotCubeSize;
     [SerializeField]
     private TextMeshProUGUI stageName, amehurashiNum, increasedWaterVolume, clearPercentage;
+    [SerializeField]
+    private Image flame;
 
     [System.Serializable]
     public struct PrefabStageDatas
@@ -170,7 +172,7 @@ public class NewTypeSelect : MonoBehaviour
 
 
         sssd = config.save;
-        vMoveSpeed = new Vector3(0, speed * 2, 0);
+        vMoveSpeed = new Vector3(0, speed * 3, 0);
         Init();
     }
 
@@ -212,6 +214,7 @@ public class NewTypeSelect : MonoBehaviour
                     isVerticalMove = true;
                     sssd.level++;
                     if (sssd.level > allPSD.Count - 1) { sssd.level = 0; }
+                    flame.sprite = referenceImage[sssd.level + 2];
                     pData = allPSD[sssd.level];
                 }
                 else if (v < 0 || v2 < 0)
@@ -223,6 +226,7 @@ public class NewTypeSelect : MonoBehaviour
                     isVerticalMove = true;
                     sssd.level--;
                     if (sssd.level < 0) { sssd.level = allPSD.Count - 1; }
+                    flame.sprite = referenceImage[sssd.level + 2];
                     pData = allPSD[sssd.level];
                 }
             }
@@ -319,7 +323,7 @@ public class NewTypeSelect : MonoBehaviour
                     sData = pData[sssd.initNumber].psd.sData;
                 }
 
-                if(i == 1 || i == 2) { viewStage[i, j].stage.transform.localScale = Vector3.zero; }
+                if(i == 1 || i == 2) { viewStage[i, j].stage.transform.localScale = Vector3.zero; viewStage[i, j].stage.SetActive(false); }
 
                 sssd.initNumber--;
                 if (sssd.initNumber == -1) { sssd.initNumber = pData.Length - 1; }
@@ -534,6 +538,10 @@ public class NewTypeSelect : MonoBehaviour
             //スケールの変更
             if (viewStage[0, j].stage != null)
             {
+                if (sumAngle >= rotateAngle / 2)
+                {
+                    viewStage[0, j].stage.SetActive(true);
+                }
                 if (viewStage[0, j].index == 2)
                 {
                     viewStage[0, j].stage.transform.localScale += viewStage[0, j].verticalMoveSizeChangeSpeed;
@@ -546,6 +554,10 @@ public class NewTypeSelect : MonoBehaviour
 
             if (viewStage[lineIndex, j].stage != null)
             {
+                if (sumAngle >= rotateAngle / 2)
+                {
+                    viewStage[lineIndex, j].stage.SetActive(false);
+                }
                 if (viewStage[lineIndex, j].index == 2)
                 {
                     viewStage[lineIndex, j].stage.transform.localScale -= viewStage[lineIndex, j].verticalMoveSizeChangeSpeed;
@@ -623,6 +635,7 @@ public class NewTypeSelect : MonoBehaviour
                 viewStage[pDataIndex, j].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, rotateAngle * (j + 8));
 
                 viewStage[pDataIndex, j].stage.transform.localScale = Vector3.zero;
+                viewStage[pDataIndex, j].stage.SetActive(false);
 
                 initNumber--;
                 if (initNumber == -1) { initNumber = p.Length - 1; }

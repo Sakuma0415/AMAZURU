@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//[CreateAssetMenu(menuName = "PRefabStageData", fileName = "s")]
+//[CreateAssetMenu(menuName = "PrefabStageData", fileName = "s")]
 public class PrefabStageData : ScriptableObject
 {
     public string stageName;
@@ -24,5 +24,5 @@ public class PrefabStageData : ScriptableObject
     [Tooltip("生成するグリッドの数")]
     public Vector3Int gridCells;
     [Tooltip("ステージセレクトで生成されるときのデフォルトポジション")]
-    public Vector3 defPos;
+    public Vector3 defPos = new Vector3(-6, 0.2f, 10);
 }
