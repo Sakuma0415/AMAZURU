@@ -12,7 +12,7 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
     {
         Title = 0,
         Action,
-        StageSlect
+        StageSelect_v2
     }
 
     private SceneName sceneName;
