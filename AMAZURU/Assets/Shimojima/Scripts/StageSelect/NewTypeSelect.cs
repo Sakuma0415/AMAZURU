@@ -824,7 +824,14 @@ public class NewTypeSelect : MonoBehaviour
         viewStage[i, j].difficulity = p[number].psd.diificulty;
         viewStage[i, j].amehurashiNum = p[number].psd.amehurashiNum;
         viewStage[i, j].increasedWaterVolume = p[number].psd.increasedWaterVolume;
-        viewStage[i, j].clearPercentage = p[number].psd.clearPercentage;
+
+        int clearP = 0;
+        if (p[number].psd.sData.Challenge != 0)
+        {
+           clearP  = (int)(((float)p[number].psd.sData.Clear / (float)p[number].psd.sData.Challenge) * 100);
+        }
+
+        viewStage[i, j].clearPercentage = clearP;
         StageReSize(p[number].psd, i, j);
         viewStage[i, j].psdIndex = p[number].stageNumber;
         viewStage[i, j].stage.transform.localScale = viewStage[i, j].defScale;
