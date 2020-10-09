@@ -25,6 +25,9 @@ public class PlayerType2 : MyAnimation
     [SerializeField, Header("プレイヤーの加速度グラフ")] private AnimationCurve curve = null;
     [SerializeField, Header("最高速度到達時間"), Range(0.1f, 2.0f)] private float maxSpeedTime = 0.5f;
 
+    // プレイヤーの進行方向ベクトル
+    private Vector3 playerMoveDirection = Vector3.zero;
+
     /// <summary>
     /// プレイヤーカメラ
     /// </summary>
@@ -103,13 +106,10 @@ public class PlayerType2 : MyAnimation
     /// </summary>
     public bool IsDontShield { set; private get; } = false;
 
-    // 風フラグ
-    private bool isWind = false;
-
-    // 風の吹き飛ばし方向
-    private Vector3 windMoveDir = Vector3.zero;
-
     private Coroutine windCoroutine = null;
+
+    // 入力受付を無効にするフラグ
+    private bool stopInput = false;
 
     // プレイヤーが動き始めてからの経過時間
     private float speedTime = 0;
@@ -199,23 +199,16 @@ public class PlayerType2 : MyAnimation
         else
         {
             // 移動方向
-            Vector3 moveDirection;
-
-            if (isWind)
+            if(stopInput == false)
             {
-                moveDirection = windMoveDir;
-            }
-            else
-            {
-                moveDirection = Vector3.zero;
-                windMoveDir = Vector3.zero;
+                playerMoveDirection = Vector3.zero;
             }
 
             // 入力の最低許容値
             float inputMin = 0.1f;
 
             // 入力を検知したかチェック
-            input = (Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin) && DontInput == false && isWind == false;
+            input = (Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin) && DontInput == false && stopInput == false;
 
             if (input)
             {
@@ -256,18 +249,18 @@ public class PlayerType2 : MyAnimation
                 }
 
                 // 斜め入力時の移動量を修正
-                moveDirection = direction.normalized;
+                playerMoveDirection = direction.normalized;
 
                 // 坂を移動する際の傾斜を考慮した移動量に修正
                 if (hitNomalY != 1.0f)
                 {
                     var nomal = hit.normal;
-                    Vector3 dir = moveDirection - Vector3.Dot(moveDirection, nomal) * nomal;
-                    moveDirection = dir.normalized;
+                    Vector3 dir = playerMoveDirection - Vector3.Dot(playerMoveDirection, nomal) * nomal;
+                    playerMoveDirection = dir.normalized;
                 }
 
                 // 移動量にスピード値を乗算
-                moveDirection *= speed * inputSpeed * curve.Evaluate(speedTime / maxSpeedTime);
+                playerMoveDirection *= speed * inputSpeed * curve.Evaluate(speedTime / maxSpeedTime);
             }
             else
             {
@@ -275,10 +268,10 @@ public class PlayerType2 : MyAnimation
             }
 
             // 重力を反映
-            moveDirection.y -= 10.0f;
+            playerMoveDirection.y -= 10.0f;
 
             // 実際にキャラクターを動かす
-            character.Move(moveDirection * delta);
+            character.Move(playerMoveDirection * delta);
 
             // 透明な壁の設置
             if(IsDontShield == false)
@@ -505,52 +498,57 @@ public class PlayerType2 : MyAnimation
     }
 
     /// <summary>
-    /// 風の効果を適用している間の移動コルーチン
+    /// 風に吹き飛ばされる処理のコルーチン
     /// </summary>
-    /// <param name="direction">移動方向及び移動速度</param>
-    /// <param name="duration">移動時間</param>
+    /// <param name="direction">吹き飛ばす方向</param>
+    /// <param name="start">吹き飛ばし開始地点</param>
+    /// <param name="target">吹き飛ばし先の地点</param>
+    /// <param name="speed">吹き飛ばし速度</param>
     /// <returns></returns>
-    private IEnumerator WindActionCoroutine(Vector3 direction, float duration)
+    private IEnumerator WindActionCoroutine(Vector3 direction, Vector3 start, Vector3 target, float speed)
     {
-        isWind = true;
-        windMoveDir = direction;
+        stopInput = true;
+        playerMoveDirection = direction * speed;
 
-        float time = 0;
-        while (time < duration)
+        IsDontCharacterMove = true;
+        transform.position = start;
+        yield return null;
+        IsDontCharacterMove = false;
+        Vector3 playerPos = transform.position + Vector3.up * character.center.y;
+
+        while (Vector3.Distance(playerPos, target) > 0.1f)
         {
             if(IsGameStop == false)
             {
-                if (IsGameStop == false)
-                {
-                    time += Time.deltaTime;
-                }
-
                 if (IsGameClear || IsGameOver || IsHitEnemy)
                 {
-                    isWind = false;
+                    stopInput = false;
                     yield break;
                 }
-
+                playerPos = Vector3.MoveTowards(playerPos, target, speed * Time.deltaTime);
                 transform.Rotate(new Vector3(0, 15, 0));
             }
             yield return null;
         }
-        isWind = false;
+        stopInput = false;
         windCoroutine = null;
     }
 
     /// <summary>
-    /// 風の効果を適用している間の移動処理
+    /// 風に吹き飛ばされる処理
     /// </summary>
-    /// <param name="direction">移動方向及び移動速度</param>
-    /// <param name="duration">移動時間</param>
-    public void WindAction(Vector3 direction, float duration)
+    /// <param name="direction">吹き飛ばす方向</param>
+    /// <param name="start">吹き飛ばし開始地点</param>
+    /// <param name="target">吹き飛ばし先の地点</param>
+    /// <param name="speed">吹き飛ばし速度</param>
+    /// <returns></returns>
+    public void WindAction(Vector3 direction, Vector3 start, Vector3 target, float speed)
     {
         if(windCoroutine != null)
         {
             StopCoroutine(windCoroutine);
         }
-        windCoroutine = StartCoroutine(WindActionCoroutine(direction, duration));
+        windCoroutine = StartCoroutine(WindActionCoroutine(direction, start, target, speed));
     }
 
     /// <summary>

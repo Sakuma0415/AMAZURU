@@ -118,7 +118,11 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 36865
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
   windMaxArea: 1
+  blowAwayArea: 3
   windPower: 2.5
   dontInputDuration: 1.5
   forward: 1
