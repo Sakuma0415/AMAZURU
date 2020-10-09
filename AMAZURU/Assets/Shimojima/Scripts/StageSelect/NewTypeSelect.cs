@@ -319,7 +319,7 @@ public class NewTypeSelect : MonoBehaviour
                     sData = pData[sssd.initNumber].psd.sData;
                 }
 
-                if(i == 1 || i == 2) { viewStage[i, j].stage.transform.localScale = Vector3.zero; }
+                if(i == 1 || i == 2) { viewStage[i, j].stage.transform.localScale = Vector3.zero; viewStage[i, j].stage.SetActive(false); }
 
                 sssd.initNumber--;
                 if (sssd.initNumber == -1) { sssd.initNumber = pData.Length - 1; }
@@ -534,6 +534,10 @@ public class NewTypeSelect : MonoBehaviour
             //スケールの変更
             if (viewStage[0, j].stage != null)
             {
+                if (sumAngle >= rotateAngle / 2)
+                {
+                    viewStage[0, j].stage.SetActive(true);
+                }
                 if (viewStage[0, j].index == 2)
                 {
                     viewStage[0, j].stage.transform.localScale += viewStage[0, j].verticalMoveSizeChangeSpeed;
@@ -546,6 +550,10 @@ public class NewTypeSelect : MonoBehaviour
 
             if (viewStage[lineIndex, j].stage != null)
             {
+                if (sumAngle >= rotateAngle / 2)
+                {
+                    viewStage[lineIndex, j].stage.SetActive(false);
+                }
                 if (viewStage[lineIndex, j].index == 2)
                 {
                     viewStage[lineIndex, j].stage.transform.localScale -= viewStage[lineIndex, j].verticalMoveSizeChangeSpeed;
@@ -623,6 +631,7 @@ public class NewTypeSelect : MonoBehaviour
                 viewStage[pDataIndex, j].stage.transform.RotateAround(senterPivot.transform.position, Vector3.up, rotateAngle * (j + 8));
 
                 viewStage[pDataIndex, j].stage.transform.localScale = Vector3.zero;
+                viewStage[pDataIndex, j].stage.SetActive(false);
 
                 initNumber--;
                 if (initNumber == -1) { initNumber = p.Length - 1; }
