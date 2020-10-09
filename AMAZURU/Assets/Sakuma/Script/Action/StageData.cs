@@ -35,4 +35,6 @@ public class StageData : ScriptableObject
     public bool IsThunder = false;
     //雷を降らせる個数
     public int DoThunder;
+    //次のステージのデータ
+    public StageData NextStageData;
 }
