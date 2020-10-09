@@ -170,7 +170,7 @@ public class NewTypeSelect : MonoBehaviour
 
 
         sssd = config.save;
-        vMoveSpeed = new Vector3(0, speed * 2, 0);
+        vMoveSpeed = new Vector3(0, speed * 3, 0);
         Init();
     }
 
