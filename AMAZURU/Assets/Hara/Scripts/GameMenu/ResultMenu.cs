@@ -263,6 +263,8 @@ public class ResultMenu : MyAnimation
                 case "リトライ":
                     SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
                     break;
+                case "つぎのステージ":
+                    break;
                 default:
                     SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Title, false);
                     break;
