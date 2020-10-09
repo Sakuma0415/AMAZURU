@@ -37,4 +37,6 @@ public class StageData : ScriptableObject
     public int DoThunder;
     //次のステージのデータ
     public StageData NextStageData;
+    //最後のステージかどうかのフラグ
+    public bool LastStage;
 }

@@ -44,10 +44,7 @@ public class Progress : MonoBehaviour
     private void Update()
     {
 
-        if(Input.GetKeyDown(KeyCode.N))
-        {
-            NextStage();
-        }
+
 
         // プレイヤーと敵が接触した場合はポーズ画面を閉じる(開けないようにする)
         bool isHitEnemy = CharacterMaster.Instance.Player.IsHitEnemy;

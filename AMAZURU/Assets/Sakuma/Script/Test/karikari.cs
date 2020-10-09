@@ -16,5 +16,9 @@ public class karikari : MonoBehaviour
     void Update()
     {
         bgameObject.SetActive(PlayState.playState.gameMode == PlayState.GameMode.RainSelect);
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            Progress.progress. NextStage();
+        }
     }
 }
