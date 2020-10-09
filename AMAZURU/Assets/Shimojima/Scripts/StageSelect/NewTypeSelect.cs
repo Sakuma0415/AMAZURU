@@ -34,8 +34,8 @@ public class NewTypeSelect : MonoBehaviour
     private PrefabStageDatas[] pData;
 
     [Header("操作負荷"), SerializeField]
-    private Vector3 defPos = Vector3.zero;
-    private Vector3 dPos;
+    private float heightAdjust = 0f;
+    private float dHeight = 0;
     [SerializeField]
     private Vector2 scaleAdjust = Vector2.zero;
     private int lineIndex = 0;
@@ -72,6 +72,7 @@ public class NewTypeSelect : MonoBehaviour
         public int clearPercentage;
         public GameObject stage;
         public Vector3 defScale;
+        public Vector3 defPosition;
         public Vector3 sizeChangeSpeed;
         public Vector3 minimamSizeChangeSpeed;
         public Vector3 verticalMoveSizeChangeSpeed;
@@ -90,6 +91,7 @@ public class NewTypeSelect : MonoBehaviour
             clearPercentage = 0;
             stage = null;
             defScale = Vector3.zero;
+            defPosition = Vector3.zero;
             sizeChangeSpeed = Vector3.zero;
             minimamSizeChangeSpeed = Vector3.zero;
             verticalMoveSizeChangeSpeed = Vector3.zero;
@@ -110,6 +112,7 @@ public class NewTypeSelect : MonoBehaviour
             clearPercentage = v.clearPercentage;
             stage = v.stage;
             defScale = v.defScale;
+            defPosition = v.defPosition;
             sizeChangeSpeed = v.sizeChangeSpeed;
             minimamSizeChangeSpeed = v.minimamSizeChangeSpeed;
             verticalMoveSizeChangeSpeed = v.verticalMoveSizeChangeSpeed;
@@ -279,15 +282,13 @@ public class NewTypeSelect : MonoBehaviour
             sssd.level = 0;
         }
         
-        dPos = defPos;
-
         for (int i = 0; i < 3; i++)
         {
             pData = allPSD[sssd.level];
 
             //上下に配置するための処理
-            if (i == 1) { dPos = new Vector3(defPos.x, defPos.y + 72, defPos.z); }
-            else if (i == 2) { dPos = new Vector3(defPos.x, defPos.y - 72, defPos.z); }
+            if (i == 1) { dHeight = heightAdjust; }
+            else if (i == 2) { dHeight = -heightAdjust; }
 
             //ビューステージの生成とデータの格納
             for (int j = 0; j < 5; j++)
@@ -338,7 +339,6 @@ public class NewTypeSelect : MonoBehaviour
 
         sssd.level = config.save.level;
         pData = allPSD[sssd.level];
-        dPos = defPos;
     }
 
     /// <summary>
@@ -446,6 +446,7 @@ public class NewTypeSelect : MonoBehaviour
     /// <param name="sel">入力方向</param>
     private void StageMoveHorizontal(Selection sel, PrefabStageDatas[] pData)
     {
+        dHeight = 0;
         StageDataHandOver(selection);
 
         for (int i = 0; i < viewStage.GetLength(1); i++)
@@ -592,7 +593,7 @@ public class NewTypeSelect : MonoBehaviour
                 le += 1;
                 if (le  > allPSD.Count - 1) { le = 0; }
 
-                dPos = new Vector3(defPos.x, defPos.y + 72, defPos.z);
+                dHeight = heightAdjust;
             }
             else if (sel == Selection.Down)
             {
@@ -607,7 +608,7 @@ public class NewTypeSelect : MonoBehaviour
                 le -= 1;
                 if (le  < 0) { le = allPSD.Count - 1; }
 
-                dPos = new Vector3(defPos.x, defPos.y - 72, defPos.z);
+                dHeight = -heightAdjust;
             }
 
             p = allPSD[le];
@@ -626,7 +627,6 @@ public class NewTypeSelect : MonoBehaviour
                 initNumber--;
                 if (initNumber == -1) { initNumber = p.Length - 1; }
             }
-            dPos = defPos;
         }
     }
 
@@ -836,7 +836,8 @@ public class NewTypeSelect : MonoBehaviour
         viewStage[i, j].psdIndex = p[number].stageNumber;
         viewStage[i, j].stage.transform.localScale = viewStage[i, j].defScale;
         SetScaleChangeSpeed(i, j);
-        viewStage[i, j].stage.transform.localPosition = dPos;
+        Vector3 v = p[number].psd.defPos;
+        viewStage[i, j].stage.transform.localPosition = new Vector3(v.x, v.y + dHeight, v.z);
         viewStage[i, j].index = index;
     }
 }

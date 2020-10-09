@@ -258,7 +258,7 @@ public class ResultMenu : MyAnimation
             switch (select)
             {
                 case "ステージせんたく":
-                    SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.StageSlect, false);
+                    SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.StageSelect_v2, false);
                     break;
                 case "リトライ":
                     SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);

@@ -474,7 +474,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c15b8f8da8af29a469dee6e31c889a2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testStageData: {fileID: 11400000, guid: a6669a9a78e95524ebd7cbdc06b871e2, type: 2}
+  testStageData:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!4 &1180839161
 Transform:
   m_ObjectHideFlags: 0
@@ -2584,7 +2587,7 @@ MonoBehaviour:
     stageNumber: 0
   - psd: {fileID: 11400000, guid: 5086b1d93f845784e87ec17b9efba1a0, type: 2}
     stageNumber: 1
-  defPos: {x: -6, y: -0.2, z: 0}
+  heightAdjust: 72
   scaleAdjust: {x: 8, y: 8}
   speed: 1
   rotateAngle: 36
@@ -2598,7 +2601,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7261270966615805698}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 37, y: 5, z: 38}
+  m_LocalPosition: {x: 0, y: 5, z: 80}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7261270965729445550}
