@@ -35,4 +35,13 @@ public class StageData : ScriptableObject
     public bool IsThunder = false;
     //雷を降らせる個数
     public int DoThunder;
+    //次のステージのデータ
+    public StageData NextStageData;
+    //最後のステージかどうかのフラグ
+    public bool LastStage;
+    //挑戦した回数
+    public int Challenge;
+    //クリアした回数
+    public int Clear;
+
 }

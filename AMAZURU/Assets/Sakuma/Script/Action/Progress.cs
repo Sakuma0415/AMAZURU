@@ -44,6 +44,8 @@ public class Progress : MonoBehaviour
     private void Update()
     {
 
+
+
         // プレイヤーと敵が接触した場合はポーズ画面を閉じる(開けないようにする)
         bool isHitEnemy = CharacterMaster.Instance.Player.IsHitEnemy;
 
@@ -78,12 +80,15 @@ public class Progress : MonoBehaviour
     //result画面を呼び出す関数
     public void ResultSet()
     {
+        StageMake.LoadStageData.Challenge += 1;
+        StageMake.LoadStageData.Clear  += 1;
         StartCoroutine(ResultDelay(true));
     }
 
     //gameover画面を呼び出す関数
     public void GameOverSet()
     {
+        StageMake.LoadStageData.Challenge += 1;
         StartCoroutine(ResultDelay(false));
     }
 
@@ -112,6 +117,12 @@ public class Progress : MonoBehaviour
 
 
         gameMenu.StartResult(GameOver);
+    }
+
+    public void NextStage()
+    {
+        StageMake.LoadStageData = StageMake.LoadStageData.NextStageData;
+        SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
     }
 
 }
