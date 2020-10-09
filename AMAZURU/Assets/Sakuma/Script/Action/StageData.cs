@@ -39,4 +39,9 @@ public class StageData : ScriptableObject
     public StageData NextStageData;
     //最後のステージかどうかのフラグ
     public bool LastStage;
+    //挑戦した回数
+    public int Challenge;
+    //クリアした回数
+    public int Clear;
+
 }
