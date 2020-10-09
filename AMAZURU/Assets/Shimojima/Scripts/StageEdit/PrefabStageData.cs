@@ -23,4 +23,6 @@ public class PrefabStageData : ScriptableObject
     public StageData sData;
     [Tooltip("生成するグリッドの数")]
     public Vector3Int gridCells;
+    [Tooltip("ステージセレクトで生成されるときのデフォルトポジション")]
+    public Vector3 defPos;
 }

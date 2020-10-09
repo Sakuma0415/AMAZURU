@@ -82,7 +82,7 @@ public class TitleController : MyAnimation
             yield return null;
         }
 
-        SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.StageSlect, false);
+        SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.StageSelect_v2, false);
         SoundManager.soundManager.VolFadeBgm(1, 0.2f, 0);
         coroutine = null;
     }
