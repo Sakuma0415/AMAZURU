@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Wind : MonoBehaviour
 {
+    [SerializeField, Tooltip("風のエフェクト")] private ParticleSystem[] windEffect = null;
     [SerializeField, Tooltip("判定用のLayerMask")] private LayerMask layerMask;
 
     [SerializeField, Header("風の有効範囲(マス)"), Range(1, 5)] private int windMaxArea = 1;
@@ -31,19 +32,7 @@ public class Wind : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        try
-        {
-            gameMode = PlayState.playState.gameMode;
-        }
-        catch
-        {
-            gameMode = PlayState.GameMode.Stop;
-        }
-
-        if(gameMode == PlayState.GameMode.Play)
-        {
-            ShotWind();
-        }
+        ShotWind();
     }
 
     /// <summary>
@@ -60,6 +49,15 @@ public class Wind : MonoBehaviour
     /// </summary>
     private void ShotWind()
     {
+        try
+        {
+            gameMode = PlayState.playState.gameMode;
+        }
+        catch
+        {
+            gameMode = PlayState.GameMode.Play;
+        }
+
         // このオブジェクトが水中に存在するかをチェック
         float waterPos;
         try
@@ -73,50 +71,57 @@ public class Wind : MonoBehaviour
 
         bool inWater = waterPos > transform.position.y;
 
-        upHeight = 0;
-        downHeight = 0;
-
-        if (inWater == false)
+        if (gameMode == PlayState.GameMode.Play)
         {
-            // 対象オブジェクトに風が当たったかをチェック
-            if (forward)
+            upHeight = 0;
+            downHeight = 0;
+
+            if (inWater == false)
             {
-                CreateWind(transform.forward, 0);
+                // 対象オブジェクトに風が当たったかをチェック
+                if (forward)
+                {
+                    CreateWind(transform.forward, 0);
+                }
+
+                if (back)
+                {
+                    CreateWind(-transform.forward, 1);
+                }
+
+                if (right)
+                {
+                    CreateWind(transform.right, 2);
+                }
+
+                if (left)
+                {
+                    CreateWind(-transform.right, 3);
+                }
             }
 
-            if (back)
+            if ((upHeight > 0 || downHeight > 0) && inWater == false)
             {
-                CreateWind(-transform.forward, 1);
-            }
+                float center = (upHeight - downHeight) * 0.5f;
+                float totalHeight = upHeight + downHeight + 1;
+                Vector3 localUp = transform.InverseTransformDirection(Vector3.up).normalized;
 
-            if (right)
-            {
-                CreateWind(transform.right, 2);
-            }
+                Vector3 boxSize = new Vector3(Mathf.Abs(localUp.x) < 1 ? 1 : totalHeight, Mathf.Abs(localUp.y) < 1 ? 1 : totalHeight, Mathf.Abs(localUp.z) < 1 ? 1 : totalHeight);
+                Vector3 boxCenter = new Vector3(Mathf.Abs(localUp.x) < 1 ? 0 : localUp.x * center, Mathf.Abs(localUp.y) < 1 ? 0 : localUp.y * center, Mathf.Abs(localUp.z) < 1 ? 0 : localUp.z * center);
 
-            if (left)
+                boxCollider.center = boxCenter;
+                boxCollider.size = boxSize;
+            }
+            else
             {
-                CreateWind(-transform.right, 3);
+                boxCollider.center = Vector3.zero;
+                boxCollider.size = Vector3.one;
             }
         }
-
-        if((upHeight > 0 || downHeight > 0) && inWater == false)
-        {
-            float center = (upHeight - downHeight) * 0.5f;
-            float totalHeight = upHeight + downHeight + 1;
-            Vector3 localUp = transform.InverseTransformDirection(Vector3.up).normalized;
-
-            Vector3 boxSize = new Vector3(Mathf.Abs(localUp.x) < 1 ? 1 : totalHeight, Mathf.Abs(localUp.y) < 1 ? 1 : totalHeight, Mathf.Abs(localUp.z) < 1 ? 1 : totalHeight);
-            Vector3 boxCenter = new Vector3(Mathf.Abs(localUp.x) < 1 ? 0 : localUp.x * center, Mathf.Abs(localUp.y) < 1 ? 0 : localUp.y * center, Mathf.Abs(localUp.z) < 1 ? 0 : localUp.z * center);
-
-            boxCollider.center = boxCenter;
-            boxCollider.size = boxSize;
-        }
-        else
-        {
-            boxCollider.center = Vector3.zero;
-            boxCollider.size = Vector3.one;
-        }
+        WindEffectControl(gameMode, forward && inWater == false, 0);
+        WindEffectControl(gameMode, back && inWater == false, 1);
+        WindEffectControl(gameMode, right && inWater == false, 2);
+        WindEffectControl(gameMode, left && inWater == false, 3);
     }
 
     /// <summary>
@@ -185,5 +190,36 @@ public class Wind : MonoBehaviour
         }
 
         coroutines[id] = null;
+    }
+
+    /// <summary>
+    /// 風エフェクトの制御
+    /// </summary>
+    /// <param name="mode">ゲームモード</param>
+    /// <param name="activeFlag">風の有効状態</param>
+    /// <param name="index">風の方位番号</param>
+    private void WindEffectControl(PlayState.GameMode mode, bool activeFlag, int index)
+    {
+        if (activeFlag)
+        {
+            if(mode != PlayState.GameMode.Pause)
+            {
+                if(windEffect[index].isPlaying == false)
+                {
+                    windEffect[index].Play();
+                }
+            }
+            else
+            {
+                if (windEffect[index].isPlaying)
+                {
+                    windEffect[index].Pause();
+                }
+            }
+        }
+        else
+        {
+            if(windEffect[index].isStopped == false) { windEffect[index].Stop(); }
+        }
     }
 }
