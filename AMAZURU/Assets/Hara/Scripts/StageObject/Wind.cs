@@ -160,21 +160,12 @@ public class Wind : MonoBehaviour
         {
             if (coroutines[windID] != null) { return; }
 
-            if (Physics.BoxCast(transform.position, Vector3.one * 0.25f, direction, out hit, Quaternion.identity, windMaxArea) && hit.collider.isTrigger == false)
+            if (Physics.BoxCast(transform.position, Vector3.one * 0.25f, direction, out hit, Quaternion.identity, windMaxArea + 0.5f) && hit.collider.isTrigger == false)
             {
                 if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player"))
                 {
                     // プレイヤーに当たった場合
-                    Vector3 playerPos = CharacterMaster.Instance.Player.transform.position;
-                    if(direction.x != 0)
-                    {
-                        playerPos.z = transform.position.z;
-                    }
-                    else
-                    {
-                        playerPos.x = transform.position.x;
-                    }
-                    CharacterMaster.Instance.Player.WindAction(direction, playerPos, transform.position + direction * blowAwayArea, windPower);
+                    CharacterMaster.Instance.Player.WindAction(direction, transform.position + direction * blowAwayArea, windPower);
                     coroutines[windID] = StartCoroutine(IntervalCoroutine(windID));
                 }
             }

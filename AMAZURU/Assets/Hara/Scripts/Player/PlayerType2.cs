@@ -501,24 +501,22 @@ public class PlayerType2 : MyAnimation
     /// 風に吹き飛ばされる処理のコルーチン
     /// </summary>
     /// <param name="direction">吹き飛ばす方向</param>
-    /// <param name="start">吹き飛ばし開始地点</param>
     /// <param name="target">吹き飛ばし先の地点</param>
     /// <param name="speed">吹き飛ばし速度</param>
     /// <returns></returns>
-    private IEnumerator WindActionCoroutine(Vector3 direction, Vector3 start, Vector3 target, float speed)
+    private IEnumerator WindActionCoroutine(Vector3 direction, Vector3 target, float speed)
     {
         stopInput = true;
         playerMoveDirection = direction * speed;
 
         IsDontCharacterMove = true;
-        transform.position = start;
+        Vector3 playerPos = transform.position;
         yield return null;
         IsDontCharacterMove = false;
-        Vector3 playerPos = transform.position + Vector3.up * character.center.y;
 
         while (Vector3.Distance(playerPos, target) > 0.1f)
         {
-            if(IsGameStop == false)
+            if (IsGameStop == false)
             {
                 if (IsGameClear || IsGameOver || IsHitEnemy)
                 {
@@ -538,17 +536,16 @@ public class PlayerType2 : MyAnimation
     /// 風に吹き飛ばされる処理
     /// </summary>
     /// <param name="direction">吹き飛ばす方向</param>
-    /// <param name="start">吹き飛ばし開始地点</param>
     /// <param name="target">吹き飛ばし先の地点</param>
     /// <param name="speed">吹き飛ばし速度</param>
     /// <returns></returns>
-    public void WindAction(Vector3 direction, Vector3 start, Vector3 target, float speed)
+    public void WindAction(Vector3 direction, Vector3 target, float speed)
     {
         if(windCoroutine != null)
         {
             StopCoroutine(windCoroutine);
         }
-        windCoroutine = StartCoroutine(WindActionCoroutine(direction, start, target, speed));
+        windCoroutine = StartCoroutine(WindActionCoroutine(direction, target, speed));
     }
 
     /// <summary>
