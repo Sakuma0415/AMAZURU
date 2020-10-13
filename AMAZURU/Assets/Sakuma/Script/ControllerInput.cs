@@ -162,53 +162,54 @@ public class ControllerInput : MonoBehaviour
             Instance.buttonDown.triangle = Input.GetKeyDown(KeyCode.LeftShift);
             Instance.buttonDown.option = Input.GetKeyDown(KeyCode.Escape);
 
-            float angle = 0;
-            int cont = 0;
-            Instance.stick.LStickHorizontal = 0;
-            Instance.stick.LStickVertical = 0;
+            //float angle = 0;
+            //int cont = 0;
+            //Instance.stick.LStickHorizontal = 0;
+            //Instance.stick.LStickVertical = 0;
 
-            if (Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D))
-            { angle = 180; cont++; }
-            if (Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.A))
-            { angle += 360;cont++;
-            if(Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S))
-                {
-                    angle -= 360;
-                }
-            }
-            if (Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S))
-            {angle += 90; cont++;}
-            if (Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W))
-            {angle += 270;cont++;}
+            //if (Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D))
+            //{ angle = 180; cont++; }
+            //if (Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.A))
+            //{ angle += 360;cont++;
+            //if(Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S))
+            //    {
+            //        angle -= 360;
+            //    }
+            //}
+            //if (Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S))
+            //{angle += 90; cont++;}
+            //if (Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W))
+            //{angle += 270;cont++;}
 
-            if (cont != 0)
-            {
-
-
-
-                angle = angle / (float)cont;
-                Instance.stick.LStickHorizontal = Mathf.Cos(angle * Mathf.Deg2Rad );
-                Instance.stick.LStickVertical = Mathf.Sin(angle * Mathf.Deg2Rad );
-            }
+            //if (cont != 0)
+            //{
 
 
 
+            //    angle = angle / (float)cont;
+            //    Instance.stick.LStickHorizontal = Mathf.Cos(angle * Mathf.Deg2Rad );
+            //    Instance.stick.LStickVertical = Mathf.Sin(angle * Mathf.Deg2Rad );
+            //}
 
-            ////Instance.stick.LStickHorizontal = Input.GetAxis("Horizontal");
-            //Instance.stick.LStickHorizontal = Input.GetKey(KeyCode.A) ? -1 : Input.GetKey(KeyCode.D) ? 1 : 0;
-            ////Instance.stick.LStickVertical = Input.GetAxis("Vertical");
-            //Instance.stick.LStickVertical = Input.GetKey(KeyCode.W) ? 1 : Input.GetKey(KeyCode.S) ? -1 : 0;
+            float inputX;
+            float inputY;
+            Vector2 inputNormalized;
 
+            inputX = Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D) == false ? -1 : Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.A) == false ? 1 : 0;
+            inputY = Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.S) == false ? 1 : Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.W) == false ? -1 : 0;
+            inputNormalized = new Vector2(inputX, inputY).normalized;
 
+            Instance.stick.LStickHorizontal = inputNormalized.x;
+            Instance.stick.LStickVertical = inputNormalized.y;
+            Instance.stick.crossHorizontal = inputNormalized.x;
+            Instance.stick.crossVertical = inputNormalized.y;
 
-            //Instance.stick.RStickHorizontal = Input.GetAxis("DPadH");
-            Instance.stick.RStickHorizontal = Input.GetKey(KeyCode.LeftArrow) ? -1 : Input.GetKey(KeyCode.RightArrow) ? 1 : 0;
-            //Instance.stick.RStickVertical = -1 * Input.GetAxis("DPadV");
-            Instance.stick.RStickVertical = Input.GetKey(KeyCode.UpArrow) ? -1 : Input.GetKey(KeyCode.DownArrow) ? 1 : 0;
-            //Instance.stick.crossHorizontal = -1 * Input.GetAxis("Vertical2");
-            Instance.stick.crossHorizontal = Input.GetKey(KeyCode.A) ? -1 : Input.GetKey(KeyCode.D) ? 1 : 0;
-            //Instance.stick.crossVertical = Input.GetAxis("Horizontal3");
-            Instance.stick.crossVertical = Input.GetKey(KeyCode.W) ? 1 : Input.GetKey(KeyCode.S) ? -1 : 0;
+            inputX = Input.GetKey(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow) == false ? -1 : Input.GetKey(KeyCode.RightArrow) && Input.GetKey(KeyCode.LeftArrow) == false ? 1 : 0;
+            inputY = Input.GetKey(KeyCode.UpArrow) && Input.GetKey(KeyCode.DownArrow) == false ? 1 : Input.GetKey(KeyCode.DownArrow) && Input.GetKey(KeyCode.UpArrow) == false ? -1 : 0;
+            inputNormalized = new Vector2(inputX, inputY).normalized;
+
+            Instance.stick.RStickHorizontal = inputNormalized.x;
+            Instance.stick.RStickVertical = inputNormalized.y;
         }
     }
 }
