@@ -27,6 +27,7 @@ public class Progress : MonoBehaviour
     [SerializeField]
     FlashTest flashTest;
 
+    public GameObject treeObj=null;
 
         //初期化
     void SetState()
@@ -128,8 +129,20 @@ public class Progress : MonoBehaviour
         ///
 
         flashTest.FlashSet();
-        yield return new WaitForSeconds(1);
-
+        float timeob = 0;
+        while (flashTest .late <0.5f || timeob > 2f)
+        {
+            timeob += Time.deltaTime;
+            yield return null;
+        }
+        timeob = 0;
+        Camera.main.GetComponent<CameraPos>().FrontSet();
+        treeObj.SetActive(true);
+        while (flashTest.late != 1f || timeob > 2f)
+        {
+            timeob += Time.deltaTime;
+            yield return null;
+        }
         ///
 
         PlayState.playState.gameMode = PlayState.GameMode.Clear;

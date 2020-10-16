@@ -135,7 +135,7 @@ public class CameraPos : MonoBehaviour
     {
 
         //カメラの移動可能なゲームモード＆アメフラシの演出中ではない
-        if ((PlayState.playState.gameMode == PlayState.GameMode.Play|| PlayState.playState.gameMode == PlayState.GameMode.StartEf ) || rainPotChange)
+        if ((PlayState.playState.gameMode == PlayState.GameMode.Play|| PlayState.playState.gameMode == PlayState.GameMode.StartEf  || PlayState.playState.gameMode == PlayState.GameMode.ClearFront ) || rainPotChange)
         {
 
             //注視点変更アニメーション中
@@ -542,6 +542,17 @@ public class CameraPos : MonoBehaviour
             beforeAngleXZ = XZangle;
             beforeAngleY = Yangle;
         }
+    }
+
+
+    public Vector3 GoalPos = Vector3.zero;
+
+    public void FrontSet()
+    {
+        Vector3 plPos = PlayerTransform.position;
+        float angle = Mathf.Atan2(plPos.z - GoalPos.z, plPos.x - GoalPos.x)*Mathf.Rad2Deg ;
+        XZangle = angle;
+        Yangle = 10;
     }
 
 }

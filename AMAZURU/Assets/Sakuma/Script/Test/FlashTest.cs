@@ -11,7 +11,7 @@ public class FlashTest : MonoBehaviour
         material.SetFloat("_Table", late);
     }
 
-    float late = 0;
+    public  float late = 0;
     [SerializeField]
     Material material;
     // Update is called once per frame

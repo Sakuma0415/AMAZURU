@@ -113,6 +113,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fadeTime: 1
   material: {fileID: 2100000, guid: e571f67c64d2b6847868dbc4c0918538, type: 2}
+  tree: {fileID: 1888243188585968749}
 --- !u!54 &7670357684559422790
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -407,10 +408,16 @@ PrefabInstance:
     - target: {fileID: -927199367670048503, guid: 5e966aca0e3e55c46877b94ec2a021e9,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5e966aca0e3e55c46877b94ec2a021e9, type: 3}
+--- !u!1 &1888243188585968749 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: 5e966aca0e3e55c46877b94ec2a021e9,
+    type: 3}
+  m_PrefabInstance: {fileID: 7572114730789694820}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3201842680109811326 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 5e966aca0e3e55c46877b94ec2a021e9,
