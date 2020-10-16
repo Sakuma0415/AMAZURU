@@ -72,7 +72,7 @@ public class PlayState : MonoBehaviour
     WaterHi waterHi = null;
 
     Vector3 saveLot = Vector3.zero;
-
+    Vector3 playerStartPos = Vector3.zero;
 
     // 初期化
     void Start()
@@ -197,7 +197,7 @@ public class PlayState : MonoBehaviour
             stageObj.transform.eulerAngles = Vector3.Lerp(startAngle,afterAngle, lotTime);
 
             character.gameObject .transform.eulerAngles= new Vector3(0, character.gameObject.transform.eulerAngles.y, 0);
-            //character.gameObject.transform.localPosition = PayerPos+ new Vector3(0, Mathf.Lerp(0f, 0.5f, lotTime), 0);
+            character.gameObject.transform.localPosition = Vector3.Lerp(PayerPos, playerStartPos, lotTime);
         }
 
         if(timelot && 5 - RotationPotTime > 2.75f)
@@ -220,7 +220,7 @@ public class PlayState : MonoBehaviour
              
         }
     }
-    public void RotationPotStart(Vector3 lotAngle ,Vector3 Weve,float goAngle=0,bool SetAngle=false)
+    public void RotationPotStart(Vector3 lotAngle ,Vector3 Weve, Vector3 pot, float goAngle=0,bool SetAngle=false)
     {
         character.GetComponent<PlayerType2>().IsDontShield = true;
         character.GetComponent<PlayerType2>().IsDontCharacterMove  = true;
@@ -245,7 +245,7 @@ public class PlayState : MonoBehaviour
         WaveObj.transform.eulerAngles = Weve ;
 
         saveLot += Weve;
-
+        playerStartPos = pot;
         WaveObj.GetComponent<BoxMake>().planeUpdate();
 
         rotSet = true;
