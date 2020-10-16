@@ -205,7 +205,7 @@ public class CameraPos : MonoBehaviour
             if (PlayState.playState.gameMode==PlayState.GameMode.GameOver || PlayState.playState.gameMode == PlayState.GameMode.Clear )
             {
                 //ゲーム終了後の演出開始時の処理
-                GameEndFlg = true;
+                //GameEndFlg = true;
                 EndAfterTime = 0;
                 transformToGameEnd = transform.position;
                 if (lookAnimeTime > 0)
@@ -551,6 +551,7 @@ public class CameraPos : MonoBehaviour
     {
         Vector3 plPos = PlayerTransform.position;
         float angle = Mathf.Atan2(plPos.z - GoalPos.z, plPos.x - GoalPos.x)*Mathf.Rad2Deg ;
+        CameraDis = 10;
         XZangle = angle;
         Yangle = 10;
     }
