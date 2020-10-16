@@ -52,6 +52,18 @@ public class ResultMenu : MyAnimation
         {
             textMeshes[i] = menuObject.transform.GetChild(i).gameObject.GetComponent<TextMeshProUGUI>();
         }
+
+        bool lastStage;
+        try
+        {
+            lastStage = StageMake.LoadStageData.LastStage;
+        }
+        catch
+        {
+            lastStage = false;
+        }
+
+        textMeshes[0].text = lastStage ? "さいしょにもどる" : "つぎのステージへ";
     }
 
     /// <summary>
@@ -255,19 +267,22 @@ public class ResultMenu : MyAnimation
             // 入力時のSEを再生
             SoundManager.soundManager.PlaySe("btn01", 0.2f);
 
-            switch (select)
+
+            if(select == "ステージせんたく")
             {
-                case "ステージせんたく":
-                    SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.StageSelect_v2, false);
-                    break;
-                case "リトライ":
-                    SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
-                    break;
-                case "つぎのステージ":
-                    break;
-                default:
-                    SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Title, false);
-                    break;
+                SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.StageSelect_v2, false);
+            }
+            else if(select == "リトライ")
+            {
+                SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Action);
+            }
+            else if(select == "つぎのステージへ"　|| select == "さいしょにもどる")
+            {
+                Progress.progress.NextStage();
+            }
+            else
+            {
+                SceneLoadManager.Instance.LoadScene(SceneLoadManager.SceneName.Title, false);
             }
 
             // BGMの停止

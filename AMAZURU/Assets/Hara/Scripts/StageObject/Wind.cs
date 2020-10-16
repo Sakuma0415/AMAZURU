@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 public class Wind : MonoBehaviour
 {
@@ -9,8 +10,8 @@ public class Wind : MonoBehaviour
     [SerializeField, Tooltip("判定用のLayerMask")] private LayerMask layerMask;
 
     [SerializeField, Header("風の有効範囲(マス)"), Range(1, 5)] private int windMaxArea = 1;
+    [SerializeField, Header("風の吹き飛ばし範囲(マス)"), Range(2, 10)] private int blowAwayArea = 1;
     [SerializeField, Header("風圧"), Range(1, 10)] private float windPower = 1.0f;
-    [SerializeField, Header("操作無効時間"), Range(1, 10)] private float dontInputDuration = 1.0f;
 
     [SerializeField, Header("正面")] private bool forward = true;
     [SerializeField, Header("背面")] private bool back = false;
@@ -159,12 +160,12 @@ public class Wind : MonoBehaviour
         {
             if (coroutines[windID] != null) { return; }
 
-            if (Physics.BoxCast(transform.position, Vector3.one * 0.3f, direction, out hit, Quaternion.identity, windMaxArea) && hit.collider.isTrigger == false)
+            if (Physics.BoxCast(transform.position, Vector3.one * 0.25f, direction, out hit, Quaternion.identity, windMaxArea + 0.5f) && hit.collider.isTrigger == false)
             {
                 if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player"))
                 {
                     // プレイヤーに当たった場合
-                    CharacterMaster.Instance.Player.WindAction(direction * windPower, dontInputDuration);
+                    CharacterMaster.Instance.Player.WindAction(direction, transform.position + direction * blowAwayArea, windPower);
                     coroutines[windID] = StartCoroutine(IntervalCoroutine(windID));
                 }
             }
@@ -180,7 +181,7 @@ public class Wind : MonoBehaviour
     {
         float time = 0;
 
-        while(time < dontInputDuration * 2)
+        while(time < blowAwayArea / windPower)
         {
             if(PlayState.playState.gameMode == PlayState.GameMode.Play)
             {

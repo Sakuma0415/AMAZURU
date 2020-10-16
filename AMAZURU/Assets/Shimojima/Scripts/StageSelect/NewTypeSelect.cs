@@ -19,6 +19,8 @@ public class NewTypeSelect : MonoBehaviour
     private Vector3 pivotCubeSize;
     [SerializeField]
     private TextMeshProUGUI stageName, amehurashiNum, increasedWaterVolume, clearPercentage;
+    [SerializeField]
+    private Image flame;
 
     [System.Serializable]
     public struct PrefabStageDatas
@@ -212,6 +214,7 @@ public class NewTypeSelect : MonoBehaviour
                     isVerticalMove = true;
                     sssd.level++;
                     if (sssd.level > allPSD.Count - 1) { sssd.level = 0; }
+                    flame.sprite = referenceImage[sssd.level + 2];
                     pData = allPSD[sssd.level];
                 }
                 else if (v < 0 || v2 < 0)
@@ -223,6 +226,7 @@ public class NewTypeSelect : MonoBehaviour
                     isVerticalMove = true;
                     sssd.level--;
                     if (sssd.level < 0) { sssd.level = allPSD.Count - 1; }
+                    flame.sprite = referenceImage[sssd.level + 2];
                     pData = allPSD[sssd.level];
                 }
             }
