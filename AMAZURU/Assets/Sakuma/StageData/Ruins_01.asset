@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Ruins_01
   m_EditorClassIdentifier: 
   stageName: Ruins_01
-  stageSize: {x: 10, y: 5, z: 10}
-  startPos: {x: 0.5, y: 2, z: 0.5}
+  stageSize: {x: 20, y: 20, z: 20}
+  startPos: {x: 1, y: 2, z: 1}
   waterStep: 1
-  stagePrefab: {fileID: 4082986260363961275, guid: dca7f96c0e2bd3b4d830daddcb7358e0,
+  stagePrefab: {fileID: 8406838098486773949, guid: fefef3a2772e9a7439f896cebc9a4356,
     type: 3}
   AmehurashiQuantity: 1
   startAngle: 0
