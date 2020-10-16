@@ -15,12 +15,12 @@ MonoBehaviour:
   stageName: 
   editName: Ruins_01
   diificulty: 0
-  amehurashiNum: 2
+  amehurashiNum: 1
   increasedWaterVolume: 0
   clearPercentage: 0
-  stage: {fileID: 4082986260363961275, guid: dca7f96c0e2bd3b4d830daddcb7358e0, type: 3}
+  stage: {fileID: 8406838098486773949, guid: fefef3a2772e9a7439f896cebc9a4356, type: 3}
   viewStage: {fileID: 4082986260363961275, guid: 822642548cb5b9c41868c77d9dfce2b5,
     type: 3}
   sData: {fileID: 11400000, guid: 0608117284f023f42a29aef6dc7b083f, type: 2}
-  gridCells: {x: 10, y: 5, z: 10}
+  gridCells: {x: 20, y: 20, z: 20}
   defPos: {x: -6, y: 0.2, z: 10}
