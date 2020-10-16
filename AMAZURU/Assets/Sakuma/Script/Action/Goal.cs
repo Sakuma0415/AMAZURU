@@ -27,7 +27,7 @@ public class Goal : MonoBehaviour
             //アメフラシ全体の数と起動中のアメフラシの数が同じ
             if(AmehurashiManager.amehurashi.amehurashiTrueCont == AmehurashiManager.amehurashi.AmehurashiQuantity)
             {
-                PlayState.playState.gameMode = PlayState.GameMode.Clear ;
+                PlayState.playState.gameMode = PlayState.GameMode.ClearFront  ;
                 //StartCoroutine("FadeIn");
             }
         }

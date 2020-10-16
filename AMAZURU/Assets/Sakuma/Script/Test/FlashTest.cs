@@ -19,9 +19,14 @@ public class FlashTest : MonoBehaviour
     {
         late = (late + Time.deltaTime > 1) ? 1 : late + Time.deltaTime;
         material.SetFloat("_Table", late);
-        if(Input.GetKeyDown(KeyCode.A))
-        {
-            late = 0;
-        }
     }
+
+    public void FlashSet()
+    {
+        late = 0;
+    }
+
+
+
+
 }

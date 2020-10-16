@@ -23,6 +23,7 @@ public class PlayState : MonoBehaviour
         Rain,
         RainSelect,
         Clear,
+        ClearFront,
         GameOver,
         Pause,
         Thunder,
@@ -101,6 +102,9 @@ public class PlayState : MonoBehaviour
         {
             switch (playState.gameMode)
             {
+                case GameMode.ClearFront:
+                    Progress.progress.FrontResultSet();
+                    break;
                 case GameMode.Clear:
                     Progress.progress.ResultSet();
                     break;
