@@ -10,7 +10,7 @@ public class Wind : MonoBehaviour
     [SerializeField, Tooltip("判定用のLayerMask")] private LayerMask layerMask;
 
     [SerializeField, Header("風の有効範囲(マス)"), Range(1, 5)] private int windMaxArea = 1;
-    [SerializeField, Header("風の吹き飛ばし範囲(マス)"), Range(2, 10)] private int blowAwayArea = 1;
+    [SerializeField, Header("風の吹き飛ばし範囲(有効範囲 + nマス)"), Range(1, 10)] private int blowAwayArea = 1;
     [SerializeField, Header("風圧"), Range(1, 10)] private float windPower = 1.0f;
 
     [SerializeField, Header("正面")] private bool forward = true;
@@ -165,7 +165,7 @@ public class Wind : MonoBehaviour
                 if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player"))
                 {
                     // プレイヤーに当たった場合
-                    CharacterMaster.Instance.Player.WindAction(direction, transform.position + direction * blowAwayArea, windPower);
+                    CharacterMaster.Instance.Player.WindAction(direction, transform.position + direction * (windMaxArea + blowAwayArea), windPower);
                     coroutines[windID] = StartCoroutine(IntervalCoroutine(windID));
                 }
             }
