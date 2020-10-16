@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8ca9937970dae448c3f419008262f1, type: 3}
+  m_Name: EditData_Ruins_01
+  m_EditorClassIdentifier: 
+  stageName: 
+  editName: Ruins_01
+  diificulty: 0
+  amehurashiNum: 2
+  increasedWaterVolume: 0
+  clearPercentage: 0
+  stage: {fileID: 4082986260363961275, guid: dca7f96c0e2bd3b4d830daddcb7358e0, type: 3}
+  viewStage: {fileID: 4082986260363961275, guid: 822642548cb5b9c41868c77d9dfce2b5,
+    type: 3}
+  sData: {fileID: 11400000, guid: 0608117284f023f42a29aef6dc7b083f, type: 2}
+  gridCells: {x: 10, y: 5, z: 10}
+  defPos: {x: -6, y: 0.2, z: 10}

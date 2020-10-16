@@ -251,7 +251,10 @@ public class EnemyDataSet : MonoBehaviour
                 //float z = eed[i].pData[j].z;
                 _enemyData.MovePlan[j] = p;
             }
-            AssetDatabase.CreateAsset(_enemyData, "Assets/Hara/Data/EnemyData/"+ sName+ "/" + sName + "-" + i + ".asset");
+            //AssetDatabase.DeleteAsset("Assets/Hara/Data/EnemyData/" + sName + "/" + sName + "-" + i + ".asset");
+            string zero = "0";
+            int number = i + 1;
+            AssetDatabase.CreateAsset(_enemyData, "Assets/Hara/Data/EnemyData/"+ sName+ "/" + sName + "-" + (zero = i < 10? "0": "") + number + ".asset");
             AssetDatabase.SaveAssets();
             e.GetComponent<EnemyMaster>().EnemyDataArray[i] = _enemyData;
         }
