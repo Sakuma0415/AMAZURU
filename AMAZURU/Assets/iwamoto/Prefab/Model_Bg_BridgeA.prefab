@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4161425596269933654}
   - component: {fileID: 4943646407499976288}
   - component: {fileID: 1704565576219226777}
-  - component: {fileID: 2985739722025687714}
+  - component: {fileID: 4706968485949396960}
   m_Layer: 0
   m_Name: Model_Bg_BridgeA
   m_TagString: Untagged
@@ -80,7 +80,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &2985739722025687714
+--- !u!65 &4706968485949396960
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91,5 +91,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.8, y: 0.2, z: 0.95}
-  m_Center: {x: 0.45, y: -0.5, z: 0}
+  m_Size: {x: 1.0626459, y: 0.16135395, z: 1.0973763}
+  m_Center: {x: 0.8110354, y: -0.53437304, z: -0.0042185783}
