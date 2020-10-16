@@ -27,7 +27,7 @@ namespace Shimojima{
                         angle.y = 0;
                         break;
                     case 2:
-                        angle = Vector3.zero;
+                        angle.z = 0;
                         break;
                     default:
                         break;
@@ -37,7 +37,7 @@ namespace Shimojima{
             }
 
             /// <summary>
-            /// X,Yまたはその両方が絶対値で360を超えているか否かの判断
+            /// X,Y,Zが絶対値で360を超えているか否かの判断
             /// </summary>
             /// <param name="v">stageObjAngle</param>
             /// <returns>index</returns>
@@ -45,14 +45,9 @@ namespace Shimojima{
             {
                 int index = -1;
 
-                //z値の値は変動しない為省略
-                bool isOverflowX = false;
-                bool isOverflowY = false;
-
-                if (Mathf.Abs(v.x) == 360) { index = 0; isOverflowX = true; }
-                else if (Mathf.Abs(v.y) == 360) { index = 1; isOverflowY = true; }
-
-                if (isOverflowX && isOverflowY) { index = 2; }
+                if (Mathf.Abs(v.x) == 360) { index = 0; }
+                else if (Mathf.Abs(v.y) == 360) { index = 1; }
+                else if (Mathf.Abs(v.z) == 360) { index = 2; }
 
                 return index;
             }
@@ -86,6 +81,24 @@ namespace Shimojima{
             {
                 Camera.main.transform.SetParent(null);
                 Vector3 a = AdditionStageObjAngle(angle, new Vector3(0, -90, 0)); ;
+                guideObj.transform.localEulerAngles = a;
+                target.transform.SetParent(null);
+                Camera.main.transform.SetParent(guideObj.transform);
+                target.transform.SetParent(guideObj.transform);
+                return (guideObj, a);
+            }
+
+            /// <summary>
+            /// オブジェクトをZ軸で90度回転させる
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="guideObj"></param>
+            /// <param name="angle"></param>
+            /// <returns>移動処理後のguideObj, 加算処理後のangle</returns>
+            public static (GameObject, Vector3) RotationZ(GameObject target, GameObject guideObj, Vector3 angle)
+            {
+                Camera.main.transform.SetParent(null);
+                Vector3 a = AdditionStageObjAngle(angle, new Vector3(0, 0, 90)); ;
                 guideObj.transform.localEulerAngles = a;
                 target.transform.SetParent(null);
                 Camera.main.transform.SetParent(guideObj.transform);

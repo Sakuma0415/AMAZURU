@@ -114,6 +114,7 @@ public class StageEditor : MonoBehaviour
 
     private Vector3 stageObjAngle;
     private bool isLeftShiftKey = false;
+    private bool isLeftAltKey = false;
 
 
     private bool IsInputAnyKey { get; set; } = false;
@@ -146,6 +147,7 @@ public class StageEditor : MonoBehaviour
             StageDataIncetance();
         }
         CheckLeftShiftKey();
+        CheckLefAltKey();
         EditorInput();
     }
 
@@ -188,6 +190,7 @@ public class StageEditor : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             GameObject obj = guideObj.transform.GetChild(1).gameObject;
+            
             if (isLeftShiftKey)
             {
                 (guideObj, stageObjAngle) = StageEditUtility.RotationX(obj, guideObj, stageObjAngle);
@@ -195,6 +198,15 @@ public class StageEditor : MonoBehaviour
             else 
             {
                 (guideObj, stageObjAngle) = StageEditUtility.RotationY(obj, guideObj, stageObjAngle);
+            }
+        }
+
+        if (isLeftAltKey && isLeftAltKey)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                GameObject obj = guideObj.transform.GetChild(1).gameObject;
+                (guideObj, stageObjAngle) = StageEditUtility.RotationZ(obj, guideObj, stageObjAngle);
             }
         }
 
@@ -226,6 +238,18 @@ public class StageEditor : MonoBehaviour
         else if(!Input.GetKey(KeyCode.LeftShift))
         {
             isLeftShiftKey = false;
+        }
+    }
+
+    private void CheckLefAltKey()
+    {
+        if (Input.GetKey(KeyCode.LeftAlt))
+        {
+            isLeftAltKey = true;
+        }
+        else if (!Input.GetKey(KeyCode.LeftAlt))
+        {
+            isLeftAltKey = false;
         }
     }
 
