@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using Shimojima.StageEditUtility;
+using UnityEngine.EventSystems;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -162,7 +163,7 @@ public class StageEditor : MonoBehaviour
             editCanvas.SetActive(!editCanvas.activeSelf);
         }
         if (isOnMenu) { return; }
-
+        if(EventSystem.current.currentSelectedGameObject?.GetComponent<InputField>() != null) { return; }
         CheakKeyDownForMoveKey();
 
         if (isLeftShiftKey && Input.GetKeyDown(KeyCode.E))
@@ -647,7 +648,6 @@ public class StageEditor : MonoBehaviour
     /// <param name="size">Grid生成時のグリッドの１辺の長さ</param>
     private void Array3DForLoop(Vector3Int tArray1, Vector3Int tArray2, int processingIndex, float size = 1)
     {
-        if(processingIndex < 0 || processingIndex > 4) { Debug.Log("0 ～ 4の間で処理を決定してください"); return; }
         int c = 0;
         GameObject _obj = new GameObject();
         _obj.name = "Stage";
