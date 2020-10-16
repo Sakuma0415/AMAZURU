@@ -11,7 +11,8 @@ public class Goal : MonoBehaviour
     float fadeTime=1;
     [SerializeField]
     Material material;
-
+    [SerializeField]
+    GameObject tree;
     private void Start()
     {
         material.SetFloat("_Fade", 0f);
@@ -27,8 +28,10 @@ public class Goal : MonoBehaviour
             //アメフラシ全体の数と起動中のアメフラシの数が同じ
             if(AmehurashiManager.amehurashi.amehurashiTrueCont == AmehurashiManager.amehurashi.AmehurashiQuantity)
             {
-                PlayState.playState.gameMode = PlayState.GameMode.Clear ;
-                StartCoroutine("FadeIn");
+                PlayState.playState.gameMode = PlayState.GameMode.ClearFront  ;
+                Camera.main.GetComponent<CameraPos>().GoalPos = transform.position;
+                Progress.progress.treeObj = tree;
+                //StartCoroutine("FadeIn");
             }
         }
     }
