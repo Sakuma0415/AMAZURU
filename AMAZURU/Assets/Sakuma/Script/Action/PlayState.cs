@@ -71,6 +71,9 @@ public class PlayState : MonoBehaviour
 
     WaterHi waterHi = null;
 
+    Vector3 saveLot = Vector3.zero;
+
+
     // 初期化
     void Start()
     {
@@ -239,8 +242,9 @@ public class PlayState : MonoBehaviour
         WaveObj.GetComponent<BoxMake>().moveTime =0;
         WaveObj.GetComponent<BoxMake>().lat =0;
         WaveObj.GetComponent<BoxMake>().BoxCheck = false;
-        WaveObj.transform.eulerAngles = Weve;
+        WaveObj.transform.eulerAngles = Weve ;
 
+        saveLot += Weve;
 
         WaveObj.GetComponent<BoxMake>().planeUpdate();
 
