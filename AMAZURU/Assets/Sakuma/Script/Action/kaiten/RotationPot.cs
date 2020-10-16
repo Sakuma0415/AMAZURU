@@ -58,7 +58,7 @@ public class RotationPot : MonoBehaviour
         if (set && ControllerInput.Instance.buttonDown.circle && PlayState.playState.gameMode == PlayState.GameMode.Play)
         {
             Debug.Log(goAngle);
-            PlayState.playState.RotationPotStart(lotAngle, WavelotAngle, goAngle, true);
+            PlayState.playState.RotationPotStart(lotAngle, WavelotAngle,transform.localPosition , goAngle, true);
 
         }
     }
