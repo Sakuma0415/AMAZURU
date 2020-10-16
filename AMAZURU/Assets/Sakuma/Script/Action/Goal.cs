@@ -28,7 +28,7 @@ public class Goal : MonoBehaviour
             if(AmehurashiManager.amehurashi.amehurashiTrueCont == AmehurashiManager.amehurashi.AmehurashiQuantity)
             {
                 PlayState.playState.gameMode = PlayState.GameMode.Clear ;
-                StartCoroutine("FadeIn");
+                //StartCoroutine("FadeIn");
             }
         }
     }

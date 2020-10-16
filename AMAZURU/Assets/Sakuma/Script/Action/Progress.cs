@@ -119,6 +119,38 @@ public class Progress : MonoBehaviour
         gameMenu.StartResult(GameOver);
     }
 
+    IEnumerator NewResultDelay(bool GameOver)
+    {
+        SoundManager.soundManager.VolFadeBgm(1, 0.1f, 0);
+        SoundManager.soundManager.StopBgm(1, 1);
+        float timeob = 0;
+        if (GameOver)
+        {
+            while (!animator.GetBool("StageClear") || timeob > 2f)
+            {
+                timeob += Time.deltaTime;
+                yield return null;
+            }
+        }
+        if (GameOver)
+        {
+            SoundManager.soundManager.PlaySe("wafu-success", 1);
+        }
+        else
+        {
+            SoundManager.soundManager.PlaySe("dead-sound", 1);
+        }
+        yield return new WaitForSeconds(animation[GameOver ? 0 : 1].length + ResultDelayTime);
+
+
+        gameMenu.StartResult(GameOver);
+    }
+
+
+
+
+
+
     public void NextStage()
     {
         StageMake.LoadStageData = StageMake.LoadStageData.NextStageData;

@@ -7,7 +7,8 @@ public class FlashTest : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        late = 0;
+        late = 1;
+        material.SetFloat("_Table", late);
     }
 
     float late = 0;
