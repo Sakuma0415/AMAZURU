@@ -50,6 +50,7 @@ public class NewTypeSelect : MonoBehaviour
     private float v, v2 = 0;
 
     private Animator rightAnimator, leftAnimator;
+    private static Sprite saveImage;
 
     private bool isRotation, isVerticalMove = false;
 
@@ -172,6 +173,8 @@ public class NewTypeSelect : MonoBehaviour
 
 
         sssd = config.save;
+        saveImage = referenceImage[sssd.level + 2];
+        flame.sprite = saveImage;
         vMoveSpeed = new Vector3(0, speed * 3, 0);
         Init();
     }
