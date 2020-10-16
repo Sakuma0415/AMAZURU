@@ -454,6 +454,7 @@ public class StageEditor : MonoBehaviour
             AssetDatabase.DeleteAsset("Assets/Shimojima/Resources/EditData/" + biomeSelect.captionText.text + "/EditData_" + stageNameInputField.text + ".asset");
             AssetDatabase.SaveAssets();
         }
+        Array3DForLoop(Vector3Int.zero, cells, -1);
         Data.stage = (GameObject)PrefabUtility.SaveAsPrefabAssetAndConnect(stageRoot, "Assets/Shimojima/Resources/Prefabs/Stage/" + biomeSelect.captionText.text + "/" + stageNameInputField.text + ".prefab", InteractionMode.UserAction);
         AssetDatabase.CreateAsset(Data, "Assets/Shimojima/Resources/EditData/" + biomeSelect.captionText.text + "/EditData_" + stageNameInputField.text + ".asset");
         Array3DForLoop(Vector3Int.zero, cells, 1);
@@ -647,7 +648,7 @@ public class StageEditor : MonoBehaviour
     private void Array3DForLoop(Vector3Int tArray1, Vector3Int tArray2, int processingIndex, float size = 1)
     {
         if(processingIndex < 0 || processingIndex > 4) { Debug.Log("0 ～ 4の間で処理を決定してください"); return; }
-
+        int c = 0;
         GameObject _obj = new GameObject();
         _obj.name = "Stage";
         if(processingIndex != 1) { Destroy(_obj); }
@@ -689,10 +690,18 @@ public class StageEditor : MonoBehaviour
                         case 4:
                             grid[i, j, k].GetComponent<HighlightObject>().IsSelect = true;
                             break;
+                        default:
+                            if (_StageObjects[i, j, k] != null && _StageObjects[i, j, k].name == "AMF")
+                            {
+                                c++;
+                            }
+                            break;
                     }
                 }
             }
         }
+
+        Data.amehurashiNum = c;
 
         if (processingIndex == 2 || processingIndex == 3) { rangeSelectionState = RangeSelectionState.OFF; }
         if (processingIndex != 1) { return; }
@@ -760,12 +769,15 @@ public class StageEditor : MonoBehaviour
     {
         if (stageSelect_d.captionText.text == "None") { Debug.Log("⚠ステージが選択されていません！"); return; }
         loadStage = true;
+        isCreateStage = true;
         biomeSelect.interactable = false;
         stageSelect_d.interactable = false;
         nStageB.interactable = false;
         lStageB.interactable = false;
 
-        Data = Resources.Load<PrefabStageData>("EditData/" + biomeSelect.captionText.text + "/" + stageNameInputField.text);
+        PrefabStageData data = Resources.Load<PrefabStageData>("EditData/" + biomeSelect.captionText.text + "/" + stageNameInputField.text);
+        Data = Instantiate(data);
+
         stageNameInputField.text = Data.editName;
         enemyEditCanvas.GetComponent<EnemyDataSet>().sName = Data.editName;
         GameObject o = Instantiate(Data.stage);
