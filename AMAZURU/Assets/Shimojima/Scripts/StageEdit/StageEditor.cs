@@ -157,6 +157,7 @@ public class StageEditor : MonoBehaviour
     private void EditorInput()
     {
         if (!isCreateStage) { return; }
+        if (EventSystem.current.currentSelectedGameObject?.GetComponent<InputField>() != null) { return; }
 
         if (Input.GetKeyDown(KeyCode.I))
         {
@@ -165,7 +166,6 @@ public class StageEditor : MonoBehaviour
             editCanvas.SetActive(!editCanvas.activeSelf);
         }
         if (isOnMenu) { return; }
-        if(EventSystem.current.currentSelectedGameObject?.GetComponent<InputField>() != null) { return; }
         CheakKeyDownForMoveKey();
 
         if (isLeftShiftKey && Input.GetKeyDown(KeyCode.E))
