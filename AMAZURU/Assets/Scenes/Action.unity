@@ -196,6 +196,7 @@ MonoBehaviour:
   - {fileID: 5004866296889629959, guid: 3bd5fab049730ec45ba2fe0eda2a9c52, type: 3}
   animator: {fileID: 0}
   flashTest: {fileID: 1230174647}
+  treeObj: {fileID: 0}
 --- !u!4 &76967582
 Transform:
   m_ObjectHideFlags: 0
@@ -298,6 +299,21 @@ PrefabInstance:
     - target: {fileID: 175424548475057126, guid: 706b8fa8c83fb5b4b9254687b8594fc3,
         type: 3}
       propertyPath: alphaCut
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 175424548475057126, guid: 706b8fa8c83fb5b4b9254687b8594fc3,
+        type: 3}
+      propertyPath: color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 175424548475057126, guid: 706b8fa8c83fb5b4b9254687b8594fc3,
+        type: 3}
+      propertyPath: color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 175424548475057126, guid: 706b8fa8c83fb5b4b9254687b8594fc3,
+        type: 3}
+      propertyPath: color.r
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 175424548475057127, guid: 706b8fa8c83fb5b4b9254687b8594fc3,
@@ -1686,6 +1702,7 @@ GameObject:
   - component: {fileID: 721732561}
   - component: {fileID: 721732563}
   - component: {fileID: 721732555}
+  - component: {fileID: 721732562}
   m_Layer: 14
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1816,6 +1833,7 @@ MonoBehaviour:
   rainPotChangeAnimeTimeSpead: 0.75
   lookMode: 0
   lookAnimeTime: 0
+  GoalPos: {x: 0, y: 0, z: 0}
 --- !u!135 &721732559
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1905,6 +1923,25 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!95 &721732562
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721732554}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0a73ddc9358b1d0459af597e7fde1741, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!54 &721732563
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3201,7 +3238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2911a5758a6359a4095e00ddd31c7630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SLoadStageData: {fileID: 11400000, guid: 6e78fdeca4027684182bad3340f36e96, type: 2}
+  SLoadStageData: {fileID: 11400000, guid: 469be221468a93744b497cfbc9e12741, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
   master: {fileID: 252210680}
   cameraPos: {fileID: 721732558}

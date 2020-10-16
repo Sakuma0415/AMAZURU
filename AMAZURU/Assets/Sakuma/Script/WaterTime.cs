@@ -15,7 +15,7 @@ public class WaterTime : MonoBehaviour
         WaterTime.time += Time.deltaTime;
         for(int i=0; i < material.Length; i++)
         {
-            //material[i].SetFloat("BackTime", time * 0.1f);
+            material[i].SetFloat("BackTime", time * 0.1f);
 
         }
     }
