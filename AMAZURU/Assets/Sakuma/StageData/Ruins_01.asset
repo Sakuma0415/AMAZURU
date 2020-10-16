@@ -20,13 +20,13 @@ MonoBehaviour:
     type: 3}
   AmehurashiQuantity: 1
   startAngle: 0
-  CameraDisS: 5
-  CameraDisP: 28
+  CameraDisS: 28
+  CameraDisP: 5
   TutorialFlg: 0
   TutorialObjs: []
   IsThunder: 0
   DoThunder: 0
   NextStageData: {fileID: 11400000}
   LastStage: 1
-  Challenge: 0
+  Challenge: 1
   Clear: 0
