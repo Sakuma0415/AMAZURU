@@ -121,6 +121,12 @@ public class CameraPos : MonoBehaviour
     float lotYAn = 0;
     Vector3 LightningStrikeAction = Vector3.zero;
     bool kari = false;
+
+    [SerializeField]
+    Animator animator;
+
+
+
     void Start()
     {
         //初期化
