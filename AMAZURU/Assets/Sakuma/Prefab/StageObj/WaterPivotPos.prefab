@@ -171,6 +171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f81d1838bc0a454f8e5464b0f4afc64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  refTexture: {fileID: 0}
 --- !u!1 &5739315238163413731
 GameObject:
   m_ObjectHideFlags: 0
@@ -608,6 +609,13 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 52d3ee5a47080c5439d30f136e712b1d, type: 2}
   - {fileID: 2100000, guid: c00ea0e8e57d7644a9037e8dfd4895eb, type: 2}
   - {fileID: 2100000, guid: 76c0720461786e64cb45d6404d79c702, type: 2}
+  - {fileID: 2100000, guid: e602585f234bdcb44a7b59c49a5a9840, type: 2}
+  - {fileID: 2100000, guid: f016e8555d5c0fb409ed6240a823c6ee, type: 2}
+  - {fileID: 2100000, guid: e06aabedd99715c44be83e7643536795, type: 2}
+  - {fileID: 2100000, guid: 333e578f23bb01a449b02547a15929cf, type: 2}
+  - {fileID: 2100000, guid: 0a1ea4eb0b60cb244ba1e745187786fd, type: 2}
+  - {fileID: 2100000, guid: 183447e0cb77baa428e21b7877532abb, type: 2}
+  - {fileID: 2100000, guid: 8bf49a8c418fe6a478b5266a2400096a, type: 2}
   anmeSpead: 1.5
   max: 0.94
 --- !u!65 &7580068451283461541
