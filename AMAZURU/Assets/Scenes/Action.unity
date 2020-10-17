@@ -1834,7 +1834,7 @@ MonoBehaviour:
   rainPotChangeAnimeTimeSpead: 0.75
   lookMode: 0
   lookAnimeTime: 0
-  animator: {fileID: 0}
+  animator: {fileID: 721732562}
   GoalPos: {x: 0, y: 0, z: 0}
 --- !u!135 &721732559
 SphereCollider:
@@ -3240,7 +3240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2911a5758a6359a4095e00ddd31c7630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SLoadStageData: {fileID: 11400000, guid: 469be221468a93744b497cfbc9e12741, type: 2}
+  SLoadStageData: {fileID: 11400000, guid: 5f794b813b6ca374e99ebfe7666d624d, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
   master: {fileID: 252210680}
   cameraPos: {fileID: 721732558}
