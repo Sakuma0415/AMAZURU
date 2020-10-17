@@ -212,6 +212,7 @@ public class CameraPos : MonoBehaviour
             {
                 //ゲーム終了後の演出開始時の処理
                 //GameEndFlg = true;
+                animator.SetBool("Set", true);
                 EndAfterTime = 0;
                 transformToGameEnd = transform.position;
                 if (lookAnimeTime > 0)
@@ -229,7 +230,7 @@ public class CameraPos : MonoBehaviour
                 lotDis = endCameraPos;
                 lotPos = PlayerTransform.position;
                 lotYAn = Yangle;
-                Debug.Log(lotPos);
+                //Debug.Log(lotPos);
                 LightningStrikeAction = ChaMs.LightningStrikePoint.transform.position;
                 
             }
@@ -557,7 +558,7 @@ public class CameraPos : MonoBehaviour
     {
         Vector3 plPos = PlayerTransform.position;
         float angle = Mathf.Atan2(plPos.z - GoalPos.z, plPos.x - GoalPos.x)*Mathf.Rad2Deg ;
-        CameraDis = 10;
+        CameraDis = 4;
         XZangle = angle;
         Yangle = 10;
     }
