@@ -19,6 +19,13 @@ public class RemainsScaffold : MonoBehaviour
     private Vector3 waterPosition = Vector3.zero;
 
     private bool isFall = false;
+    private bool isLock = false;
+
+    [SerializeField, Tooltip("水中フラグ")] private bool isInWater = false;
+    /// <summary>
+    /// 足場が水に浸かっているときのフラグ
+    /// </summary>
+    public bool IsInWater { get { return isInWater; } }
 
     // Start is called before the first frame update
     void Start()
@@ -39,48 +46,53 @@ public class RemainsScaffold : MonoBehaviour
 
         if (waterHi != null)
         {
-            if(gameMode != PlayState.GameMode.RotationPot)
+            // 足場が移動できる範囲を取得
+            Ray ray = new Ray(transform.position, Vector3.down);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 200f, groundLayerMask))
             {
-                Ray ray = new Ray(transform.position, Vector3.down);
-                RaycastHit hit;
-                if(Physics.Raycast(ray, out hit, 200f, groundLayerMask))
-                {
-                    minPosition = hit.point + Vector3.up * boxCollider.size.y * 0.5f;
-                }
-                else
-                {
-                    minPosition = new Vector3(transform.position.x, boxCollider.size.y * 0.5f, transform.position.z);
-                }
+                minPosition = hit.point + Vector3.up * boxCollider.size.y * 0.5f;
+            }
+            else
+            {
+                minPosition = new Vector3(transform.position.x, boxCollider.size.y * 0.5f, transform.position.z);
+            }
 
-                waterPosition = new Vector3(transform.position.x, waterHi.max - (boxCollider.size.y * 0.5f - 0.06f), transform.position.z);
+            waterPosition = new Vector3(transform.position.x, waterHi.max - (boxCollider.size.y * 0.5f - 0.06f), transform.position.z);
 
-                ray = new Ray(transform.position, Vector3.up);
-                if (Physics.Raycast(ray, out hit, 200f, groundLayerMask))
-                {
-                    maxPosition = hit.point + Vector3.down * boxCollider.size.y * 0.5f;
-                }
-                else
-                {
-                    maxPosition = new Vector3(transform.position.x, StageMake.LoadStageData.stageSize.y + boxCollider.size.y * 0.5f, transform.position.z);
-                }
+            ray = new Ray(transform.position, Vector3.up);
+            if (Physics.Raycast(ray, out hit, 200f, groundLayerMask))
+            {
+                maxPosition = hit.point + Vector3.down * boxCollider.size.y * 0.5f;
+            }
+            else
+            {
+                maxPosition = new Vector3(transform.position.x, StageMake.LoadStageData.stageSize.y + boxCollider.size.y * 0.5f, transform.position.z);
+            }
 
-                if (isFall)
+            isLock = gameMode == PlayState.GameMode.RotationPot;
+            isFall = PlayState.playState.IsFallBox && isLock;
+            
+
+            if (isFall)
+            {
+                Vector3 target = minPosition.y > waterPosition.y ? minPosition : waterPosition;
+                if (Vector3.Distance(transform.position, target) > 0.1f)
                 {
-                    Vector3 target = minPosition.y > waterPosition.y ? minPosition : waterPosition;
-                    if (Vector3.Distance(transform.position, target) > 0.1f)
+                    if (gameMode != PlayState.GameMode.Pause)
                     {
-                        if(gameMode != PlayState.GameMode.Pause)
-                        {
-                            transform.position = Vector3.MoveTowards(transform.position, target, 5.0f * Time.deltaTime);
-                        }
-                    }
-                    else
-                    {
-                        isFall = false;
-                        transform.position = target;
+                        transform.position = Vector3.MoveTowards(transform.position, target, 5.0f * Time.deltaTime);
                     }
                 }
                 else
+                {
+                    isFall = false;
+                    transform.position = target;
+                }
+            }
+            else
+            {
+                if(isLock == false)
                 {
                     if (minPosition.y + (boxCollider.size.y * 0.5f - 0.06f) > waterHi.max)
                     {
@@ -96,14 +108,12 @@ public class RemainsScaffold : MonoBehaviour
                     }
                 }
             }
-            else
-            {
-                isFall = true;
-            }
         }
         else
         {
             waterHi = Progress.progress.waterHi;
         }
+
+        isInWater = waterHi != null && transform.position.y < waterHi.max;
     }
 }
