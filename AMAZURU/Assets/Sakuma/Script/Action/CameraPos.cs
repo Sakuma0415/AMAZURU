@@ -550,9 +550,15 @@ public class CameraPos : MonoBehaviour
     {
         potAnimeTime = 0;
         outflg = true;
-        beforePos = PlayerTransform.position + new Vector3(0, LookHiSet, 0);
+        if (lookMode)
+        {
+            beforePos = PlayerTransform.position + new Vector3(0, LookHiSet, 0);
+        }
+        
         if (DontBack)
         {
+            //?
+            
             beforeAngleXZ = XZangle;
             beforeAngleY = Yangle;
         }
