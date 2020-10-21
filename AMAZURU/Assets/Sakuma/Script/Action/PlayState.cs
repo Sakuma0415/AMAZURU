@@ -240,7 +240,7 @@ public class PlayState : MonoBehaviour
         waterHi = WaterObj.GetComponent<WaterHi>();
 
         WaveObj.SetActive(true);
-        WaveObj.transform.localScale = StageMake.LoadStageData.stageSize- new Vector3(0.1f, 0.1f, 0.1f);
+        WaveObj.transform.localScale = StageMake.LoadStageData.stageSize- new Vector3(0.02f, 0.01f, 0.02f);
         WaveObj.transform.localPosition = Vector3.zero;
         WaveObj.transform.localEulerAngles  = -lotAngle;
         WaveObj.GetComponent<BoxMake>().sethi  = waterHi.max / StageMake.LoadStageData.stageSize.x;

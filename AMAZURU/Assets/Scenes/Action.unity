@@ -3720,6 +3720,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material:
   - {fileID: 2100000, guid: 433e8abaf684fc2498fc6c0db370e826, type: 2}
+  - {fileID: 2100000, guid: a0023aed756f6574494e2538c143ed7d, type: 2}
   spead: 0.1
 --- !u!4 &1459040191
 Transform:
@@ -5396,7 +5397,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a0023aed756f6574494e2538c143ed7d, type: 2}
+  - {fileID: 2100000, guid: 433e8abaf684fc2498fc6c0db370e826, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
