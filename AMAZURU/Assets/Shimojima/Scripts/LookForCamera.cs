@@ -64,6 +64,20 @@ public class LookForCamera : MonoBehaviour
             selectUI.SetActive(true);
             lookCamera = true;
         }
+        try
+        {
+            if (PlayState.playState.gameMode != PlayState.GameMode.Play)
+            {
+                selectUI.SetActive(false);
+                lookCamera = false;
+            }
+        }
+        catch
+        {
+
+        }
+
+
     }
 
     private void OnTriggerExit(Collider other)
