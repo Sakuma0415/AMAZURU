@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8ca9937970dae448c3f419008262f1, type: 3}
+  m_Name: EditData_Iseki_Tutorial01
+  m_EditorClassIdentifier: 
+  stageName: Iseki_Tutorial01
+  editName: Iseki_Tutorial01
+  diificulty: 1
+  amehurashiNum: 2
+  increasedWaterVolume: 2
+  clearPercentage: 0
+  stage: {fileID: 8938234554758237291, guid: 1441465588eb05b4b8a7af256ad5ff1d, type: 3}
+  viewStage: {fileID: 8938234554758237291, guid: 1441465588eb05b4b8a7af256ad5ff1d,
+    type: 3}
+  sData: {fileID: 0}
+  gridCells: {x: 10, y: 8, z: 10}
+  defPos: {x: -6, y: 0.2, z: 10}

@@ -74,6 +74,9 @@ public class PlayState : MonoBehaviour
     Vector3 saveLot = Vector3.zero;
     Vector3 playerStartPos = Vector3.zero;
 
+    public bool IsFallBox = false;
+
+
     // 初期化
     void Start()
     {
@@ -204,6 +207,7 @@ public class PlayState : MonoBehaviour
         {
             timelot = false;
             stageObj.transform.eulerAngles = Vector3.Lerp(startAngle, afterAngle, 1);
+            IsFallBox = true;
             character.GetComponent<PlayerType2>().IsDontCharacterMove = false;
             WaterObj.SetActive(true);
             WaterObj.transform.eulerAngles=Vector3 .zero ;
@@ -222,6 +226,7 @@ public class PlayState : MonoBehaviour
     }
     public void RotationPotStart(Vector3 lotAngle ,Vector3 Weve, Vector3 pot, float goAngle=0,bool SetAngle=false)
     {
+        IsFallBox = false;
         character.GetComponent<PlayerType2>().IsDontShield = true;
         character.GetComponent<PlayerType2>().IsDontCharacterMove  = true;
 
@@ -235,7 +240,7 @@ public class PlayState : MonoBehaviour
         waterHi = WaterObj.GetComponent<WaterHi>();
 
         WaveObj.SetActive(true);
-        WaveObj.transform.localScale = StageMake.LoadStageData.stageSize- new Vector3(0.1f, 0.1f, 0.1f);
+        WaveObj.transform.localScale = StageMake.LoadStageData.stageSize- new Vector3(0.02f, 0.01f, 0.02f);
         WaveObj.transform.localPosition = Vector3.zero;
         WaveObj.transform.localEulerAngles  = -lotAngle;
         WaveObj.GetComponent<BoxMake>().sethi  = waterHi.max / StageMake.LoadStageData.stageSize.x;

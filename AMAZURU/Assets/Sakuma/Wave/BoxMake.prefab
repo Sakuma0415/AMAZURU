@@ -139,6 +139,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BoxCheck: 0
   material: {fileID: 2100000, guid: 67213ab17354693449d040e4a19d8555, type: 2}
-  topMaterial: {fileID: 2100000, guid: a0023aed756f6574494e2538c143ed7d, type: 2}
+  topMaterial: {fileID: 2100000, guid: 433e8abaf684fc2498fc6c0db370e826, type: 2}
   sethi: 0.2
+  moveTime: 0
   Hi: 0
+  lat: 0

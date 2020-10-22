@@ -121,6 +121,12 @@ public class CameraPos : MonoBehaviour
     float lotYAn = 0;
     Vector3 LightningStrikeAction = Vector3.zero;
     bool kari = false;
+
+    [SerializeField]
+    Animator animator;
+
+
+
     void Start()
     {
         //初期化
@@ -205,7 +211,15 @@ public class CameraPos : MonoBehaviour
             if (PlayState.playState.gameMode==PlayState.GameMode.GameOver || PlayState.playState.gameMode == PlayState.GameMode.Clear )
             {
                 //ゲーム終了後の演出開始時の処理
-                //GameEndFlg = true;
+                //
+                if (PlayState.playState.gameMode == PlayState.GameMode.Clear)
+                {
+                    animator.SetBool("Set", true);
+                }
+                else
+                {
+                    GameEndFlg = true;
+                }
                 EndAfterTime = 0;
                 transformToGameEnd = transform.position;
                 if (lookAnimeTime > 0)
@@ -223,7 +237,7 @@ public class CameraPos : MonoBehaviour
                 lotDis = endCameraPos;
                 lotPos = PlayerTransform.position;
                 lotYAn = Yangle;
-                Debug.Log(lotPos);
+                //Debug.Log(lotPos);
                 LightningStrikeAction = ChaMs.LightningStrikePoint.transform.position;
                 
             }
@@ -536,9 +550,15 @@ public class CameraPos : MonoBehaviour
     {
         potAnimeTime = 0;
         outflg = true;
-        beforePos = PlayerTransform.position + new Vector3(0, LookHiSet, 0);
+        if (lookMode)
+        {
+            beforePos = PlayerTransform.position + new Vector3(0, LookHiSet, 0);
+        }
+        
         if (DontBack)
         {
+            //?
+            
             beforeAngleXZ = XZangle;
             beforeAngleY = Yangle;
         }
@@ -551,7 +571,7 @@ public class CameraPos : MonoBehaviour
     {
         Vector3 plPos = PlayerTransform.position;
         float angle = Mathf.Atan2(plPos.z - GoalPos.z, plPos.x - GoalPos.x)*Mathf.Rad2Deg ;
-        CameraDis = 10;
+        CameraDis = 4;
         XZangle = angle;
         Yangle = 10;
     }
