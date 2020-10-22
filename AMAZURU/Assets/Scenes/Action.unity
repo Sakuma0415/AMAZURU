@@ -3240,7 +3240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2911a5758a6359a4095e00ddd31c7630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SLoadStageData: {fileID: 11400000, guid: 5f794b813b6ca374e99ebfe7666d624d, type: 2}
+  SLoadStageData: {fileID: 11400000, guid: 225436dc3a8c2834a800913cb31b3a66, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
   master: {fileID: 252210680}
   cameraPos: {fileID: 721732558}
@@ -3720,6 +3720,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material:
   - {fileID: 2100000, guid: 433e8abaf684fc2498fc6c0db370e826, type: 2}
+  - {fileID: 2100000, guid: a0023aed756f6574494e2538c143ed7d, type: 2}
   spead: 0.1
 --- !u!4 &1459040191
 Transform:
@@ -5396,7 +5397,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a0023aed756f6574494e2538c143ed7d, type: 2}
+  - {fileID: 2100000, guid: 433e8abaf684fc2498fc6c0db370e826, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
