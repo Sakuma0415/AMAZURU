@@ -111,7 +111,13 @@ public class RemainsScaffold : MonoBehaviour
         }
         else
         {
-            waterHi = Progress.progress.waterHi;
+            try
+            {
+                waterHi = Progress.progress.waterHi;
+            }catch
+            {
+
+            }
         }
 
         isInWater = waterHi != null && transform.position.y < waterHi.max;
