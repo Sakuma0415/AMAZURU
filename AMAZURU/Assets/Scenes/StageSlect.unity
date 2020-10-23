@@ -2715,6 +2715,7 @@ MonoBehaviour:
   amehurashiNum: {fileID: 2768511443059327187}
   increasedWaterVolume: {fileID: 2768511443575872453}
   clearPercentage: {fileID: 1797252828}
+  flame: {fileID: 0}
   psdNormal:
   - psd: {fileID: 11400000, guid: e542c162e6d45234a9fc558e81bd8f20, type: 2}
     stageNumber: 0
@@ -2733,11 +2734,11 @@ MonoBehaviour:
   - psd: {fileID: 11400000, guid: 0ddd916894aa4e3449ad831cd81db414, type: 2}
     stageNumber: 7
   psdExtra:
-  - psd: {fileID: 11400000, guid: 84ea0d382a9f57e46b019a2505e43bef, type: 2}
+  - psd: {fileID: 11400000, guid: 6fc79e092b044514ea6f47b8356445ca, type: 2}
     stageNumber: 0
   - psd: {fileID: 11400000, guid: 5086b1d93f845784e87ec17b9efba1a0, type: 2}
     stageNumber: 1
-  defPos: {x: -6, y: -0.2, z: 0}
+  heightAdjust: 0
   scaleAdjust: {x: 8, y: 8}
   speed: 1
   rotateAngle: 36

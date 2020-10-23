@@ -12,14 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de8ca9937970dae448c3f419008262f1, type: 3}
   m_Name: EditData_Iseki_fn1016
   m_EditorClassIdentifier: 
-  stageName: 
+  stageName: "\u30CE\u30FC\u30DE\u30EB\u30B9\u30C6\u30FC\u30B801"
   editName: Iseki_fn1016
-  diificulty: 0
+  diificulty: 2
   amehurashiNum: 4
-  increasedWaterVolume: 0
+  increasedWaterVolume: 2
   clearPercentage: 0
   stage: {fileID: 4132122122675246219, guid: c79c8e3083d64c74d8f6b5132ee10421, type: 3}
-  viewStage: {fileID: 0}
-  sData: {fileID: 0}
+  viewStage: {fileID: 4132122122675246219, guid: c79c8e3083d64c74d8f6b5132ee10421,
+    type: 3}
+  sData: {fileID: 11400000, guid: b4242c0640832264baf820957053b3e9, type: 2}
   gridCells: {x: 10, y: 10, z: 10}
   defPos: {x: -6, y: 0.2, z: 10}
