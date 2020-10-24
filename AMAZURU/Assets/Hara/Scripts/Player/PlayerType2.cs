@@ -413,21 +413,25 @@ public class PlayerType2 : MyAnimation
                         subRay = new Ray(baseRayPosition + Vector3.down * character.height * (isOnSlope ? 0.525f : 0.475f) + rayPosition[i + 1 < rayPosition.Length ? i + 1 : 0] * character.radius * (j == 0 ? 1 : -1), rayPosition[i]);
                         if (Physics.Raycast(subRay, out hit, character.radius * 1.5f, groundLayer) && hit.collider.isTrigger == false)
                         {
+                            Vector3 hitNormal = hit.normal;
+                            hitNormal.x = Mathf.Floor(Mathf.Abs(hitNormal.x) * 10) / 10;
+                            hitNormal.y = Mathf.Floor(Mathf.Abs(hitNormal.y) * 10) / 10;
+                            hitNormal.z = Mathf.Floor(Mathf.Abs(hitNormal.z) * 10) / 10;
+
                             if (isOnSlope)
                             {
-                                if (hit.normal.y == 0)
+                                if (hitNormal.y < 0.1f)
                                 {
                                     count++;
                                 }
                             }
                             else
                             {
-                                count++;
-                                if (hit.normal.y != 0)
+                                if (hitNormal.y != 0)
                                 {
                                     flag = true;
+                                    break;
                                 }
-                                break;
                             }
                         }
                     }
