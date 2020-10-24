@@ -10,6 +10,8 @@ public class LookForCamera : MonoBehaviour
     private GameObject[] images;
     private bool lookCamera = false;
     private bool rainFall;
+    [SerializeField ]
+    private int colNum = 9;
     /// <summary>
     /// アメフラシが起動しているかの確認
     /// <para>false か true でUIが変更されます</para>
@@ -59,7 +61,7 @@ public class LookForCamera : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.gameObject.layer == 9)
+        if(other.gameObject.layer == colNum)
         {
             selectUI.SetActive(true);
             lookCamera = true;
@@ -82,7 +84,7 @@ public class LookForCamera : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.layer == 9)
+        if (other.gameObject.layer == colNum)
         {
             selectUI.SetActive(false);
             lookCamera = false;
