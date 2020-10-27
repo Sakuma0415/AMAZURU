@@ -61,9 +61,7 @@ MonoBehaviour:
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 1
-  minPosition: {x: 0, y: 0, z: 0}
-  maxPosition: {x: 0, y: 0, z: 0}
-  waterPosition: {x: 0, y: 0, z: 0}
+  isInWater: 0
 --- !u!1001 &4569895327366184196
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -130,6 +128,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7537130318248123831, guid: dcf0a58bdef54cf4d95b104376bfb491,
+        type: 3}
+      propertyPath: color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7537130318248123831, guid: dcf0a58bdef54cf4d95b104376bfb491,
+        type: 3}
+      propertyPath: color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7537130318248123831, guid: dcf0a58bdef54cf4d95b104376bfb491,
+        type: 3}
+      propertyPath: color.b
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dcf0a58bdef54cf4d95b104376bfb491, type: 3}
