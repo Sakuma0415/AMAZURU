@@ -46,7 +46,7 @@ public class RemainsScaffold : MonoBehaviour
 
         if (waterHi != null)
         {
-            // 足場が移動できる範囲を取得
+            // 足場が移動できる下限を取得
             Ray ray = new Ray(transform.position, Vector3.down);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, 200f, groundLayerMask))
@@ -58,8 +58,10 @@ public class RemainsScaffold : MonoBehaviour
                 minPosition = new Vector3(transform.position.x, boxCollider.size.y * 0.5f, transform.position.z);
             }
 
+            // 水位を取得
             waterPosition = new Vector3(transform.position.x, waterHi.max - (boxCollider.size.y * 0.5f - 0.06f), transform.position.z);
 
+            // 足場が移動できる上限を取得
             ray = new Ray(transform.position, Vector3.up);
             if (Physics.Raycast(ray, out hit, 200f, groundLayerMask))
             {
@@ -70,13 +72,15 @@ public class RemainsScaffold : MonoBehaviour
                 maxPosition = new Vector3(transform.position.x, StageMake.LoadStageData.stageSize.y + boxCollider.size.y * 0.5f, transform.position.z);
             }
 
+            // 制御フラグ
             isLock = gameMode == PlayState.GameMode.RotationPot;
             isFall = PlayState.playState.IsFallBox && isLock;
-            
+
+            // 目的座標を取得
+            Vector3 target = minPosition.y > waterPosition.y ? minPosition : waterPosition;
 
             if (isFall)
             {
-                Vector3 target = minPosition.y > waterPosition.y ? minPosition : waterPosition;
                 if (Vector3.Distance(transform.position, target) > 0.1f)
                 {
                     if (gameMode != PlayState.GameMode.Pause)
@@ -104,20 +108,21 @@ public class RemainsScaffold : MonoBehaviour
                     }
                     else
                     {
-                        transform.position = new Vector3(transform.position.x, waterHi.max - (boxCollider.size.y * 0.5f - 0.06f), transform.position.z);
+                        if (Vector3.Distance(transform.position, target) > 0.1f)
+                        {
+                            transform.position = new Vector3(transform.position.x, waterHi.max - (boxCollider.size.y * 0.5f - 0.06f), transform.position.z);
+                        }
+                        else
+                        {
+                            transform.position = target;
+                        }
                     }
                 }
             }
         }
         else
         {
-            try
-            {
-                waterHi = Progress.progress.waterHi;
-            }catch
-            {
-
-            }
+            waterHi = Progress.progress.waterHi;
         }
 
         isInWater = waterHi != null && transform.position.y < waterHi.max;
