@@ -39,6 +39,7 @@ public class Progress : MonoBehaviour
     {
         SetState();
         progress = this;
+        StageMake.LoadStageData.Challenge += 1;
         SoundManager.soundManager.PlayBgm("PerituneMaterial_Wonder3_loop", 0.5f, 0.1f, 1);
 
         IsThunder = false;
@@ -85,7 +86,6 @@ public class Progress : MonoBehaviour
     //result画面を呼び出す関数
     public void ResultSet()
     {
-        StageMake.LoadStageData.Challenge += 1;
         StageMake.LoadStageData.Clear  += 1;
         StartCoroutine(ResultDelay(true));
     }
@@ -93,7 +93,7 @@ public class Progress : MonoBehaviour
     //gameover画面を呼び出す関数
     public void GameOverSet()
     {
-        StageMake.LoadStageData.Challenge += 1;
+
         StartCoroutine(ResultDelay(false));
     }
 
