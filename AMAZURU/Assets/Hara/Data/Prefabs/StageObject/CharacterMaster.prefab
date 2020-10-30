@@ -46,5 +46,7 @@ MonoBehaviour:
   dontDestroy: 0
   playerPrefab: {fileID: 7510005379315772952, guid: cda06fb60842246498bade9539daf016,
     type: 3}
+  thunderPrefab: {fileID: 8803238129476494341, guid: c2a87b60e7f0db745afcd678449bb53f,
+    type: 3}
   electricTimer: 1
   electricInterval: 2
