@@ -6,19 +6,14 @@ using UnityEngine.Analytics;
 
 public class Wind : MonoBehaviour
 {
-    [SerializeField, Tooltip("風のエフェクト")] private ParticleSystem[] windEffect = null;
+    [SerializeField, Tooltip("風のエフェクト")] private ParticleSystem windEffect = null;
     [SerializeField, Tooltip("判定用のLayerMask")] private LayerMask layerMask;
 
     [SerializeField, Header("風の有効範囲(マス)"), Range(1, 5)] private int windMaxArea = 1;
     [SerializeField, Header("風の吹き飛ばし範囲(有効範囲 + nマス)"), Range(1, 10)] private int blowAwayArea = 1;
     [SerializeField, Header("風圧"), Range(1, 10)] private float windPower = 1.0f;
 
-    [SerializeField, Header("正面")] private bool forward = true;
-    [SerializeField, Header("背面")] private bool back = false;
-    [SerializeField, Header("右")] private bool right = false;
-    [SerializeField, Header("左")] private bool left = false;
-
-    private Coroutine[] coroutines = null;
+    private Coroutine coroutine = null;
     private BoxCollider boxCollider = null;
     private float upHeight = 0;
     private float downHeight = 0;
@@ -41,7 +36,6 @@ public class Wind : MonoBehaviour
     /// </summary>
     private void WindInit()
     {
-        coroutines = new Coroutine[4];
         boxCollider = GetComponent<BoxCollider>();
     }
 
@@ -80,25 +74,7 @@ public class Wind : MonoBehaviour
             if (inWater == false)
             {
                 // 対象オブジェクトに風が当たったかをチェック
-                if (forward)
-                {
-                    CreateWind(transform.forward, 0);
-                }
-
-                if (back)
-                {
-                    CreateWind(-transform.forward, 1);
-                }
-
-                if (right)
-                {
-                    CreateWind(transform.right, 2);
-                }
-
-                if (left)
-                {
-                    CreateWind(-transform.right, 3);
-                }
+                CreateWind(transform.forward);
             }
 
             if ((upHeight > 0 || downHeight > 0) && inWater == false)
@@ -119,18 +95,14 @@ public class Wind : MonoBehaviour
                 boxCollider.size = Vector3.one;
             }
         }
-        WindEffectControl(gameMode, forward && inWater == false, 0);
-        WindEffectControl(gameMode, back && inWater == false, 1);
-        WindEffectControl(gameMode, right && inWater == false, 2);
-        WindEffectControl(gameMode, left && inWater == false, 3);
+        WindEffectControl(gameMode, inWater == false);
     }
 
     /// <summary>
     /// 風の生成
     /// </summary>
     /// <param name="direction">風向き</param>
-    /// <param name="windID">チェック用のID番号</param>
-    private void CreateWind(Vector3 direction, int windID)
+    private void CreateWind(Vector3 direction)
     {
         RaycastHit hit;
         if(direction == Vector3.up || direction == Vector3.down)
@@ -158,7 +130,7 @@ public class Wind : MonoBehaviour
         }
         else
         {
-            if (coroutines[windID] != null) { return; }
+            if (coroutine != null) { return; }
 
             if (Physics.BoxCast(transform.position, Vector3.one * 0.45f, direction, out hit, Quaternion.identity, windMaxArea + 0.5f) && hit.collider.isTrigger == false)
             {
@@ -166,7 +138,7 @@ public class Wind : MonoBehaviour
                 {
                     // プレイヤーに当たった場合
                     CharacterMaster.Instance.Player.WindAction(direction, transform.position + direction * (windMaxArea + blowAwayArea), windPower);
-                    coroutines[windID] = StartCoroutine(IntervalCoroutine(windID));
+                    coroutine = StartCoroutine(IntervalCoroutine());
                 }
             }
         }
@@ -175,9 +147,8 @@ public class Wind : MonoBehaviour
     /// <summary>
     /// 風のインターバルコルーチン
     /// </summary>
-    /// <param name="id">ID番号</param>
     /// <returns></returns>
-    private IEnumerator IntervalCoroutine(int id)
+    private IEnumerator IntervalCoroutine()
     {
         float time = 0;
 
@@ -190,7 +161,7 @@ public class Wind : MonoBehaviour
             yield return null;
         }
 
-        coroutines[id] = null;
+        coroutine = null;
     }
 
     /// <summary>
@@ -198,29 +169,28 @@ public class Wind : MonoBehaviour
     /// </summary>
     /// <param name="mode">ゲームモード</param>
     /// <param name="activeFlag">風の有効状態</param>
-    /// <param name="index">風の方位番号</param>
-    private void WindEffectControl(PlayState.GameMode mode, bool activeFlag, int index)
+    private void WindEffectControl(PlayState.GameMode mode, bool activeFlag)
     {
         if (activeFlag)
         {
             if(mode != PlayState.GameMode.Pause)
             {
-                if(windEffect[index].isPlaying == false)
+                if(windEffect.isPlaying == false)
                 {
-                    windEffect[index].Play();
+                    windEffect.Play();
                 }
             }
             else
             {
-                if (windEffect[index].isPlaying)
+                if (windEffect.isPlaying)
                 {
-                    windEffect[index].Pause();
+                    windEffect.Pause();
                 }
             }
         }
         else
         {
-            if(windEffect[index].isStopped == false) { windEffect[index].Stop(); }
+            if(windEffect.isStopped == false) { windEffect.Stop(); }
         }
     }
 }
