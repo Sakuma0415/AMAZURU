@@ -90,7 +90,6 @@ public class RemainsScaffold : MonoBehaviour
                 }
                 else
                 {
-                    isFall = false;
                     transform.position = target;
                 }
             }
