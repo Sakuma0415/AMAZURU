@@ -622,6 +622,7 @@ public class StageEditor : MonoBehaviour
                 o.transform.localPosition = obj.transform.localPosition;
                 o.transform.localEulerAngles += obj.transform.localEulerAngles;
                 o.transform.parent = stageRoot.transform;
+                if (deleteComponent && o.name == "SandFloor" || o.name == "RuinsFloor" ) { Destroy(o.GetComponent<BoxCollider>()); }
                 o.AddComponent<MyCellIndex>().cellIndex = obj.GetComponent<MyCellIndex>().cellIndex;
                 Vector3Int cellIndex = o.GetComponent<MyCellIndex>().cellIndex;
                 _StageObjects[cellIndex.x, cellIndex.y, cellIndex.z] = o;

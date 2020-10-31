@@ -87,10 +87,10 @@ MonoBehaviour:
     value: 2.72
   aperture:
     overrideState: 1
-    value: 14.4
+    value: 32
   focalLength:
     overrideState: 1
-    value: 48
+    value: 1
   kernelSize:
     overrideState: 0
     value: 1
@@ -143,7 +143,7 @@ MonoBehaviour:
     overrideState: 1
     value: 1.5
   softKnee:
-    overrideState: 1
+    overrideState: 0
     value: 0.801
   clamp:
     overrideState: 0

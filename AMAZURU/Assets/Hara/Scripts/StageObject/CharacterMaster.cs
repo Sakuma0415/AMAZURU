@@ -5,6 +5,7 @@ using UnityEngine;
 public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
 {
     [SerializeField, Tooltip("プレイヤーのPrefab")] private PlayerType2 playerPrefab = null;
+    [SerializeField, Tooltip("雷オブジェクト")] private Thunder thunderPrefab = null;
 
     [SerializeField, Header("感電時の操作無効時間")] private float electricTimer = 1.0f;
     [SerializeField, Header("感電するインターバル")] private float electricInterval = 1.0f;
@@ -54,6 +55,8 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
     private float time = 0;
     private bool isElectricInterval = false;
 
+    private Thunder thunder = null;
+
     /// <summary>
     /// プレイヤーをスポーンさせる（ステージの読み込みが完了した後に実行）
     /// </summary>
@@ -82,6 +85,11 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
 
         // 敵情報を取得
         GetEnemyInfo(water);
+
+        if (loadStage.IsThunder)
+        {
+            thunder = Instantiate(thunderPrefab, transform.parent);
+        }
     }
 
     /// <summary>
@@ -283,6 +291,11 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
     {
         if(IsCanLightningStrike == false || LightningStrikePoint == null) { return; }
         enemy.ChangeElectricMode();
+
+        if(thunder != null)
+        {
+            thunder.PlayThunder(LightningStrikePoint.transform.position);
+        }
     }
 
     /// <summary>

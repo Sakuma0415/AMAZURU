@@ -69,14 +69,14 @@ public class RotationPot : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (LayerMask.LayerToName(other.gameObject.layer) == "Player")
+        if (LayerMask.LayerToName(other.gameObject.layer) == "FootCol")
         {
             set = true;
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        if (LayerMask.LayerToName(other.gameObject.layer) == "Player")
+        if (LayerMask.LayerToName(other.gameObject.layer) == "FootCol")
         {
             set = false;
         }
