@@ -19,7 +19,8 @@ MonoBehaviour:
   increasedWaterVolume: 0
   clearPercentage: 0
   stage: {fileID: 9123366311005737266, guid: e9676e2144fb5bb41b7f1877bec69bc0, type: 3}
-  viewStage: {fileID: 0}
+  viewStage: {fileID: 9123366311005737266, guid: 81c78e12773c5a0498325388e6acd27f,
+    type: 3}
   sData: {fileID: 0}
   gridCells: {x: 13, y: 13, z: 13}
   defPos: {x: -6, y: 0.2, z: 10}
