@@ -16,7 +16,7 @@ MonoBehaviour:
   stageSize: {x: 13, y: 13, z: 13}
   startPos: {x: 5, y: 2, z: 1}
   waterStep: 2
-  stagePrefab: {fileID: 3614760271671322899, guid: fe67e81217673b74cb376f7601dd70df,
+  stagePrefab: {fileID: 3362921701880795684, guid: ab8c2623ea3cdfb47b4f5111f54f110d,
     type: 3}
   AmehurashiQuantity: 5
   startAngle: 270
@@ -28,5 +28,5 @@ MonoBehaviour:
   DoThunder: 0
   NextStageData: {fileID: 11400000, guid: 80cf93b53a4783845bcb3b11678a2c90, type: 2}
   LastStage: 1
-  Challenge: 3
+  Challenge: 4
   Clear: 1

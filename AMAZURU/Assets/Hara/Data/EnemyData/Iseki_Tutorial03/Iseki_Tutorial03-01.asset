@@ -19,10 +19,14 @@ MonoBehaviour:
   UseStartPosSetting: 1
   StartPosition: {x: 7.5, y: 4, z: 3.5}
   MovePlan:
-  - {x: 7.5, y: 4, z: 2.5}
+  - {x: 9.5, y: 5, z: 0.5}
+  - {x: 7.5, y: 5, z: 0.5}
+  - {x: 7.5, y: 5, z: 3}
+  - {x: 7.5, y: 4, z: 4}
   - {x: 7.5, y: 4, z: 6.5}
   - {x: 9.5, y: 4, z: 6.5}
-  - {x: 9.5, y: 4, z: 2.5}
+  - {x: 9.5, y: 4, z: 4}
+  - {x: 9.5, y: 5, z: 3}
   MoveType: 0
   NomalSpeed: 1
   WaterSpeed: 1
