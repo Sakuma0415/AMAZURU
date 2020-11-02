@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7531809553742191053}
   - component: {fileID: 7531809553742191026}
   - component: {fileID: 7531809553742191025}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Fan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -167,7 +167,7 @@ PrefabInstance:
     - target: {fileID: 7265473277599391359, guid: 09ee76086a185fa4f86003c2b4377747,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.45
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7265473277599391359, guid: 09ee76086a185fa4f86003c2b4377747,
         type: 3}
