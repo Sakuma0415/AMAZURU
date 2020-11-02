@@ -124,14 +124,14 @@ public class SceneLoadManager : SingletonMonoBehaviour<SceneLoadManager>
         yield return new WaitForSeconds(1f);
         loadingImages[1].GetComponent<Animator>().SetTrigger("Start");
         yield return new WaitForSeconds(1.5f);
-        IsLoadScene = false;
-        SceneLoadFlg = false;
         loadingImages[1].GetComponent<Animator>().SetTrigger("End");
         yield return null;
         loadingImages[1].SetActive(false);
         Color c = loadingImages[1].transform.GetChild(1).GetComponent<Image>().color;
         loadingImages[1].transform.GetChild(1).GetComponent<Image>().color = new Color(c.r, c.g, c.b, 1);
         loadingImages[1].transform.GetChild(0).GetComponent<LoadEnd>().Up = 1;
+        IsLoadScene = false;
+        SceneLoadFlg = false;
         yield return null;
     }
 
