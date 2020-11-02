@@ -1283,7 +1283,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -5, y: 10}
+  m_AnchoredPosition: {x: 9.8, y: 21.2}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &502636665
@@ -3240,7 +3240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2911a5758a6359a4095e00ddd31c7630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SLoadStageData: {fileID: 11400000, guid: 469be221468a93744b497cfbc9e12741, type: 2}
+  SLoadStageData: {fileID: 11400000, guid: a6669a9a78e95524ebd7cbdc06b871e2, type: 2}
   water: {fileID: 7083060860459132360, guid: d28259eeed53fd84fb01c56533a8c846, type: 3}
   master: {fileID: 252210680}
   cameraPos: {fileID: 721732558}
@@ -3862,7 +3862,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2, y: 15}
+  m_AnchoredPosition: {x: -2.8, y: 9.3}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1509211945

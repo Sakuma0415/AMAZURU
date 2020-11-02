@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07438997e6cedce47a9cb49ea6fc8554, type: 3}
+  m_Name: Iseki_Tutorial03
+  m_EditorClassIdentifier: 
+  stageName: Iseki_Tutorial03
+  stageSize: {x: 10, y: 10, z: 10}
+  startPos: {x: 5, y: 2, z: 1}
+  waterStep: 2
+  stagePrefab: {fileID: 1977428067951770413, guid: 60e93965c85a41044a8994168deb991c,
+    type: 3}
+  AmehurashiQuantity: 2
+  startAngle: 270
+  CameraDisS: 15
+  CameraDisP: 5
+  TutorialFlg: 1
+  TutorialObjs:
+  - {fileID: 1256797477728859292, guid: a8a4f2c8a27b4b049a4eafcbcb008089, type: 3}
+  - {fileID: 1256797477728859292, guid: 7658619e45f654e4d8e1b28f082c6df3, type: 3}
+  IsThunder: 1
+  DoThunder: 2
+  NextStageData: {fileID: 11400000, guid: b4242c0640832264baf820957053b3e9, type: 2}
+  LastStage: 0
+  Challenge: 4
+  Clear: 1
