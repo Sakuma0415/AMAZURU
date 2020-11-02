@@ -596,7 +596,7 @@ public class PlayerType2 : MyAnimation
         for (int i = 0; i < prismGroundObjects.Length; i++)
         {
             int next = i + 1 > rayPosition.Length - 1 ? 0 : i + 1;
-            Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z) + rayPosition[i] * character.radius * 1.5f + rayPosition[next] * character.radius * 1.5f, Vector3.down);
+            Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z) + rayPosition[i] * character.radius * 1.2f + rayPosition[next] * character.radius * 1.2f, Vector3.down);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, character.height, groundLayer))
             {
