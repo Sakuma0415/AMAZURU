@@ -230,6 +230,9 @@ public class PlayState : MonoBehaviour
         character.GetComponent<PlayerType2>().IsDontShield = true;
         character.GetComponent<PlayerType2>().IsDontCharacterMove  = true;
 
+        //ここ
+        SoundManager.soundManager.PlaySe("btn09", 0.5f);
+
         PlayState.playState.gameMode = PlayState.GameMode.RotationPot;
         PlayState.playState.RotationPotTime = 5;
         PlayState.playState.RotationPotTimech = false;
