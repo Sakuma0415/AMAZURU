@@ -173,8 +173,10 @@ public class NewTypeSelect : MonoBehaviour
 
 
         sssd = config.save;
-        saveImage = referenceImage[sssd.level + 2];
-        flame.sprite = saveImage;
+        if (sssd.doRetention)
+        {
+            flame.sprite = referenceImage[sssd.level + 2];
+        }
         vMoveSpeed = new Vector3(0, speed * 3, 0);
         Init();
     }
@@ -599,11 +601,6 @@ public class NewTypeSelect : MonoBehaviour
             if(sel == Selection.Up)
             {
                 pDataIndex = 1;
-                //for (int i = 0; i < 2; i++)
-                //{
-                //    if(le + i > allPSD.Count - 1) { le = 0; }
-                //    else { le += i; }
-                //}
 
                 le += 1;
                 if (le  > allPSD.Count - 1) { le = 0; }
@@ -613,12 +610,6 @@ public class NewTypeSelect : MonoBehaviour
             else if (sel == Selection.Down)
             {
                 pDataIndex = 2;
-
-                //for (int i = 2; i < 2; i++)
-                //{
-                //    if (le - i < 0) { le = allPSD.Count - 1; }
-                //    else { le -= i; }
-                //}
 
                 le -= 1;
                 if (le  < 0) { le = allPSD.Count - 1; }
@@ -767,7 +758,8 @@ public class NewTypeSelect : MonoBehaviour
                             else if (i == 1) 
                             {
                                 viewStage[0, j].Init();
-                                viewStage[0, j].HandOver(viewStage[i, j]); 
+                                viewStage[0, j].HandOver(viewStage[i, j]);
+                                viewStage[1, j].Init();
                             }
                         }
                         else if (sel == Selection.Down)
@@ -781,7 +773,8 @@ public class NewTypeSelect : MonoBehaviour
                             else if (i == 1) 
                             {
                                 viewStage[0, j].Init();
-                                viewStage[0, j].HandOver(viewStage[i + 1, j]); 
+                                viewStage[0, j].HandOver(viewStage[i + 1, j]);
+                                viewStage[2, j].Init();
                             }
                         }
                     }
