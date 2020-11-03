@@ -11,6 +11,7 @@ public class PlayerType2 : MyAnimation
     [SerializeField, Tooltip("Playerの傘のAnimator")] private Animator umbrellaAnimator = null;
     [SerializeField, Tooltip("地面のLayerMask")] private LayerMask groundLayer;
     [SerializeField, Tooltip("AnimationEventスクリプト")] private PlayerAnimeEvent animeEvent = null;
+    [SerializeField, Tooltip("感電エフェクト")] private ParticleSystem electroParticle = null;
 
     // コントローラーの入力
     private float inputX = 0;
@@ -354,6 +355,9 @@ public class PlayerType2 : MyAnimation
                 }
             }
         }
+
+        // 感電エフェクトの再生
+        ElectroEffect(IsElectric);
     }
 
     /// <summary>
@@ -703,6 +707,32 @@ public class PlayerType2 : MyAnimation
             else
             {
                 return;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 感電用のエフェクトを管理する処理
+    /// </summary>
+    /// <param name="active"></param>
+    private void ElectroEffect(bool active)
+    {
+        if(electroParticle != null)
+        {
+            if (active)
+            {
+                if (electroParticle.isStopped)
+                {
+                    electroParticle.Play();
+                    SoundManager.soundManager.PlaySe3D("EnemyMove", transform.position + Vector3.up * character.center.y, 0.3f);
+                }
+            }
+            else
+            {
+                if (electroParticle.isPlaying)
+                {
+                    electroParticle.Stop();
+                }
             }
         }
     }

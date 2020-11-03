@@ -174,6 +174,7 @@ Transform:
   - {fileID: 1228906483}
   - {fileID: 1577684530002374444}
   - {fileID: 7967408245444770791}
+  - {fileID: 3864037055864593633}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -214,6 +215,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   animeEvent: {fileID: 6563818926262237068}
+  electroParticle: {fileID: 5898590577844269715}
   playerSpeed: 4.3
   playerWaterSpeed: 2.5
   curve:
@@ -322,6 +324,102 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1001 &1151907374949157847
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2001958938084469647}
+    m_Modifications:
+    - target: {fileID: 4207405063999669521, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405064777504567, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: m_Name
+      value: Enemy_Electro_Effect
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207405065064456291, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6782532396217596228, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 02816241e1c7b5745a9bc5cf9b75851d, type: 3}
+--- !u!4 &3864037055864593633 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4207405064777504566, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1151907374949157847}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &5898590577844269715 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 6782532396217596228, guid: 02816241e1c7b5745a9bc5cf9b75851d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1151907374949157847}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5485562894406554912
 PrefabInstance:
   m_ObjectHideFlags: 0
