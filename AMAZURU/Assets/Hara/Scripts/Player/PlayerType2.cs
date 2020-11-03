@@ -630,6 +630,7 @@ public class PlayerType2 : MyAnimation
                 if(cell != null) { Destroy(cell); }
                 prismWallObjects[i].transform.localScale = Vector3.one * 0.95f;
                 prismWallObjects[i].name = "prismWallObject" + i.ToString();
+                prismWallObjects[i].layer = LayerMask.NameToLayer("Stage");
                 prismWallObjects[i].SetActive(false);
             }
         }
