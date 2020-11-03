@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ public class PlayerType2 : MyAnimation
     [SerializeField, Tooltip("Playerの傘のAnimator")] private Animator umbrellaAnimator = null;
     [SerializeField, Tooltip("地面のLayerMask")] private LayerMask groundLayer;
     [SerializeField, Tooltip("AnimationEventスクリプト")] private PlayerAnimeEvent animeEvent = null;
+    [SerializeField, Tooltip("感電エフェクト")] private ParticleSystem electroParticle = null;
 
     // コントローラーの入力
     private float inputX = 0;
@@ -113,6 +115,11 @@ public class PlayerType2 : MyAnimation
 
     // プレイヤーが動き始めてからの経過時間
     private float speedTime = 0;
+
+    // 特殊な地形用の壁オブジェクト
+    private GameObject[] prismWallObjects = null;
+    private GameObject[] prismGroundObjects = null;
+    private int prismWallActiveCount = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -248,6 +255,8 @@ public class PlayerType2 : MyAnimation
                     isOnSlope = false;
                 }
 
+                SetPrismWall();
+
                 // 斜め入力時の移動量を修正
                 playerMoveDirection = direction.normalized;
 
@@ -339,13 +348,16 @@ public class PlayerType2 : MyAnimation
             // クリア時のアニメーションを再生
             if (IsGameClear)
             {
-                if (RotateAnimation(transform.gameObject, cameraForward * -1, 360 * delta, true))
+                if (RotateAnimation(transform.gameObject, cameraForward * -1, Vector3.up, 360 * delta, true))
                 {
                     playerAnimator.SetBool("Run", false);
                     playerAnimator.SetBool("StageClear", true);
                 }
             }
         }
+
+        // 感電エフェクトの再生
+        ElectroEffect(IsElectric);
     }
 
     /// <summary>
@@ -574,5 +586,154 @@ public class PlayerType2 : MyAnimation
         slopeVector.y = 0;
         slopeVector.z = Mathf.Floor(Mathf.Abs(slopeVector.z) * 10) != 0 ? 1 : 0;
         return slopeVector;
+    }
+
+    /// <summary>
+    /// Prism用の壁を設置する処理
+    /// </summary>
+    private void SetPrismWall()
+    {
+        if(prismGroundObjects == null || prismGroundObjects.Length < 1)
+        {
+            prismGroundObjects = new GameObject[rayPosition.Length];
+        }
+
+        for (int i = 0; i < prismGroundObjects.Length; i++)
+        {
+            int next = i + 1 > rayPosition.Length - 1 ? 0 : i + 1;
+            Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z) + rayPosition[i] * character.radius * 1.2f + rayPosition[next] * character.radius * 1.2f, Vector3.down);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, character.height, groundLayer))
+            {
+                string objName = hit.transform.gameObject.name;
+                bool prismWallFlag = (objName.Contains("prism") || objName.Contains("Prism")) && (Vector3.Distance(hit.transform.right, ray.direction) < 0.1f || Vector3.Distance(-hit.transform.right, ray.direction) < 0.1f);
+                if (prismWallFlag) { prismGroundObjects[i] = hit.transform.gameObject; }
+                else { prismGroundObjects[i] = null; }
+            }
+            else
+            {
+                prismGroundObjects[i] = null;
+            }
+        }
+
+        // Prism用の壁を作成
+        GameObject[] prismWalls = prismGroundObjects.Distinct().ToArray();
+        List<GameObject> list = new List<GameObject>(prismWalls);
+        list.RemoveAll(item => item == null);
+        prismWalls = list.ToArray();
+        
+        if((prismWallObjects == null || prismWallObjects.Length < 1) && prismWalls.Length > 0)
+        {
+            prismWallObjects = new GameObject[prismGroundObjects.Length];
+            for(int i = 0; i < prismWallObjects.Length; i++)
+            {
+                prismWallObjects[i] = Instantiate(prismWalls[0]);
+                MeshRenderer mr = prismWallObjects[i].GetComponent<MeshRenderer>();
+                if(mr != null) { Destroy(mr); }
+                MyCellIndex cell = prismWallObjects[i].GetComponent<MyCellIndex>();
+                if(cell != null) { Destroy(cell); }
+                prismWallObjects[i].transform.localScale = Vector3.one * 0.95f;
+                prismWallObjects[i].name = "prismWallObject" + i.ToString();
+                prismWallObjects[i].layer = LayerMask.NameToLayer("Stage");
+                prismWallObjects[i].SetActive(false);
+            }
+        }
+
+        // 作成した壁を配置
+        if(prismWallObjects != null && prismWallObjects.Length > 0)
+        {
+            if(prismWallActiveCount < prismWalls.Length)
+            {
+                // 壁の生成の必要あり
+                int index = 0;
+                foreach(var obj in prismWalls)
+                {
+                    bool flag = false;
+                    foreach(var wall in prismWallObjects)
+                    {
+                        if (wall.transform.position == obj.transform.position + Vector3.up * 1.0f && wall.activeSelf)
+                        {
+                            flag = true;
+                            break;
+                        }
+                    }
+
+                    if (flag == false)
+                    {
+                        break;
+                    }
+                    index++;
+                }
+
+                foreach(var wall in prismWallObjects)
+                {
+                    if(wall.activeSelf == false)
+                    {
+                        Vector3 vec = prismWalls[index].transform.eulerAngles;
+                        vec.y += 180;
+                        wall.transform.rotation = Quaternion.Euler(vec);
+                        wall.transform.position = prismWalls[index].transform.position + Vector3.up * 1.0f;
+                        wall.SetActive(true);
+                        prismWallActiveCount = prismWallActiveCount + 1 > prismWallObjects.Length ? prismWallObjects.Length : prismWallActiveCount + 1;
+                        break;
+                    }
+                }
+            }
+            else if(prismWallActiveCount > prismWalls.Length)
+            {
+                // 壁の削除の必要あり
+                foreach(var wall in prismWallObjects)
+                {
+                    if (wall.activeSelf)
+                    {
+                        bool flag = false;
+                        foreach (var obj in prismWalls)
+                        {
+                            if (wall.transform.position == obj.transform.position + Vector3.up * 1.0f)
+                            {
+                                flag = true;
+                                break;
+                            }
+                        }
+
+                        if(flag == false)
+                        {
+                            wall.SetActive(false);
+                            prismWallActiveCount = prismWallActiveCount - 1 < 0 ? 0 : prismWallActiveCount - 1;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 感電用のエフェクトを管理する処理
+    /// </summary>
+    /// <param name="active"></param>
+    private void ElectroEffect(bool active)
+    {
+        if(electroParticle != null)
+        {
+            if (active)
+            {
+                if (electroParticle.isStopped)
+                {
+                    electroParticle.Play();
+                    SoundManager.soundManager.PlaySe3D("EnemyMove", transform.position + Vector3.up * character.center.y, 0.3f);
+                }
+            }
+            else
+            {
+                if (electroParticle.isPlaying)
+                {
+                    electroParticle.Stop();
+                }
+            }
+        }
     }
 }
