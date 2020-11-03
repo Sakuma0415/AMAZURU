@@ -198,7 +198,7 @@ namespace Enemy
                             stepEnd = true;
                             break;
                         case 1:
-                            stepEnd = RotateAnimation(transform.gameObject, forward, transform.up, rotatePower * delta, true);
+                            stepEnd = RotateAnimation(transform.gameObject, forward, rotatePower * delta, true);
                             break;
                         case 2:
                             if (transform.localRotation == Quaternion.LookRotation(forward))
