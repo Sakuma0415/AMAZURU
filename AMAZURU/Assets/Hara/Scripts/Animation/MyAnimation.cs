@@ -80,10 +80,10 @@ public class MyAnimation : MonoBehaviour
     /// 回転のアニメーション
     /// </summary>
     /// <returns></returns>
-    protected bool RotateAnimation(GameObject obj, Vector3 forward, float time, bool local)
+    protected bool RotateAnimation(GameObject obj, Vector3 forward, Vector3 upwards, float time, bool local)
     {
         Quaternion from = local ? obj.transform.localRotation : obj.transform.rotation;
-        Quaternion to = Quaternion.LookRotation(forward);
+        Quaternion to = Quaternion.LookRotation(forward, upwards);
         Quaternion rotation = Quaternion.RotateTowards(from, to, time);
         _ = local ? obj.transform.localRotation = rotation : obj.transform.rotation = rotation;
 

@@ -103,6 +103,11 @@ namespace Enemy
         /// </summary>
         public bool StartPosFlag { set; private get; } = false;
 
+        /// <summary>
+        /// エネミーの基本移動軸の情報
+        /// </summary>
+        public Vector3 EnemyUpwards { set; private get; } = Vector3.up;
+
         private void FixedUpdate()
         {
             if(IsAllStop == false)
@@ -161,10 +166,10 @@ namespace Enemy
                 {
                     // プレイヤーと接触しているかをチェック
                     Vector3 up = transform.up;
-                    if (Physics.BoxCast(transform.position - up * 0.5f * enemySize, new Vector3(up.x == 0 ? enemySize * 1.25f : enemySize, up.y == 0 ? enemySize * 1.25f : enemySize, up.z == 0 ? enemySize * 1.25f : enemySize) * 0.5f, up, out RaycastHit hit, Quaternion.Euler(Vector3.zero), 0.25f, playerLayer))
+                    if (Physics.BoxCast(transform.position - up * 0.5f * enemySize, new Vector3(enemySize * 1.25f, enemySize, enemySize * 1.25f) * 0.5f, up, out RaycastHit hit, Quaternion.Euler(new Vector3(transform.eulerAngles.x, 0, transform.eulerAngles.z)), 0.25f, playerLayer))
                     {
                         IsHitPlayer = true;
-                        StartCoroutine(HitAnimation(hit.transform.position));
+                        StartCoroutine(HitAnimation(hit.point));
                         return;
                     }
 
@@ -198,7 +203,7 @@ namespace Enemy
                             stepEnd = true;
                             break;
                         case 1:
-                            stepEnd = RotateAnimation(transform.gameObject, forward, rotatePower * delta, true);
+                            stepEnd = RotateAnimation(transform.gameObject, forward, transform.up, rotatePower * delta, true);
                             break;
                         case 2:
                             if (transform.localRotation == Quaternion.LookRotation(forward))
@@ -276,14 +281,16 @@ namespace Enemy
         /// <returns></returns>
         private IEnumerator HitAnimation(Vector3 playerPos)
         {
-            // プレイヤーの座標をローカル座標に変換
-            Vector3 target = transform.parent.InverseTransformPoint(playerPos);
-            target.y = 0;
+            Vector3 target = (playerPos - transform.position).normalized;
+            Vector3 up = EnemyUpwards;
+            target.x -= up.x * target.x;
+            target.y -= up.y * target.y;
+            target.z -= up.z * target.z;
 
             // プレイヤーの方向を向く
-            while (RotateAnimation(transform.gameObject, (target - new Vector3(transform.localPosition.x, 0, transform.localPosition.z)).normalized, rotatePower * Time.deltaTime * 2.5f, true) == false)
+            while (RotateAnimation(transform.gameObject, target, transform.up, rotatePower * Time.deltaTime * 2.5f, false) == false)
             {
-                while(IsMoveStop || IsAllStop)
+                while (IsMoveStop || IsAllStop)
                 {
                     yield return null;
                 }

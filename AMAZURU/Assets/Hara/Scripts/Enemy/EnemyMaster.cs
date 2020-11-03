@@ -139,6 +139,29 @@ public class EnemyMaster : MonoBehaviour
             Enemies[count].StartPosFlag = data.UseStartPosSetting;
             Enemies[count].StageWater = StageWater;
             Enemies[count].StartPosition = startPos;
+            Vector3 upwards;
+            switch (data.EnemyUpDirection)
+            {
+                case EnemyData.UpDirection.Up:
+                    upwards = Vector3.up;
+                    break;
+                case EnemyData.UpDirection.Down:
+                    upwards = Vector3.down;
+                    break;
+                case EnemyData.UpDirection.Forward:
+                    upwards = Vector3.forward;
+                    break;
+                case EnemyData.UpDirection.Back:
+                    upwards = Vector3.back;
+                    break;
+                case EnemyData.UpDirection.Right:
+                    upwards = Vector3.right;
+                    break;
+                default:
+                    upwards = Vector3.left;
+                    break;
+            }
+            Enemies[count].EnemyUpwards = upwards;
             Enemies[count].EnemyInit();
 
             if(enemyTypes[count] == EnemyType.Dry)
