@@ -118,6 +118,7 @@ public class PlayerType2 : MyAnimation
     // 特殊な地形用の壁オブジェクト
     private GameObject[] prismWallObjects = null;
     private GameObject[] prismGroundObjects = null;
+    private int prismWallActiveCount = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -636,17 +637,7 @@ public class PlayerType2 : MyAnimation
         // 作成した壁を配置
         if(prismWallObjects != null && prismWallObjects.Length > 0)
         {
-            // 生成中の壁の数を取得
-            int count = 0;
-            foreach(var wall in prismWallObjects)
-            {
-                if (wall.activeSelf)
-                {
-                    count++;
-                }
-            }
-
-            if(count < prismWalls.Length)
+            if(prismWallActiveCount < prismWalls.Length)
             {
                 // 壁の生成の必要あり
                 int index = 0;
@@ -678,11 +669,12 @@ public class PlayerType2 : MyAnimation
                         wall.transform.rotation = Quaternion.Euler(vec);
                         wall.transform.position = prismWalls[index].transform.position + Vector3.up * 1.0f;
                         wall.SetActive(true);
+                        prismWallActiveCount = prismWallActiveCount + 1 > prismWallObjects.Length ? prismWallObjects.Length : prismWallActiveCount + 1;
                         break;
                     }
                 }
             }
-            else if(count > prismWalls.Length)
+            else if(prismWallActiveCount > prismWalls.Length)
             {
                 // 壁の削除の必要あり
                 foreach(var wall in prismWallObjects)
@@ -702,6 +694,7 @@ public class PlayerType2 : MyAnimation
                         if(flag == false)
                         {
                             wall.SetActive(false);
+                            prismWallActiveCount = prismWallActiveCount - 1 < 0 ? 0 : prismWallActiveCount - 1;
                         }
                     }
                 }
