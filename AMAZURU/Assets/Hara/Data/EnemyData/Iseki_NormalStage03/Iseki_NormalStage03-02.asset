@@ -17,7 +17,7 @@ MonoBehaviour:
   EnemyUpDirection: 2
   Size: 1
   UseStartPosSetting: 1
-  StartPosition: {x: 6.5, y: -1, z: 9.5}
+  StartPosition: {x: 6.5, y: 1, z: 9.5}
   MovePlan:
   - {x: 8.5, y: 1, z: 9.5}
   - {x: 4.5, y: 1, z: 9.5}
@@ -25,5 +25,5 @@ MonoBehaviour:
   NomalSpeed: 1
   WaterSpeed: 1
   UseDefaultSetting: 1
-  BlockSetPosY: 2
+  BlockSetPosY: 0
   ReturnBlock: 0
