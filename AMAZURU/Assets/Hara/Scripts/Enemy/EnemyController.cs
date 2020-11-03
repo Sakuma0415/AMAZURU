@@ -103,11 +103,6 @@ namespace Enemy
         /// </summary>
         public bool StartPosFlag { set; private get; } = false;
 
-        /// <summary>
-        /// エネミーの基本移動軸の情報
-        /// </summary>
-        public Vector3 EnemyUpwards { set; private get; } = Vector3.up;
-
         private void FixedUpdate()
         {
             if(IsAllStop == false)
@@ -281,21 +276,49 @@ namespace Enemy
         /// <returns></returns>
         private IEnumerator HitAnimation(Vector3 playerPos)
         {
-            Vector3 target = (playerPos - transform.position).normalized;
-            Vector3 up = EnemyUpwards;
-            target.x -= up.x * target.x;
-            target.y -= up.y * target.y;
-            target.z -= up.z * target.z;
+            Vector3 enemyPos = transform.position;
+            Vector3 up = transform.parent.up;
+            Vector3 forward = transform.forward;
+            if(Mathf.Abs(up.x) > 0.1f)
+            {
+                playerPos.x = 0;
+                enemyPos.x = 0;
+                forward.x = 0;
+            }
+            else if(Mathf.Abs(up.y) > 0.1f)
+            {
+                playerPos.y = 0;
+                enemyPos.y = 0;
+                forward.y = 0;
+            }
+            else
+            {
+                playerPos.z = 0;
+                enemyPos.z = 0;
+                forward.z = 0;
+            }
+
+            Vector3 diff = playerPos - enemyPos;
+            Vector3 axis = Vector3.Cross(forward, diff);
+            float angle = Vector3.Angle(forward, diff) * (axis.y < 0 ? -1 : 1);
+            Quaternion to = transform.localRotation * Quaternion.Euler(new Vector3(0, angle, 0));
 
             // プレイヤーの方向を向く
-            while (RotateAnimation(transform.gameObject, target, transform.up, rotatePower * Time.deltaTime * 2.5f, false) == false)
+            Vector3 now = transform.localEulerAngles;
+            Vector3 end = to.eulerAngles;
+
+            while (Vector3.Distance(now, end) > 0.1f)
             {
                 while (IsMoveStop || IsAllStop)
                 {
                     yield return null;
                 }
+                transform.localRotation = Quaternion.RotateTowards(transform.localRotation, to, rotatePower * Time.deltaTime * 2.5f);
+                now = transform.localEulerAngles;
                 yield return null;
             }
+
+            transform.localRotation = to;
 
             // 処理の完了フラグ
             IsActonEnd = true;
