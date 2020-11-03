@@ -230,6 +230,9 @@ public class PlayState : MonoBehaviour
         character.GetComponent<PlayerType2>().IsDontShield = true;
         character.GetComponent<PlayerType2>().IsDontCharacterMove  = true;
 
+        //ここ
+        SoundManager.soundManager.PlaySe("stone_gimmick2", 0.25f);
+
         PlayState.playState.gameMode = PlayState.GameMode.RotationPot;
         PlayState.playState.RotationPotTime = 5;
         PlayState.playState.RotationPotTimech = false;

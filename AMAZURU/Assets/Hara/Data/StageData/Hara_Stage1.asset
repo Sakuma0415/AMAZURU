@@ -22,8 +22,9 @@ MonoBehaviour:
   startAngle: -90
   CameraDisS: 20
   CameraDisP: 5
-  TutorialFlg: 0
-  TutorialObjs: []
+  TutorialFlg: 1
+  TutorialObjs:
+  - {fileID: 0}
   IsThunder: 0
   DoThunder: 0
   NextStageData: {fileID: 11400000, guid: 1234dea186812d34dacee7f5252d0e34, type: 2}
