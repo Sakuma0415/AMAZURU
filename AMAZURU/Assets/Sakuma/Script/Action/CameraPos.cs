@@ -276,6 +276,10 @@ public class CameraPos : MonoBehaviour
                     {
                         kari = true;
                         ChaMs.LightningStrikeAction();
+
+                        //ここ
+                        SoundManager.soundManager.PlaySe("stone_gimmick2", 0.25f);
+
                     }
                     trg = Vector3.Lerp(lotPos, LightningStrikeAction, 1);
                     dis = Mathf.Lerp(lotDis, Tdis, 1);
