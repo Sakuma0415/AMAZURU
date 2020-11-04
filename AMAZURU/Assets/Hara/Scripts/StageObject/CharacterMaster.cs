@@ -197,6 +197,9 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
 
             // 感電時
             Player.IsElectric = isElectric;
+
+            // ステージ回転時
+            Player.IsRotate = gameMode == PlayState.GameMode.RotationPot;
         }
     }
 

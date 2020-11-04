@@ -108,6 +108,11 @@ public class PlayerType2 : MyAnimation
     /// </summary>
     public bool IsDontShield { set; private get; } = false;
 
+    /// <summary>
+    /// Stageが回転しているときのフラグ
+    /// </summary>
+    public bool IsRotate { set; private get; } = false;
+
     private Coroutine windCoroutine = null;
 
     // 入力受付を無効にするフラグ
@@ -217,6 +222,9 @@ public class PlayerType2 : MyAnimation
             // 入力を検知したかチェック
             input = (Mathf.Abs(inputX) > inputMin || Mathf.Abs(inputZ) > inputMin) && DontInput == false && stopInput == false;
 
+            slopeRight = Vector3.zero;
+            isOnSlope = false;
+
             if (input)
             {
                 // 入力方向を向く処理
@@ -238,7 +246,6 @@ public class PlayerType2 : MyAnimation
                 // 地面にRayを飛ばす
                 Ray ground = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z), Vector3.down);
                 float hitNomalY = 1.0f;
-                slopeRight = Vector3.zero;
                 if (Physics.Raycast(ground, out RaycastHit hit, character.height, groundLayer))
                 {
                     // 地面の傾斜を取得
@@ -249,10 +256,6 @@ public class PlayerType2 : MyAnimation
                     {
                         slopeRight = GetSlopeVec(hit.transform.right);
                     }
-                }
-                else
-                {
-                    isOnSlope = false;
                 }
 
                 SetPrismWall();
@@ -389,7 +392,7 @@ public class PlayerType2 : MyAnimation
             RaycastHit hit;
             bool set;
             bool rayDirectionFlag = rayPosition[i] == slopeRight || rayPosition[i] == -slopeRight;
-            float rayRange = isOnSlope && rayDirectionFlag ? character.height * 0.6f : character.height;
+            float rayRange = isOnSlope && rayDirectionFlag ? character.height * 0.62f : character.height;
             Vector3 baseRayPosition = new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z);
             mainRay = new Ray(baseRayPosition + rayPosition[i] * character.radius, Vector3.down);
             if(Physics.Raycast(mainRay, out hit, rayRange, groundLayer) && hit.collider.isTrigger == false)
@@ -532,7 +535,7 @@ public class PlayerType2 : MyAnimation
 
         while (Vector3.Distance(playerPos, target) > 0.1f)
         {
-            if (IsGameStop == false)
+            if (IsGameStop == false && IsRotate == false)
             {
                 if (IsGameClear || IsGameOver || IsHitEnemy)
                 {
