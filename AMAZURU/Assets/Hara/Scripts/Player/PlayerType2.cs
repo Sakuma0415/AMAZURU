@@ -225,6 +225,21 @@ public class PlayerType2 : MyAnimation
             slopeRight = Vector3.zero;
             isOnSlope = false;
 
+            // 地面にRayを飛ばす
+            Ray ground = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z), Vector3.down);
+            float hitNomalY = 1.0f;
+            if (Physics.Raycast(ground, out RaycastHit hit, character.height, groundLayer))
+            {
+                // 地面の傾斜を取得
+                hitNomalY = hit.normal.y;
+                isOnSlope = hitNomalY < 1.0f;
+
+                if (isOnSlope)
+                {
+                    slopeRight = GetSlopeVec(hit.transform.right);
+                }
+            }
+
             if (input)
             {
                 // 入力方向を向く処理
@@ -242,23 +257,6 @@ public class PlayerType2 : MyAnimation
                 {
                     speedTime = maxSpeedTime;
                 }
-
-                // 地面にRayを飛ばす
-                Ray ground = new Ray(new Vector3(transform.position.x, transform.position.y + character.center.y, transform.position.z), Vector3.down);
-                float hitNomalY = 1.0f;
-                if (Physics.Raycast(ground, out RaycastHit hit, character.height, groundLayer))
-                {
-                    // 地面の傾斜を取得
-                    hitNomalY = hit.normal.y;
-                    isOnSlope = hitNomalY < 1.0f;
-
-                    if (isOnSlope)
-                    {
-                        slopeRight = GetSlopeVec(hit.transform.right);
-                    }
-                }
-
-                SetPrismWall();
 
                 // 斜め入力時の移動量を修正
                 playerMoveDirection = direction.normalized;
@@ -294,6 +292,8 @@ public class PlayerType2 : MyAnimation
             {
                 DontHiddenWall();
             }
+
+            SetPrismWall();
 
             // 水中フラグの設定
             if (StageWater != null)
