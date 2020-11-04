@@ -40950,6 +40950,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tutorial_ss_2_DC
       objectReference: {fileID: 0}
+    - target: {fileID: 7755242814449668683, guid: 5c6eb96c28a539b46979b28cd12ffb37,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.067
+      objectReference: {fileID: 0}
     - target: {fileID: 8143899057104028948, guid: 5c6eb96c28a539b46979b28cd12ffb37,
         type: 3}
       propertyPath: m_Layer
@@ -41008,6 +41013,11 @@ PrefabInstance:
     - target: {fileID: 8282087365175422306, guid: 5c6eb96c28a539b46979b28cd12ffb37,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8829495864329421658, guid: 5c6eb96c28a539b46979b28cd12ffb37,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

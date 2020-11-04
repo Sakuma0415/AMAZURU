@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 1
   StartRotate: 0
+  EnemyUpDirection: 2
   Size: 1
   UseStartPosSetting: 0
   StartPosition: {x: 0, y: 0, z: 0}
@@ -28,8 +29,8 @@ MonoBehaviour:
   - {x: 3.5, y: 1, z: 1.5}
   - {x: 7.5, y: 1, z: 1.5}
   MoveType: 0
-  NomalSpeed: 1.5
-  WaterSpeed: 4
+  NomalSpeed: 1
+  WaterSpeed: 1
   UseDefaultSetting: 1
   BlockSetPosY: 0
   ReturnBlock: 0

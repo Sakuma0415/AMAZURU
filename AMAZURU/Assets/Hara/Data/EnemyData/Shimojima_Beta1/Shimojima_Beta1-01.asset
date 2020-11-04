@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 1
   StartRotate: 1
+  EnemyUpDirection: 2
   Size: 1
   UseStartPosSetting: 0
-  StartPosition: {x: 3.5, y: 1, z: 3.5}
+  StartPosition: {x: 0, y: 0, z: 0}
   MovePlan:
   - {x: 3.5, y: 1, z: 3.5}
   - {x: 3.5, y: 1, z: 0.5}

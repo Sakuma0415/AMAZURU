@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 0
   StartRotate: 2
+  EnemyUpDirection: 2
   Size: 1.5
+  UseStartPosSetting: 0
+  StartPosition: {x: 0, y: 0, z: 0}
   MovePlan:
   - {x: 1, y: 1, z: 3}
   - {x: 14, y: 1, z: 3}
@@ -23,4 +26,5 @@ MonoBehaviour:
   NomalSpeed: 1
   WaterSpeed: 1
   UseDefaultSetting: 1
-  BlockSetPosY: 1
+  BlockSetPosY: 0
+  ReturnBlock: 0
