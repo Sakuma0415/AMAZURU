@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Iseki_NormalStage03
   m_EditorClassIdentifier: 
   stageName: "\u30CE\u30FC\u30DE\u30EB\u30B9\u30C6\u30FC\u30B803"
-  stageSize: {x: 13, y: 13, z: 13}
+  stageSize: {x: 12, y: 12, z: 12}
   startPos: {x: 1, y: 6, z: 1}
   waterStep: 2
   stagePrefab: {fileID: 152324486650063622, guid: aae06637b2bff6c4aa62138076b86a9c,
@@ -26,7 +26,7 @@ MonoBehaviour:
   TutorialObjs: []
   IsThunder: 0
   DoThunder: 0
-  NextStageData: {fileID: 11400000, guid: 4957a753d3f80f740a13b839bfb52e2b, type: 2}
+  NextStageData: {fileID: 11400000, guid: 104e570ac6ce8bf48bf7a75ab82e82ac, type: 2}
   LastStage: 1
-  Challenge: 12
+  Challenge: 17
   Clear: 1

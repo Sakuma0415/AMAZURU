@@ -278,7 +278,7 @@ public class CameraPos : MonoBehaviour
                         ChaMs.LightningStrikeAction();
 
                         //ここ
-                        SoundManager.soundManager.PlaySe("stone_gimmick2", 0.25f);
+                        SoundManager.soundManager.PlaySe("thunder", 0.5f);
 
                     }
                     trg = Vector3.Lerp(lotPos, LightningStrikeAction, 1);
