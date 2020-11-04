@@ -132,7 +132,7 @@ public class Wind : MonoBehaviour
         {
             if (coroutine != null) { return; }
 
-            if (Physics.BoxCast(transform.position, Vector3.one * 0.45f, direction, out hit, Quaternion.identity, windMaxArea + 0.5f) && hit.collider.isTrigger == false)
+            if (Physics.BoxCast(transform.position, Vector3.one * 0.4f, direction, out hit, Quaternion.identity, windMaxArea) && hit.collider.isTrigger == false)
             {
                 if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player"))
                 {
