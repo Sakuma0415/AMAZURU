@@ -26,6 +26,11 @@ public class DryEnemy : MonoBehaviour
     /// </summary>
     public bool IsStop { set; private get; } = false;
 
+    /// <summary>
+    /// ステージが回転しているときのフラグ
+    /// </summary>
+    public bool IsRotate { set; private get; } = false;
+
     public Vector3 StartPosition { set; private get; } = Vector3.zero;
 
     // このオブジェクトに必要なデータ
@@ -38,12 +43,6 @@ public class DryEnemy : MonoBehaviour
 
     // 処理開始のフラグ
     private bool isStartAction = false;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void Update()
@@ -87,7 +86,7 @@ public class DryEnemy : MonoBehaviour
     /// </summary>
     private void CheckWaterHeight()
     {
-        if (EnemyObject == null || StageWater == null || box == null) { return; }
+        if (EnemyObject == null || StageWater == null || box == null || IsRotate) { return; }
 
         if(StageWater.max > transform.position.y + box.center.y && spawnFlag == false)
         {

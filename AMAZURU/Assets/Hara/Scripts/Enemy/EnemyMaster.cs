@@ -78,6 +78,11 @@ public class EnemyMaster : MonoBehaviour
     public ElectricEnemy TargetElectricEnemy { private set; get; } = null;
 
     /// <summary>
+    /// ステージが回転している状態のフラグ
+    /// </summary>
+    public bool IsStageRoation { set; private get; } = false;
+
+    /// <summary>
     /// 初期化、生成処理
     /// </summary>
     public void Init()
@@ -252,6 +257,9 @@ public class EnemyMaster : MonoBehaviour
 
             // ゲームステートがプレイ以外またはアニメーションが実行中の場合は移動処理を停止
             dry.EnemyObject.IsMoveStop = IsStandby || dry.IsDoingAnimation;
+
+            // ステージが回転状態かどうかのフラグ
+            dry.IsRotate = IsStageRoation;
         }
 
         // 帯電ナマコのフラグ管理

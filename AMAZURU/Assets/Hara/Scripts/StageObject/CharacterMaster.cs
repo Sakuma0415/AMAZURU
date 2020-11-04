@@ -212,6 +212,19 @@ public class CharacterMaster : SingletonMonoBehaviour<CharacterMaster>
 
             // プレイ中以外のときはスタンバイ状態にする
             enemy.IsStandby = gameMode != PlayState.GameMode.Play;
+
+            // ステージが回転状態のフラグ
+            bool isFall;
+            try
+            {
+                isFall = PlayState.playState.IsFallBox;
+            }
+            catch
+            {
+                isFall = true;
+            }
+
+            enemy.IsStageRoation = gameMode == PlayState.GameMode.RotationPot && isFall == false;
         }
     }
 
