@@ -112,11 +112,11 @@ public class Progress : MonoBehaviour
         }
         if (GameOver)
         {
-            SoundManager.soundManager.PlaySe("wafu-success", 1);
+            SoundManager.soundManager.PlaySe("wafu-success", 0.3f);
         }
         else
         {
-            SoundManager.soundManager.PlaySe("dead-sound", 1);
+            SoundManager.soundManager.PlaySe("dead-sound", 0.4f);
         }
         yield return new WaitForSeconds(animation[GameOver?0:1].length+ResultDelayTime);
 

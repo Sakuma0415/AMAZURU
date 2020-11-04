@@ -20,7 +20,7 @@ MonoBehaviour:
     type: 3}
   AmehurashiQuantity: 2
   startAngle: 270
-  CameraDisS: 15
+  CameraDisS: 18
   CameraDisP: 5
   TutorialFlg: 1
   TutorialObjs:
@@ -30,5 +30,5 @@ MonoBehaviour:
   DoThunder: 2
   NextStageData: {fileID: 11400000, guid: b4242c0640832264baf820957053b3e9, type: 2}
   LastStage: 0
-  Challenge: 4
-  Clear: 1
+  Challenge: 10
+  Clear: 5
