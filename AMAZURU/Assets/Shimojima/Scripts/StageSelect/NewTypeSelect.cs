@@ -171,11 +171,15 @@ public class NewTypeSelect : MonoBehaviour
         if (!increasedWaterVolume) { increasedWaterVolume = new TextMeshProUGUI(); }
         if (referenceImage.Length == 0) { referenceImage = new Sprite[1]; }
 
-
-        sssd = config.save;
-        if (sssd.doRetention)
+        if (config.save.doRetention)
         {
+            sssd = config.save;
             flame.sprite = referenceImage[sssd.level + 2];
+        }
+        else
+        {
+            config.save.initNumber = 2;
+            config.save.level = 0;
         }
         vMoveSpeed = new Vector3(0, speed * 3, 0);
         Init();
