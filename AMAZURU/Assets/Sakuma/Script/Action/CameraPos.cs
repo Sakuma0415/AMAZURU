@@ -573,6 +573,7 @@ public class CameraPos : MonoBehaviour
 
     public void FrontSet()
     {
+        lookObj = PlayerTransform.position + new Vector3(0, LookHiSet, 0) ;
         Vector3 plPos = PlayerTransform.position;
         float angle = Mathf.Atan2(plPos.z - GoalPos.z, plPos.x - GoalPos.x)*Mathf.Rad2Deg ;
         CameraDis = 4;
